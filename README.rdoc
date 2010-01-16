@@ -1,3 +1,48 @@
 == twitter-text
 
-A gem that provides...
+A gem that provides text processing routines for Twitter Tweets. The major
+reason for this is to unify the various auto-linking and extraction of
+usernames, lists, hashtags and URLs.
+
+== Extraction Examples
+
+ # Extraction extractor = Twitter::Extractor.new usernames =
+extractor.extract_mentioned_screen_names("Mentioning @twitter and @jack") #
+usernames = ["twitter", "jack"]
+
+ # Extraction with a block argument extractor = Twitter::Extractor.new
+extractor.extract_reply_screen_name("@twitter are you hiring?").do |username|
+# username = "twitter" end
+
+== Auto-linking Examples
+
+ # Auto-link linker = Twitter::Autolink.new html = linker.auto_link("link
+@user, please #request") # html includes <a></a> tags around the @user and
+#request
+
+=== Usernames
+
+Username extraction and linking matches all valid Twitter usernames but does
+not verify that the username is a valid Twitter account.
+
+=== Lists
+
+Auto-link and extract list names when they are written in @user/list-name
+format.
+
+=== Hashtags
+
+Auto-link and extract hashtags, where a hashtag contains any latin letter or
+number but cannot be solely numbers.
+
+=== URLs
+
+Auto-linking and extraction of URLs differs from the Rails default so that it
+will work correctly in Tweets written in languages that do not include spaces
+between words.
+
+=== International
+
+Special care has been taken to be sure that auto-linking and extraction work
+in Tweets of all languages. This means that languages without spaces between
+words should work equally well.

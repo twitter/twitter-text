@@ -1,5 +1,6 @@
 require 'rubygems' unless ENV['NO_RUBYGEMS']
 require 'rake/gempackagetask'
+require 'rake/rdoctask'
 require 'rubygems/specification'
 require 'date'
 require 'spec/rake/spectask'
@@ -16,14 +17,13 @@ spec = Gem::Specification.new do |s|
 
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README", "LICENSE", 'TODO']
   s.summary = "Twitter text handling library"
 
   s.add_dependency "action_view"
 
   s.require_path = 'lib'
   s.autorequire = ''
-  s.files = %w(LICENSE README Rakefile TODO) + Dir.glob("{lib,spec}/**/*")
+  s.files = %w(LICENSE README.rdoc Rakefile TODO) + Dir.glob("{lib,spec}/**/*")
 end
 
 task :default => :spec
@@ -39,6 +39,15 @@ Spec::Rake::SpecTask.new('spec:rcov') do |t|
   t.spec_files = FileList['spec/**/*.rb']
   t.rcov = true
   t.rcov_opts = ['--exclude', 'spec']
+end
+
+
+namespace :doc do 
+  Rake::RDocTask.new do |rd|
+    rd.main = "README.rdoc"
+    rd.rdoc_dir = 'doc'
+    rd.rdoc_files.include("README.rdoc", "lib/**/*.rb")
+  end
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|

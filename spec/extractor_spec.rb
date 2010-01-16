@@ -48,44 +48,44 @@ describe Twitter::Extractor do
   describe "replies" do
     context "should be extracted from" do
       it "should extract from lone name" do
-        @extractor.extract_reply_screen_names("@alice").should == "alice"
+        @extractor.extract_reply_screen_name("@alice").should == "alice"
       end
 
       it "should extract from the start" do
-        @extractor.extract_reply_screen_names("@alice reply text").should == "alice"
+        @extractor.extract_reply_screen_name("@alice reply text").should == "alice"
       end
 
       it "should extract preceeded by a space" do
-        @extractor.extract_reply_screen_names(" @alice reply text").should == "alice"
+        @extractor.extract_reply_screen_name(" @alice reply text").should == "alice"
       end
 
       it "should extract preceeded by a full-width space" do
-        @extractor.extract_reply_screen_names("#{[0x3000].pack('U')}@alice reply text").should == "alice"
+        @extractor.extract_reply_screen_name("#{[0x3000].pack('U')}@alice reply text").should == "alice"
       end
     end
 
     context "should not be extracted from" do
       it "should not be extracted when preceeded by text" do
-        @extractor.extract_reply_screen_names("reply @alice text").should == nil
+        @extractor.extract_reply_screen_name("reply @alice text").should == nil
       end
 
       it "should not be extracted when preceeded by puctuation" do
         %w(. / _ - + # ! @).each do |punct|
-          @extractor.extract_reply_screen_names("#{punct}@alice text").should == nil
+          @extractor.extract_reply_screen_name("#{punct}@alice text").should == nil
         end
       end
     end
 
     context "should accept a block arugment" do
       it "should call the block on match" do
-        @extractor.extract_reply_screen_names("@alice") do |sn|
+        @extractor.extract_reply_screen_name("@alice") do |sn|
           sn.should == "alice"
         end
       end
 
       it "should not call the block on no match" do
         calls = 0
-        @extractor.extract_reply_screen_names("not a reply") do |sn|
+        @extractor.extract_reply_screen_name("not a reply") do |sn|
           calls += 1
         end
         calls.should == 0

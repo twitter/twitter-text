@@ -10,7 +10,7 @@ module Twitter
       possible_screen_names
     end
 
-    def extract_reply_screen_names(text)
+    def extract_reply_screen_name(text)
       return unless text
 
       possible_screen_name = text.match(Twitter::Regex[:extract_reply])
