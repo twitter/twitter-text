@@ -116,23 +116,32 @@
 
         <div class="method-heading">
           <a href="#M000009" class="method-signature">
-          <span class="method-name">extract_hashtags</span><span class="method-args">(text) {|url| ...}</span>
+          <span class="method-name">extract_hashtags</span><span class="method-args">(text) {|hashtag_text| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+Extracts a list of all hashtags included in the Tweet <tt>text</tt>. If the
+<tt>text</tt> is <tt>nil</tt> or contains no hashtags an empty array will
+be returned. The array returned will not include the leading <tt>#</tt>
+character.
+</p>
+<p>
+If a block is given then it will be called for each hashtag.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000009-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000009-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 33</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_hashtags</span>(<span class="ruby-identifier">text</span>)
-      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 53</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_hashtags</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: hashtag_text</span>
+      <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
       <span class="ruby-identifier">tags</span> = <span class="ruby-identifier">text</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:auto_link_hashtags</span>]).<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">before</span>, <span class="ruby-identifier">hash</span>, <span class="ruby-identifier">hash_text</span><span class="ruby-operator">|</span>
         <span class="ruby-identifier">hash_text</span>
       <span class="ruby-keyword kw">end</span>
-      <span class="ruby-identifier">tags</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">url</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">url</span> } <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+      <span class="ruby-identifier">tags</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">tag</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">tag</span> } <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
       <span class="ruby-identifier">tags</span>
     <span class="ruby-keyword kw">end</span>
 </pre>
@@ -145,18 +154,26 @@
 
         <div class="method-heading">
           <a href="#M000006" class="method-signature">
-          <span class="method-name">extract_mentioned_screen_names</span><span class="method-args">(text) {|sn| ...}</span>
+          <span class="method-name">extract_mentioned_screen_names</span><span class="method-args">(text) {|username| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>. If
+the <tt>text</tt> is <tt>nil</tt> or contains no username mentions an empty
+array will be returned.
+</p>
+<p>
+If a block is given then it will be called for each username.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000006-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 5</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_mentioned_screen_names</span>(<span class="ruby-identifier">text</span>)
-      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 10</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_mentioned_screen_names</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: username</span>
+      <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
       <span class="ruby-identifier">possible_screen_names</span> = <span class="ruby-identifier">text</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:extract_mentions</span>]).<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">before</span>,<span class="ruby-identifier">sn</span><span class="ruby-operator">|</span> <span class="ruby-identifier">sn</span> }
       <span class="ruby-identifier">possible_screen_names</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">sn</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">sn</span> } <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
@@ -172,18 +189,26 @@
 
         <div class="method-heading">
           <a href="#M000007" class="method-signature">
-          <span class="method-name">extract_reply_screen_name</span><span class="method-args">(text) {|screen_name if block_given?| ...}</span>
+          <span class="method-name">extract_reply_screen_name</span><span class="method-args">(text) {|username| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+Extracts the username username replied to in the Tweet <tt>text</tt>. If
+the <tt>text</tt> is <tt>nil</tt> or is not a reply nil will be returned.
+</p>
+<p>
+If a block is given then it will be called with the username replied to (if
+any)
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000007-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 13</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_reply_screen_name</span>(<span class="ruby-identifier">text</span>)
-      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 22</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_reply_screen_name</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: username</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
       <span class="ruby-identifier">possible_screen_name</span> = <span class="ruby-identifier">text</span>.<span class="ruby-identifier">match</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:extract_reply</span>])
       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">possible_screen_name</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:captures</span>)
@@ -206,13 +231,21 @@
         </div>
       
         <div class="method-description">
+          <p>
+Extracts a list of all URLs included in the Tweet <tt>text</tt>. If the
+<tt>text</tt> is <tt>nil</tt> or contains no URLs an empty array will be
+returned.
+</p>
+<p>
+If a block is given then it will be called for each URL.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000008-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000008-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 23</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_urls</span>(<span class="ruby-identifier">text</span>)
-      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 37</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_urls</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: url</span>
+      <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
       <span class="ruby-identifier">urls</span> = <span class="ruby-identifier">text</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:valid_url</span>]).<span class="ruby-identifier">each</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">all</span>, <span class="ruby-identifier">before</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">protocol</span>, <span class="ruby-identifier">domain</span>, <span class="ruby-identifier">path</span>, <span class="ruby-identifier">query</span><span class="ruby-operator">|</span>
         (<span class="ruby-identifier">protocol</span> <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;www.&quot;</span> <span class="ruby-operator">?</span> <span class="ruby-node">&quot;http://#{url}&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">url</span>)

@@ -151,17 +151,51 @@
 
         <div class="method-heading">
           <a href="#M000002" class="method-signature">
-          <span class="method-name">auto_link</span><span class="method-args">(text, options = {}, &amp;block)</span>
+          <span class="method-name">auto_link</span><span class="method-args">(text, options = {}) {|hashtag_or_list_or_username| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+Add <tt>&lt;a&gt;&lt;/a&gt;</tt> tags around the usernames, lists, hashtags
+and URLs in the provided <tt>text</tt>. The <tt>&lt;a&gt;</tt> tags can be
+controlled with the following entries in the <tt>options</tt> hash:
+</p>
+<table>
+<tr><td valign="top"><tt>:url_class</tt>:</td><td>class to add to all <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:list_class</tt>:</td><td>class to add to list <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:username_class</tt>:</td><td>class to add to username <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:hashtag_class</tt>:</td><td>class to add to hashtag <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:username_url_base</tt>:</td><td>the value for <tt>href</tt> attribute on username links. The
+<tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of
+this.
+
+</td></tr>
+<tr><td valign="top"><tt>:list_url_base</tt>:</td><td>the value for <tt>href</tt> attribute on list links. The
+<tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end
+of this.
+
+</td></tr>
+<tr><td valign="top"><tt>:hashtag_url_base</tt>:</td><td>the value for <tt>href</tt> attribute on hashtag links. The
+<tt>hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of
+this.
+
+</td></tr>
+</table>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000002-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 11</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 22</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: hashtag_or_list_or_username</span>
       <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">auto_link_urls_custom</span>(<span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>), <span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>), <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
     <span class="ruby-keyword kw">end</span>
 </pre>
@@ -174,20 +208,37 @@
 
         <div class="method-heading">
           <a href="#M000004" class="method-signature">
-          <span class="method-name">auto_link_hashtags</span><span class="method-args">(text, options = {}) {|text| ...}</span>
+          <span class="method-name">auto_link_hashtags</span><span class="method-args">(text, options = {}) {|hashtag_text| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+Add <tt>&lt;a&gt;&lt;/a&gt;</tt> tags around the hashtags in the provided
+<tt>text</tt>. The <tt>&lt;a&gt;</tt> tags can be controlled with the
+following entries in the <tt>options</tt> hash:
+</p>
+<table>
+<tr><td valign="top"><tt>:url_class</tt>:</td><td>class to add to all <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:hashtag_class</tt>:</td><td>class to add to hashtag <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:hashtag_url_base</tt>:</td><td>the value for <tt>href</tt> attribute. The hashtag text (minus the
+<tt>#</tt>) will be appended at the end of this.
+
+</td></tr>
+</table>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000004-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 36</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 65</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})  <span class="ruby-comment cmt"># :yields: hashtag_text</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_URL_CLASS</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:hashtag_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_HASHTAG_CLASS</span>
-      <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_base</span>] <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;/search?q=%23&quot;</span>
+      <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:hashtag_url_base</span>] <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;/search?q=%23&quot;</span>
 
       <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:auto_link_hashtags</span>]) <span class="ruby-keyword kw">do</span>
         <span class="ruby-identifier">before</span> = <span class="ruby-identifier">$1</span>
@@ -212,11 +263,16 @@
         </div>
       
         <div class="method-description">
+          <p>
+Add <tt>&lt;a&gt;&lt;/a&gt;</tt> tags around the URLs in the provided
+<tt>text</tt>. Any elements in the <tt>href_options</tt> hash will be
+converted to HTML attributes and place in the <tt>&lt;a&gt;</tt> tag.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000005-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 50</span>
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 82</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_urls_custom</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">href_options</span> = {})
       <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:valid_url</span>]) <span class="ruby-keyword kw">do</span>
         <span class="ruby-identifier">all</span>, <span class="ruby-identifier">before</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">protocol</span> = <span class="ruby-identifier">$1</span>, <span class="ruby-identifier">$2</span>, <span class="ruby-identifier">$3</span>, <span class="ruby-identifier">$4</span>
@@ -235,33 +291,60 @@
 
         <div class="method-heading">
           <a href="#M000003" class="method-signature">
-          <span class="method-name">auto_link_usernames_or_lists</span><span class="method-args">(text, options = {}) {|list| ...}</span>
+          <span class="method-name">auto_link_usernames_or_lists</span><span class="method-args">(text, options = {}) {|list_or_username| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+Add <tt>&lt;a&gt;&lt;/a&gt;</tt> tags around the usernames and lists in the
+provided <tt>text</tt>. The <tt>&lt;a&gt;</tt> tags can be controlled with
+the following entries in the <tt>options</tt> hash:
+</p>
+<table>
+<tr><td valign="top"><tt>:url_class</tt>:</td><td>class to add to all <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:list_class</tt>:</td><td>class to add to list <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:username_class</tt>:</td><td>class to add to username <tt>&lt;a&gt;</tt> tags
+
+</td></tr>
+<tr><td valign="top"><tt>:username_url_base</tt>:</td><td>the value for <tt>href</tt> attribute on username links. The
+<tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of
+this.
+
+</td></tr>
+<tr><td valign="top"><tt>:list_url_base</tt>:</td><td>the value for <tt>href</tt> attribute on list links. The
+<tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end
+of this.
+
+</td></tr>
+</table>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000003-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 15</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 35</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}) <span class="ruby-comment cmt"># :yields: list_or_username</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_URL_CLASS</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:list_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_LIST_CLASS</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:username_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_USERNAME_CLASS</span>
-      <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_base</span>] <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;/&quot;</span>
+      <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:username_url_base</span>] <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;/&quot;</span>
+      <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:list_url_base</span>] <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;/&quot;</span>
 
       <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:auto_link_usernames_or_lists</span>]) <span class="ruby-keyword kw">do</span>
         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">options</span>[<span class="ruby-identifier">:suppress_lists</span>]
           <span class="ruby-comment cmt"># the link is a list</span>
           <span class="ruby-identifier">text</span> = <span class="ruby-identifier">list</span> = <span class="ruby-node">&quot;#{$3}#{$4}&quot;</span>
           <span class="ruby-identifier">text</span> = <span class="ruby-keyword kw">yield</span>(<span class="ruby-identifier">list</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
-          <span class="ruby-node">&quot;#{$1}#{$2}&lt;a class=\&quot;#{options[:url_class]} #{options[:list_class]}\&quot; href=\&quot;/#{list.downcase}\&quot;&gt;#{text}&lt;/a&gt;&quot;</span>
+          <span class="ruby-node">&quot;#{$1}#{$2}&lt;a class=\&quot;#{options[:url_class]} #{options[:list_class]}\&quot; href=\&quot;#{options[:list_url_base]}#{list.downcase}\&quot;&gt;#{text}&lt;/a&gt;&quot;</span>
         <span class="ruby-keyword kw">else</span>
           <span class="ruby-comment cmt"># this is a screen name</span>
           <span class="ruby-identifier">text</span> = <span class="ruby-identifier">$3</span>
           <span class="ruby-identifier">text</span> = <span class="ruby-keyword kw">yield</span>(<span class="ruby-identifier">text</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
-          <span class="ruby-node">&quot;#{$1}#{$2}&lt;a class=\&quot;#{options[:url_class]} #{options[:username_class]}\&quot; href=\&quot;/#{$3}\&quot;&gt;#{text}&lt;/a&gt;&quot;</span>
+          <span class="ruby-node">&quot;#{$1}#{$2}&lt;a class=\&quot;#{options[:url_class]} #{options[:username_class]}\&quot; href=\&quot;#{options[:username_url_base]}#{$3}\&quot;&gt;#{text}&lt;/a&gt;&quot;</span>
         <span class="ruby-keyword kw">end</span>
       <span class="ruby-keyword kw">end</span>
     <span class="ruby-keyword kw">end</span>

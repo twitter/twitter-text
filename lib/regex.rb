@@ -1,7 +1,11 @@
 
 module Twitter
+  # A collection of regular expressions for parsing Tweet text. The regular expression
+  # list is frozen at load time to ensure immutability. These reular expressions are
+  # used throughout the <tt>Twitter</tt> classes. Special care has been taken to make
+  # sure these reular expressions work with Tweets in all languages.
   class Regex
-    REGEXEN = {}
+    REGEXEN = {} # :nodoc:
 
     # Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
     # to access both the list of characters and a pattern suitible for use with String#split
@@ -30,6 +34,7 @@ module Twitter
     REGEXEN[:reply_to_validation] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})/
 
     REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
+    # List of words used as Twitter actions.
     RESERVED_ACTION_WORDS = %w(twitter lists retweet retweets following followings follower followers with_friend with_friends statuses status activity favourites favourite favorite favorites).freeze
     REGEXEN[:reserved_action_words] = /^(#{RESERVED_ACTION_WORDS.join('|')})$/o
 
@@ -37,6 +42,7 @@ module Twitter
     LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
+    # Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
     HASHTAG_CHARACTERS = /[a-z0-9_#{LATIN_ACCENTS}]/io
     REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{HASHTAG_CHARACTERS}*)/io
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9\x80-\xff\-]{0,79})?/
@@ -67,8 +73,10 @@ module Twitter
     REGEXEN.each_pair{|k,v| v.freeze }
     REGEXEN.freeze
 
-    def self.[]( key )
-      REGEXEN[ key ]
+    # Return the regular expression for a given <tt>key</tt>. If the <tt>key</tt>
+    # is not a known symbol a <tt>nil</tt> will be returned. 
+    def self.[](key)
+      REGEXEN[key]
     end
   end
 end

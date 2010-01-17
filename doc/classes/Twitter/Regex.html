@@ -78,6 +78,17 @@
 
   <div id="contextContent">
 
+    <div id="description">
+      <p>
+A collection of regular expressions for parsing Tweet text. The regular
+expression list is frozen at load time to ensure immutability. These reular
+expressions are used throughout the <tt><a
+href="../Twitter.html">Twitter</a></tt> classes. Special care has been
+taken to make sure these reular expressions work with Tweets in all
+languages.
+</p>
+
+    </div>
 
 
    </div>
@@ -104,11 +115,6 @@
       <div class="name-list">
         <table summary="Constants">
         <tr class="top-aligned-row context-row">
-          <td class="context-item-name">REGEXEN</td>
-          <td>=</td>
-          <td class="context-item-value">{}</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
           <td class="context-item-name">UNICODE_SPACES</td>
           <td>=</td>
           <td class="context-item-value">[           (0x0009..0x000D).to_a,  # White_Space # Cc   [5] &lt;control-0009&gt;..&lt;control-000D&gt;           0x0020,          # White_Space # Zs       SPACE           0x0085,          # White_Space # Cc       &lt;control-0085&gt;           0x00A0,          # White_Space # Zs       NO-BREAK SPACE           0x1680,          # White_Space # Zs       OGHAM SPACE MARK           0x180E,          # White_Space # Zs       MONGOLIAN VOWEL SEPARATOR           (0x2000..0x200A).to_a, # White_Space # Zs  [11] EN QUAD..HAIR SPACE           0x2028,          # White_Space # Zl       LINE SEPARATOR           0x2029,          # White_Space # Zp       PARAGRAPH SEPARATOR           0x202F,          # White_Space # Zs       NARROW NO-BREAK SPACE           0x205F,          # White_Space # Zs       MEDIUM MATHEMATICAL SPACE           0x3000,          # White_Space # Zs       IDEOGRAPHIC SPACE         ].flatten.freeze</td>
@@ -127,6 +133,11 @@ a pattern suitible for use with String#split
           <td class="context-item-name">RESERVED_ACTION_WORDS</td>
           <td>=</td>
           <td class="context-item-value">%w(twitter lists retweet retweets following followings follower followers with_friend with_friends statuses status activity favourites favourite favorite favorites).freeze</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+List of words used as <a href="../Twitter.html">Twitter</a> actions.
+
+</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">LATIN_ACCENTS</td>
@@ -143,6 +154,12 @@ confusable multiplication sign. Looks like &quot;x&quot;)
           <td class="context-item-name">HASHTAG_CHARACTERS</td>
           <td>=</td>
           <td class="context-item-value">/[a-z0-9_#{LATIN_ACCENTS}]/io</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+Characters considered valid in a hashtag but not at the beginning, where
+only a-z and 0-9 are valid.
+
+</td>
         </tr>
         </table>
       </div>
@@ -162,18 +179,22 @@ confusable multiplication sign. Looks like &quot;x&quot;)
 
         <div class="method-heading">
           <a href="#M000010" class="method-signature">
-          <span class="method-name">[]</span><span class="method-args">( key )</span>
+          <span class="method-name">[]</span><span class="method-args">(key)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+Return the regular expression for a given <tt>key</tt>. If the <tt>key</tt>
+is not a known symbol a <tt>nil</tt> will be returned.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000010-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/regex.rb, line 70</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-operator">[]</span>( <span class="ruby-identifier">key</span> )
-      <span class="ruby-constant">REGEXEN</span>[ <span class="ruby-identifier">key</span> ]
+<span class="ruby-comment cmt"># File lib/regex.rb, line 78</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-operator">[]</span>(<span class="ruby-identifier">key</span>)
+      <span class="ruby-constant">REGEXEN</span>[<span class="ruby-identifier">key</span>]
     <span class="ruby-keyword kw">end</span>
 </pre>
           </div>

@@ -9,7 +9,7 @@ module Twitter
   #   infinity = Unicode::U221E
   #
   module Unicode
-    CODEPOINT_REGEX = /^U[-_]?([0-9a-fA-F]{4,5}|10[0-9a-fA-F]{4})$/
+    CODEPOINT_REGEX = /^U_?([0-9a-fA-F]{4,5}|10[0-9a-fA-F]{4})$/
 
     def self.const_missing(name)
       # Check that the constant name is of the right form: U0000 to U10FFFF

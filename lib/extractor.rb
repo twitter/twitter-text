@@ -2,16 +2,25 @@
 module Twitter
   class Extractor
 
-    def extract_mentioned_screen_names(text)
-      return unless text
+    # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>. If the
+    # <tt>text</tt> is <tt>nil</tt> or contains no username mentions an empty array
+    # will be returned.
+    #
+    # If a block is given then it will be called for each username.
+    def extract_mentioned_screen_names(text) # :yields: username
+      return [] unless text
 
       possible_screen_names = text.scan(Twitter::Regex[:extract_mentions]).map{|before,sn| sn }
       possible_screen_names.each{|sn| yield sn } if block_given?
       possible_screen_names
     end
 
-    def extract_reply_screen_name(text)
-      return unless text
+    # Extracts the username username replied to in the Tweet <tt>text</tt>. If the
+    # <tt>text</tt> is <tt>nil</tt> or is not a reply nil will be returned.
+    #
+    # If a block is given then it will be called with the username replied to (if any)
+    def extract_reply_screen_name(text) # :yields: username
+      return nil unless text
 
       possible_screen_name = text.match(Twitter::Regex[:extract_reply])
       return unless possible_screen_name.respond_to?(:captures)
@@ -20,8 +29,13 @@ module Twitter
       screen_name
     end
 
-    def extract_urls(text)
-      return unless text
+    # Extracts a list of all URLs included in the Tweet <tt>text</tt>. If the
+    # <tt>text</tt> is <tt>nil</tt> or contains no URLs an empty array
+    # will be returned.
+    #
+    # If a block is given then it will be called for each URL.
+    def extract_urls(text) # :yields: url
+      return [] unless text
 
       urls = text.to_s.scan(Twitter::Regex[:valid_url]).each.map do |all, before, url, protocol, domain, path, query|
         (protocol == "www." ? "http://#{url}" : url)
@@ -30,13 +44,19 @@ module Twitter
       urls
     end
 
-    def extract_hashtags(text)
-      return unless text
+    # Extracts a list of all hashtags included in the Tweet <tt>text</tt>. If the
+    # <tt>text</tt> is <tt>nil</tt> or contains no hashtags an empty array
+    # will be returned. The array returned will not include the leading <tt>#</tt>
+    # character.
+    #
+    # If a block is given then it will be called for each hashtag.
+    def extract_hashtags(text) # :yields: hashtag_text
+      return [] unless text
 
       tags = text.scan(Twitter::Regex[:auto_link_hashtags]).map do |before, hash, hash_text|
         hash_text
       end
-      tags.each{|url| yield url } if block_given?
+      tags.each{|tag| yield tag } if block_given?
       tags
     end
 

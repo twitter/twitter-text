@@ -6,19 +6,21 @@ usernames, lists, hashtags and URLs.
 
 == Extraction Examples
 
- # Extraction extractor = Twitter::Extractor.new usernames =
-extractor.extract_mentioned_screen_names("Mentioning @twitter and @jack") #
-usernames = ["twitter", "jack"]
+  # Extraction extractor = Twitter::Extractor.new
+  usernames = extractor.extract_mentioned_screen_names("Mentioning @twitter and @jack")
+  # usernames = ["twitter", "jack"]
 
- # Extraction with a block argument extractor = Twitter::Extractor.new
-extractor.extract_reply_screen_name("@twitter are you hiring?").do |username|
-# username = "twitter" end
+  # Extraction with a block argument extractor = Twitter::Extractor.new
+  extractor.extract_reply_screen_name("@twitter are you hiring?").do |username|
+    # username = "twitter"
+  end
 
 == Auto-linking Examples
 
- # Auto-link linker = Twitter::Autolink.new html = linker.auto_link("link
-@user, please #request") # html includes <a></a> tags around the @user and
-#request
+  # Auto-link
+  linker = Twitter::Autolink.new
+  html = linker.auto_link("link @user, please #request")
+  # html includes <a></a> tags around the @user and #request
 
 === Usernames
 
