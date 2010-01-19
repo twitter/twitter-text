@@ -1,0 +1,67 @@
+<project name="TwitterText" default="test" basedir=".">
+    <description>
+        Text processing library for Twitter Tweets.
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="src.tests" location="tests"/>
+  <property name="build" location="build"/>
+  <property name="build.tests" location="build"/>
+  <property name="dist"  location="dist"/>
+  <property name="jars.tests" location="jars/junit-4.6.jar"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source ">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}"/>
+  </target>
+  
+  <target name="compile-tests" depends="init" description="compile the tests ">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src.tests}" destdir="${build.tests}">
+      <classpath>
+        <pathelement location="${build}"/>
+        <pathelement location="${jars.tests}"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+    </javac>
+  </target>
+  
+  <target name="test" depends="compile,compile-tests" description="Run the unit tests">
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath>
+        <pathelement location="${build.tests}"/>
+        <pathelement location="${jars.tests}"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+
+      <formatter type="plain" usefile="false"/>
+
+      <batchtest fork="yes">
+        <fileset dir="${src.tests}">
+          <include name="**/*Test*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="dist" depends="compile" description="generate the distribution">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+
+    <!-- Put everything in ${build} into the twitter-text-${DSTAMP}.jar file -->
+    <jar jarfile="${dist}/lib/twitter-text-${DSTAMP}.jar" basedir="${build}"/>
+  </target>
+
+  <target name="clean" description="clean up">
+    <delete dir="${build}"/>
+    <delete dir="${build.tests}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>
