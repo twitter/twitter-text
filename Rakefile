@@ -65,3 +65,7 @@ task :make_spec do
     file.puts spec.to_ruby
   end
 end
+
+desc "runs cruise control build"
+task :cruise => [:spec] do
+end
