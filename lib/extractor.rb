@@ -10,7 +10,8 @@ module Twitter
     def extract_mentioned_screen_names(text) # :yields: username
       return [] unless text
 
-      possible_screen_names = text.scan(Twitter::Regex[:extract_mentions]).map{|before,sn| sn }
+      possible_screen_names = []
+      text.scan(Twitter::Regex[:extract_mentions]) {|before,sn| possible_screen_names << sn }
       possible_screen_names.each{|sn| yield sn } if block_given?
       possible_screen_names
     end
@@ -37,8 +38,9 @@ module Twitter
     def extract_urls(text) # :yields: url
       return [] unless text
 
-      urls = text.to_s.scan(Twitter::Regex[:valid_url]).each.map do |all, before, url, protocol, domain, path, query|
-        (protocol == "www." ? "http://#{url}" : url)
+      urls = []
+      text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, path, query|
+        urls << (protocol == "www." ? "http://#{url}" : url)
       end
       urls.each{|url| yield url } if block_given?
       urls
@@ -53,8 +55,9 @@ module Twitter
     def extract_hashtags(text) # :yields: hashtag_text
       return [] unless text
 
-      tags = text.scan(Twitter::Regex[:auto_link_hashtags]).map do |before, hash, hash_text|
-        hash_text
+      tags = []
+      text.scan(Twitter::Regex[:auto_link_hashtags]) do |before, hash, hash_text|
+        tags << hash_text
       end
       tags.each{|tag| yield tag } if block_given?
       tags
