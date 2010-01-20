@@ -5,6 +5,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.iws" afterPath="$PROJECT_DIR$/twitter-text-java.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java" afterPath="$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/com/twitter/RegexTest.java" afterPath="$PROJECT_DIR$/tests/com/twitter/RegexTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Extractor.java" afterPath="$PROJECT_DIR$/src/com/twitter/Extractor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Regex.java" afterPath="$PROJECT_DIR$/src/com/twitter/Regex.java" />
     </list>
@@ -65,19 +66,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ExtractorTest.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ExtractorTest.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="68" selection-start="1932" selection-end="1959" vertical-scroll-proportion="0.0">
+            <state line="64" column="33" selection-start="2195" selection-end="2206" vertical-scroll-proportion="1.4102564">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RegexTest.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RegexTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="43" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.71794873">
+            <state line="38" column="43" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -424,7 +425,7 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.266147" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.266147" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="Profile Memory" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" />
@@ -478,16 +479,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java">
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="68" selection-start="1932" selection-end="1959" vertical-scroll-proportion="0.0">
+        <state line="38" column="43" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="43" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.71794873">
+        <state line="64" column="33" selection-start="2195" selection-end="2206" vertical-scroll-proportion="1.4102564">
           <folding />
         </state>
       </provider>

@@ -7,6 +7,8 @@
   <property name="src.tests" location="tests"/>
   <property name="build" location="build"/>
   <property name="build.tests" location="build"/>
+  <property name="docs"  location="docs"/>
+  <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
   <property name="jars.tests" location="jars/junit-4.6.jar"/>
 
@@ -51,6 +53,20 @@
     </junit>
   </target>
 
+  <target name="javadoc" depends="compile" description="Generate JavaDocs">
+    <javadoc packagenames="com.twitter.*"
+             sourcepath="src"
+             defaultexcludes="yes"
+             destdir="${javadoc}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="Twitter Text API">
+      <doctitle><![CDATA[<h1>Twitter Text API</h1>]]></doctitle>
+      <bottom><![CDATA[<i>Copyright &#169; 2010 Twitter, Inc. All Rights Reserved.</i>]]></bottom>
+    </javadoc>
+  </target>
+
   <target name="dist" depends="compile" description="generate the distribution">
     <!-- Create the distribution directory -->
     <mkdir dir="${dist}/lib"/>
@@ -63,5 +79,8 @@
     <delete dir="${build}"/>
     <delete dir="${build.tests}"/>
     <delete dir="${dist}"/>
+    <delete includeemptydirs="true">
+      <fileset dir="${javadoc}" includes="**/*"/>
+    </delete>
   </target>
 </project>
