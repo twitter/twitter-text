@@ -25,7 +25,7 @@ describe Twitter::Validation do
   end
 
   it "should allow <= 140 multi-byte characters" do
-    char = [0x1d106].pack('U')
+    char = [ 0x1d106 ].pack('U')
     Twitter::Validation.invalid?(char * 139).should == false
     Twitter::Validation.invalid?(char * 140).should == false
     Twitter::Validation.invalid?(char * 141).should == :too_long
