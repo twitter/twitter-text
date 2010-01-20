@@ -10,7 +10,16 @@ public class Extractor {
   }
 
   public List<String> extractMentionedScreennames(String text) {
-    return null;
+    if (text == null) {
+      return null;
+    }
+    
+    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
+    if (matcher.matches()) {
+      return extractList(matcher, 2);
+    } else {
+      return null;
+    }
   }
 
   public String extractReplyScreenname(String text) {
@@ -27,10 +36,36 @@ public class Extractor {
   }
 
   public List<String> extractURLs(String text) {
-    return null;
+    if (text == null) {
+      return null;
+    }
+    
+    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
+    if (matcher.matches()) {
+      return extractList(matcher, 3);
+    } else {
+      return null;
+    }
   }
 
   public List<String> extractHashtags(String text) {
-    return null;
+    if (text == null) {
+      return null;
+    }
+    
+    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
+    if (matcher.matches()) {
+      return extractList(matcher, 3);
+    } else {
+      return null;
+    }
+  }
+
+  private List<String> extractList(Matcher matcher, int groupNumber) {
+    List<String> extracted = new ArrayList<String>();
+    while (matcher.find()) {
+      extracted.add(matcher.group(groupNumber));
+    }
+    return extracted;
   }
 }
