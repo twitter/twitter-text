@@ -22,17 +22,17 @@ public class ExtractorTest extends TestCase {
     assertEquals("Failed to extract reply with leading space", "user", extracted);
   }
 
-  public void pending_testMentionAtTheBeginning() {
+  public void testMentionAtTheBeginning() {
     List<String> extracted = extractor.extractMentionedScreennames("@user mention");
     assertList("Failed to extract mention at the beginning", new String[]{"user"}, extracted);
   }
 
-  public void pending_testMentionWithLeadingSpace() {
+  public void testMentionWithLeadingSpace() {
     List<String> extracted = extractor.extractMentionedScreennames(" @user mention");
     assertList("Failed to extract mention with leading space", new String[]{"user"}, extracted);
   }
 
-  public void pending_testMentionInMidText() {
+  public void testMentionInMidText() {
     List<String> extracted = extractor.extractMentionedScreennames("mention @user here");
     assertList("Failed to extract mention in mid text", new String[]{"user"}, extracted);
   }

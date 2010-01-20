@@ -13,20 +13,16 @@ public class Extractor {
     if (text == null) {
       return null;
     }
-    
-    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
-    if (matcher.matches()) {
-      return extractList(matcher, 2);
-    } else {
-      return null;
-    }
+
+    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
+    return extractList(matcher, 2);
   }
 
   public String extractReplyScreenname(String text) {
     if (text == null) {
       return null;
     }
-    
+
     Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
     if (matcher.matches()) {
       return matcher.group(1);
@@ -39,26 +35,18 @@ public class Extractor {
     if (text == null) {
       return null;
     }
-    
-    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
-    if (matcher.matches()) {
-      return extractList(matcher, 3);
-    } else {
-      return null;
-    }
+
+    Matcher matcher = Regex.VALID_URL.matcher(text);
+    return extractList(matcher, 3);
   }
 
   public List<String> extractHashtags(String text) {
     if (text == null) {
       return null;
     }
-    
+
     Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
-    if (matcher.matches()) {
-      return extractList(matcher, 3);
-    } else {
-      return null;
-    }
+    return extractList(matcher, 3);
   }
 
   private List<String> extractList(Matcher matcher, int groupNumber) {
