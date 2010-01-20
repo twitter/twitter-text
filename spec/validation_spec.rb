@@ -17,6 +17,10 @@ describe Twitter::Validation do
     end
   end
 
+  it "should disallow non-Unicode" do
+    Twitter::Validation.invalid?("not-Unicode:\xfff0").should == :invalid_characters
+  end
+
   it "should allow <= 140 combined accent characters" do
     char = [0x65, 0x0301].pack('U')
     Twitter::Validation.invalid?(char * 139).should == false

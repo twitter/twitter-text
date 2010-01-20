@@ -3,6 +3,7 @@ module Twitter
   class Validation
     MAX_LENGTH = 140
 
+    # Character not allowed in Tweets
     INVALID_CHARACTERS = [
       0xFFFE, 0xFEFF, # BOM
       0xFFFF,         # Special
@@ -25,11 +26,25 @@ module Twitter
       ActiveSupport::Multibyte::Chars.new(text).normalize(:c).length
     end
 
+    # Check the <tt>text</tt> for any reason that it may not be valid as a Tweet. This is meant as a pre-validation
+    # before posting to api.twitter.com. There are several server-side reasons for Tweets to fail but this pre-validation
+    # will allow quicker feedback.
+    #
+    # Returns <tt>false</tt> if this <tt>text</tt> is valid. Otherwise one of the following Symbols will be returned:
+    #
+    #   <tt>:too_long</tt>:: if the <tt>text</tt> is too long
+    #   <tt>:empty</tt>:: if the <tt>text</tt> is nil or empty
+    #   <tt>:invalid_characters</tt>:: if the <tt>text</tt> contains non-Unicode or any of the disallowed Unicode characters
     def self.invalid?(text)
       return :empty if text.blank?
-      return :too_long if tweet_length(text) > MAX_LENGTH
-      # TODO: Improve performance here.
-      return :invalid_characters if INVALID_CHARACTERS.any?{|invalid_char| text.include?(invalid_char) }
+      begin
+        return :too_long if tweet_length(text) > MAX_LENGTH
+        return :invalid_characters if INVALID_CHARACTERS.any?{|invalid_char| text.include?(invalid_char) }
+      rescue ArgumentError, ActiveSupport::Multibyte::EncodingError => e
+        # non-Unicode value.
+        return :invalid_characters
+      end
+
       return false
     end
   end

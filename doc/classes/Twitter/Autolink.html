@@ -245,7 +245,7 @@ following entries in the <tt>options</tt> hash:
         <span class="ruby-identifier">hash</span> = <span class="ruby-identifier">$2</span>
         <span class="ruby-identifier">text</span> = <span class="ruby-identifier">$3</span>
         <span class="ruby-identifier">text</span> = <span class="ruby-keyword kw">yield</span>(<span class="ruby-identifier">text</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
-        <span class="ruby-node">&quot;#{before}&lt;a href=\&quot;#{options[:url_base]}#{text}\&quot; title=\&quot;##{text}\&quot; class=\&quot;#{options[:url_class]} #{options[:hashtag_class]}\&quot;&gt;#{hash}#{text}&lt;/a&gt;&quot;</span>
+        <span class="ruby-node">&quot;#{before}&lt;a href=\&quot;#{options[:hashtag_url_base]}#{text}\&quot; title=\&quot;##{text}\&quot; class=\&quot;#{options[:url_class]} #{options[:hashtag_class]}\&quot;&gt;#{hash}#{text}&lt;/a&gt;&quot;</span>
       <span class="ruby-keyword kw">end</span>
     <span class="ruby-keyword kw">end</span>
 </pre>
