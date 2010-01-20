@@ -2,7 +2,7 @@ require 'rubygems' unless ENV['NO_RUBYGEMS']
 
 desc "runs ant tests"
 task :test do
-  system('ant test')
+  system('ant test') || raise("Build failed")
 end
 
 desc "runs cruise control build"
