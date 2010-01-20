@@ -7,8 +7,8 @@
   <property name="src.tests" location="tests"/>
   <property name="build" location="build"/>
   <property name="build.tests" location="build"/>
-  <property name="docs"  location="gh-pages"/>
-  <property name="javadoc"  location="gh-pages/api"/>
+  <property name="docs"  location="docs"/>
+  <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
   <property name="jars.tests" location="jars/junit-4.6.jar"/>
 
