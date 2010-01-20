@@ -72,15 +72,20 @@
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the twitter-text-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/twitter-text-${DSTAMP}.jar" basedir="${build}"/>
+    <jar destfile="${dist}/lib/twitter-text-${DSTAMP}.jar">
+       <fileset dir="${build}" />
+       <manifest>
+         <section name="LICENSE">
+           <attribute name="License" value="Apache License, Version 2.0"/>
+         </section>
+       </manifest>
+       <fileset file="LICENSE"/>
+     </jar>
   </target>
 
   <target name="clean" description="clean up">
     <delete dir="${build}"/>
     <delete dir="${build.tests}"/>
     <delete dir="${dist}"/>
-    <delete includeemptydirs="true">
-      <fileset dir="${javadoc}" includes="**/*"/>
-    </delete>
   </target>
 </project>
