@@ -36,7 +36,7 @@ public class RegexTest extends TestCase {
 
   private void assertCaptureCount(int expectedCount, Pattern pattern, String sample) {
     assertTrue("Pattern failed to match sample: '" + sample + "'",
-               pattern.matcher(sample).matches());
+               pattern.matcher(sample).find());
     assertEquals("Does not have " + expectedCount + " captures as expected: '" + sample + "'",
                  expectedCount,
                  pattern.matcher(sample).groupCount());

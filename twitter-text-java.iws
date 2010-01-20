@@ -2,9 +2,11 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.iws" afterPath="$PROJECT_DIR$/twitter-text-java.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java" afterPath="$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Extractor.java" afterPath="$PROJECT_DIR$/src/com/twitter/Extractor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Regex.java" afterPath="$PROJECT_DIR$/src/com/twitter/Regex.java" />
     </list>
     <ignored path="twitter-text-java.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -66,16 +68,25 @@
       <file leaf-file-name="ExtractorTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="23" selection-start="667" selection-end="692" vertical-scroll-proportion="0.0">
+            <state line="56" column="68" selection-start="1932" selection-end="1959" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Extractor.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RegexTest.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="38" column="43" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.71794873">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Extractor.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/twitter/Extractor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="0" selection-start="1123" selection-end="1123" vertical-scroll-proportion="0.71794873">
+            <state line="40" column="37" selection-start="834" selection-end="849" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -84,13 +95,18 @@
       <file leaf-file-name="Regex.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="39" selection-start="2412" selection-end="2421" vertical-scroll-proportion="0.0">
+            <state line="46" column="46" selection-start="2636" selection-end="2652" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
   </component>
   <component name="MavenRunner">
     <option name="jreName" value="#JAVA_INTERNAL" />
@@ -207,19 +223,15 @@
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
   </component>
-  <component name="RunManager" selected="JUnit.ExtractorTest.testMentionAtTheBeginning">
-    <tempConfiguration default="false" name="ExtractorTest.testMentionAtTheBeginning" type="JUnit" factoryName="JUnit" enabled="false" merge="false" runner="emma">
-      <pattern>
-        <option name="PATTERN" value="com.twitter.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
+  <component name="RunManager" selected="JUnit.com.twitter in Twitter-text-java">
+    <tempConfiguration default="false" name="com.twitter in Twitter-text-java" type="JUnit" factoryName="JUnit" enabled="false" merge="false" runner="emma">
       <module name="Twitter-text-java" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="com.twitter" />
-      <option name="MAIN_CLASS_NAME" value="com.twitter.ExtractorTest" />
-      <option name="METHOD_NAME" value="testMentionAtTheBeginning" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="package" />
       <option name="VM_PARAMETERS" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -255,6 +267,32 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
     </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false" runner="emma">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -287,8 +325,42 @@
       <module name="" />
       <envs />
     </configuration>
+    <configuration default="true" type="RSpecRunConfigurationType" factoryName="RSpec">
+      <module name="" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e STDOUT.sync=true;STDERR.sync=true;load($0=ARGV.shift)" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="myPassParentEnvs" VALUE="true" />
+      <envs />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="TESTS_FOLDER_PATH" VALUE="" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="TEST_SCRIPT_PATH" VALUE="" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="SPEC_RUNNER_PATH" VALUE="[none]" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="TEST_FILE_MASK" VALUE="**/*_spec.rb" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="SPEC_EXAMPLE_NAME" VALUE="" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="TEST_TEST_TYPE" VALUE="TEST_SCRIPT" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="SPEC_ARGS" VALUE="" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="RUN_SPECS_SEPARATELY" VALUE="false" />
+      <RSPEC_RUN_CONFIG_SETTINGS_ID NAME="USE_CUSTOM_SPEC_RUNNER" VALUE="false" />
+    </configuration>
+    <configuration default="true" type="TestUnitRunConfigurationType" factoryName="Ruby test">
+      <module name="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e STDOUT.sync=true;STDERR.sync=true;load($0=ARGV.shift)" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="myPassParentEnvs" VALUE="true" />
+      <envs />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TESTS_FOLDER_PATH" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_SCRIPT_PATH" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_CLASS_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_FILE_MASK" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_METHOD_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_TEST_TYPE" VALUE="TEST_SCRIPT" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="INHERITANCE_CHECK_DISABLED" VALUE="false" />
+    </configuration>
     <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.ExtractorTest.testMentionAtTheBeginning" />
+      <item index="0" class="java.lang.String" itemvalue="JUnit.com.twitter in Twitter-text-java" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -335,7 +407,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1335" y="-112" width="1525" height="992" extended-state="0" />
+    <frame x="1323" y="-113" width="1525" height="992" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
@@ -392,23 +464,30 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="23" selection-start="667" selection-end="692" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="39" selection-start="2412" selection-end="2421" vertical-scroll-proportion="0.0">
+        <state line="46" column="46" selection-start="2636" selection-end="2652" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/twitter/Extractor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="0" selection-start="1123" selection-end="1123" vertical-scroll-proportion="0.71794873">
+        <state line="40" column="37" selection-start="834" selection-end="849" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ExtractorTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="68" selection-start="1932" selection-end="1959" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="43" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.71794873">
           <folding />
         </state>
       </provider>

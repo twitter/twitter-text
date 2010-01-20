@@ -14,8 +14,7 @@ public class Extractor {
       return null;
     }
 
-    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
-    return extractList(matcher, 2);
+    return extractList(Regex.EXTRACT_MENTIONS, text, Regex.EXTRACT_MENTIONS_GROUP_USERNAME);
   }
 
   public String extractReplyScreenname(String text) {
@@ -25,7 +24,7 @@ public class Extractor {
 
     Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
     if (matcher.matches()) {
-      return matcher.group(1);
+      return matcher.group(Regex.EXTRACT_REPLY_GROUP_USERNAME);
     } else {
       return null;
     }
@@ -36,8 +35,7 @@ public class Extractor {
       return null;
     }
 
-    Matcher matcher = Regex.VALID_URL.matcher(text);
-    return extractList(matcher, 3);
+    return extractList(Regex.VALID_URL, text, Regex.VALID_URL_GROUP_URL);
   }
 
   public List<String> extractHashtags(String text) {
@@ -45,12 +43,12 @@ public class Extractor {
       return null;
     }
 
-    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
-    return extractList(matcher, 3);
+    return extractList(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG);
   }
 
-  private List<String> extractList(Matcher matcher, int groupNumber) {
+  private List<String> extractList(Pattern pattern, String text, int groupNumber) {
     List<String> extracted = new ArrayList<String>();
+    Matcher matcher = pattern.matcher(text);
     while (matcher.find()) {
       extracted.add(matcher.group(groupNumber));
     }
