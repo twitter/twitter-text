@@ -3,7 +3,10 @@
 
  * Add tests for extractor
  * Add tests for auto-linker
+ * Add README for GitHub
  * Add JavaDocs
    * Add ant task for JavaDocs
  * Fill in the Autolink class
  * Fill in the extracotr class with wokring code
+ * Make sure the license file is bundled in the JAR
+
