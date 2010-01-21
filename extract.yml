@@ -1,0 +1,18 @@
+
+tests:
+  mentions:
+    - description: "Extract mention at the begining of a tweet"
+      text: "@username reply"
+      expected: ["username"]
+  replies:
+    - description: "Extract reply at the begining of a tweet"
+      text: "@username reply"
+      expected: "username"
+  urls:
+    - description: "Extract a lone URL"
+      text: "http://example.com"
+      expected: ["http://example.com"]
+  hashtags:
+    - description: "Extract a lone hashtag"
+      text: "#hashtag"
+      expected: ["hashtag"]

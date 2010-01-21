@@ -1,0 +1,18 @@
+
+tests:
+  usernames:
+    - description: "Autolink trailing username"
+      text: "text @username"
+      expected: "text @<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+  lists:
+    - description: "Autolink trailing list"
+      text: "text @username/list"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list\">username/list</a>"
+  urls:
+    - description: "Autolink trailing url"
+      text: "text http://example.com"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>"
+  hashtags:
+    - description: "Autolink trailing hashtag"
+      text: "text #hashtag"
+      expected: "text <a href=\"http://twitter.com/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
