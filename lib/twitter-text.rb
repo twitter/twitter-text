@@ -6,8 +6,8 @@ require 'rubygems'
 # Needed for auto-linking
 require 'action_view'
 
-require 'regex'
-require 'autolink'
-require 'extractor'
-require 'unicode'
-require 'validation'
+require File.dirname(__FILE__) + '/regex'
+require File.dirname(__FILE__) + '/autolink'
+require File.dirname(__FILE__) + '/extractor'
+require File.dirname(__FILE__) + '/unicode'
+require File.dirname(__FILE__) + '/validation'

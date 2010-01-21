@@ -36,8 +36,8 @@ module Twitter
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:list_class] ||= DEFAULT_LIST_CLASS
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
-      options[:username_url_base] ||= "/"
-      options[:list_url_base] ||= "/"
+      options[:username_url_base] ||= "http://twitter.com/"
+      options[:list_url_base] ||= "http://twitter.com/"
 
       text.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
         if $4 && !options[:suppress_lists]
@@ -65,7 +65,7 @@ module Twitter
     def auto_link_hashtags(text, options = {})  # :yields: hashtag_text
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
-      options[:hashtag_url_base] ||= "/search?q=%23"
+      options[:hashtag_url_base] ||= "http://twitter.com/search?q=%23"
 
       text.gsub(Twitter::Regex[:auto_link_hashtags]) do
         before = $1
