@@ -37,6 +37,8 @@ public class Regex {
   /* Begin public constants */
 
   public static final Pattern AUTO_LINK_HASHTAGS = Pattern.compile("(^|[^0-9A-Z&/]+)(#|＃)([0-9A-Z_]*[A-Z_]+" + HASHTAG_CHARACTERS + "*)", Pattern.CASE_INSENSITIVE);
+  public static final int AUTO_LINK_HASHTAGS_GROUP_BEFORE = 1;
+  public static final int AUTO_LINK_HASHTAGS_GROUP_HASH = 2;
   public static final int AUTO_LINK_HASHTAGS_GROUP_TAG = 3;
 
   public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_]|^)([@＠]+)([a-z0-9_]{1,20})(/[a-z][a-z0-9\\x80-\\xFF-]{0,79})?", Pattern.CASE_INSENSITIVE);

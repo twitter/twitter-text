@@ -26,7 +26,7 @@ public class Spaces {
     characterClass = sb.toString();
   }
 
-  public static final String getCharacterClass() {
+  public static String getCharacterClass() {
     return characterClass;
   }
 }
