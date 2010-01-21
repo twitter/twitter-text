@@ -7,7 +7,7 @@ class ConformanceTest < Test::Unit::TestCase
 
   def setup
     # TODO: Allow control of conformance dir. Maybe a submodule?
-    @conformance_dir = '../twitter-text-conformance'
+    @conformance_dir = File.join(File.dirname(__FILE__), 'twitter-text-conformance')
     @extractor = Twitter::Extractor.new
     @linker = Twitter::Autolink.new
   end
