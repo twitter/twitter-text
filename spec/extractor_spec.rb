@@ -1,8 +1,12 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
+class TestExtractor
+  include Twitter::Extractor
+end
+
 describe Twitter::Extractor do
   before do
-    @extractor = Twitter::Extractor.new
+    @extractor = TestExtractor.new
   end
 
   describe "mentions" do

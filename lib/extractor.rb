@@ -1,6 +1,6 @@
 
 module Twitter
-  class Extractor
+  module Extractor
 
     # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>. If the
     # <tt>text</tt> is <tt>nil</tt> or contains no username mentions an empty array
