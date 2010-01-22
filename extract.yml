@@ -4,15 +4,114 @@ tests:
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
       expected: ["username"]
+
+    - description: "Extract mention at the end of a tweet"
+      text: "mention @username"
+      expected: ["username"]
+
+    - description: "Extract mention in the middle of a tweet"
+      text: "mention @username in the middle"
+      expected: ["username"]
+
+    - description: "Extract mention of username with underscore"
+      text: "mention @user_name"
+      expected: ["user_name"]
+
+    - description: "Extract mention of all numeric username"
+      text: "mention @12345"
+      expected: ["12345"]
+
+    - description: "Extract mention or multiple usernames"
+      text: "mention @username1 @username2"
+      expected: ["username1", "username2"]
+
+    - description: "Extract mention in the middle of a Japanese tweet"
+      text: "の@usernameに到着を待っている"
+      expected: ["username"]
+
   replies:
     - description: "Extract reply at the begining of a tweet"
       text: "@username reply"
       expected: "username"
+
+    - description: "Extract reply preceded by only a space"
+      text: " @username reply"
+      expected: "username"
+
+    - description: "Extract reply preceded by only a full-width space (U+3000)"
+      text: "　@username reply"
+      expected: "username"
+
+    - description: "DO NOT Extract reply when preceded by text"
+      text: "a @username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by ."
+      text: ".@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by /"
+      text: "/@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by _"
+      text: "_@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by -"
+      text: "-@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by +"
+      text: "+@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by #"
+      text: "#@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by !"
+      text: "!@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when preceded by @"
+      text: "@@username mention, not a reply"
+      expected:
+
   urls:
     - description: "Extract a lone URL"
       text: "http://example.com"
       expected: ["http://example.com"]
+
   hashtags:
-    - description: "Extract a lone hashtag"
-      text: "#hashtag"
+    - description: "Extract an all-alpha hashtag"
+      text: "a #hashtag here"
       expected: ["hashtag"]
+
+    - description: "Extract a letter-then-number hashtag"
+      text: "this is #hashtag1"
+      expected: ["hashtag1"]
+
+    - description: "Extract a number-then-letter hashtag"
+      text: "#1hashtag is this"
+      expected: ["1hashtag"]
+
+    - description: "DO NOT Extract an all-numeric hashtag"
+      text: "On the #16 bus"
+      expected: []
+
+    - description: "Extract a hashtag containing ñ"
+      text: "I'll write more tests #mañana"
+      expected: ["mañana"]
+
+    - description: "Extract a hashtag containing é"
+      text: "Working remotely #café"
+      expected: ["café"]
+
+    - description: "Extract a hashtag containing ü"
+      text: "Getting my Oktoberfest on #münchen"
+      expected: ["münchen"]
+
+    - description: "DO NOT Extract a hashtag containing Japanese"
+      text: "this is not valid: # 会議中 ハッシュ"
+      expected: []
