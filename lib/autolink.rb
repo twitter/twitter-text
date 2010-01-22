@@ -1,11 +1,17 @@
 
 module Twitter
+  # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
+  # usernames, lists, hashtags and URLs.
   module Autolink
     include ActionView::Helpers::TagHelper #tag_options needed by auto_link
 
+    # Default CSS class for auto-linked URLs
     DEFAULT_URL_CLASS = "tweet-url"
+    # Default CSS class for auto-linked lists (along with the url class)
     DEFAULT_LIST_CLASS = "list-slug"
+    # Default CSS class for auto-linked usernames (along with the url class)
     DEFAULT_USERNAME_CLASS = "username"
+    # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag"
 
     # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>. The

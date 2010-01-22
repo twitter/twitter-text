@@ -1,5 +1,7 @@
 
 module Twitter
+  # A module for including Tweet parsing in a class. This module provides function for the extraction and processing
+  # of usernames, lists, URLs and hashtags.
   module Extractor
 
     # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>. If the

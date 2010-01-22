@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Sun Jan 17 11:55:22 -0800 2010</td>
+      <td>Fri Jan 22 09:17:38 -0800 2010</td>
     </tr>
     </table>
   </div>
@@ -78,21 +78,29 @@ lists, hashtags and URLs.
 </p>
 <h2>Extraction Examples</h2>
 <pre>
-  # Extraction extractor = Twitter::Extractor.new
-  usernames = extractor.extract_mentioned_screen_names(&quot;Mentioning @twitter and @jack&quot;)
-  # usernames = [&quot;twitter&quot;, &quot;jack&quot;]
+  # Extraction
+  class MyClass
+    include Twitter::Extractor
+    usernames = extract_mentioned_screen_names(&quot;Mentioning @twitter and @jack&quot;)
+    # usernames = [&quot;twitter&quot;, &quot;jack&quot;]
+  end
 
-  # Extraction with a block argument extractor = Twitter::Extractor.new
-  extractor.extract_reply_screen_name(&quot;@twitter are you hiring?&quot;).do |username|
-    # username = &quot;twitter&quot;
+  # Extraction with a block argument
+  class MyClass
+    include Twitter::Extractor
+    extract_reply_screen_name(&quot;@twitter are you hiring?&quot;).do |username|
+      # username = &quot;twitter&quot;
+    end
   end
 </pre>
 <h2>Auto-linking Examples</h2>
 <pre>
   # Auto-link
-  linker = Twitter::Autolink.new
-  html = linker.auto_link(&quot;link @user, please #request&quot;)
-  # html includes &lt;a&gt;&lt;/a&gt; tags around the @user and #request
+  class MyClass
+    include Twitter::Autolink
+
+    html = auto_link(&quot;link @user, please #request&quot;)
+  end
 </pre>
 <h3>Usernames</h3>
 <p>
