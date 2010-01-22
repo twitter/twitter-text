@@ -31,7 +31,6 @@ module Twitter
 
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})/
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*[@＠]([a-zA-Z0-9_]{1,20})/o
-    REGEXEN[:reply_to_validation] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})/
 
     REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
     # List of words used as Twitter actions.
