@@ -10,6 +10,9 @@ tests:
     - description: "Autolink username preceded by a letter"
       text: "meet@the beach"
       expected: "meet@the beach"
+    - description: "Autolink username preceded by puctuation"
+      text: "great.@username"
+      expected: "great.@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
   lists:
     - description: "Autolink trailing list"
       text: "text @username/list"
