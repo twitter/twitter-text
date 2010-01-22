@@ -195,11 +195,6 @@ tests:
       text: "text http://example.com'"
       expected: "text <a href=\"http://example.com\">http://example.com</a>'"
 
-########## FIXME
-#    - description: "DO NOT Autolink url preceded by \\"
-#      text: "text \\http://example.com"
-#      expected: "text \\http://example.com"
-
     - description: "DO NOT Autolink url preceded by '"
       text: "text 'http://example.com"
       expected: "text 'http://example.com"
@@ -226,7 +221,7 @@ tests:
 
     - description: "Autolink multiple urls"
       text: "http://example.com https://sslexample.com http://sub.example.com"
-      expected: "<a href=\"http://example.com\">http://example.com</a> <a href=\"https://example.com\">https://sslexample.com</a> <a href=\"http://sub.example.com\">http://sub.example.com</a>"
+      expected: "<a href=\"http://example.com\">http://example.com</a> <a href=\"https://sslexample.com\">https://sslexample.com</a> <a href=\"http://sub.example.com\">http://sub.example.com</a>"
 
     - description: "Autolink url with long TLD"
       text: "http://example.mobi/path"
