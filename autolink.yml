@@ -30,7 +30,7 @@ tests:
       expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
 
     - description: "Autolink username surrounded by Japanese"
-      text: "あ@username"
+      text: "あ@usernameの"
       expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>の"
 
     - description: "Autolink username with full-width at sign (U+FF20)"
