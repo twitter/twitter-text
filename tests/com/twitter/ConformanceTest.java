@@ -12,6 +12,7 @@ import com.twitter.*;
 import org.ho.yaml.Yaml;
 
 public class ConformanceTest extends TestCase {
+  private static final String CONFORMANCE_DIR_PROPERTY = "conformance.dir";
   private static final String KEY_DESCRIPTION = "description";
   private static final String KEY_INPUT = "text";
   private static final String KEY_EXPECTED_OUTPUT = "expected";
@@ -20,8 +21,8 @@ public class ConformanceTest extends TestCase {
   private Autolink linker = new Autolink();
 
   public void setUp() {
-    // TODO: submodule.
-    conformanceDir = new File("../twitter-text-conformance");
+    assertNotNull("Missing required system property: " + CONFORMANCE_DIR_PROPERTY, System.getProperty(CONFORMANCE_DIR_PROPERTY));
+    conformanceDir = new File(System.getProperty(CONFORMANCE_DIR_PROPERTY));
     assertTrue("Conformance directory " + conformanceDir + " is not a directory.", conformanceDir.isDirectory());
 
     assertNotNull("No extractor configured", extractor);

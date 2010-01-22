@@ -7,6 +7,7 @@
   <property name="src.tests" location="tests"/>
   <property name="build" location="build"/>
   <property name="build.tests" location="build"/>
+  <property name="conformance.dir" location="test-data/twitter-text-conformance"/>
   <property name="docs"  location="docs"/>
   <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
@@ -42,6 +43,7 @@
   <target name="test" depends="compile,compile-tests" description="Run the unit tests">
     <junit printsummary="yes" haltonfailure="yes">
       <jvmarg value="-Dfile.encoding=UTF-8"/>
+      <sysproperty key="conformance.dir" value="${conformance.dir}"/>
 
       <classpath>
         <pathelement location="${build.tests}"/>
