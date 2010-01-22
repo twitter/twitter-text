@@ -36,22 +36,67 @@ public class Autolink {
   }
 
   public String autoLinkUsernamesAndLists(String text) {
-    // TODO: autolink
-    return null;
+    Matcher matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(text);
+    StringBuffer sb = new StringBuffer(text.length());
+    while (matcher.find()) {
+      StringBuffer replacement = new StringBuffer();
+      if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
+          matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
+        // Username only
+        replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
+                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
+                   .append("<a")
+                   .append(" class=\"").append(urlClass).append(" ").append(usernameClass).append("\"")
+                   .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"")
+                   .append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>");
+      } else {
+        // Username and list
+        replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
+                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
+                   .append("<a")
+                   .append(" class=\"").append(urlClass).append(" ").append(listClass).append("\"")
+                   .append(" href=\"").append(listUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
+                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("\"")
+                   .append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
+                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>");
+      }
+      matcher.appendReplacement(sb, replacement.toString());
+    }
+    matcher.appendTail(sb);
+    return sb.toString();
   }
 
   public String autoLinkHashtags(String text) {
-    return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll("$" + Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE +
-        "<a" +
-        " href=\"" + hashtagUrlBase + "$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "\"" +        
-        " title=\"#$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "\"" +
-        " class=\"" + urlClass + " " + hashtagClass + "\"" +
-        ">$" + Regex.AUTO_LINK_HASHTAGS_GROUP_HASH + "$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "</a>");
+    StringBuffer replacement = new StringBuffer(text.length());
+    replacement.append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE)
+        .append("<a")
+        .append(" href=\"").append(hashtagUrlBase).append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
+        .append(" title=\"#$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
+        .append(" class=\"").append(urlClass).append(" ").append(hashtagClass).append("\"")
+        .append(">$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH).append("$")
+        .append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("</a>");
+    return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll(replacement.toString());
   }
 
   public String autoLinkURLs(String text) {
-    return Regex.VALID_URL.matcher(text).replaceAll("$" + Regex.VALID_URL_GROUP_URL +
-        "<a href=\"$" + Regex.VALID_URL_GROUP_URL + "\">$" + Regex.VALID_URL_GROUP_URL + "</a>");
+    Matcher matcher = Regex.VALID_URL.matcher(text);
+    StringBuffer sb = new StringBuffer(text.length());
+    while (matcher.find()) {
+      StringBuffer replacement = new StringBuffer(text.length());
+      if (matcher.group(Regex.VALID_URL_GROUP_URL).startsWith("http://") ||
+          matcher.group(Regex.VALID_URL_GROUP_URL).startsWith("https://")) {
+        replacement.append("$").append(Regex.VALID_URL_GROUP_BEFORE)
+                   .append("<a href=\"$").append(Regex.VALID_URL_GROUP_URL).append("\">$")
+                   .append(Regex.VALID_URL_GROUP_URL).append("</a>");
+      } else {
+        replacement.append("$").append(Regex.VALID_URL_GROUP_BEFORE)
+                   .append("<a href=\"http://$").append(Regex.VALID_URL_GROUP_URL).append("\">$")
+                   .append(Regex.VALID_URL_GROUP_URL).append("</a>");
+      }
+      matcher.appendReplacement(sb, replacement.toString());
+    }
+    matcher.appendTail(sb);
+    return sb.toString();
   }
 
   public String getUrlClass() {

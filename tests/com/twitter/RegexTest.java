@@ -30,10 +30,6 @@ public class RegexTest extends TestCase {
     assertCaptureCount(1, Regex.EXTRACT_REPLY, "\u3000@user reply");
   }
 
-  public void testReplyValidation() {
-    assertCaptureCount(2, Regex.REPLY_TO_VALIDATION, "@user reply");
-  }
-
   private void assertCaptureCount(int expectedCount, Pattern pattern, String sample) {
     assertTrue("Pattern failed to match sample: '" + sample + "'",
                pattern.matcher(sample).find());

@@ -27,10 +27,10 @@
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src}" destdir="${build}"/>
   </target>
-  
+
   <target name="compile-tests" depends="init" description="compile the tests ">
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src.tests}" destdir="${build.tests}">
+    <javac srcdir="${src.tests}" destdir="${build.tests}" encoding="utf-8">
       <classpath>
         <pathelement location="${build}"/>
         <path refid="jars.tests" />
@@ -38,9 +38,11 @@
       </classpath>
     </javac>
   </target>
-  
+
   <target name="test" depends="compile,compile-tests" description="Run the unit tests">
     <junit printsummary="yes" haltonfailure="yes">
+      <jvmarg value="-Dfile.encoding=UTF-8"/>
+
       <classpath>
         <pathelement location="${build.tests}"/>
         <path refid="jars.tests"/>
