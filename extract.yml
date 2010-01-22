@@ -83,6 +83,74 @@ tests:
       text: "http://example.com"
       expected: ["http://example.com"]
 
+    - description: "Extract valid URL: http://google.com"
+      text: "text http://google.com"
+      expected: ["http://google.com"]
+
+    - description: "Extract valid URL: http://foobar.com/#"
+      text: "text http://foobar.com/#"
+      expected: ["http://foobar.com/#"]
+
+    - description: "Extract valid URL: http://google.com/#foo"
+      text: "text http://google.com/#foo"
+      expected: ["http://google.com/#foo"]
+
+    - description: "Extract valid URL: http://google.com/#search?q=iphone%20-filter%3Alinks"
+      text: "text http://google.com/#search?q=iphone%20-filter%3Alinks"
+      expected: ["http://google.com/#search?q=iphone%20-filter%3Alinks"]
+
+    - description: "Extract valid URL: http://twitter.com/#search?q=iphone%20-filter%3Alinks"
+      text: "text http://twitter.com/#search?q=iphone%20-filter%3Alinks"
+      expected: ["http://twitter.com/#search?q=iphone%20-filter%3Alinks"]
+
+    - description: "Extract valid URL: http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html"
+      text: "text http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html"
+      expected: ["http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html"]
+
+    - description: "Extract valid URL: http://somehost.com:3000"
+      text: "text http://somehost.com:3000"
+      expected: ["http://somehost.com:3000"]
+
+    - description: "Extract valid URL: http://x.com/~matthew+%-x"
+      text: "text http://x.com/~matthew+%-x"
+      expected: ["http://x.com/~matthew+%-x"]
+
+    - description: "Extract valid URL: http://x.com/~matthew+%-,.;x"
+      text: "text http://x.com/~matthew+%-,.;x"
+      expected: ["http://x.com/~matthew+%-,.;x"]
+
+    - description: "Extract valid URL: http://x.com/,.;x"
+      text: "text http://x.com/,.;x"
+      expected: ["http://x.com/,.;x"]
+
+    - description: "Extract valid URL: http://en.wikipedia.org/wiki/Primer_(film)"
+      text: "text http://en.wikipedia.org/wiki/Primer_(film)"
+      expected: ["http://en.wikipedia.org/wiki/Primer_(film)"]
+
+    - description: "Extract valid URL: http://www.ams.org/bookstore-getitem/item=mbk-59"
+      text: "text http://www.ams.org/bookstore-getitem/item=mbk-59"
+      expected: ["http://www.ams.org/bookstore-getitem/item=mbk-59"]
+
+    - description: "Extract valid URL: http://chilp.it/?77e8fd"
+      text: "text http://chilp.it/?77e8fd"
+      expected: ["http://chilp.it/?77e8fd"]
+
+    - description: "DO NOT extract invalid URL: http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
+      text: "text http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
+      expected: []
+
+    - description: "DO NOT extract invalid URL: http://no-tld"
+      text: "text http://no-tld"
+      expected: []
+
+    - description: "DO NOT extract invalid URL: http://tld-too-short.x"
+      text: "text http://tld-too-short.x"
+      expected: []
+
+    - description: "DO NOT extract invalid URL: http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
+      text: "text http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
+      expected: []
+
   hashtags:
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
