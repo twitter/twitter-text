@@ -1,1 +1,6 @@
 Yaml files that define the conformance testing for twitter-text-* libraries.
+
+== TODO
+
+ * Describe the format in the README
+ * Add more tests (ongoing)
