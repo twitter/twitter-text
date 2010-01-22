@@ -134,3 +134,104 @@ tests:
     - description: "Autolink trailing url"
       text: "text http://example.com"
       expected: "text <a href=\"http://example.com\">http://example.com</a>"
+
+    - description: "Autolink url in mid-text"
+      text: "text http://example.com more text"
+      expected: "text <a href=\"http://example.com\">http://example.com</a> more text"
+
+    - description: "Autolink url in Japanese text"
+      text: "いまなにしてるhttp://example.comいまなにしてる"
+      expected: "いまなにしてる<a href=\"http://example.com\">http://example.com</a>いまなにしてる"
+
+    - description: "Autolink url surrounded by parentheses"
+      text: "text (http://example.com)"
+      expected: "text (<a href=\"http://example.com\">http://example.com</a>)"
+
+    - description: "Autolink url followed by ? (without it)"
+      text: "text http://example.com?"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>?"
+
+    - description: "Autolink url followed by ! (without it)"
+      text: "text http://example.com!"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>!"
+
+    - description: "Autolink url followed by , (without it)"
+      text: "text http://example.com,"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>,"
+
+    - description: "Autolink url followed by . (without it)"
+      text: "text http://example.com."
+      expected: "text <a href=\"http://example.com\">http://example.com</a>."
+
+    - description: "Autolink url followed by : (without it)"
+      text: "text http://example.com:"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>:"
+
+    - description: "Autolink url followed by ; (without it)"
+      text: "text http://example.com;"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>;"
+
+    - description: "Autolink url followed by ] (without it)"
+      text: "text http://example.com]"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>]"
+
+    - description: "Autolink url followed by ) (without it)"
+      text: "text http://example.com)"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>)"
+
+    - description: "Autolink url followed by } (without it)"
+      text: "text http://example.com}"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>}"
+
+    - description: "Autolink url followed by = (without it)"
+      text: "text http://example.com="
+      expected: "text <a href=\"http://example.com\">http://example.com</a>="
+
+    - description: "Autolink url followed by \ (without it)"
+      text: "text http://example.com\\"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>\\"
+
+    - description: "Autolink url followed by ' (without it)"
+      text: "text http://example.com'"
+      expected: "text <a href=\"http://example.com\">http://example.com</a>'"
+
+########## FIXME
+#    - description: "DO NOT Autolink url preceded by \\"
+#      text: "text \\http://example.com"
+#      expected: "text \\http://example.com"
+
+    - description: "DO NOT Autolink url preceded by '"
+      text: "text 'http://example.com"
+      expected: "text 'http://example.com"
+
+    - description: "DO NOT Autolink url preceded by /"
+      text: "text /http://example.com"
+      expected: "text /http://example.com"
+
+    - description: "DO NOT Autolink url preceded by :"
+      text: "text :http://example.com"
+      expected: "text :http://example.com"
+
+    - description: "DO NOT Autolink url preceded by !"
+      text: "text !http://example.com"
+      expected: "text !http://example.com"
+
+    - description: "DO NOT Autolink url preceded by ="
+      text: "text =http://example.com"
+      expected: "text =http://example.com"
+
+    - description: "Autolink url embedded in link tag"
+      text: "<link rel='true'>http://example.com</link>"
+      expected: "<link rel='true'><a href=\"http://example.com\">http://example.com</a></link>"
+
+    - description: "Autolink multiple urls"
+      text: "http://example.com https://sslexample.com http://sub.example.com"
+      expected: "<a href=\"http://example.com\">http://example.com</a> <a href=\"https://example.com\">https://sslexample.com</a> <a href=\"http://sub.example.com\">http://sub.example.com</a>"
+
+    - description: "Autolink url with long TLD"
+      text: "http://example.mobi/path"
+      expected: "<a href=\"http://example.mobi/path\">http://example.mobi/path</a>"
+
+    - description: "Autolink url without protocol (with www)"
+      text: "www.example.com"
+      expected: "<a href=\"http://www.example.com\">www.example.com</a>"
