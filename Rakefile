@@ -46,9 +46,9 @@ namespace :test do
     desc "Update conformance testing data"
     task :update do
       dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
-      print "Updating conformance data ... "
-      system("cd #{dir} && git submodule update") || exit(1)
-      puts " DONE"
+      puts "Updating conformance data ... "
+      system("cd #{dir} && git pull") || exit(1)
+      puts "Updating conformance data ... DONE"
     end
 
     desc "Run conformance test suite"
