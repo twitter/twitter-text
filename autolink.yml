@@ -39,7 +39,7 @@ tests:
 
     - description: "DO NOT Autolink username over 20 characters"
       text: "@username9012345678901"
-      expected: "@username9012345678901"
+      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username901234567890</a>1"
   lists:
     - description: "Autolink trailing list"
       text: "text @username/list"
