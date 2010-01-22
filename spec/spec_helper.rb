@@ -37,7 +37,7 @@ end
 Spec::Matchers.define :link_to_screen_name do |screen_name|
   match do |text|
     @link = Hpricot(text).at("a.username")
-    @link && @link.inner_text == screen_name && "/#{screen_name}".downcase.should == @link['href']
+    @link && @link.inner_text == screen_name && "http://twitter.com/#{screen_name}".downcase.should == @link['href']
   end
 
   failure_message_for_should do |text|
@@ -56,7 +56,7 @@ end
 Spec::Matchers.define :link_to_list_path do |list_path|
   match do |text|
     @link = Hpricot(text).at("a.list-slug")
-    !@link.nil? && @link.inner_text == list_path && "/#{list_path}".downcase.should == @link['href']
+    !@link.nil? && @link.inner_text == list_path && "http://twitter.com/#{list_path}".downcase.should == @link['href']
   end
 
   failure_message_for_should do |text|
@@ -74,7 +74,7 @@ end
 
 Spec::Matchers.define :have_autolinked_hashtag do |hashtag|
   match do |text|
-    @link = Hpricot(text).at("a[@href='/search?q=#{CGI.escape hashtag}']")
+    @link = Hpricot(text).at("a[@href='http://twitter.com/search?q=#{CGI.escape hashtag}']")
     @link &&
     @link.inner_text &&
     @link.inner_text == hashtag

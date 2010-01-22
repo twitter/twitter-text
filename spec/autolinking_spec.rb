@@ -304,7 +304,7 @@ describe Twitter::Autolink do
         it "should be linked" do
           link = Hpricot(@autolinked_text).at('a')
           link.inner_text.should == "#{[0xFF03].pack('U')}twj_dev"
-          link['href'].should == '/search?q=%23twj_dev'
+          link['href'].should == 'http://twitter.com/search?q=%23twj_dev'
         end
       end
 
@@ -355,7 +355,7 @@ describe Twitter::Autolink do
         end
       end
 
-      context "with a URL ending in forbidden characters" do
+      context "with a URL preceded in forbidden characters" do
         it "should not be linked" do
           matcher = TestAutolink.new
           %w| \ ' / : ! = |.each do |char|
