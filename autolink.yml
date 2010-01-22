@@ -4,15 +4,42 @@ tests:
     - description: "Autolink trailing username"
       text: "text @username"
       expected: "text @<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+
     - description: "Autolink username at the beginning"
       text: "@username text"
       expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a> text"
-    - description: "Autolink username preceded by a letter"
+
+    - description: "DO NOT Autolink username preceded by a letter"
       text: "meet@the beach"
       expected: "meet@the beach"
+
     - description: "Autolink username preceded by puctuation"
       text: "great.@username"
       expected: "great.@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+
+    - description: "Autolink username followed by puctuation"
+      text: "@username&^$%^"
+      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>&^$%^"
+
+    - description: "Autolink username followed by Japanese"
+      text: "@usernameの"
+      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>の"
+
+    - description: "Autolink username preceded by Japanese"
+      text: "あ@username"
+      expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+
+    - description: "Autolink username surrounded by Japanese"
+      text: "あ@username"
+      expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>の"
+
+    - description: "Autolink username with full-width at sign (U+FF20)"
+      text: "＠username"
+      expected: "＠<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+
+    - description: "DO NOT Autolink username over 20 characters"
+      text: "@username9012345678901"
+      expected: "@username9012345678901"
   lists:
     - description: "Autolink trailing list"
       text: "text @username/list"
