@@ -47,7 +47,7 @@ namespace :test do
     task :update do
       dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
       puts "Updating conformance data ... "
-      system("cd #{dir} && git pull") || exit(1)
+      system("cd #{dir} && git pull origin master") || exit(1)
       puts "Updating conformance data ... DONE"
     end
 
