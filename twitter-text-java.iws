@@ -9,8 +9,8 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.iws" afterPath="$PROJECT_DIR$/twitter-text-java.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/regex/Spaces.java" afterPath="$PROJECT_DIR$/src/com/twitter/regex/Spaces.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Regex.java" afterPath="$PROJECT_DIR$/src/com/twitter/Regex.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Autolink.java" afterPath="$PROJECT_DIR$/src/com/twitter/Autolink.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Regex.java" afterPath="$PROJECT_DIR$/src/com/twitter/Regex.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.ipr" afterPath="$PROJECT_DIR$/twitter-text-java.ipr" />
     </list>
     <ignored path=".idea/workspace.xml" />
@@ -97,19 +97,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Autolink.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Autolink.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="87" selection-start="1637" selection-end="1637" vertical-scroll-proportion="0.0">
+            <state line="40" column="3" selection-start="1371" selection-end="1371" vertical-scroll-proportion="0.41034484">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AutolinkTest.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="AutolinkTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="87" selection-start="924" selection-end="924" vertical-scroll-proportion="0.47816092">
+            <state line="29" column="19" selection-start="953" selection-end="953" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -430,7 +430,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1401" y="-91" width="1525" height="992" extended-state="0" />
+    <frame x="1342" y="-118" width="1525" height="992" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
@@ -508,13 +508,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="87" selection-start="1637" selection-end="1637" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="40" column="60" selection-start="2323" selection-end="2323" vertical-scroll-proportion="0.0">
@@ -524,7 +517,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="87" selection-start="924" selection-end="924" vertical-scroll-proportion="0.47816092">
+        <state line="29" column="19" selection-start="953" selection-end="953" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="3" selection-start="1371" selection-end="1371" vertical-scroll-proportion="0.41034484">
           <folding />
         </state>
       </provider>

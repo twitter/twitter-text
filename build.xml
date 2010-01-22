@@ -10,7 +10,11 @@
   <property name="docs"  location="docs"/>
   <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
-  <property name="jars.tests" location="jars/junit-4.6.jar"/>
+
+  <path id="jars.tests">
+    <pathelement location="jars/junit-4.6.jar"/>
+    <pathelement location="jars/jyaml-1.3.jar"/>
+  </path>
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -29,7 +33,7 @@
     <javac srcdir="${src.tests}" destdir="${build.tests}">
       <classpath>
         <pathelement location="${build}"/>
-        <pathelement location="${jars.tests}"/>
+        <path refid="jars.tests" />
         <pathelement path="${java.class.path}"/>
       </classpath>
     </javac>
@@ -39,7 +43,7 @@
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>
         <pathelement location="${build.tests}"/>
-        <pathelement location="${jars.tests}"/>
+        <path refid="jars.tests"/>
         <pathelement path="${java.class.path}"/>
       </classpath>
 

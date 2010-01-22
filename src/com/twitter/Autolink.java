@@ -41,7 +41,6 @@ public class Autolink {
   }
 
   public String autoLinkHashtags(String text) {
-    // TODO: autolink
     return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll("$" + Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE +
         "<a href=\"" + hashtagUrlBase + "$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "\">$" +
         Regex.AUTO_LINK_HASHTAGS_GROUP_HASH +
