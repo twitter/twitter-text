@@ -8,7 +8,7 @@ class ConformanceTest < Test::Unit::TestCase
   include Twitter::Autolink
 
   def setup
-    @conformance_dir = File.join(File.dirname(__FILE__), 'twitter-text-conformance')
+    @conformance_dir = ENV['CONFORMANCE_DIR'] || File.join(File.dirname(__FILE__), 'twitter-text-conformance')
   end
 
   module ExtractorConformance
