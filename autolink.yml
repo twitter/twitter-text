@@ -187,10 +187,6 @@ tests:
       text: "text http://example.com="
       expected: "text <a href=\"http://example.com\">http://example.com</a>="
 
-    - description: "Autolink url followed by \ (without it)"
-      text: "text http://example.com\\"
-      expected: "text <a href=\"http://example.com\">http://example.com</a>\\"
-
     - description: "Autolink url followed by ' (without it)"
       text: "text http://example.com'"
       expected: "text <a href=\"http://example.com\">http://example.com</a>'"
