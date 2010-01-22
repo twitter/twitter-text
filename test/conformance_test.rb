@@ -4,36 +4,35 @@ $KCODE = 'UTF8'
 require File.dirname(__FILE__) + '/../lib/twitter-text'
 
 class ConformanceTest < Test::Unit::TestCase
+  include Twitter::Extractor
+  include Twitter::Autolink
 
   def setup
-    # TODO: Allow control of conformance dir. Maybe a submodule?
     @conformance_dir = File.join(File.dirname(__FILE__), 'twitter-text-conformance')
-    @extractor = Twitter::Extractor.new
-    @linker = Twitter::Autolink.new
   end
 
   module ExtractorConformance
     def test_replies_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :replies) do |description, expected, input|
-        assert_equal expected, @extractor.extract_reply_screen_name(input), description
+        assert_equal expected, extract_reply_screen_name(input), description
       end
     end
 
     def test_mentions_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions) do |description, expected, input|
-        assert_equal expected, @extractor.extract_mentioned_screen_names(input), description
+        assert_equal expected, extract_mentioned_screen_names(input), description
       end
     end
 
     def test_url_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls) do |description, expected, input|
-        assert_equal expected, @extractor.extract_urls(input), description
+        assert_equal expected, extract_urls(input), description
       end
     end
 
     def test_hashtag_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :hashtags) do |description, expected, input|
-        assert_equal expected, @extractor.extract_hashtags(input), description
+        assert_equal expected, extract_hashtags(input), description
       end
     end
   end
@@ -42,25 +41,25 @@ class ConformanceTest < Test::Unit::TestCase
   module AutolinkConformance
     def test_users_autolink_conformance
       run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :usernames) do |description, expected, input|
-        assert_equal expected, @linker.auto_link_usernames_or_lists(input), description
+        assert_equal expected, auto_link_usernames_or_lists(input), description
       end
     end
 
     def test_lists_autolink_conformance
       run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :lists) do |description, expected, input|
-        assert_equal expected, @linker.auto_link_usernames_or_lists(input), description
+        assert_equal expected, auto_link_usernames_or_lists(input), description
       end
     end
 
     def test_urls_autolink_conformance
       run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :urls) do |description, expected, input|
-        assert_equal expected, @linker.auto_link_urls_custom(input), description
+        assert_equal expected, auto_link_urls_custom(input), description
       end
     end
 
     def test_hashtags_autolink_conformance
       run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :hashtags) do |description, expected, input|
-        assert_equal expected, @linker.auto_link_hashtags(input), description
+        assert_equal expected, auto_link_hashtags(input), description
       end
     end
   end

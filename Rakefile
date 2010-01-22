@@ -41,6 +41,27 @@ Spec::Rake::SpecTask.new('spec:rcov') do |t|
   t.rcov_opts = ['--exclude', 'spec']
 end
 
+namespace :test do
+  namespace :conformance do
+    desc "Update conformance testing data"
+    task :update do
+      dir = "test/twitter-text-conformance"
+      print "Updating conformance data ... "
+      system("cd #{dir} && git submodule update") || exit(1)
+      puts " DONE"
+    end
+
+    desc "Run conformance test suite"
+    task :run do
+      ruby "test/conformance_test.rb"
+    end
+  end
+
+  desc "Run conformance test suite"
+  task :conformance => ['conformance:update', 'conformance:run'] do
+  end
+end
+
 
 namespace :doc do 
   Rake::RDocTask.new do |rd|
