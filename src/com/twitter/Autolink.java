@@ -42,14 +42,16 @@ public class Autolink {
 
   public String autoLinkHashtags(String text) {
     return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll("$" + Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE +
-        "<a href=\"" + hashtagUrlBase + "$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "\">$" +
-        Regex.AUTO_LINK_HASHTAGS_GROUP_HASH +
-        "$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "</a>");
+        "<a" +
+        " href=\"" + hashtagUrlBase + "$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "\"" +        
+        " title=\"#$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "\"" +
+        " class=\"" + urlClass + " " + hashtagClass + "\"" +
+        ">$" + Regex.AUTO_LINK_HASHTAGS_GROUP_HASH + "$" + Regex.AUTO_LINK_HASHTAGS_GROUP_TAG + "</a>");
   }
 
   public String autoLinkURLs(String text) {
-    // TODO: autolink
-    return null;
+    return Regex.VALID_URL.matcher(text).replaceAll("$" + Regex.VALID_URL_GROUP_URL +
+        "<a href=\"$" + Regex.VALID_URL_GROUP_URL + "\">$" + Regex.VALID_URL_GROUP_URL + "</a>");
   }
 
   public String getUrlClass() {
