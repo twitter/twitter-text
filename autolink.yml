@@ -4,6 +4,12 @@ tests:
     - description: "Autolink trailing username"
       text: "text @username"
       expected: "text @<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+    - description: "Autolink username at the beginning"
+      text: "@username text"
+      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a> text"
+    - description: "Autolink username preceded by a letter"
+      text: "meet@the beach"
+      expected: "meet@the beach"
   lists:
     - description: "Autolink trailing list"
       text: "text @username/list"
