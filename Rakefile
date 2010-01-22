@@ -88,5 +88,5 @@ task :make_spec do
 end
 
 desc "runs cruise control build"
-task :cruise => [:spec] do
+task :cruise => [:spec, 'test:conformance'] do
 end
