@@ -1,6 +1,6 @@
 
 module Twitter
-  class Validation
+  module Validation
     MAX_LENGTH = 140
 
     # Character not allowed in Tweets
@@ -22,7 +22,7 @@ module Twitter
     #
     # The string could also contain U+00E9 already, in which case the canonicalization will not change the value.
     #
-    def self.tweet_length(text)
+    def tweet_length(text)
       ActiveSupport::Multibyte::Chars.new(text).normalize(:c).length
     end
 
@@ -35,7 +35,7 @@ module Twitter
     #   <tt>:too_long</tt>:: if the <tt>text</tt> is too long
     #   <tt>:empty</tt>:: if the <tt>text</tt> is nil or empty
     #   <tt>:invalid_characters</tt>:: if the <tt>text</tt> contains non-Unicode or any of the disallowed Unicode characters
-    def self.invalid?(text)
+    def tweet_invalid?(text)
       return :empty if text.blank?
       begin
         return :too_long if tweet_length(text) > MAX_LENGTH

@@ -1,12 +1,16 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
+class TestAutolink
+  include Twitter::Autolink
+end
+
 describe Twitter::Autolink do
   def original_text; end
   def url; end
 
   describe "auto_link_custom" do
     before do
-      @autolinked_text = Twitter::Autolink.new.auto_link(original_text) if original_text
+      @autolinked_text = TestAutolink.new.auto_link(original_text) if original_text
     end
 
     describe "username autolinking" do
@@ -100,7 +104,7 @@ describe Twitter::Autolink do
 
       context "when List is not available" do
         it "should not be linked" do
-          @autolinked_text = Twitter::Autolink.new.auto_link_usernames_or_lists("hello @jacob/my-list", :suppress_lists => true)
+          @autolinked_text = TestAutolink.new.auto_link_usernames_or_lists("hello @jacob/my-list", :suppress_lists => true)
           @autolinked_text.should_not link_to_list_path('jacob/my-list')
         end
       end
@@ -150,7 +154,7 @@ describe Twitter::Autolink do
         def original_text; "great.@jacob/my-list"; end
 
         it "should be linked" do
-          @autolinked_text = Twitter::Autolink.new.auto_link("great.@jacob/my-list")
+          @autolinked_text = TestAutolink.new.auto_link("great.@jacob/my-list")
           @autolinked_text.should link_to_list_path('jacob/my-list')
         end
       end
@@ -344,7 +348,7 @@ describe Twitter::Autolink do
 
       context "with a URL ending in allowed punctuation" do
         it "does not consume ending punctuation" do
-          matcher = Twitter::Autolink.new
+          matcher = TestAutolink.new
           %w| ? ! , . : ; ] ) } = \ ' |.each do |char|
             matcher.auto_link("#{url}#{char}").should have_autolinked_url(url)
           end
@@ -353,7 +357,7 @@ describe Twitter::Autolink do
 
       context "with a URL ending in forbidden characters" do
         it "should not be linked" do
-          matcher = Twitter::Autolink.new
+          matcher = TestAutolink.new
           %w| \ ' / : ! = |.each do |char|
             matcher.auto_link("#{char}#{url}").should_not have_autolinked_url(url)
           end
@@ -409,7 +413,7 @@ describe Twitter::Autolink do
 
     describe "Autolink all" do
       before do
-        @linker = Twitter::Autolink.new
+        @linker = TestAutolink.new
       end
 
       it "should allow url/hashtag overlap" do

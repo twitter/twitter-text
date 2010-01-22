@@ -1,6 +1,6 @@
 
 module Twitter
-  class Autolink
+  module Autolink
     include ActionView::Helpers::TagHelper #tag_options needed by auto_link
 
     DEFAULT_URL_CLASS = "tweet-url"
