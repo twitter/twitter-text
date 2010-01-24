@@ -4,13 +4,23 @@ package com.twitter;
 import java.util.*;
 import java.util.regex.*;
 
+/**
+ * A class for adding HTML links to hashtag, username and list references in Tweet text.
+ */
 public class Autolink {
+  /** Default CSS class for auto-linked URLs */
   public static final String DEFAULT_URL_CLASS = "tweet-url";
+  /** Default CSS class for auto-linked list URLs */
   public static final String DEFAULT_LIST_CLASS = "list-slug";
+  /** Default CSS class for auto-linked username URLs */
   public static final String DEFAULT_USERNAME_CLASS = "username";
+  /** Default CSS class for auto-linked hashtag URLs */
   public static final String DEFAULT_HASHTAG_CLASS = "hashtag";
+  /** Default href for username links (the username without the @ will be appended) */
   public static final String DEFAULT_USERNAME_URL_BASE = "http://twitter.com/";
+  /** Default href for list links (the username/list without the @ will be appended) */
   public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
+  /** Default href for hashtag links (the hashtag without the # will be appended) */
   public static final String DEFAULT_HASHTAG_URL_BASE = "http://twitter.com/search?q=%23";
 
   protected String urlClass;
@@ -31,10 +41,24 @@ public class Autolink {
     hashtagUrlBase = DEFAULT_HASHTAG_URL_BASE;
   }
 
+  /**
+   * Auto-link hashtags, URLs, usernames and lists.
+   *
+   * @param text of the Tweet to auto-link
+   * @return text with auto-link HTML added
+   */
   public String autoLink(String text) {
     return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags(text) ) );
   }
 
+  /**
+   * Auto-link the @username and @username/list references in the provided text. Links to @username references will
+   * have the usernameClass CSS classes added. Links to @username/list references will have the listClass CSS class
+   * added.
+   *
+   * @param text of the Tweet to auto-link
+   * @return text with auto-link HTML added
+   */
   public String autoLinkUsernamesAndLists(String text) {
     Matcher matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(text);
     StringBuffer sb = new StringBuffer(text.length());
@@ -66,6 +90,13 @@ public class Autolink {
     return sb.toString();
   }
 
+  /**
+   * Auto-link #hashtag references in the provided Tweet text. The #hashtag links will have the hashtagClass CSS class
+   * added.
+   *
+   * @param text of the Tweet to auto-link
+   * @return text with auto-link HTML added
+   */
   public String autoLinkHashtags(String text) {
     StringBuffer replacement = new StringBuffer(text.length());
     replacement.append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE)
@@ -78,6 +109,12 @@ public class Autolink {
     return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll(replacement.toString());
   }
 
+  /**
+   * Auto-link URLs in the Tweet text provided.
+   *
+   * @param text of the Tweet to auto-link
+   * @return text with auto-link HTML added
+   */
   public String autoLinkURLs(String text) {
     Matcher matcher = Regex.VALID_URL.matcher(text);
     StringBuffer sb = new StringBuffer(text.length());
@@ -99,58 +136,114 @@ public class Autolink {
     return sb.toString();
   }
 
+  /**
+   * @return CSS class for auto-linked URLs
+   */
   public String getUrlClass() {
     return urlClass;
   }
 
+  /**
+   * Set the CSS class for auto-linked URLs
+   *
+   * @param urlClass new CSS value.
+   */
   public void setUrlClass(String urlClass) {
     this.urlClass = urlClass;
   }
 
+  /**
+   * @return CSS class for auto-linked list URLs
+   */
   public String getListClass() {
     return listClass;
   }
 
+  /**
+   * Set the CSS class for auto-linked list URLs
+   *
+   * @param listClass new CSS value.
+   */
   public void setListClass(String listClass) {
     this.listClass = listClass;
   }
 
+  /**
+   * @return CSS class for auto-linked username URLs
+   */
   public String getUsernameClass() {
     return usernameClass;
   }
 
+  /**
+   * Set the CSS class for auto-linked username URLs
+   *
+   * @param usernameClass new CSS value.
+   */
   public void setUsernameClass(String usernameClass) {
     this.usernameClass = usernameClass;
   }
 
+  /**
+   * @return CSS class for auto-linked hashtag URLs
+   */
   public String getHashtagClass() {
     return hashtagClass;
   }
 
+  /**
+   * Set the CSS class for auto-linked hashtag URLs
+   *
+   * @param hashtagClass new CSS value.
+   */
   public void setHashtagClass(String hashtagClass) {
     this.hashtagClass = hashtagClass;
   }
 
+  /**
+   * @return the href value for username links (to which the username will be appended)
+   */
   public String getUsernameUrlBase() {
     return usernameUrlBase;
   }
 
+  /**
+   * Set the href base for username links.
+   *
+   * @param usernameUrlBase new href base value
+   */
   public void setUsernameUrlBase(String usernameUrlBase) {
     this.usernameUrlBase = usernameUrlBase;
   }
 
+  /**
+   * @return the href value for list links (to which the username/list will be appended)
+   */
   public String getListUrlBase() {
     return listUrlBase;
   }
 
+  /**
+   * Set the href base for list links.
+   *
+   * @param listUrlBase new href base value
+   */
   public void setListUrlBase(String listUrlBase) {
     this.listUrlBase = listUrlBase;
   }
 
+  /**
+   * @return the href value for hashtag links (to which the hashtag will be appended)
+   */
   public String getHashtagUrlBase() {
     return hashtagUrlBase;
   }
 
+  /**
+   * Set the href base for hashtag links.
+   *
+   * @param hashtagUrlBase new href base value
+   */
   public void setHashtagUrlBase(String hashtagUrlBase) {
     this.hashtagUrlBase = hashtagUrlBase;
   }
