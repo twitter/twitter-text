@@ -7,7 +7,7 @@
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.iws" afterPath="$PROJECT_DIR$/twitter-text-java.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Autolink.java" afterPath="$PROJECT_DIR$/src/com/twitter/Autolink.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Extractor.java" afterPath="$PROJECT_DIR$/src/com/twitter/Extractor.java" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="twitter-text-java.iws" />
@@ -66,13 +66,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Autolink.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
+      <file leaf-file-name="Extractor.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/twitter/Extractor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="212" column="47" selection-start="7956" selection-end="7956" vertical-scroll-proportion="3.034682">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="12" column="28" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Regex.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="38" selection-start="353" selection-end="353" vertical-scroll-proportion="0.044315994">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -390,7 +397,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="23" y="22" width="1243" height="656" extended-state="0" />
+    <frame x="23" y="22" width="1243" height="656" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
@@ -454,27 +461,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/twitter/Extractor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="47" selection-start="944" selection-end="962" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="0" selection-start="987" selection-end="987" vertical-scroll-proportion="0.6666667">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="17" selection-start="1859" selection-end="1859" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/build.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="55" selection-start="430" selection-end="430" vertical-scroll-proportion="0.23960066">
@@ -498,10 +484,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="212" column="47" selection-start="7956" selection-end="7956" vertical-scroll-proportion="3.034682">
+        <state line="129" column="33" selection-start="6136" selection-end="6136" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/twitter/Extractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="28" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="13" selection-start="118" selection-end="118" vertical-scroll-proportion="-0.11235955">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="38" selection-start="353" selection-end="353" vertical-scroll-proportion="0.044315994">
+          <folding />
         </state>
       </provider>
     </entry>
