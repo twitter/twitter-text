@@ -26,16 +26,10 @@ module Twitter
         ].flatten.freeze
     REGEXEN[:spaces] = UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|')
 
-    REGEXEN[:hex_color_no_pound] = /^([A-F\d]{3}|[A-F\d]{6})$/i
-    REGEXEN[:hex_color] = /^#?#{REGEXEN[:hex_color_no_pound]}$/io
-
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})/
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*[@＠]([a-zA-Z0-9_]{1,20})/o
 
     REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
-    # List of words used as Twitter actions.
-    RESERVED_ACTION_WORDS = %w(twitter lists retweet retweets following followings follower followers with_friend with_friends statuses status activity favourites favourite favorite favorites).freeze
-    REGEXEN[:reserved_action_words] = /^(#{RESERVED_ACTION_WORDS.join('|')})$/o
 
     # Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
     LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
@@ -70,7 +64,6 @@ module Twitter
     }iox;
 
     REGEXEN.each_pair{|k,v| v.freeze }
-    REGEXEN.freeze
 
     # Return the regular expression for a given <tt>key</tt>. If the <tt>key</tt>
     # is not a known symbol a <tt>nil</tt> will be returned. 
