@@ -24,7 +24,7 @@ module Twitter
           0x205F,          # White_Space # Zs       MEDIUM MATHEMATICAL SPACE
           0x3000,          # White_Space # Zs       IDEOGRAPHIC SPACE
         ].flatten.freeze
-    REGEXEN[:spaces] = UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|')
+    REGEXEN[:spaces] = Regexp.new(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|'))
 
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})/
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*[@＠]([a-zA-Z0-9_]{1,20})/o
