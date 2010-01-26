@@ -26,6 +26,7 @@ module Twitter
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
     def auto_link(text, options = {}, &block) # :yields: hashtag_or_list_or_username
+      options = options.dup
       auto_link_usernames_or_lists(auto_link_urls_custom(auto_link_hashtags(text), options, &block), &block)
     end
 
@@ -39,6 +40,7 @@ module Twitter
     # <tt>:username_url_base</tt>::      the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     def auto_link_usernames_or_lists(text, options = {}) # :yields: list_or_username
+      options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:list_class] ||= DEFAULT_LIST_CLASS
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
@@ -69,6 +71,7 @@ module Twitter
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
     #
     def auto_link_hashtags(text, options = {})  # :yields: hashtag_text
+      options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
       options[:hashtag_url_base] ||= "http://twitter.com/search?q=%23"
