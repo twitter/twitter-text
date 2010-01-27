@@ -218,6 +218,7 @@ this.
 <pre>
 <span class="ruby-comment cmt"># File lib/autolink.rb, line 28</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: hashtag_or_list_or_username</span>
+      <span class="ruby-identifier">options</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">dup</span>
       <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">auto_link_urls_custom</span>(<span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>), <span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>), <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
     <span class="ruby-keyword kw">end</span>
 </pre>
@@ -256,8 +257,9 @@ following entries in the <tt>options</tt> hash:
             onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000003-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 71</span>
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 73</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})  <span class="ruby-comment cmt"># :yields: hashtag_text</span>
+      <span class="ruby-identifier">options</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">dup</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_URL_CLASS</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:hashtag_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_HASHTAG_CLASS</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:hashtag_url_base</span>] <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;http://twitter.com/search?q=%23&quot;</span>
@@ -294,7 +296,7 @@ converted to HTML attributes and place in the <tt>&lt;a&gt;</tt> tag.
             onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000004-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 88</span>
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 91</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_urls_custom</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">href_options</span> = {})
       <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:valid_url</span>]) <span class="ruby-keyword kw">do</span>
         <span class="ruby-identifier">all</span>, <span class="ruby-identifier">before</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">protocol</span> = <span class="ruby-identifier">$1</span>, <span class="ruby-identifier">$2</span>, <span class="ruby-identifier">$3</span>, <span class="ruby-identifier">$4</span>
@@ -348,8 +350,9 @@ of this.
             onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000002-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 41</span>
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 42</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}) <span class="ruby-comment cmt"># :yields: list_or_username</span>
+      <span class="ruby-identifier">options</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">dup</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_URL_CLASS</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:list_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_LIST_CLASS</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:username_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_USERNAME_CLASS</span>
