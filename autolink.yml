@@ -226,3 +226,7 @@ tests:
     - description: "Autolink url without protocol (with www)"
       text: "www.example.com"
       expected: "<a href=\"http://www.example.com\">www.example.com</a>"
+
+    - description: "Autolink url without protocol (with WWW)"
+      text: "WWW.EXAMPLE.COM"
+      expected: "<a href=\"http://WWW.EXAMPLE.COM\">WWW.EXAMPLE.COM</a>"
