@@ -29,6 +29,10 @@ tests:
       text: "の@usernameに到着を待っている"
       expected: ["username"]
 
+    - description: "DO NOT extract username ending in @"
+      text: "Current Status: @_@ (cc: @username)"
+      expected: ["username"]
+
   replies:
     - description: "Extract reply at the begining of a tweet"
       text: "@username reply"
