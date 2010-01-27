@@ -48,18 +48,19 @@ module Twitter
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
       options[:username_url_base] ||= "http://twitter.com/"
       options[:list_url_base] ||= "http://twitter.com/"
+      html_attrs = tag_options((options[:html_attrs] || {}).stringify_keys) || ""
 
       text.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
         if $4 && !options[:suppress_lists]
           # the link is a list
           text = list = "#{$3}#{$4}"
-          text = yield(list) if block_given?
-          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{options[:list_url_base]}#{list.downcase}\">#{text}</a>"
+          text = yield(list) if block_given?3
+          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{options[:list_url_base]}#{list.downcase}\"#{html_attrs}>#{text}</a>"
         else
           # this is a screen name
           text = $3
           text = yield(text) if block_given?
-          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{options[:username_url_base]}#{$3}\">#{text}</a>"
+          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{options[:username_url_base]}#{$3}\"#{html_attrs}>#{text}</a>"
         end
       end
     end
@@ -77,13 +78,14 @@ module Twitter
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
       options[:hashtag_url_base] ||= "http://twitter.com/search?q=%23"
+      html_attrs = tag_options((options[:html_attrs] || {}).stringify_keys) || ""
 
       text.gsub(Twitter::Regex[:auto_link_hashtags]) do
         before = $1
         hash = $2
         text = $3
         text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{text}\" title=\"##{text}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\">#{hash}#{text}</a>"
+        "#{before}<a href=\"#{options[:hashtag_url_base]}#{text}\" title=\"##{text}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{html_attrs}>#{hash}#{text}</a>"
       end
     end
 
