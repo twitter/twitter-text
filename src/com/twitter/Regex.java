@@ -51,7 +51,7 @@ public class Regex {
   public static final int VALID_URL_GROUP_BEFORE = 2;
   public static final int VALID_URL_GROUP_URL = 3;
 
-  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])[@\uFF20]([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
+  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])[@\uFF20]([a-z0-9_]{1,20})(?!@)", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;
   public static final int EXTRACT_MENTIONS_GROUP_USERNAME = 2;
 

@@ -7,10 +7,11 @@
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.iws" afterPath="$PROJECT_DIR$/twitter-text-java.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Extractor.java" afterPath="$PROJECT_DIR$/src/com/twitter/Extractor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-data/twitter-text-conformance" afterPath="$PROJECT_DIR$/test-data/twitter-text-conformance" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Regex.java" afterPath="$PROJECT_DIR$/src/com/twitter/Regex.java" />
     </list>
-    <ignored path=".idea/workspace.xml" />
     <ignored path="twitter-text-java.iws" />
+    <ignored path=".idea/workspace.xml" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="Commander">
@@ -78,7 +79,7 @@
       <file leaf-file-name="Regex.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="38" selection-start="353" selection-end="353" vertical-scroll-proportion="0.044315994">
+            <state line="53" column="111" selection-start="3189" selection-end="3189" vertical-scroll-proportion="0.7090559">
               <folding />
             </state>
           </provider>
@@ -397,7 +398,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="23" y="22" width="1243" height="656" extended-state="1" />
+    <frame x="23" y="22" width="1243" height="656" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
@@ -482,6 +483,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="13" selection-start="118" selection-end="118" vertical-scroll-proportion="-0.11235955">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="129" column="33" selection-start="6136" selection-end="6136" vertical-scroll-proportion="0.0">
@@ -498,16 +506,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="118" selection-end="118" vertical-scroll-proportion="-0.11235955">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="38" selection-start="353" selection-end="353" vertical-scroll-proportion="0.044315994">
+        <state line="53" column="111" selection-start="3189" selection-end="3189" vertical-scroll-proportion="0.7090559">
           <folding />
         </state>
       </provider>
