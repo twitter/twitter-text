@@ -15,6 +15,8 @@ module Twitter
     DEFAULT_USERNAME_CLASS = "username"
     # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag"
+    # HTML attribute for robot nofollow behavior (default)
+    HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
 
     # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>. The
     # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
@@ -48,19 +50,19 @@ module Twitter
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
       options[:username_url_base] ||= "http://twitter.com/"
       options[:list_url_base] ||= "http://twitter.com/"
-      html_attrs = tag_options((options[:html_attrs] || {}).stringify_keys) || ""
+      extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
       text.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
         if $4 && !options[:suppress_lists]
           # the link is a list
           text = list = "#{$3}#{$4}"
-          text = yield(list) if block_given?3
-          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{options[:list_url_base]}#{list.downcase}\"#{html_attrs}>#{text}</a>"
+          text = yield(list) if block_given?
+          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{options[:list_url_base]}#{list.downcase}\"#{extra_html}>#{text}</a>"
         else
           # this is a screen name
           text = $3
           text = yield(text) if block_given?
-          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{options[:username_url_base]}#{$3}\"#{html_attrs}>#{text}</a>"
+          "#{$1}#{$2}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{options[:username_url_base]}#{text}\"#{extra_html}>#{text}</a>"
         end
       end
     end
@@ -78,14 +80,14 @@ module Twitter
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
       options[:hashtag_url_base] ||= "http://twitter.com/search?q=%23"
-      html_attrs = tag_options((options[:html_attrs] || {}).stringify_keys) || ""
+      extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
       text.gsub(Twitter::Regex[:auto_link_hashtags]) do
         before = $1
         hash = $2
         text = $3
         text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{text}\" title=\"##{text}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{html_attrs}>#{hash}#{text}</a>"
+        "#{before}<a href=\"#{options[:hashtag_url_base]}#{text}\" title=\"##{text}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{hash}#{text}</a>"
       end
     end
 
@@ -93,6 +95,8 @@ module Twitter
     # elements in the <tt>href_options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     def auto_link_urls_custom(text, href_options = {})
+      href_options[:rel] = "nofollow" unless href_options.delete(:suppress_no_follow)
+
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol = $1, $2, $3, $4
         options = tag_options(href_options.stringify_keys) || ""
