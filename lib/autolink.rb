@@ -29,6 +29,8 @@ module Twitter
     # <tt>:username_url_base</tt>::      the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
+    # <tt>:suppress_lists</tt>::    disable auto-linking to lists
+    # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link(text, options = {}, &block) # :yields: hashtag_or_list_or_username
       options = options.dup
       auto_link_usernames_or_lists(auto_link_urls_custom(auto_link_hashtags(text), options, &block), &block)
@@ -43,6 +45,8 @@ module Twitter
     # <tt>:username_class</tt>::    class to add to username <tt><a></tt> tags
     # <tt>:username_url_base</tt>::      the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
+    # <tt>:suppress_lists</tt>::    disable auto-linking to lists
+    # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link_usernames_or_lists(text, options = {}) # :yields: list_or_username
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
@@ -74,7 +78,7 @@ module Twitter
     # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
     # <tt>:hashtag_class</tt>:: class to add to hashtag <tt><a></tt> tags
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
-    #
+    # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link_hashtags(text, options = {})  # :yields: hashtag_text
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
@@ -93,7 +97,8 @@ module Twitter
 
     # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>. Any
     # elements in the <tt>href_options</tt> hash will be converted to HTML attributes
-    # and place in the <tt><a></tt> tag.
+    # and place in the <tt><a></tt> tag. Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
+    # the <tt>rel="nofollow"</tt> attribute will be added.
     def auto_link_urls_custom(text, href_options = {})
       href_options[:rel] = "nofollow" unless href_options.delete(:suppress_no_follow)
 
