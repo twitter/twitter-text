@@ -9,6 +9,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.iws" afterPath="$PROJECT_DIR$/twitter-text-java.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-data/twitter-text-conformance" afterPath="$PROJECT_DIR$/test-data/twitter-text-conformance" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java" afterPath="$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Regex.java" afterPath="$PROJECT_DIR$/src/com/twitter/Regex.java" />
     </list>
     <ignored path="twitter-text-java.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -67,19 +68,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Regex.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Regex.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="78" selection-start="753" selection-end="753" vertical-scroll-proportion="0.21387284">
+            <state line="14" column="13" selection-start="477" selection-end="477" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ConformanceTest.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Autolink.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="55" column="74" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConformanceTest.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="115" column="55" selection-start="4824" selection-end="4824" vertical-scroll-proportion="0.0">
+            <state line="119" column="34" selection-start="5030" selection-end="5030" vertical-scroll-proportion="0.74914676">
               <folding />
             </state>
           </provider>
@@ -398,7 +408,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="23" y="22" width="1243" height="656" extended-state="0" />
+    <frame x="23" y="22" width="1236" height="723" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
@@ -406,7 +416,7 @@
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Profile CPU" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21105528" sideWeight="0.7260579" order="0" side_tool="false" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21229991" sideWeight="0.7260579" order="0" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3997773" sideWeight="0.5" order="5" side_tool="false" />
@@ -483,15 +493,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="129" column="33" selection-start="6136" selection-end="6136" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/twitter/Extractor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="12" column="28" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0">
@@ -499,16 +500,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java">
+    <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="55" selection-start="4824" selection-end="4824" vertical-scroll-proportion="0.0">
+        <state line="14" column="13" selection-start="477" selection-end="477" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/twitter/Regex.java">
+    <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="78" selection-start="753" selection-end="753" vertical-scroll-proportion="0.21387284">
+        <state line="55" column="74" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="119" column="34" selection-start="5030" selection-end="5030" vertical-scroll-proportion="0.74914676">
           <folding />
         </state>
       </provider>

@@ -117,7 +117,7 @@ public class ConformanceTest extends TestCase {
     for (Map testCase : (List<Map>)testCases) {
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
                    (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   linker.autoLinkURLs((String)testCase.get(KEY_INPUT)));
+                   linker.autoLink((String)testCase.get(KEY_INPUT)));
     }
   }
 
