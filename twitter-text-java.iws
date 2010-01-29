@@ -7,8 +7,10 @@
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter-text-java.iws" afterPath="$PROJECT_DIR$/twitter-text-java.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java" afterPath="$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-data/twitter-text-conformance" afterPath="$PROJECT_DIR$/test-data/twitter-text-conformance" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java" afterPath="$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Autolink.java" afterPath="$PROJECT_DIR$/src/com/twitter/Autolink.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/twitter/Regex.java" afterPath="$PROJECT_DIR$/src/com/twitter/Regex.java" />
     </list>
     <ignored path="twitter-text-java.iws" />
@@ -77,19 +79,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Autolink.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Autolink.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="55" column="74" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.0">
+            <state line="148" column="9" selection-start="6899" selection-end="6899" vertical-scroll-proportion="-0.092150174">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ConformanceTest.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ConformanceTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="119" column="34" selection-start="5030" selection-end="5030" vertical-scroll-proportion="0.74914676">
+            <state line="29" column="36" selection-start="1155" selection-end="1155" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AutolinkTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="19" column="0" selection-start="548" selection-end="548" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -479,13 +490,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="3" selection-start="1262" selection-end="1262" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/com/twitter/RegexTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="7" column="13" selection-start="118" selection-end="118" vertical-scroll-proportion="-0.11235955">
@@ -507,16 +511,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="74" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.0">
+        <state line="29" column="36" selection-start="1155" selection-end="1155" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/com/twitter/ConformanceTest.java">
+    <entry file="file://$PROJECT_DIR$/tests/com/twitter/AutolinkTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="119" column="34" selection-start="5030" selection-end="5030" vertical-scroll-proportion="0.74914676">
+        <state line="19" column="0" selection-start="548" selection-end="548" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/twitter/Autolink.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="148" column="9" selection-start="6899" selection-end="6899" vertical-scroll-proportion="-0.092150174">
           <folding />
         </state>
       </provider>

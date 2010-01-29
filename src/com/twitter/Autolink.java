@@ -22,6 +22,8 @@ public class Autolink {
   public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
   /** Default href for hashtag links (the hashtag without the # will be appended) */
   public static final String DEFAULT_HASHTAG_URL_BASE = "http://twitter.com/search?q=%23";
+  /** HTML attribute to add when noFollow is true (default) */
+  public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
 
   protected String urlClass;
   protected String listClass;
@@ -30,6 +32,7 @@ public class Autolink {
   protected String usernameUrlBase;
   protected String listUrlBase;
   protected String hashtagUrlBase;
+  protected Boolean noFollow = Boolean.TRUE;
 
   public Autolink() {
     urlClass = DEFAULT_URL_CLASS;
@@ -71,8 +74,11 @@ public class Autolink {
                    .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
                    .append("<a")
                    .append(" class=\"").append(urlClass).append(" ").append(usernameClass).append("\"")
-                   .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"")
-                   .append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>");
+                   .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"");
+        if (noFollow) {
+          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        }
+        replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>");
       } else {
         // Username and list
         replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
@@ -80,8 +86,11 @@ public class Autolink {
                    .append("<a")
                    .append(" class=\"").append(urlClass).append(" ").append(listClass).append("\"")
                    .append(" href=\"").append(listUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
-                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("\"")
-                   .append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
+                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("\"");
+        if (noFollow) {
+          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        }
+        replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
                    .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>");
       }
       matcher.appendReplacement(sb, replacement.toString());
@@ -100,12 +109,15 @@ public class Autolink {
   public String autoLinkHashtags(String text) {
     StringBuffer replacement = new StringBuffer(text.length());
     replacement.append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE)
-        .append("<a")
-        .append(" href=\"").append(hashtagUrlBase).append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
-        .append(" title=\"#$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
-        .append(" class=\"").append(urlClass).append(" ").append(hashtagClass).append("\"")
-        .append(">$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH).append("$")
-        .append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("</a>");
+               .append("<a")
+               .append(" href=\"").append(hashtagUrlBase).append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
+               .append(" title=\"#$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
+               .append(" class=\"").append(urlClass).append(" ").append(hashtagClass).append("\"");
+    if (noFollow) {
+      replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+    }
+    replacement.append(">$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH).append("$")
+               .append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("</a>");
     return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll(replacement.toString());
   }
 
@@ -123,11 +135,19 @@ public class Autolink {
       if (matcher.group(Regex.VALID_URL_GROUP_URL).startsWith("http://") ||
           matcher.group(Regex.VALID_URL_GROUP_URL).startsWith("https://")) {
         replacement.append("$").append(Regex.VALID_URL_GROUP_BEFORE)
-                   .append("<a href=\"$").append(Regex.VALID_URL_GROUP_URL).append("\">$")
+                   .append("<a href=\"$").append(Regex.VALID_URL_GROUP_URL).append("\"");
+        if (noFollow) {
+          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        }
+        replacement.append(">$")
                    .append(Regex.VALID_URL_GROUP_URL).append("</a>");
       } else {
         replacement.append("$").append(Regex.VALID_URL_GROUP_BEFORE)
-                   .append("<a href=\"http://$").append(Regex.VALID_URL_GROUP_URL).append("\">$")
+                   .append("<a href=\"http://$").append(Regex.VALID_URL_GROUP_URL).append("\"");
+        if (noFollow) {
+          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        }
+        replacement.append(">$")
                    .append(Regex.VALID_URL_GROUP_URL).append("</a>");
       }
       matcher.appendReplacement(sb, replacement.toString());
@@ -246,5 +266,21 @@ public class Autolink {
    */
   public void setHashtagUrlBase(String hashtagUrlBase) {
     this.hashtagUrlBase = hashtagUrlBase;
+  }
+
+  /**
+   * @return if the current URL links will include rel="nofollow" (true by default)
+   */
+  public Boolean isNoFollow() {
+    return noFollow;
+  }
+
+  /**
+   * Set if the current URL links will include rel="nofollow" (true by default)
+   *
+   * @param noFollow new noFollow value
+   */
+  public void setNoFollow(Boolean noFollow) {
+    this.noFollow = noFollow;
   }
 }

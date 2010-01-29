@@ -27,6 +27,7 @@ public class ConformanceTest extends TestCase {
 
     assertNotNull("No extractor configured", extractor);
     assertNotNull("No autolinker configured", linker);
+    linker.setNoFollow(Boolean.FALSE);
   }
 
   public void testMentionsExtractor() throws Exception {
