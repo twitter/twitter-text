@@ -183,7 +183,7 @@ HTML attribute for robot nofollow behavior (default)
 
         <div class="method-heading">
           <a href="#M000001" class="method-signature">
-          <span class="method-name">auto_link</span><span class="method-args">(text, options = {}) {|hashtag_or_list_or_username| ...}</span>
+          <span class="method-name">auto_link</span><span class="method-args">(text, options = {})</span>
           </a>
         </div>
       
@@ -233,9 +233,12 @@ this.
           <div class="method-source-code" id="M000001-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/autolink.rb, line 34</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: hashtag_or_list_or_username</span>
-      <span class="ruby-identifier">options</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">dup</span>
-      <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">auto_link_urls_custom</span>(<span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>), <span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>), <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})
+      <span class="ruby-identifier">auto_link_usernames_or_lists</span>(
+        <span class="ruby-identifier">auto_link_urls_custom</span>(
+          <span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span>),
+        <span class="ruby-identifier">options</span>),
+      <span class="ruby-identifier">options</span>)
     <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
@@ -276,7 +279,7 @@ following entries in the <tt>options</tt> hash:
             onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000003-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 82</span>
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 85</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})  <span class="ruby-comment cmt"># :yields: hashtag_text</span>
       <span class="ruby-identifier">options</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">dup</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_URL_CLASS</span>
@@ -318,15 +321,16 @@ Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt> the
             onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000004-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 102</span>
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 105</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_urls_custom</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">href_options</span> = {})
-      <span class="ruby-identifier">href_options</span>[<span class="ruby-identifier">:rel</span>] = <span class="ruby-value str">&quot;nofollow&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">href_options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:suppress_no_follow</span>)
+      <span class="ruby-identifier">options</span> = <span class="ruby-identifier">href_options</span>.<span class="ruby-identifier">dup</span>
+      <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:rel</span>] = <span class="ruby-value str">&quot;nofollow&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:suppress_no_follow</span>)
 
       <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:valid_url</span>]) <span class="ruby-keyword kw">do</span>
         <span class="ruby-identifier">all</span>, <span class="ruby-identifier">before</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">protocol</span> = <span class="ruby-identifier">$1</span>, <span class="ruby-identifier">$2</span>, <span class="ruby-identifier">$3</span>, <span class="ruby-identifier">$4</span>
-        <span class="ruby-identifier">options</span> = <span class="ruby-identifier">tag_options</span>(<span class="ruby-identifier">href_options</span>.<span class="ruby-identifier">stringify_keys</span>) <span class="ruby-operator">||</span> <span class="ruby-value str">&quot;&quot;</span>
+        <span class="ruby-identifier">html_attrs</span> = <span class="ruby-identifier">tag_options</span>(<span class="ruby-identifier">options</span>.<span class="ruby-identifier">stringify_keys</span>) <span class="ruby-operator">||</span> <span class="ruby-value str">&quot;&quot;</span>
         <span class="ruby-identifier">full_url</span> = (<span class="ruby-identifier">protocol</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">WWW_REGEX</span> <span class="ruby-value">? </span><span class="ruby-node">&quot;http://#{url}&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">url</span>)
-        <span class="ruby-node">&quot;#{before}&lt;a href=\&quot;#{full_url}\&quot;#{options}&gt;#{url}&lt;/a&gt;&quot;</span>
+        <span class="ruby-node">&quot;#{before}&lt;a href=\&quot;#{full_url}\&quot;#{html_attrs}&gt;#{url}&lt;/a&gt;&quot;</span>
       <span class="ruby-keyword kw">end</span>
     <span class="ruby-keyword kw">end</span>
 </pre>
@@ -380,7 +384,7 @@ of this.
             onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000002-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/autolink.rb, line 50</span>
+<span class="ruby-comment cmt"># File lib/autolink.rb, line 53</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}) <span class="ruby-comment cmt"># :yields: list_or_username</span>
       <span class="ruby-identifier">options</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">dup</span>
       <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:url_class</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_URL_CLASS</span>

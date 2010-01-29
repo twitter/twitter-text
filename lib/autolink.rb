@@ -31,9 +31,12 @@ module Twitter
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
-    def auto_link(text, options = {}, &block) # :yields: hashtag_or_list_or_username
-      options = options.dup
-      auto_link_usernames_or_lists(auto_link_urls_custom(auto_link_hashtags(text), options, &block), &block)
+    def auto_link(text, options = {})
+      auto_link_usernames_or_lists(
+        auto_link_urls_custom(
+          auto_link_hashtags(text, options),
+        options),
+      options)
     end
 
     # Add <tt><a></a></tt> tags around the usernames and lists in the provided <tt>text</tt>. The
@@ -100,13 +103,14 @@ module Twitter
     # and place in the <tt><a></tt> tag. Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
     # the <tt>rel="nofollow"</tt> attribute will be added.
     def auto_link_urls_custom(text, href_options = {})
-      href_options[:rel] = "nofollow" unless href_options.delete(:suppress_no_follow)
+      options = href_options.dup
+      options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
 
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol = $1, $2, $3, $4
-        options = tag_options(href_options.stringify_keys) || ""
+        html_attrs = tag_options(options.stringify_keys) || ""
         full_url = (protocol =~ WWW_REGEX ? "http://#{url}" : url)
-        "#{before}<a href=\"#{full_url}\"#{options}>#{url}</a>"
+        "#{before}<a href=\"#{full_url}\"#{html_attrs}>#{url}</a>"
       end
     end
 

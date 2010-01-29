@@ -62,6 +62,12 @@ class ConformanceTest < Test::Unit::TestCase
         assert_equal expected, auto_link_hashtags(input, :suppress_no_follow => true), description
       end
     end
+
+    def test_all_autolink_conformance
+      run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :all) do |description, expected, input|
+        assert_equal expected, auto_link(input, :suppress_no_follow => true), description
+      end
+    end
   end
   include AutolinkConformance
 
