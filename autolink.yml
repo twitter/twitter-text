@@ -230,3 +230,9 @@ tests:
     - description: "Autolink url without protocol (with WWW)"
       text: "WWW.EXAMPLE.COM"
       expected: "<a href=\"http://WWW.EXAMPLE.COM\">WWW.EXAMPLE.COM</a>"
+
+  all:
+    - description: "Autolink url does not overlap @username"
+      text: "Check out: http://example.com/test&@chasesechrist"
+      expected: "Check out: <a href=\"http://example.com/test&\">http://example.com/test&</a>@<a class=\"tweet-url username\" href=\"http://twitter.com/chasesechrist\">chasesechrist</a>"
+
