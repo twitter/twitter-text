@@ -111,6 +111,16 @@ public class ConformanceTest extends TestCase {
     }
   }
 
+  public void testAllAutolinking() throws Exception {
+    File yamlFile = new File(conformanceDir, "autolink.yml");
+    List testCases = loadConformanceData(yamlFile, "all");
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
+                   linker.autoLinkURLs((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
   private List loadConformanceData(File yamlFile, String testType) throws FileNotFoundException {
     Map fullConfig = (Map)Yaml.load(yamlFile);
     Map testConfig = (Map)fullConfig.get("tests");

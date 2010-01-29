@@ -15,12 +15,12 @@ public class Regex {
   /* URL related hash regex collection */
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^/\"':!=]|^)";
   private static final String URL_VALID_DOMAIN = "[a-z0-9\\.-]+\\.[a-z]{2,}(?::[0-9]+)?";
-  private static final String URL_VALID_URL_PATH_CHARS = "[a-z0-9!\\*'\\(\\);:@&=\\+\\$/%#\\[\\]\\-_\\.,~]";
+  private static final String URL_VALID_URL_PATH_CHARS = "[a-z0-9!\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~]";
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   //   1. Allow ) for Wikipedia URLs.
   //   2. Allow =&# for empty URL parameters and other URL-join artifacts
   private static final String URL_VALID_URL_PATH_ENDING_CHARS = "[a-z0-9\\)=#/]";
-  private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!\\*'\\(\\);:@&=\\+\\$/%#\\[\\]\\-_\\.,~]";
+  private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~]";
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#]";
   private static final String VALID_URL_PATTERN_STRING = "(" +     //  $1 total match
     "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceeding chracter
