@@ -108,8 +108,6 @@ describe Twitter::Extractor do
         "http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html",
         "http://somehost.com:3000",
         "http://x.com/~matthew+%-x",
-        "http://x.com/~matthew+%-,.;@:x",
-        "http://x.com/,.;@:x",
         "http://en.wikipedia.org/wiki/Primer_(film)",
         "http://www.ams.org/bookstore-getitem/item=mbk-59",
         "http://chilp.it/?77e8fd",

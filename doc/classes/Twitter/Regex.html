@@ -130,16 +130,6 @@ a pattern suitible for use with String#split
 </td>
         </tr>
         <tr class="top-aligned-row context-row">
-          <td class="context-item-name">RESERVED_ACTION_WORDS</td>
-          <td>=</td>
-          <td class="context-item-value">%w(twitter lists retweet retweets following followings follower followers with_friend with_friends statuses status activity favourites favourite favorite favorites).freeze</td>
-          <td width="3em">&nbsp;</td>
-          <td class="context-item-desc">
-List of words used as <a href="../Twitter.html">Twitter</a> actions.
-
-</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
           <td class="context-item-name">LATIN_ACCENTS</td>
           <td>=</td>
           <td class="context-item-value">[(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze</td>
@@ -192,7 +182,7 @@ is not a known symbol a <tt>nil</tt> will be returned.
             onclick="toggleCode('M000012-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000012-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/regex.rb, line 77</span>
+<span class="ruby-comment cmt"># File lib/regex.rb, line 70</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-operator">[]</span>(<span class="ruby-identifier">key</span>)
       <span class="ruby-constant">REGEXEN</span>[<span class="ruby-identifier">key</span>]
     <span class="ruby-keyword kw">end</span>

@@ -26,7 +26,7 @@ module Twitter
         ].flatten.freeze
     REGEXEN[:spaces] = Regexp.new(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|'))
 
-    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})/
+    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})(?!@)/
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*[@＠]([a-zA-Z0-9_]{1,20})/o
 
     REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
@@ -44,12 +44,12 @@ module Twitter
     # URL related hash regex collection
     REGEXEN[:valid_preceeding_chars] = /(?:[^\/"':!=]|^|\:)/
     REGEXEN[:valid_domain] = /[a-z0-9\.-]+\.[a-z]{2,}(?::[0-9]+)?/i
-    REGEXEN[:valid_url_path_chars] = /[a-z0-9!\*'\(\);:@&=\+\$\/%#\[\]\-_\.,~]/i
+    REGEXEN[:valid_url_path_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow ) for Wikipedia URLs.
     #   2. Allow =&# for empty URL parameters and other URL-join artifacts
     REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9\)=#\/]/i
-    REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:@&=\+\$\/%#\[\]\-_\.,~]/i
+    REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#]/i
     REGEXEN[:valid_url] = %r{
       (                                                                                     #   $1 total match
