@@ -22,7 +22,8 @@ module TestUrls
   INVALID = [ 
     "http://no-tld",
     "http://tld-too-short.x",
-    "http://x.com/,,,/.../@@@/;;;/:::/---/%%%x"
+    "http://x.com/,,,/.../@@@/;;;/:::/---/%%%x",
+    "http://domain-dash.com"
   ]
 
 end

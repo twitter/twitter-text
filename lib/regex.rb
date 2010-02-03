@@ -42,8 +42,8 @@ module Twitter
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
-    REGEXEN[:valid_preceeding_chars] = /(?:[^\/"':!=]|^|\:)/
-    REGEXEN[:valid_domain] = /[^\s()<>]+\.[a-z]{2,}(?::[0-9]+)?/i
+    REGEXEN[:valid_preceding_chars] = /(?:[^\/"':!=]|^|\:)/
+    REGEXEN[:valid_domain] = /[^\s()<>-]+\.[a-z]{2,}(?::[0-9]+)?/i
     REGEXEN[:valid_url_path_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow ) for Wikipedia URLs.
@@ -53,7 +53,7 @@ module Twitter
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#]/i
     REGEXEN[:valid_url] = %r{
       (                                                                                     #   $1 total match
-        (#{REGEXEN[:valid_preceeding_chars]})                                               #   $2 Preceeding chracter
+        (#{REGEXEN[:valid_preceding_chars]})                                                #   $2 Preceeding chracter
         (                                                                                   #   $3 URL
           (https?:\/\/|www\.)                                                               #   $4 Protocol or beginning
           (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s) and optional post number

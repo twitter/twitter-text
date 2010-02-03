@@ -59,21 +59,21 @@ describe Twitter::Extractor do
         @extractor.extract_reply_screen_name("@alice reply text").should == "alice"
       end
 
-      it "should extract preceeded by a space" do
+      it "should extract preceded by a space" do
         @extractor.extract_reply_screen_name(" @alice reply text").should == "alice"
       end
 
-      it "should extract preceeded by a full-width space" do
+      it "should extract preceded by a full-width space" do
         @extractor.extract_reply_screen_name("#{[0x3000].pack('U')}@alice reply text").should == "alice"
       end
     end
 
     context "should not be extracted from" do
-      it "should not be extracted when preceeded by text" do
+      it "should not be extracted when preceded by text" do
         @extractor.extract_reply_screen_name("reply @alice text").should == nil
       end
 
-      it "should not be extracted when preceeded by puctuation" do
+      it "should not be extracted when preceded by puctuation" do
         %w(. / _ - + # ! @).each do |punct|
           @extractor.extract_reply_screen_name("#{punct}@alice text").should == nil
         end
