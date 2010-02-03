@@ -151,6 +151,14 @@ tests:
       text: "I enjoy Macintosh Brand computers: http://✪df.ws/ejp"
       expected: "I enjoy Macintosh Brand computers: <a href=\"http://✪df.ws/ejp\">http://✪df.ws/ejp</a>"
 
+    - description: "DO NOT Autolink url containing ! character in the domain"
+      text: "badly formatted http://foo!bar.com"
+      expected: "badly formatted http://foo!bar.com"
+
+    - description: "DO NOT Autolink url containing _ character in the domain"
+      text: "badly formatted http://foo_bar.com"
+      expected: "badly formatted http://foo_bar.com"
+
     - description: "Autolink url preceded by :"
       text: "text:http://example.com"
       expected: "text:<a href=\"http://example.com\">http://example.com</a>"
