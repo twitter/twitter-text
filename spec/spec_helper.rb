@@ -3,6 +3,11 @@ $:.push File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'twitter-text'
 require 'hpricot'
+require 'spec/test_urls'
+
+Spec::Runner.configure do |config|
+  config.include TestUrls
+end
 
 Spec::Matchers.define :match_autolink_expression do
   match do |string|

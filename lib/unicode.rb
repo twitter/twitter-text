@@ -1,4 +1,3 @@
-
 module Twitter
   # This module lazily defines constants of the form Uxxxx for all Unicode
   # codepoints from U0000 to U10FFFF. The value of each constant is the

@@ -6,7 +6,6 @@ require 'date'
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 
-
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
   s.version = "1.0"

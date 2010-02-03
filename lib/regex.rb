@@ -43,7 +43,7 @@ module Twitter
 
     # URL related hash regex collection
     REGEXEN[:valid_preceeding_chars] = /(?:[^\/"':!=]|^|\:)/
-    REGEXEN[:valid_domain] = /[a-z0-9\.-]+\.[a-z]{2,}(?::[0-9]+)?/i
+    REGEXEN[:valid_domain] = /[^\s()<>]+\.[a-z]{2,}(?::[0-9]+)?/i
     REGEXEN[:valid_url_path_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow ) for Wikipedia URLs.
