@@ -75,6 +75,8 @@ class ConformanceTest < Test::Unit::TestCase
 
   def run_conformance_test(file, test_type, &block)
     yaml = YAML.load_file(file)
+    assert yaml["tests"][test_type.to_s], "No such test suite: #{test_type.to_s}"
+
     yaml["tests"][test_type.to_s].each do |test_info|
       yield test_info['description'], test_info['expected'], test_info['text']
     end

@@ -45,10 +45,18 @@ namespace :test do
   namespace :conformance do
     desc "Update conformance testing data"
     task :update do
-      dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
       puts "Updating conformance data ... "
-      system("cd #{dir} && git pull origin master") || exit(1)
+      system("git submodule init") || raise("Failed to init submodule")
+      system("git submodule update") || raise("Failed to update submodule")
       puts "Updating conformance data ... DONE"
+    end
+
+    desc "Change conformance test data to the lastest version"
+    task :latest => ['conformance:update'] do
+      current_dir = File.dirname(__FILE__)
+      submodule_dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
+      system("cd #{submodule_dir} && git pull origin master") || raise("Failed to pull submodule version")
+      system("cd #{current_dir} && git commit -a -m \"Upgraded to the latest conformance version\"") || raise("Failed to commit version upgrade")
     end
 
     desc "Run conformance test suite"
@@ -58,7 +66,7 @@ namespace :test do
   end
 
   desc "Run conformance test suite"
-  task :conformance => ['conformance:update', 'conformance:run'] do
+  task :conformance => ['conformance:latest', 'conformance:run'] do
   end
 end
 

@@ -15,7 +15,11 @@ describe "Twitter::Regex regular expressions" do
       "http://www.ams.org/bookstore-getitem/item=mbk-59",
       "http://chilp.it/?77e8fd",
       "www.foobar.com",
-      "WWW.FOOBAR.COM"
+      "WWW.FOOBAR.COM",
+      "http://tell.me/why",
+      "http://longtlds.mobi",
+      "http://✪df.ws/ejp",
+      "http://日本.com"
     ]
 
     @urls.each do |url|
@@ -31,14 +35,20 @@ describe "Twitter::Regex regular expressions" do
   end
 
   describe "invalid URLS" do
-   it "does not link urls with invalid_domains" do
+    it "does not link urls with invalid characters" do
       [ "http://doman-dash_2314352345_dfasd.foo-cow_4352.com",
         "http://no-tld",
         "http://tld-too-short.x",
         "http://x.com/,,,/.../@@@/;;;/:::/---/%%%x",
-        "http://doman-dash_2314352345_dfasd.foo-cow_4352.com",
+        "http://doman_dash_2314352345_dfasd.foo-cow_4352.com",
       ].each {|url| url.should_not have_autolinked_url(url)}
     end
+    
+    it "does not link domains beginning with a hypen" do
+      pending
+      "http://-doman_dash_2314352345_dfasd.com".should_not match_autolink_expression
+    end
+    
   end
 
 end
