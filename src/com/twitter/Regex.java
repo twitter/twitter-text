@@ -13,8 +13,8 @@ public class Regex {
   public static final String HASHTAG_CHARACTERS = "[a-z0-9_\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff]";
 
   /* URL related hash regex collection */
-  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^/\"':!=]|^)";
-  private static final String URL_VALID_DOMAIN = "[a-z0-9\\.-]+\\.[a-z]{2,}(?::[0-9]+)?";
+  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^/\"':!=]|^|\\:)";
+  private static final String URL_VALID_DOMAIN = "(?:[\\.-]|[^\\p{Punct}])+\\.[a-z]{2,}(?::[0-9]+)?";
   private static final String URL_VALID_URL_PATH_CHARS = "[a-z0-9!\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~]";
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   //   1. Allow ) for Wikipedia URLs.
