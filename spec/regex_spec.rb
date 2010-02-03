@@ -14,6 +14,8 @@ describe "Twitter::Regex regular expressions" do
       "http://en.wikipedia.org/wiki/Primer_(film)",
       "http://www.ams.org/bookstore-getitem/item=mbk-59",
       "http://chilp.it/?77e8fd",
+      "www.foobar.com",
+      "WWW.FOOBAR.COM"
     ]
 
     @urls.each do |url|
