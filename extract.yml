@@ -135,6 +135,10 @@ tests:
       text: "text http://www.ams.org/bookstore-getitem/item=mbk-59"
       expected: ["http://www.ams.org/bookstore-getitem/item=mbk-59"]
 
+    - description: "Extract valid URL: http://✪df.ws/ejp"
+      text: "text http://✪df.ws/ejp"
+      expected: ["http://✪df.ws/ejp"]
+      
     - description: "Extract valid URL: http://chilp.it/?77e8fd"
       text: "text http://chilp.it/?77e8fd"
       expected: ["http://chilp.it/?77e8fd"]
@@ -149,10 +153,6 @@ tests:
 
     - description: "DO NOT extract invalid URL: http://tld-too-short.x"
       text: "text http://tld-too-short.x"
-      expected: []
-
-    - description: "DO NOT extract invalid URL: http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
-      text: "text http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
       expected: []
 
   hashtags:
