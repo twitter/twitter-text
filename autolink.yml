@@ -147,7 +147,7 @@ tests:
       text: "text (http://example.com)"
       expected: "text (<a href=\"http://example.com\">http://example.com</a>)"
 
-    - description : "Autolink url containing unicode characters"
+    - description: "Autolink url containing unicode characters"
       text: "I enjoy Macintosh Brand computers: http://✪df.ws/ejp"
       expected: "I enjoy Macintosh Brand computers: <a href=\"http://✪df.ws/ejp\">http://✪df.ws/ejp</a>"
 
@@ -206,10 +206,6 @@ tests:
     - description: "DO NOT Autolink url preceded by /"
       text: "text /http://example.com"
       expected: "text /http://example.com"
-
-    - description: "DO NOT Autolink url preceded by :"
-      text: "text :http://example.com"
-      expected: "text :http://example.com"
 
     - description: "DO NOT Autolink url preceded by !"
       text: "text !http://example.com"
