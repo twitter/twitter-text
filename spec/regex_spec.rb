@@ -18,6 +18,12 @@ describe "Twitter::Regex regular expressions" do
     it "does not link urls with invalid characters" do
       TestUrls::INVALID.each {|url| url.should_not have_autolinked_url(url)}
     end
+    
+    it "does not link domains beginning with a hypen" do
+      pending
+      "http://-doman_dash_2314352345_dfasd.com".should_not match_autolink_expression
+    end
+    
   end
 
 end

@@ -345,7 +345,7 @@ describe Twitter::Autolink do
           end
         end
       end
-      
+
       context "when preceded by a :" do
         def original_text; "Check this out @hoverbird:#{url}"; end
 
@@ -353,7 +353,7 @@ describe Twitter::Autolink do
           @autolinked_text.should have_autolinked_url(url)
         end
       end
-      
+
       context "with a URL ending in allowed punctuation" do
         it "does not consume ending punctuation" do
           matcher = TestAutolink.new
