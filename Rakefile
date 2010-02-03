@@ -5,6 +5,7 @@ require 'rubygems/specification'
 require 'date'
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
+require 'digest'
 
 
 spec = Gem::Specification.new do |s|
@@ -41,8 +42,15 @@ Spec::Rake::SpecTask.new('spec:rcov') do |t|
   t.rcov_opts = ['--exclude', 'spec']
 end
 
+
+def conformance_version(dir)
+  Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
+end
+
 namespace :test do
   namespace :conformance do
+
+
     desc "Update conformance testing data"
     task :update do
       puts "Updating conformance data ... "
@@ -55,8 +63,16 @@ namespace :test do
     task :latest => ['conformance:update'] do
       current_dir = File.dirname(__FILE__)
       submodule_dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
+      version_before = conformance_version(submodule_dir)
       system("cd #{submodule_dir} && git pull origin master") || raise("Failed to pull submodule version")
-      system("cd #{current_dir} && git commit --allow-empty -a -m \"Upgraded to the latest conformance version\"") || raise("Failed to commit version upgrade")
+      system("cd #{current_dir}")
+      if conformance_version(submodule_dir) != version_before
+        system("cd #{current_dir} && git add #{submodule_dir}") || raise("Failed to add upgrade files")
+        system("git commit -m \"Upgraded to the latest conformance suite\" #{submodule_dir}") || raise("Failed to commit upgraded conformacne data")
+        puts "Upgraded conformance suite."
+      else
+        puts "No conformance suite changes."
+      end
     end
 
     desc "Run conformance test suite"
