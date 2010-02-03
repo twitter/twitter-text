@@ -56,7 +56,7 @@ namespace :test do
       current_dir = File.dirname(__FILE__)
       submodule_dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
       system("cd #{submodule_dir} && git pull origin master") || raise("Failed to pull submodule version")
-      system("cd #{current_dir} && git commit -a -m \"Upgraded to the latest conformance version\"") || raise("Failed to commit version upgrade")
+      system("cd #{current_dir} && git commit --allow-empty -a -m \"Upgraded to the latest conformance version\"") || raise("Failed to commit version upgrade")
     end
 
     desc "Run conformance test suite"
