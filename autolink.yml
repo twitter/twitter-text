@@ -145,11 +145,11 @@ tests:
 
     - description: "Autolink url surrounded by parentheses"
       text: "text (http://example.com)"
-      expected: 'text (<a href=\"http://example.com\">http://example.com</a>)'
+      expected: "text (<a href=\"http://example.com\">http://example.com</a>)"
 
     - description : "Autolink url containing unicode characters"
       text: "I enjoy Macintosh Brand computers: http://✪df.ws/ejp"
-      expected: 'I enjoy Macintosh Brand computers: <a href=\"http://✪df.ws/ejp">http://✪df.ws/ejp</a>'
+      expected: "I enjoy Macintosh Brand computers: <a href=\"http://✪df.ws/ejp\">http://✪df.ws/ejp</a>"
 
     - description: "Autolink url preceded by :"
       text: "text:http://example.com"
