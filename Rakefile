@@ -20,7 +20,7 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.summary = "Twitter text handling library"
 
-  s.add_dependency "action_view"
+  s.add_dependency "actionpack"
 
   s.require_path = 'lib'
   s.autorequire = ''
