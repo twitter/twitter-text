@@ -13,7 +13,9 @@ module Twitter
       return [] unless text
 
       possible_screen_names = []
-      text.scan(Twitter::Regex[:extract_mentions]) {|before,sn| possible_screen_names << sn }
+      text.scan(Twitter::Regex[:extract_mentions]) do |before, sn, after|
+        possible_screen_names << sn unless after =~ Twitter::Regex[:at_signs]
+      end
       possible_screen_names.each{|sn| yield sn } if block_given?
       possible_screen_names
     end

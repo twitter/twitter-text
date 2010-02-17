@@ -26,7 +26,8 @@ module Twitter
         ].flatten.freeze
     REGEXEN[:spaces] = Regexp.new(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|'))
 
-    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})(?!@)/
+    REGEXEN[:at_signs] = /[@＠]/
+    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])[@＠]([a-zA-Z0-9_]{1,20})(?=(.|$))/
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*[@＠]([a-zA-Z0-9_]{1,20})/o
 
     REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
