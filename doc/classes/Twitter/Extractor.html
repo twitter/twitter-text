@@ -136,7 +136,7 @@ If a block is given then it will be called for each hashtag.
             onclick="toggleCode('M000008-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000008-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 57</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 59</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_hashtags</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: hashtag_text</span>
       <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
@@ -179,7 +179,9 @@ If a block is given then it will be called for each username.
       <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
       <span class="ruby-identifier">possible_screen_names</span> = []
-      <span class="ruby-identifier">text</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:extract_mentions</span>]) {<span class="ruby-operator">|</span><span class="ruby-identifier">before</span>,<span class="ruby-identifier">sn</span><span class="ruby-operator">|</span> <span class="ruby-identifier">possible_screen_names</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">sn</span> }
+      <span class="ruby-identifier">text</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:extract_mentions</span>]) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">before</span>, <span class="ruby-identifier">sn</span>, <span class="ruby-identifier">after</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">possible_screen_names</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">sn</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">after</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:at_signs</span>]
+      <span class="ruby-keyword kw">end</span>
       <span class="ruby-identifier">possible_screen_names</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">sn</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">sn</span> } <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
       <span class="ruby-identifier">possible_screen_names</span>
     <span class="ruby-keyword kw">end</span>
@@ -210,7 +212,7 @@ any)
             onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000006-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 25</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 27</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_reply_screen_name</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: username</span>
       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
@@ -247,7 +249,7 @@ If a block is given then it will be called for each URL.
             onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000007-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 40</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 42</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_urls</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: url</span>
       <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
