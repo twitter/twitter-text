@@ -19,7 +19,7 @@ public class AutolinkTest extends TestCase {
   }
 
   public void testNoFollowDisabled() {
-    linker.setNoFollow(Boolean.FALSE);
+    linker.setNoFollow(false);
     String tweet = "This has a #hashtag";
     String expected = "This has a <a href=\"http://twitter.com/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>";
     assertAutolink(expected, linker.autoLinkHashtags(tweet));

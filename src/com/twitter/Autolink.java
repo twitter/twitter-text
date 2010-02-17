@@ -32,7 +32,7 @@ public class Autolink {
   protected String usernameUrlBase;
   protected String listUrlBase;
   protected String hashtagUrlBase;
-  protected Boolean noFollow = Boolean.TRUE;
+  protected boolean noFollow = true;
 
   public Autolink() {
     urlClass = DEFAULT_URL_CLASS;
@@ -271,7 +271,7 @@ public class Autolink {
   /**
    * @return if the current URL links will include rel="nofollow" (true by default)
    */
-  public Boolean isNoFollow() {
+  public boolean isNoFollow() {
     return noFollow;
   }
 
@@ -280,7 +280,7 @@ public class Autolink {
    *
    * @param noFollow new noFollow value
    */
-  public void setNoFollow(Boolean noFollow) {
+  public void setNoFollow(boolean noFollow) {
     this.noFollow = noFollow;
   }
 }
