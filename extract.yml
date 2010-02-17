@@ -33,6 +33,10 @@ tests:
       text: "Current Status: @_@ (cc: @username)"
       expected: ["username"]
 
+    - description: "Extract lone metion but not @user@user (too close to an email)"
+      text: "@username email me @test@example.com"
+      expected: ["username"]
+
   replies:
     - description: "Extract reply at the begining of a tweet"
       text: "@username reply"
