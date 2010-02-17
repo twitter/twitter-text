@@ -26,7 +26,14 @@ public class Extractor {
       return null;
     }
 
-    return extractList(Regex.EXTRACT_MENTIONS, text, Regex.EXTRACT_MENTIONS_GROUP_USERNAME);
+    List<String> extracted = new ArrayList<String>();
+    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
+    while (matcher.find()) {
+      if (! Regex.AT_SIGNS.matcher(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_AFTER)).matches()) {
+        extracted.add(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
+      }
+    }
+    return extracted;
   }
 
   /**

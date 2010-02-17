@@ -35,13 +35,14 @@ public class Regex {
   ")";
 
   /* Begin public constants */
+  public static final Pattern AT_SIGNS = Pattern.compile("[@\uFF20]");
 
   public static final Pattern AUTO_LINK_HASHTAGS = Pattern.compile("(^|[^0-9A-Z&/]+)(#|\uFF03)([0-9A-Z_]*[A-Z_]+" + HASHTAG_CHARACTERS + "*)", Pattern.CASE_INSENSITIVE);
   public static final int AUTO_LINK_HASHTAGS_GROUP_BEFORE = 1;
   public static final int AUTO_LINK_HASHTAGS_GROUP_HASH = 2;
   public static final int AUTO_LINK_HASHTAGS_GROUP_TAG = 3;
 
-  public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_]|^)([@\uFF20]+)([a-z0-9_]{1,20})(/[a-z][a-z0-9\\x80-\\xFF-]{0,79})?", Pattern.CASE_INSENSITIVE);
+  public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_]|^)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9\\x80-\\xFF-]{0,79})?", Pattern.CASE_INSENSITIVE);
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE = 1;
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT = 2;
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME = 3;
@@ -51,10 +52,12 @@ public class Regex {
   public static final int VALID_URL_GROUP_BEFORE = 2;
   public static final int VALID_URL_GROUP_URL = 3;
 
-  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])[@\uFF20]([a-z0-9_]{1,20})(?!@)", Pattern.CASE_INSENSITIVE);
+
+  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})(?=(.|$))", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;
   public static final int EXTRACT_MENTIONS_GROUP_USERNAME = 2;
+  public static final int EXTRACT_MENTIONS_GROUP_AFTER = 3;
 
-  public static final Pattern EXTRACT_REPLY = Pattern.compile("^(?:[" + com.twitter.regex.Spaces.getCharacterClass() + "])*[@\uFF20]([a-z0-9_]{1,20}).*", Pattern.CASE_INSENSITIVE);
+  public static final Pattern EXTRACT_REPLY = Pattern.compile("^(?:[" + com.twitter.regex.Spaces.getCharacterClass() + "])*" + AT_SIGNS + "([a-z0-9_]{1,20}).*", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_REPLY_GROUP_USERNAME = 1;
 }

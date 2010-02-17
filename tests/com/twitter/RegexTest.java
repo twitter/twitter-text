@@ -21,7 +21,7 @@ public class RegexTest extends TestCase {
   }
 
   public void testExtractMentions() {
-    assertCaptureCount(2, Regex.EXTRACT_MENTIONS, "sample @user mention");
+    assertCaptureCount(3, Regex.EXTRACT_MENTIONS, "sample @user mention");
   }
 
   public void testExtractReply() {
