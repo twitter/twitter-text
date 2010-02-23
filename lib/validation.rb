@@ -1,4 +1,3 @@
-
 module Twitter
   module Validation
     MAX_LENGTH = 140

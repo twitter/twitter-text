@@ -59,21 +59,21 @@ describe Twitter::Extractor do
         @extractor.extract_reply_screen_name("@alice reply text").should == "alice"
       end
 
-      it "should extract preceeded by a space" do
+      it "should extract preceded by a space" do
         @extractor.extract_reply_screen_name(" @alice reply text").should == "alice"
       end
 
-      it "should extract preceeded by a full-width space" do
+      it "should extract preceded by a full-width space" do
         @extractor.extract_reply_screen_name("#{[0x3000].pack('U')}@alice reply text").should == "alice"
       end
     end
 
     context "should not be extracted from" do
-      it "should not be extracted when preceeded by text" do
+      it "should not be extracted when preceded by text" do
         @extractor.extract_reply_screen_name("reply @alice text").should == nil
       end
 
-      it "should not be extracted when preceeded by puctuation" do
+      it "should not be extracted when preceded by puctuation" do
         %w(. / _ - + # ! @).each do |punct|
           @extractor.extract_reply_screen_name("#{punct}@alice text").should == nil
         end
@@ -99,39 +99,21 @@ describe Twitter::Extractor do
 
   describe "urls" do
     describe "matching URLS" do
-      @urls = [
-        "http://google.com",
-        "http://foobar.com/#",
-        "http://google.com/#foo",
-        "http://google.com/#search?q=iphone%20-filter%3Alinks",
-        "http://twitter.com/#search?q=iphone%20-filter%3Alinks",
-        "http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html",
-        "http://somehost.com:3000",
-        "http://x.com/~matthew+%-x",
-        "http://en.wikipedia.org/wiki/Primer_(film)",
-        "http://www.ams.org/bookstore-getitem/item=mbk-59",
-        "http://chilp.it/?77e8fd",
-      ]
-
-      @urls.each do |url|
-        it "should extract the URL #{url}" do
-          @extractor.extract_urls(url).should == [url]
+      TestUrls::VALID.each do |url|
+        it "should extract the URL #{url} and prefix it with a protocol if missing" do
+          @extractor.extract_urls(url).first.should include(url)
         end
 
         it "should match the URL #{url} when it's embedded in other text" do
           text = "Sweet url: #{url} I found. #awesome"
-          @extractor.extract_urls(text).should == [url]
+          @extractor.extract_urls(text).first.should include(url)
         end
       end
     end
 
     describe "invalid URLS" do
-     it "does not link urls with invalid_domains" do
-        [ "http://doman-dash_2314352345_dfasd.foo-cow_4352.com",
-          "http://no-tld",
-          "http://tld-too-short.x",
-          "http://doman-dash_2314352345_dfasd.foo-cow_4352.com",
-        ].each {|url| @extractor.extract_urls(url).should == [] }
+      it "does not link urls with invalid domains" do
+        @extractor.extract_urls("http://tld-too-short.x").should == []
       end
     end
   end
@@ -150,7 +132,6 @@ describe Twitter::Extractor do
     end
 
     context "international hashtags" do
-
       context "should allow accents" do
         %w(mañana café münchen).each do |hashtag|
           it "should extract ##{hashtag}" do

@@ -1,4 +1,3 @@
-
 raise("twitter-text requires the $KCODE variable be set to 'UTF8' or 'u'") unless ['u','UTF8'].include?($KCODE)
 
 require 'rubygems'

@@ -1,4 +1,3 @@
-
 module Twitter
   # A module for including Tweet parsing in a class. This module provides function for the extraction and processing
   # of usernames, lists, URLs and hashtags.
@@ -41,7 +40,6 @@ module Twitter
     # If a block is given then it will be called for each URL.
     def extract_urls(text) # :yields: url
       return [] unless text
-
       urls = []
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, path, query|
         urls << (protocol == "www." ? "http://#{url}" : url)
