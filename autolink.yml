@@ -243,6 +243,10 @@ tests:
       text: "WWW.EXAMPLE.COM"
       expected: "<a href=\"http://WWW.EXAMPLE.COM\">WWW.EXAMPLE.COM</a>"
 
+    - description: "Autolink raw domain followed by domain"
+      text: "See http://example.com example.com"
+      expected: "See <a href=\"http://example.com\">http://example.com</a> example.com"
+
   all:
     - description: "Autolink url does not overlap @username"
       text: "Check out: http://example.com/test&@chasesechrist"
