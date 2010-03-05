@@ -251,6 +251,14 @@ tests:
       text: "http://www.flickr.com/photos/29674651@N00/foobar"
       expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/foobar\">http://www.flickr.com/photos/29674651@N00/foobar</a>"
 
+    - description: "Autolink URL, with a path, surrounded by parentheses"
+      text: "Sometimes I'll wrap one in parens (http://twitter.com/hoverbird) as an aside."
+      expected: "Sometimes I'll wrap one in parens (<a href=\"http://twitter.com/hoverbird\">http://twitter.com/hoverbird</a>) as an aside."
+
+    - description: "Autolink URL followed by a period doesn't swallow the period."
+      text: "I think it's proper to end sentences with a period http://tell.me/why. Even when they contain a URL."
+      expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me/why\">http://tell.me/why</a>. Even when they contain a URL."
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406"
