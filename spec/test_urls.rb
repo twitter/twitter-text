@@ -19,7 +19,7 @@ module TestUrls
     "http://日本.com"
   ]
 
-  INVALID = [ 
+  INVALID = [
     "http://no-tld",
     "http://tld-too-short.x",
     "http://x.com/,,,/.../@@@/;;;/:::/---/%%%x",

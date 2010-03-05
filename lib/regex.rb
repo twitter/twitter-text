@@ -43,9 +43,8 @@ module Twitter
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
-    REGEXEN[:valid_preceding_chars] = /(?:[^\/"':!=]|^|\:)/
-    REGEXEN[:valid_domain] = /(?:[\.-]|[^[:punct:]])+\.[a-z]{2,}(?::[0-9]+)?/i
-
+    REGEXEN[:valid_preceeding_chars] = /(?:[^\/"':!=]|^|\:)/
+    REGEXEN[:valid_domain] = /(?:[\.-]|[^[:punct:]\s])+\.[a-z]{2,}(?::[0-9]+)?/i
     REGEXEN[:valid_url_path_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow ) for Wikipedia URLs.
