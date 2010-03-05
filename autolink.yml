@@ -247,6 +247,14 @@ tests:
       text: "See http://example.com example.com"
       expected: "See <a href=\"http://example.com\">http://example.com</a> example.com"
 
+    - description: "Autolink url that includes @-sign and numeric dir under it"
+      text: "http://www.flickr.com/photos/29674651@N00/4382024406"
+      expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a>"
+
+    - description: "Autolink url that includes @-sign and non-numeric dir under it"
+      text: "http://www.flickr.com/photos/29674651@N00/foobar"
+      expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/foobar</a>"
+
   all:
     - description: "Autolink url does not overlap @username"
       text: "Check out: http://example.com/test&@chasesechrist"
