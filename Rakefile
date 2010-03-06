@@ -9,7 +9,7 @@ require 'digest'
 
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "1.0.2"
+  s.version = "1.0.3"
   s.author = "Matt Sanford"
   s.email = "matt@twitter.com"
   s.homepage = "http://twitter.com"
