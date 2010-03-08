@@ -136,7 +136,7 @@ If a block is given then it will be called for each hashtag.
             onclick="toggleCode('M000008-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000008-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 59</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 57</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_hashtags</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: hashtag_text</span>
       <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
@@ -174,7 +174,7 @@ If a block is given then it will be called for each username.
             onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000005-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 12</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 11</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_mentioned_screen_names</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: username</span>
       <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
@@ -212,7 +212,7 @@ any)
             onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000006-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 27</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 26</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_reply_screen_name</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: username</span>
       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
 
@@ -249,10 +249,9 @@ If a block is given then it will be called for each URL.
             onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000007-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/extractor.rb, line 42</span>
+<span class="ruby-comment cmt"># File lib/extractor.rb, line 41</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">extract_urls</span>(<span class="ruby-identifier">text</span>) <span class="ruby-comment cmt"># :yields: url</span>
       <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">text</span>
-
       <span class="ruby-identifier">urls</span> = []
       <span class="ruby-identifier">text</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-constant">Twitter</span><span class="ruby-operator">::</span><span class="ruby-constant">Regex</span>[<span class="ruby-identifier">:valid_url</span>]) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">all</span>, <span class="ruby-identifier">before</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">protocol</span>, <span class="ruby-identifier">domain</span>, <span class="ruby-identifier">path</span>, <span class="ruby-identifier">query</span><span class="ruby-operator">|</span>
         <span class="ruby-identifier">urls</span> <span class="ruby-operator">&lt;&lt;</span> (<span class="ruby-identifier">protocol</span> <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;www.&quot;</span> <span class="ruby-operator">?</span> <span class="ruby-node">&quot;http://#{url}&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">url</span>)

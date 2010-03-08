@@ -142,7 +142,7 @@ of each constant is the UTF-8 string for the codepoint. Examples:
             onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000011-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/unicode.rb, line 14</span>
+<span class="ruby-comment cmt"># File lib/unicode.rb, line 13</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">const_missing</span>(<span class="ruby-identifier">name</span>)
       <span class="ruby-comment cmt"># Check that the constant name is of the right form: U0000 to U10FFFF</span>
       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">CODEPOINT_REGEX</span>

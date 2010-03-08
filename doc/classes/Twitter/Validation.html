@@ -155,7 +155,7 @@ following Symbols will be returned:
             onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000010-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/validation.rb, line 38</span>
+<span class="ruby-comment cmt"># File lib/validation.rb, line 37</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">tweet_invalid?</span>(<span class="ruby-identifier">text</span>)
       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">:empty</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">text</span>.<span class="ruby-identifier">blank?</span>
       <span class="ruby-keyword kw">begin</span>
@@ -209,7 +209,7 @@ canonicalization will not change the value.
             onclick="toggleCode('M000009-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000009-source">
 <pre>
-<span class="ruby-comment cmt"># File lib/validation.rb, line 25</span>
+<span class="ruby-comment cmt"># File lib/validation.rb, line 24</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">tweet_length</span>(<span class="ruby-identifier">text</span>)
       <span class="ruby-constant">ActiveSupport</span><span class="ruby-operator">::</span><span class="ruby-constant">Multibyte</span><span class="ruby-operator">::</span><span class="ruby-constant">Chars</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">text</span>).<span class="ruby-identifier">normalize</span>(<span class="ruby-identifier">:c</span>).<span class="ruby-identifier">length</span>
     <span class="ruby-keyword kw">end</span>
