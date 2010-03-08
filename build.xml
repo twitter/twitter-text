@@ -11,6 +11,7 @@
   <property name="docs"  location="docs"/>
   <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
+  <property name="jar.version" value="1.0.3" />
 
   <path id="jars.tests">
     <pathelement location="jars/junit-4.6.jar"/>
@@ -79,8 +80,8 @@
     <!-- Create the distribution directory -->
     <mkdir dir="${dist}/lib"/>
 
-    <!-- Put everything in ${build} into the twitter-text-${DSTAMP}.jar file -->
-    <jar destfile="${dist}/lib/twitter-text-${DSTAMP}.jar">
+    <!-- Put everything in ${build} into the twitter-text-${jar.version}.jar file -->
+    <jar destfile="${dist}/lib/twitter-text-${jar.version}.jar">
        <fileset dir="${build}" />
        <manifest>
          <section name="LICENSE">
