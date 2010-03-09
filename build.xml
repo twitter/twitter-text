@@ -7,7 +7,7 @@
   <property name="src.tests" location="tests"/>
   <property name="build" location="build"/>
   <property name="build.tests" location="build"/>
-  <property name="conformance.dir" location="test-data/twitter-text-conformance"/>
+  <property name="conformance.dir" location="../twitter-text-conformance"/>
   <property name="docs"  location="docs"/>
   <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
