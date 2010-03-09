@@ -239,6 +239,10 @@ tests:
       text: "WWW.EXAMPLE.COM"
       expected: "<a href=\"http://WWW.EXAMPLE.COM\">WWW.EXAMPLE.COM</a>"
 
+    - description: "Multiple URLs with different protocols"
+      text:  "http://foo.com AND https://bar.com AND www.foobar.com"
+      expected: "<a href=\"http://foo.com\">http://foo.com</a> AND <a href=\"https://bar.com\">https://bar.com</a> AND <a href=\"http://www.foobar.com\">www.foobar.com</a>"
+
     - description: "Autolink raw domain followed by domain"
       text: "See http://example.com example.com"
       expected: "See <a href=\"http://example.com\">http://example.com</a> example.com"
@@ -250,6 +254,18 @@ tests:
     - description: "Autolink url that includes @-sign and non-numeric dir under it"
       text: "http://www.flickr.com/photos/29674651@N00/foobar"
       expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/foobar\">http://www.flickr.com/photos/29674651@N00/foobar</a>"
+
+    - description: "Autolink URL with only a domain followed by a period doesn't swallow the period."
+      text: "I think it's proper to end sentences with a period http://tell.me. Even when they contain a URL."
+      expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me\">http://tell.me</a>. Even when they contain a URL."
+
+    - description: "Autolink URL with a path followed by a period doesn't swallow the period."
+      text: "I think it's proper to end sentences with a period http://tell.me/why. Even when they contain a URL."
+      expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me/why\">http://tell.me/why</a>. Even when they contain a URL."
+
+    - description: "Autolink URL with a query followed by a period doesn't swallow the period."
+      text: "I think it's proper to end sentences with a period http://tell.me/why?=because.i.want.it. Even when they contain a URL."
+      expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me/why?=because.i.want.it\">http://tell.me/why?=because.i.want.it</a>. Even when they contain a URL."
 
   all:
     - description: "Autolink all does not break on URL with @"
