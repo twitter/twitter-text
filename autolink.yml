@@ -256,3 +256,6 @@ tests:
       text: "http://www.flickr.com/photos/29674651@N00/4382024406"
       expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a>"
 
+    - description: "Autolink all does not allow & without ?"
+      text: "Check out: http://example.com/test&@chasesechrist"
+      expected: "Check out: <a href=\"http://example.com/test\">http://example.com/test</a>&@<a class=\"tweet-url username\" href=\"http://twitter.com/chasesechrist\">chasesechrist</a>"
