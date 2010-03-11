@@ -267,6 +267,17 @@ tests:
       text: "I think it's proper to end sentences with a period http://tell.me/why?=because.i.want.it. Even when they contain a URL."
       expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me/why?=because.i.want.it\">http://tell.me/why?=because.i.want.it</a>. Even when they contain a URL."
 
+    - description: "Autolink URL should NOT autolink www...foo"
+      text: "Is www...foo a valid URL?"
+      expected: "Is www...foo a valid URL?"
+
+    - description: "Autolink URL should NOT autolink www.-foo.com"
+      text: "Is www.-foo.com a valid URL?"
+      expected: "Is www.-foo.com a valid URL?"
+
+    - description: "Autolink URL should autolink a domain with a valid dash"
+      text: "Is www.foo-bar.com a valid URL?"
+      expected: "Is <a href=\"http://www.foo-bar.com\">www.foo-bar.com</a> a valid URL?"
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406"
