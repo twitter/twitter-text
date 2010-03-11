@@ -11,7 +11,7 @@
   <property name="docs"  location="docs"/>
   <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
-  <property name="jar.version" value="1.0.3" />
+  <property name="jar.version" value="1.0.4" />
 
   <path id="jars.tests">
     <pathelement location="jars/junit-4.6.jar"/>
