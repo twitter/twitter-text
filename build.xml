@@ -82,7 +82,7 @@
 
     <!-- Put everything in ${build} into the twitter-text-${jar.version}.jar file -->
     <jar destfile="${dist}/lib/twitter-text-${jar.version}.jar">
-       <fileset dir="${build}" />
+       <fileset dir="${build}" excludes="**/*Test.class"/>
        <manifest>
          <section name="LICENSE">
            <attribute name="License" value="Apache License, Version 2.0"/>
