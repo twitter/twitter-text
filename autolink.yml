@@ -278,6 +278,11 @@ tests:
     - description: "Autolink URL should autolink a domain with a valid dash"
       text: "Is www.foo-bar.com a valid URL?"
       expected: "Is <a href=\"http://www.foo-bar.com\">www.foo-bar.com</a> a valid URL?"
+    
+    - description: "Autolink URL should link search urls (with &lang=, not &lang;)"
+      text: "Check out http://search.twitter.com/search?q=avro&lang=en"
+      expected: "Check out <a href=\"http://search.twitter.com/search?q=avro&lang=en\">http://search.twitter.com/search?q=avro&lang=en</a>"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406"
