@@ -271,8 +271,27 @@ tests:
       text: "Czech out sweet deals at http://mrs.domain-dash.biz ok?"
       expected: "Czech out sweet deals at <a href=\"http://mrs.domain-dash.biz\">http://mrs.domain-dash.biz</a> ok?"
 
+    - description: "Autolink URL should NOT autolink www...foo"
+      text: "Is www...foo a valid URL?"
+      expected: "Is www...foo a valid URL?"
+
+    - description: "Autolink URL should NOT autolink www.-foo.com"
+      text: "Is www.-foo.com a valid URL?"
+      expected: "Is www.-foo.com a valid URL?"
+
+    - description: "Autolink URL should autolink a domain with a valid dash"
+      text: "Is www.foo-bar.com a valid URL?"
+      expected: "Is <a href=\"http://www.foo-bar.com\">www.foo-bar.com</a> a valid URL?"
+
+    - description: "Autolink URL should link search urls (with &lang=, not &lang;)"
+      text: "Check out http://search.twitter.com/search?q=avro&lang=en"
+      expected: "Check out <a href=\"http://search.twitter.com/search?q=avro&lang=en\">http://search.twitter.com/search?q=avro&lang=en</a>"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
       expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a> if you know what's good for you."
 
+    - description: "Autolink all does not allow & without ?"
+      text: "Check out: http://example.com/test&@chasesechrist"
+      expected: "Check out: <a href=\"http://example.com/test\">http://example.com/test</a>&@<a class=\"tweet-url username\" href=\"http://twitter.com/chasesechrist\">chasesechrist</a>"
