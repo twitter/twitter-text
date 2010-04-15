@@ -119,17 +119,17 @@ tests:
       text: "text http://somehost.com:3000"
       expected: ["http://somehost.com:3000"]
 
-    - description: "Extract valid URL: http://x.com/~matthew+%-x"
-      text: "text http://x.com/~matthew+%-x"
-      expected: ["http://x.com/~matthew+%-x"]
+    - description: "Extract valid URL: http://xo.com/~matthew+%-x"
+      text: "text http://xo.com/~matthew+%-x"
+      expected: ["http://xo.com/~matthew+%-x"]
 
-    - description: "Extract valid URL: http://x.com/~matthew+%-,.;x"
-      text: "text http://x.com/~matthew+%-,.;x"
-      expected: ["http://x.com/~matthew+%-,.;x"]
+    - description: "Extract valid URL: http://xo.com/~matthew+%-,.;x"
+      text: "text http://xo.com/~matthew+%-,.;x"
+      expected: ["http://xo.com/~matthew+%-,.;x"]
 
-    - description: "Extract valid URL: http://x.com/,.;x"
-      text: "text http://x.com/,.;x"
-      expected: ["http://x.com/,.;x"]
+    - description: "Extract valid URL: http://xo.com/,.;x"
+      text: "text http://xo.com/,.;x"
+      expected: ["http://xo.com/,.;x"]
 
     - description: "Extract valid URL: http://en.wikipedia.org/wiki/Primer_(film)"
       text: "text http://en.wikipedia.org/wiki/Primer_(film)"
@@ -142,13 +142,17 @@ tests:
     - description: "Extract valid URL: http://✪df.ws/ejp"
       text: "text http://✪df.ws/ejp"
       expected: ["http://✪df.ws/ejp"]
-      
+
     - description: "Extract valid URL: http://chilp.it/?77e8fd"
       text: "text http://chilp.it/?77e8fd"
       expected: ["http://chilp.it/?77e8fd"]
 
-    - description: "DO NOT extract invalid URL: http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
+    - description: "DO NOT extract invalid URL: http://-begin_dash_2314352345_dfasd.foo-cow_4352.com"
       text: "text http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
+      expected: []
+
+    - description: "DO NOT extract invalid URL: http://x.com/oneletterdomain"
+      text: "text http://x.com/oneletterdomain"
       expected: []
 
     - description: "DO NOT extract invalid URL: http://no-tld"

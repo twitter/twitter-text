@@ -267,8 +267,12 @@ tests:
       text: "I think it's proper to end sentences with a period http://tell.me/why?=because.i.want.it. Even when they contain a URL."
       expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me/why?=because.i.want.it\">http://tell.me/why?=because.i.want.it</a>. Even when they contain a URL."
 
+    - description: "Autolink URL with a hyphen in the domain name"
+      text: "Czech out sweet deals at http://mrs.domain-dash.biz ok?"
+      expected: "Czech out sweet deals at <a href=\"http://mrs.domain-dash.biz\">http://mrs.domain-dash.biz</a> ok?"
+
   all:
     - description: "Autolink all does not break on URL with @"
-      text: "http://www.flickr.com/photos/29674651@N00/4382024406"
-      expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a>"
+      text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
+      expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a> if you know what's good for you."
 
