@@ -19,12 +19,12 @@ module TestUrls
     "http://日本.com",
     "http://search.twitter.com/search?q=avro&lang=en",
     "http://mrs.domain-dash.biz",
+    "http://x.com/has/one/char/domain",
   ]
 
   INVALID = [
     "http://no-tld",
     "http://tld-too-short.x",
-    "http://x.com/has/one/char/domain",
     "http://-doman_dash.com"
   ]
 
