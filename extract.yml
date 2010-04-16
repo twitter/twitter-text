@@ -147,12 +147,12 @@ tests:
       text: "text http://chilp.it/?77e8fd"
       expected: ["http://chilp.it/?77e8fd"]
 
+    - description: "Extract valid URL: http://x.com/oneletterdomain"
+      text: "text http://x.com/oneletterdomain"
+      expected: ["http://x.com/oneletterdomain"]
+
     - description: "DO NOT extract invalid URL: http://-begin_dash_2314352345_dfasd.foo-cow_4352.com"
       text: "text http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
-      expected: []
-
-    - description: "DO NOT extract invalid URL: http://x.com/oneletterdomain"
-      text: "text http://x.com/oneletterdomain"
       expected: []
 
     - description: "DO NOT extract invalid URL: http://no-tld"
