@@ -14,7 +14,7 @@ public class Regex {
 
   /* URL related hash regex collection */
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^/\"':!=]|^|\\:)";
-  private static final String URL_VALID_DOMAIN = "(?:[^\\p{Punct}\\s]+[\\.-][^\\p{Punct}\\s]+|[^\\p{Punct}\\s])+\\.[a-z]{2,}(?::[0-9]+)?";
+  private static final String URL_VALID_DOMAIN = "(?:[^\\p{Punct}\\s][\\.-](?=[^\\p{Punct}\\s])|[^\\p{Punct}\\s])+\\.[a-z]{2,}(?::[0-9]+)?";
   private static final String URL_VALID_URL_PATH_CHARS = "(?:[\\.,]?[a-z0-9!\\*'\\(\\);:=\\+\\$/%#\\[\\]\\-_,~@])";
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   //   1. Allow ) for Wikipedia URLs.
