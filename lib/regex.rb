@@ -44,7 +44,7 @@ module Twitter
 
     # URL related hash regex collection
     REGEXEN[:valid_preceding_chars] = /(?:[^\/"':!=]|^|\:)/
-    REGEXEN[:valid_domain] = /(?:[^[:punct:]\s][\.-][^[:punct:]\s]|[^[:punct:]\s])+\.[a-z]{2,}(?::[0-9]+)?/i
+    REGEXEN[:valid_domain] = /(?:[^\s][\.-][^\s]|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
     REGEXEN[:valid_url_path_chars] = /[\.\,]?[a-z0-9!\*'\(\);:=\+\$\/%#\[\]\-_,~@]/i
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow ) for Wikipedia URLs.
@@ -67,7 +67,7 @@ module Twitter
     REGEXEN.each_pair{|k,v| v.freeze }
 
     # Return the regular expression for a given <tt>key</tt>. If the <tt>key</tt>
-    # is not a known symbol a <tt>nil</tt> will be returned. 
+    # is not a known symbol a <tt>nil</tt> will be returned.
     def self.[](key)
       REGEXEN[key]
     end

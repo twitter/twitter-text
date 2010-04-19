@@ -16,7 +16,7 @@ describe "Twitter::Regex regular expressions" do
 
   describe "invalid URLS" do
     it "does not link urls with invalid characters" do
-      TestUrls::INVALID.each {|url| url.should_not have_autolinked_url(url)}
+      TestUrls::INVALID.each {|url| url.should_not match_autolink_expression}
     end
   end
 

@@ -7,7 +7,7 @@ module TestUrls
     "http://twitter.com/#search?q=iphone%20-filter%3Alinks",
     "http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html",
     "http://somehost.com:3000",
-    "http://x.com/~matthew+%-x",
+    "http://xo.com/~matthew+%-x",
     "http://en.wikipedia.org/wiki/Primer_(film)",
     "http://www.ams.org/bookstore-getitem/item=mbk-59",
     "http://chilp.it/?77e8fd",
@@ -16,14 +16,15 @@ module TestUrls
     "http://tell.me/why",
     "http://longtlds.info",
     "http://✪df.ws/ejp",
-    "http://日本.com"
+    "http://日本.com",
+    "http://search.twitter.com/search?q=avro&lang=en",
+    "http://mrs.domain-dash.biz",
+    "http://x.com/has/one/char/domain",
   ]
 
   INVALID = [
     "http://no-tld",
     "http://tld-too-short.x",
-    "http://x.com/,,,/.../@@@/;;;/:::/---/%%%x",
-    "http://domain-dash.com",
     "http://-doman_dash.com"
   ]
 
