@@ -19,20 +19,33 @@ module Twitter
       chunk_index, chunk = 0, chunks[0]
       prev_chunks_len = 0
       chunk_cursor = 0
+      start_in_chunk = false
       for hit, index in hits.flatten.each_with_index do
         tag = tags[index % 2]
         
+        placed = false
         until hit < prev_chunks_len + chunk.length do
-          result << chunk[chunk_cursor..-1] + "<#{chunks[chunk_index+1]}>"
+          result << chunk[chunk_cursor..-1] 
+          if start_in_chunk && hit == prev_chunks_len + chunk.length
+            result << tag
+            placed = true
+          end
+          result << "<#{chunks[chunk_index+1]}>"
           prev_chunks_len += chunk.length
           chunk_cursor = 0
           chunk_index += 2
           chunk = chunks[chunk_index]
+          start_in_chunk = false
         end
         
-        hit_spot = hit - prev_chunks_len
-        result << chunk[chunk_cursor...hit_spot] + tag
-        chunk_cursor = hit_spot
+        if !placed
+          hit_spot = hit - prev_chunks_len
+          result << chunk[chunk_cursor...hit_spot] + tag
+          chunk_cursor = hit_spot
+          if index % 2 == 0
+            start_in_chunk = true
+          end
+        end
       end
       
       result << chunk[chunk_cursor..-1]

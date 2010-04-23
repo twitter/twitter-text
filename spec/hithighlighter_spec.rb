@@ -30,7 +30,7 @@ describe Twitter::HitHighlighter do
     end
     
     context "with links" do
-      it "should highlight next to a username" do
+      it "should highlight with a single link" do
         @highlighter.highlight("@<a>bcherry</a> this was a test tweet", [[9, 13]]).should == "@<a>bcherry</a> <b>this</b> was a test tweet"
       end
       
