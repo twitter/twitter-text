@@ -1,4 +1,4 @@
-e== twitter-text
+== twitter-text
 
 A gem that provides text processing routines for Twitter Tweets. The major
 reason for this is to unify the various auto-linking and extraction of

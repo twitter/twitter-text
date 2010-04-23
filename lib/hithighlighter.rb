@@ -17,7 +17,7 @@ module Twitter
       chunks = text.split("<").map do |item|
         item.blank? ? item : item.split(">")
       end.flatten
-      
+
       tags = ["<" + DEFAULT_HIGHLIGHT_TAG + ">", "</" + DEFAULT_HIGHLIGHT_TAG + ">"]
       
       result = ""
@@ -29,7 +29,7 @@ module Twitter
         tag = tags[index % 2]
         
         placed = false
-        until hit < prev_chunks_len + chunk.length do
+        until chunk.nil? || hit < prev_chunks_len + chunk.length do
           result << chunk[chunk_cursor..-1] 
           if start_in_chunk && hit == prev_chunks_len + chunk.length
             result << tag
@@ -43,7 +43,7 @@ module Twitter
           start_in_chunk = false
         end
         
-        if !placed
+        if !placed && !chunk.nil?
           hit_spot = hit - prev_chunks_len
           result << chunk[chunk_cursor...hit_spot] + tag
           chunk_cursor = hit_spot
@@ -53,9 +53,11 @@ module Twitter
         end
       end
       
-      result << chunk[chunk_cursor..-1]
-      for index in chunk_index+1..chunks.length-1
-        result << (index.even? ? chunks[index] : "<#{chunks[index]}>")
+      if !chunk.nil?
+        result << chunk[chunk_cursor..-1]
+        for index in chunk_index+1..chunks.length-1
+          result << (index.even? ? chunks[index] : "<#{chunks[index]}>")
+        end
       end
       
       result
