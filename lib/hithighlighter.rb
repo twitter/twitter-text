@@ -4,7 +4,7 @@ module Twitter
     # Default Tag used for hit highlighting
     DEFAULT_HIGHLIGHT_TAG = "b"
     
-    def highlight(text, hits = [])
+    def hit_highlight(text, hits = [])
       if hits.empty?
         return text
       end
