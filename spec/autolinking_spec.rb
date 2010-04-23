@@ -456,16 +456,20 @@ describe Twitter::Autolink do
       end
       
       context "with links" do
-        before do
-          @original = "@bcherry this was a test tweet"
-        end
-        
         it "should highlight next to a username" do
-          @linker.auto_link_with_hits(@original, options = {}, hits = [[9, 13]]).should == "@<a class=\"tweet-url username\" href=\"http://twitter.com/bcherry\" rel=\"nofollow\">bcherry</a> <b>this</b> was a test tweet"
+          @linker.hit_highlight("@<a>bcherry</a> this was a test tweet", [[9, 13]]).should == "@<a>bcherry</a> <b>this</b> was a test tweet"
         end
         
         it "should highlight with link at the end" do
           @linker.hit_highlight("test test <a>test</a>", [[5, 9]]).should == "test <b>test</b> <a>test</a>"
+        end
+        
+        it "should highlight with a link at the beginning" do
+          @linker.hit_highlight("<a>test</a> test test", [[5, 9]]).should == "<a>test</a> <b>test</b> test"
+        end
+        
+        it "should highlight in a link" do
+          @linker.hit_highlight("test <a>test</a> test", [[5, 9]]).should == "test <a><b>test</b></a> test"
         end
         
       end

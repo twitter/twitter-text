@@ -54,7 +54,7 @@ module Twitter
       
       # Break up into pairs of (meta, source)
       chunks = text.split("<").map do |item|
-        item.split(">")
+        item.blank? ? item : item.split(">")
       end.flatten
       
       tags = ["<" + DEFAULT_HIGHLIGHT_TAG + ">", "</" + DEFAULT_HIGHLIGHT_TAG + ">"]
@@ -73,6 +73,7 @@ module Twitter
           chunk_index += 2
           chunk = chunks[chunk_index]
         end
+        
         hit_spot = hit - prev_chunks_len
         result << chunk[chunk_cursor...hit_spot] + tag
         chunk_cursor = hit_spot
