@@ -430,6 +430,48 @@ describe Twitter::Autolink do
       end
 
     end
+    
+    describe "hit highlighting" do
+      before do
+        @linker = TestAutolink.new
+      end
+      
+      context "without links" do
+        before do
+          @original = "Hey! this is a test tweet"
+        end
+        
+        it "should return original when no hits are provided" do
+          @linker.hit_highlight(@original).should == @original
+        end
+        
+        it "should highlight one hit" do
+          @linker.hit_highlight(@original, hits = [[5, 9]]).should == "Hey! <b>this</b> is a test tweet"
+        end
+        
+        it "should highlight two hits" do
+          @linker.hit_highlight(@original, hits = [[5, 9], [15, 19]]).should == "Hey! <b>this</b> is a <b>test</b> tweet"
+        end
+        
+      end
+      
+      context "with links" do
+        before do
+          @original = "@bcherry this was a test tweet"
+        end
+        
+        it "should highlight next to a username" do
+          @linker.auto_link_with_hits(@original, options = {}, hits = [[9, 13]]).should == "@<a class=\"tweet-url username\" href=\"http://twitter.com/bcherry\" rel=\"nofollow\">bcherry</a> <b>this</b> was a test tweet"
+        end
+        
+        it "should highlight with link at the end" do
+          @linker.hit_highlight("test test <a>test</a>", [[5, 9]]).should == "test <b>test</b> <a>test</a>"
+        end
+        
+      end
+      
+    end
+    
   end
 
 end
