@@ -4,9 +4,9 @@ module Twitter
   # Useful with the results returned from the Search API.
   module HitHighlighter
     # Default Tag used for hit highlighting
-    DEFAULT_HIGHLIGHT_TAG = "b"
+    DEFAULT_HIGHLIGHT_TAG = "em"
     
-    # Add <tt><b></b></tt> tags around the <tt>hits</tt> provided in the <tt>text</tt>. The
+    # Add <tt><em></em></tt> tags around the <tt>hits</tt> provided in the <tt>text</tt>. The
     # <tt>hits</tt> should be an array of (start, end) index pairs, relative to the original
     # text, before auto-linking (but the <tt>text</tt> may already be auto-linked if desired)
     def hit_highlight(text, hits = [])
