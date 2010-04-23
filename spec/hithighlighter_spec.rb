@@ -42,8 +42,16 @@ describe Twitter::HitHighlighter do
         @highlighter.highlight("<a>test</a> test test", [[5, 9]]).should == "<a>test</a> <b>test</b> test"
       end
       
-      it "should highlight in a link" do
+      it "should highlight an entire link" do
         @highlighter.highlight("test <a>test</a> test", [[5, 9]]).should == "test <a><b>test</b></a> test"
+      end
+      
+      it "should highlight within a link" do
+        @highlighter.highlight("test <a>test</a> test", [[6, 8]]).should == "test <a>t<b>es</b>t</a> test"
+      end
+      
+      it "should highlight around a link" do
+        @highlighter.highlight("test <a>test</a> test", [[3, 11]]).should == "tes<b>t <a>test</a> t</b>est"
       end
       
     end
