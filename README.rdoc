@@ -57,6 +57,11 @@ Special care has been taken to be sure that auto-linking and extraction work
 in Tweets of all languages. This means that languages without spaces between
 words should work equally well.
 
+=== Hit Highlighting
+
+Use to provide emphasis around the "hits" returned from the Search API, built
+to work against text that has been auto-linked already.
+
 === Conformance
 
 To run the Conformance suite, you'll need to add that project as a git submodule.  From the root twitter-text-rb directory, run:

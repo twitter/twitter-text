@@ -38,7 +38,7 @@ module Twitter
         options),
       options)
     end
-
+    
     # Add <tt><a></a></tt> tags around the usernames and lists in the provided <tt>text</tt>. The
     # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
     # hash:

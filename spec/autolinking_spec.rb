@@ -430,6 +430,7 @@ describe Twitter::Autolink do
       end
 
     end
+    
   end
 
 end
