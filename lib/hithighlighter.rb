@@ -41,7 +41,11 @@ module Twitter
             result << tag
             placed = true
           end
-          result << "<#{chunks[chunk_index+1]}>"
+
+          # correctly handle highlights that end on the final character.
+          if text_after = chunks[chunk_index+1]
+            result << "<#{text_after}>"
+          end
           prev_chunks_len += chunk.length
           chunk_cursor = 0
           chunk_index += 2
