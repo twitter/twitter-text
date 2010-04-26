@@ -6,6 +6,7 @@ require File.dirname(__FILE__) + '/../lib/twitter-text'
 class ConformanceTest < Test::Unit::TestCase
   include Twitter::Extractor
   include Twitter::Autolink
+  include Twitter::HitHighlighter
 
   def setup
     @conformance_dir = ENV['CONFORMANCE_DIR'] || File.join(File.dirname(__FILE__), 'twitter-text-conformance')
@@ -71,14 +72,34 @@ class ConformanceTest < Test::Unit::TestCase
   end
   include AutolinkConformance
 
+  module HitHighlighterConformance
+
+    def test_plain_text_conformance
+      run_conformance_test(File.join(@conformance_dir, 'hit_highlighting.yml'), :plain_text, true) do |config|
+        assert_equal config['expected'], hit_highlight(config['text'], config['hits']), config['description']
+      end
+    end
+
+    def test_with_links_conformance
+      run_conformance_test(File.join(@conformance_dir, 'hit_highlighting.yml'), :with_links, true) do |config|
+        assert_equal config['expected'], hit_highlight(config['text'], config['hits']), config['description']
+      end
+    end
+  end
+  include HitHighlighterConformance
+
   private
 
-  def run_conformance_test(file, test_type, &block)
+  def run_conformance_test(file, test_type, hash_config = false, &block)
     yaml = YAML.load_file(file)
     assert yaml["tests"][test_type.to_s], "No such test suite: #{test_type.to_s}"
 
     yaml["tests"][test_type.to_s].each do |test_info|
-      yield test_info['description'], test_info['expected'], test_info['text']
+      if hash_config
+        yield test_info
+      else
+        yield test_info['description'], test_info['expected'], test_info['text']
+      end
     end
   end
 end
