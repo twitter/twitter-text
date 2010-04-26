@@ -162,7 +162,14 @@ tests:
     - description: "DO NOT extract invalid URL: http://tld-too-short.x"
       text: "text http://tld-too-short.x"
       expected: []
-
+  
+    - description: "Extract a very long hyphenated sub-domain URL (single letter hyphens)"
+      text: "text http://word-and-a-number-8-ftw.domain.tld/"
+      expected: ["http://word-and-a-number-8-ftw.domain.tld/"]
+      
+    - description: "Extract a hyphenated TLD (usually a typo)"
+      text: "text http://domain.tld-that-you-should-have-put-a-space-after"
+      expected: ["http://domain.tld"]
   hashtags:
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
