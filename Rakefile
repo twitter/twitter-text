@@ -10,8 +10,8 @@ require 'digest'
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
   s.version = "1.1.0"
-  s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry"]
-  s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com"]
+  s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle"]
+  s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com"]
   s.homepage = "http://twitter.com"
   s.description = s.summary = "A gem that provides text handling for Twitter"
 

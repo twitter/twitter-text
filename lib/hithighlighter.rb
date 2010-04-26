@@ -36,17 +36,18 @@ module Twitter
 
         placed = false
         until chunk.nil? || hit < prev_chunks_len + chunk.length do
-          result << chunk[chunk_cursor..-1]
-          if start_in_chunk && hit == prev_chunks_len + chunk.length
+          result << chunk.mb_chars[chunk_cursor..-1]
+          if start_in_chunk && hit == prev_chunks_len + chunk.mb_chars.length
             result << tag
             placed = true
           end
 
           # correctly handle highlights that end on the final character.
-          if text_after = chunks[chunk_index+1]
-            result << "<#{text_after}>"
+          if tag_text = chunks[chunk_index+1]
+            result << "<#{tag_text}>"
           end
-          prev_chunks_len += chunk.length
+
+          prev_chunks_len += chunk.mb_chars.length
           chunk_cursor = 0
           chunk_index += 2
           chunk = chunks[chunk_index]
@@ -55,7 +56,7 @@ module Twitter
 
         if !placed && !chunk.nil?
           hit_spot = hit - prev_chunks_len
-          result << chunk[chunk_cursor...hit_spot] + tag
+          result << chunk.mb_chars[chunk_cursor...hit_spot].to_s + tag
           chunk_cursor = hit_spot
           if index % 2 == 0
             start_in_chunk = true
@@ -64,7 +65,7 @@ module Twitter
       end
 
       if !chunk.nil?
-        result << chunk[chunk_cursor..-1]
+        result << chunk.mb_chars[chunk_cursor..-1]
         for index in chunk_index+1..chunks.length-1
           result << (index.even? ? chunks[index] : "<#{chunks[index]}>")
         end
