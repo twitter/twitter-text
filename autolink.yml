@@ -151,6 +151,10 @@ tests:
       text: "I enjoy Macintosh Brand computers: http://✪df.ws/ejp"
       expected: "I enjoy Macintosh Brand computers: <a href=\"http://✪df.ws/ejp\">http://✪df.ws/ejp</a>"
 
+    - description: "Autolink url with .co. under TLD"
+      text: "test http://www.example.co.jp"
+      expected: "test <a href=\"http://www.example.co.jp\">http://www.example.co.jp</a>"
+
     - description: "DO NOT Autolink url containing ! character in the domain"
       text: "badly formatted http://foo!bar.com"
       expected: "badly formatted http://foo!bar.com"
