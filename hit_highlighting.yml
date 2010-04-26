@@ -26,6 +26,11 @@ tests:
       hits: []
       expected: "this is a test"
 
+    - description: "Highlight within Japanese text"
+      text: "東京の天気"
+      hits: [ [0, 2] ]
+      expected: "<em>東京</em>の天気"
+
   with_links:
     - description: "Highlight after a link (offset does not include markup)"
       text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
