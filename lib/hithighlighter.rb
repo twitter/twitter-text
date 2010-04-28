@@ -1,6 +1,6 @@
 
 module Twitter
-  # Module for doing "hit highlighting" on tweets that have been auto-linked already.  
+  # Module for doing "hit highlighting" on tweets that have been auto-linked already.
   # Useful with the results returned from the Search API.
   module HitHighlighter
     # Default Tag used for hit highlighting
@@ -66,9 +66,11 @@ module Twitter
         end
       end
 
-      if !chunk.nil?
-        result << chunk_chars[chunk_cursor..-1]
-        for index in chunk_index+1..chunks.length-1
+      if chunk
+        if chunk_cursor < chunk_chars.length
+          result << chunk_chars[chunk_cursor..-1]
+        end
+        (chunk_index+1).upto(chunks.length-1).each do |index|
           result << (index.even? ? chunks[index] : "<#{chunks[index]}>")
         end
       end
