@@ -28,6 +28,7 @@ module Twitter
 
       result = ""
       chunk_index, chunk = 0, chunks[0]
+      chunk_chars = chunk.respond_to?("mb_chars") ? chunk.mb_chars : chunk.respond_to?("chars") && chunk.chars.respond_to?("[]") ? chunk.chars : chunk
       prev_chunks_len = 0
       chunk_cursor = 0
       start_in_chunk = false
@@ -36,8 +37,8 @@ module Twitter
 
         placed = false
         until chunk.nil? || hit < prev_chunks_len + chunk.length do
-          result << chunk.mb_chars[chunk_cursor..-1]
-          if start_in_chunk && hit == prev_chunks_len + chunk.mb_chars.length
+          result << chunk_chars[chunk_cursor..-1]
+          if start_in_chunk && hit == prev_chunks_len + chunk_chars.length
             result << tag
             placed = true
           end
@@ -47,16 +48,17 @@ module Twitter
             result << "<#{tag_text}>"
           end
 
-          prev_chunks_len += chunk.mb_chars.length
+          prev_chunks_len += chunk_chars.length
           chunk_cursor = 0
           chunk_index += 2
           chunk = chunks[chunk_index]
+          chunk_chars = chunk.respond_to?("mb_chars") ? chunk.mb_chars : chunk.respond_to?("chars") && chunk.chars.respond_to?("[]") ? chunk.chars : chunk
           start_in_chunk = false
         end
 
         if !placed && !chunk.nil?
           hit_spot = hit - prev_chunks_len
-          result << chunk.mb_chars[chunk_cursor...hit_spot].to_s + tag
+          result << chunk_chars[chunk_cursor...hit_spot].to_s + tag
           chunk_cursor = hit_spot
           if index % 2 == 0
             start_in_chunk = true
@@ -65,7 +67,7 @@ module Twitter
       end
 
       if !chunk.nil?
-        result << chunk.mb_chars[chunk_cursor..-1]
+        result << chunk_chars[chunk_cursor..-1]
         for index in chunk_index+1..chunks.length-1
           result << (index.even? ? chunks[index] : "<#{chunks[index]}>")
         end
