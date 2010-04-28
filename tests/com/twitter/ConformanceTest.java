@@ -16,9 +16,12 @@ public class ConformanceTest extends TestCase {
   private static final String KEY_DESCRIPTION = "description";
   private static final String KEY_INPUT = "text";
   private static final String KEY_EXPECTED_OUTPUT = "expected";
+  private static final String KEY_HIGHLIGHT_HITS = "hits";
+
   private File conformanceDir;
   private Extractor extractor = new Extractor();
   private Autolink linker = new Autolink();
+  private HitHighlighter hitHighlighter = new HitHighlighter();
 
   public void setUp() {
     assertNotNull("Missing required system property: " + CONFORMANCE_DIR_PROPERTY, System.getProperty(CONFORMANCE_DIR_PROPERTY));
@@ -119,6 +122,19 @@ public class ConformanceTest extends TestCase {
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
                    (String)testCase.get(KEY_EXPECTED_OUTPUT),
                    linker.autoLink((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
+  public void testPlainTextHitHighlighting() throws Exception {
+    File yamlFile = new File(conformanceDir, "hit_highlighting.yml");
+    List testCases = loadConformanceData(yamlFile, "plain_text");
+    List<List<Integer>> hits = null;
+    
+    for (Map testCase : (List<Map>)testCases) {
+      hits = (List<List<Integer>>)testCase.get(KEY_HIGHLIGHT_HITS);
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
+                   hitHighlighter.highlight( (String)testCase.get(KEY_INPUT), hits));
     }
   }
 
