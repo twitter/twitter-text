@@ -12,8 +12,10 @@ public class HitHighlighter {
   /** Default HTML tag for highlight hits */
   public static final String DEFAULT_HIGHLIGHT_TAG = "em";
 
+  /** the current HTML tag used for hit highlighting */
   protected String highlightTag;
 
+  /** Create a new HitHighlighter object. */
   public HitHighlighter() {
     highlightTag = DEFAULT_HIGHLIGHT_TAG;
   }
@@ -70,6 +72,12 @@ public class HitHighlighter {
     return(sb.toString());
   }
 
+  /**
+   * Format the current <code>highlightTag</code> by adding &lt; and >. If <code>closeTag</code> is <code>true</code>
+   * then the tag returned will include a <code>/</code> to signify a closing tag.
+   *
+   * @param true if this is a closing tag, false otherwise
+   */
   protected String tag(boolean closeTag) {
     StringBuilder sb = new StringBuilder(highlightTag.length() + 3);
     sb.append("<");
@@ -78,5 +86,23 @@ public class HitHighlighter {
     }
     sb.append(highlightTag).append(">");
     return(sb.toString());
+  }
+
+  /**
+   * Get the current HTML tag used for phrase highlighting.
+   *
+   * @return current HTML tag (without &lt; or >)
+   */
+  public String getHighlightTag() {
+    return highlightTag;
+  }
+
+  /**
+   * Set the current HTML tag used for phrase highlighting.
+   *
+   * @param new HTML tag (without &lt; or >)
+   */
+  public void setHighlightTag(String highlightTag) {
+    this.highlightTag = highlightTag;
   }
 }
