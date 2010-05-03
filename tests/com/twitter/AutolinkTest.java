@@ -25,6 +25,14 @@ public class AutolinkTest extends TestCase {
     assertAutolink(expected, linker.autoLinkHashtags(tweet));
   }
 
+  /** See Also: http://github.com/mzsanford/twitter-text-rb/issues#issue/5 */
+  public void testBlogspotWithDash() {
+    linker.setNoFollow(false);
+    String tweet = "Url: http://samsoum-us.blogspot.com/2010/05/la-censure-nuit-limage-de-notre-pays.html";
+    String expected = "Url: <a href=\"http://samsoum-us.blogspot.com/2010/05/la-censure-nuit-limage-de-notre-pays.html\">http://samsoum-us.blogspot.com/2010/05/la-censure-nuit-limage-de-notre-pays.html</a>";
+    assertAutolink(expected, linker.autoLinkURLs(tweet));
+  }
+
   protected void assertAutolink(String expected, String linked) {
     assertEquals("Autolinked text should not equal the input", expected, linked);
   }
