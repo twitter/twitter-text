@@ -169,6 +169,7 @@ The  tags can be overridden using the <tt>:tag</tt> option. For example:
 
       <span class="ruby-identifier">result</span> = <span class="ruby-value str">&quot;&quot;</span>
       <span class="ruby-identifier">chunk_index</span>, <span class="ruby-identifier">chunk</span> = <span class="ruby-value">0</span>, <span class="ruby-identifier">chunks</span>[<span class="ruby-value">0</span>]
+      <span class="ruby-identifier">chunk_chars</span> = <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;mb_chars&quot;</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">mb_chars</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;chars&quot;</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">chars</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;[]&quot;</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">chars</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">chunk</span>
       <span class="ruby-identifier">prev_chunks_len</span> = <span class="ruby-value">0</span>
       <span class="ruby-identifier">chunk_cursor</span> = <span class="ruby-value">0</span>
       <span class="ruby-identifier">start_in_chunk</span> = <span class="ruby-keyword kw">false</span>
@@ -177,36 +178,46 @@ The  tags can be overridden using the <tt>:tag</tt> option. For example:
 
         <span class="ruby-identifier">placed</span> = <span class="ruby-keyword kw">false</span>
         <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">hit</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">prev_chunks_len</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">length</span> <span class="ruby-keyword kw">do</span>
-          <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">chunk</span>[<span class="ruby-identifier">chunk_cursor</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
-          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">start_in_chunk</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">hit</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">prev_chunks_len</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">length</span>
+          <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">chunk_chars</span>[<span class="ruby-identifier">chunk_cursor</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">start_in_chunk</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">hit</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">prev_chunks_len</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">chunk_chars</span>.<span class="ruby-identifier">length</span>
             <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">tag</span>
             <span class="ruby-identifier">placed</span> = <span class="ruby-keyword kw">true</span>
           <span class="ruby-keyword kw">end</span>
 
           <span class="ruby-comment cmt"># correctly handle highlights that end on the final character.</span>
-          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">text_after</span> = <span class="ruby-identifier">chunks</span>[<span class="ruby-identifier">chunk_index</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>]
-            <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;&lt;#{text_after}&gt;&quot;</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">tag_text</span> = <span class="ruby-identifier">chunks</span>[<span class="ruby-identifier">chunk_index</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>]
+            <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;&lt;#{tag_text}&gt;&quot;</span>
           <span class="ruby-keyword kw">end</span>
-          <span class="ruby-identifier">prev_chunks_len</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">length</span>
+
+          <span class="ruby-identifier">prev_chunks_len</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">chunk_chars</span>.<span class="ruby-identifier">length</span>
           <span class="ruby-identifier">chunk_cursor</span> = <span class="ruby-value">0</span>
           <span class="ruby-identifier">chunk_index</span> <span class="ruby-operator">+=</span> <span class="ruby-value">2</span>
           <span class="ruby-identifier">chunk</span> = <span class="ruby-identifier">chunks</span>[<span class="ruby-identifier">chunk_index</span>]
+          <span class="ruby-identifier">chunk_chars</span> = <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;mb_chars&quot;</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">mb_chars</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;chars&quot;</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">chars</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;[]&quot;</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">chars</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">chunk</span>
           <span class="ruby-identifier">start_in_chunk</span> = <span class="ruby-keyword kw">false</span>
         <span class="ruby-keyword kw">end</span>
 
         <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">placed</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">nil?</span>
           <span class="ruby-identifier">hit_spot</span> = <span class="ruby-identifier">hit</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">prev_chunks_len</span>
-          <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">chunk</span>[<span class="ruby-identifier">chunk_cursor</span><span class="ruby-operator">...</span><span class="ruby-identifier">hit_spot</span>] <span class="ruby-operator">+</span> <span class="ruby-identifier">tag</span>
+          <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">chunk_chars</span>[<span class="ruby-identifier">chunk_cursor</span><span class="ruby-operator">...</span><span class="ruby-identifier">hit_spot</span>].<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">tag</span>
           <span class="ruby-identifier">chunk_cursor</span> = <span class="ruby-identifier">hit_spot</span>
           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">index</span> <span class="ruby-operator">%</span> <span class="ruby-value">2</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
             <span class="ruby-identifier">start_in_chunk</span> = <span class="ruby-keyword kw">true</span>
           <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">placed</span> = <span class="ruby-keyword kw">true</span>
+        <span class="ruby-keyword kw">end</span>
+        
+        <span class="ruby-comment cmt"># ultimate fallback, hits that run off the end get a closing tag</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">placed</span>
+          <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">tag</span>
         <span class="ruby-keyword kw">end</span>
       <span class="ruby-keyword kw">end</span>
 
-      <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">nil?</span>
-        <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">chunk</span>[<span class="ruby-identifier">chunk_cursor</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
-        <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">index</span> <span class="ruby-keyword kw">in</span> <span class="ruby-identifier">chunk_index</span><span class="ruby-operator">+</span><span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-identifier">chunks</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">chunk</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">chunk_cursor</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">chunk_chars</span>.<span class="ruby-identifier">length</span>
+          <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">chunk_chars</span>[<span class="ruby-identifier">chunk_cursor</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
+        <span class="ruby-keyword kw">end</span>
+        (<span class="ruby-identifier">chunk_index</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>).<span class="ruby-identifier">upto</span>(<span class="ruby-identifier">chunks</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span>
           <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> (<span class="ruby-identifier">index</span>.<span class="ruby-identifier">even?</span> <span class="ruby-value">? </span><span class="ruby-identifier">chunks</span>[<span class="ruby-identifier">index</span>] <span class="ruby-operator">:</span> <span class="ruby-node">&quot;&lt;#{chunks[index]}&gt;&quot;</span>)
         <span class="ruby-keyword kw">end</span>
       <span class="ruby-keyword kw">end</span>
