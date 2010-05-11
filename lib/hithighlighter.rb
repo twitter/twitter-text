@@ -63,6 +63,12 @@ module Twitter
           if index % 2 == 0
             start_in_chunk = true
           end
+          placed = true
+        end
+        
+        # ultimate fallback, hits that run off the end get a closing tag
+        if !placed
+          result << tag
         end
       end
 
