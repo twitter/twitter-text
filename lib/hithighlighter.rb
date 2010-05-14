@@ -65,7 +65,7 @@ module Twitter
           end
           placed = true
         end
-        
+
         # ultimate fallback, hits that run off the end get a closing tag
         if !placed
           result << tag
@@ -82,6 +82,8 @@ module Twitter
       end
 
       result
+    rescue
+      text
     end
   end
 end
