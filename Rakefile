@@ -41,15 +41,12 @@ Spec::Rake::SpecTask.new('spec:rcov') do |t|
   t.rcov_opts = ['--exclude', 'spec']
 end
 
-
 def conformance_version(dir)
   Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
 end
 
 namespace :test do
   namespace :conformance do
-
-
     desc "Update conformance testing data"
     task :update do
       puts "Updating conformance data ... "
@@ -84,7 +81,6 @@ namespace :test do
   task :conformance => ['conformance:latest', 'conformance:run'] do
   end
 end
-
 
 namespace :doc do
   Rake::RDocTask.new do |rd|
