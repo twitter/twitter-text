@@ -85,7 +85,7 @@ module Twitter
     # If a block is given then it will be called for each URL.
     def extract_urls(text) # :yields: url
       urls_only = extract_urls_with_indices(text).map{|url| url[:url] }
-      urls_only.each{|url| url } if block_given?
+      urls_only.each{|url| yield url } if block_given?
       urls_only
     end
 
