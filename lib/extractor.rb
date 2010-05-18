@@ -12,7 +12,7 @@ class String
       chars.to_a
     else
       char_array = []
-      0.upto(char_length - 1) { |i| char_array << chars.slice(i).chr }
+      0.upto(char_length - 1) { |i| char_array << [chars.slice(i)].pack('U') }
       char_array
     end
   end
