@@ -8,14 +8,13 @@ class String
 
   # Helper function to convert this string into an array of unicode characters.
   def to_char_a
-    @to_char_a ||=
-      if chars.kind_of?(Enumerable)
-        chars.to_a
-      else
-        char_array = []
-        1.upto(char_length) { |i| char_array << slice(i).chr }
-        char_array
-      end
+    @to_char_a ||= if chars.kind_of?(Enumerable)
+      chars.to_a
+    else
+      char_array = []
+      0.upto(char_length - 1) { |i| char_array << chars.slice(i).chr }
+      char_array
+    end
   end
 
   # Helper function to find the index of the <tt>sub_string</tt> in
