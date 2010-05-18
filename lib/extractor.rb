@@ -3,16 +3,27 @@ class String
   # array.  This is needed because with unicode strings, the return value
   # of length may be incorrect
   def char_length
-    chars.to_a.size
+    chars.kind_of?(Enumerable) ? chars.to_a.size : chars.size
+  end
+
+  # Helper function to convert this string into an array of unicode characters.
+  def to_char_a
+    @to_char_a ||=
+      if chars.kind_of?(Enumerable)
+        chars.to_a
+      else
+        char_array = []
+        1.upto(char_length) { |i| char_array << slice(i).chr }
+        char_array
+      end
   end
 
   # Helper function to find the index of the <tt>sub_string</tt> in
   # <tt>str</tt>.  This is needed because with unicode strings, the return
   # of index may be incorrect.
   def sub_string_search(sub_str, position = 0)
-    str_chars = chars.to_a
-    index = str_chars[position..-1].enum_with_index.find do |e|
-      str_chars.slice(e.last + position, sub_str.char_length).map{|ci| ci.first }.join == sub_str
+    index = to_char_a[position..-1].enum_with_index.find do |e|
+      to_char_a.slice(e.last + position, sub_str.char_length).map{|ci| ci.first }.join == sub_str
     end
     index.nil? ? -1 : index.last + position
   end
