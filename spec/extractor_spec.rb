@@ -49,6 +49,58 @@ describe Twitter::Extractor do
     end
   end
 
+  describe "mentions with indices" do
+    context "single screen name alone " do
+      it "should be linked and the correct indices" do
+        @extractor.extract_mentioned_screen_names_with_indices("@alice").should == [{:screen_name => "alice", :indices => [0, 6]}]
+      end
+
+      it "should be linked with _ and the correct indices" do
+        @extractor.extract_mentioned_screen_names_with_indices("@alice_adams").should == [{:screen_name => "alice_adams", :indices => [0, 12]}]
+      end
+
+      it "should be linked if numeric and the correct indices" do
+        @extractor.extract_mentioned_screen_names_with_indices("@1234").should == [{:screen_name => "1234", :indices => [0, 5]}]
+      end
+    end
+
+    context "multiple screen names" do
+      it "should both be linked with the correct indices" do
+        @extractor.extract_mentioned_screen_names_with_indices("@alice @bob").should ==
+          [{:screen_name => "alice", :indices => [0, 6]},
+           {:screen_name => "bob", :indices => [7, 11]}]
+      end
+
+      it "should be linked with the correct indices even when repeated" do
+        @extractor.extract_mentioned_screen_names_with_indices("@alice @alice @bob").should ==
+          [{:screen_name => "alice", :indices => [0, 6]},
+           {:screen_name => "alice", :indices => [7, 13]},
+           {:screen_name => "bob", :indices => [14, 18]}]
+      end
+    end
+
+    context "screen names embedded in text" do
+      it "should be linked in Latin text with the correct indices" do
+        @extractor.extract_mentioned_screen_names_with_indices("waiting for @alice to arrive").should == [{:screen_name => "alice", :indices => [12, 18]}]
+      end
+
+      it "should be linked in Japanese text with the correct indices" do
+        @extractor.extract_mentioned_screen_names_with_indices("の@aliceに到着を待っている").should == [{:screen_name => "alice", :indices => [1, 7]}]
+      end
+    end
+
+    it "should accept a block arugment and call it in order" do
+      needed = [{:screen_name => "alice", :indices => [0, 6]}, {:screen_name => "bob", :indices => [7, 11]}]
+      @extractor.extract_mentioned_screen_names_with_indices("@alice @bob") do |sn, start_index, end_index|
+        data = needed.shift
+        sn.should == data[:screen_name]
+        start_index.should == data[:indices].first
+        end_index.should == data[:indices].last
+      end
+      needed.should == []
+    end
+  end
+
   describe "replies" do
     context "should be extracted from" do
       it "should extract from lone name" do
@@ -118,6 +170,37 @@ describe Twitter::Extractor do
     end
   end
 
+  describe "urls with indices" do
+    describe "matching URLS" do
+      TestUrls::VALID.each do |url|
+        it "should extract the URL #{url} and prefix it with a protocol if missing" do
+          extracted_urls = @extractor.extract_urls_with_indices(url)
+          extracted_urls.size.should == 1
+          extracted_url = extracted_urls.first
+          extracted_url[:url].should include(url)
+          extracted_url[:indices].first.should == 0
+          extracted_url[:indices].last.should == url.chars.to_a.size
+        end
+
+        it "should match the URL #{url} when it's embedded in other text" do
+          text = "Sweet url: #{url} I found. #awesome"
+          extracted_urls = @extractor.extract_urls_with_indices(text)
+          extracted_urls.size.should == 1
+          extracted_url = extracted_urls.first
+          extracted_url[:url].should include(url)
+          extracted_url[:indices].first.should == 11
+          extracted_url[:indices].last.should == 11 + url.chars.to_a.size
+        end
+      end
+    end
+
+    describe "invalid URLS" do
+      it "does not link urls with invalid domains" do
+        @extractor.extract_urls_with_indices("http://tld-too-short.x").should == []
+      end
+    end
+  end
+
   describe "hashtags" do
     context "extracts latin/numeric hashtags" do
       %w(text text123 123text).each do |hashtag|
@@ -163,7 +246,6 @@ describe Twitter::Extractor do
           end
         end
       end
-
     end
 
     it "should not extract numeric hashtags" do
@@ -171,4 +253,69 @@ describe Twitter::Extractor do
     end
   end
 
+  describe "hashtags with indices" do
+    def match_hashtag_in_text(hashtag, text, offset = 0)
+      extracted_hashtags = @extractor.extract_hashtags_with_indices(text)
+      extracted_hashtags.size.should == 1
+      extracted_hashtag = extracted_hashtags.first
+      extracted_hashtag[:hashtag].should == hashtag
+      extracted_hashtag[:indices].first.should == offset
+      extracted_hashtag[:indices].last.should == offset + hashtag.chars.to_a.size + 1
+    end
+
+    def no_match_hashtag_in_text(text)
+      extracted_hashtags = @extractor.extract_hashtags_with_indices(text)
+      extracted_hashtags.size.should == 0
+    end
+
+    context "extracts latin/numeric hashtags" do
+      %w(text text123 123text).each do |hashtag|
+        it "should extract ##{hashtag}" do
+          match_hashtag_in_text(hashtag, "##{hashtag}")
+        end
+
+        it "should extract ##{hashtag} within text" do
+          match_hashtag_in_text(hashtag, "pre-text ##{hashtag} post-text", 9)
+        end
+      end
+    end
+
+    context "international hashtags" do
+      context "should allow accents" do
+        %w(mañana café münchen).each do |hashtag|
+          it "should extract ##{hashtag}" do
+            match_hashtag_in_text(hashtag, "##{hashtag}")
+          end
+
+          it "should extract ##{hashtag} within text" do
+            match_hashtag_in_text(hashtag, "pre-text ##{hashtag} post-text", 9)
+          end
+        end
+
+        it "should not allow the multiplication character" do
+          match_hashtag_in_text('pre', "#pre#{[0xd7].pack('U')}post")
+        end
+
+        it "should not allow the division character" do
+          match_hashtag_in_text('pre', "#pre#{[0xf7].pack('U')}post")
+        end
+      end
+
+      context "should NOT allow Japanese" do
+        %w(会議中 ハッシュ).each do |hashtag|
+          it "should NOT extract ##{hashtag}" do
+            no_match_hashtag_in_text("##{hashtag}")
+          end
+
+          it "should NOT extract ##{hashtag} within text" do
+            no_match_hashtag_in_text("pre-text ##{hashtag} post-text")
+          end
+        end
+      end
+    end
+
+    it "should not extract numeric hashtags" do
+      no_match_hashtag_in_text("#1234")
+    end
+  end
 end
