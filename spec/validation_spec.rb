@@ -1,3 +1,4 @@
+#encoding: BINARY
 require File.dirname(__FILE__) + '/spec_helper'
 
 class TestValidation
