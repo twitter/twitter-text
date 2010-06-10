@@ -1,3 +1,4 @@
+#encoding: UTF-8
 module TestUrls
   VALID = [
     "http://google.com",

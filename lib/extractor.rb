@@ -3,7 +3,11 @@ class String
   # array.  This is needed because with unicode strings, the return value
   # of length may be incorrect
   def char_length
-    chars.kind_of?(Enumerable) ? chars.to_a.size : chars.size
+    if respond_to? :codepoints
+      length
+    else
+      chars.kind_of?(Enumerable) ? chars.to_a.size : chars.size
+    end
   end
 
   # Helper function to convert this string into an array of unicode characters.
@@ -21,10 +25,14 @@ class String
   # <tt>str</tt>.  This is needed because with unicode strings, the return
   # of index may be incorrect.
   def sub_string_search(sub_str, position = 0)
-    index = to_char_a[position..-1].enum_with_index.find do |e|
-      to_char_a.slice(e.last + position, sub_str.char_length).map{|ci| ci.first }.join == sub_str
+    if respond_to? :codepoints
+      index(sub_str, position)
+    else
+      index = to_char_a[position..-1].each_with_index.find do |e|
+        to_char_a.slice(e.last + position, sub_str.char_length).map{|ci| ci.first }.join == sub_str
+      end
+      index.nil? ? -1 : index.last + position
     end
-    index.nil? ? -1 : index.last + position
   end
 end
 
