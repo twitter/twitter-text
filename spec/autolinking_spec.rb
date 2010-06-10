@@ -1,4 +1,6 @@
-require File.dirname(__FILE__) + '/spec_helper'
+#encoding: UTF-8
+# require File.dirname(__FILE__) + '/spec_helper'
+require 'spec_helper'
 
 class TestAutolink
   include Twitter::Autolink
@@ -303,7 +305,7 @@ describe Twitter::Autolink do
 
         it "should be linked" do
           link = Hpricot(@autolinked_text).at('a')
-          link.inner_text.should == "#{[0xFF03].pack('U')}twj_dev"
+          (link.inner_text.respond_to?(:force_encoding) ? link.inner_text.force_encoding("utf-8") : link.inner_text).should == "#{[0xFF03].pack('U')}twj_dev"
           link['href'].should == 'http://twitter.com/search?q=%23twj_dev'
         end
       end
