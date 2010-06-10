@@ -74,13 +74,13 @@ To run the Conformance suite, you'll need to add that project as a git submodule
 
 Thanks to everybody who has filed issues, provided feedback or contibuted patches. Patches coutresy of:
 
-  * At Twitter …
-    * Raffi Krikorian - http://github.com/r
-    * Ben Cherry - http://github.com/bcherry
-    * Patrick Ewing - http://github.com/hoverbird
-    * Jeff Smick - http://github.com/sprsquish
+* At Twitter …
+  * Raffi Krikorian - http://github.com/r
+  * Ben Cherry - http://github.com/bcherry
+  * Patrick Ewing - http://github.com/hoverbird
+  * Jeff Smick - http://github.com/sprsquish
 
-  * Patches from the community …
-    * Jean-Philippe Bougie - http://github.com/jpbougie
+* Patches from the community …
+  * Jean-Philippe Bougie - http://github.com/jpbougie
 
-  * Any anyone who has filed and issue.
+* Anyone who has filed and issue. It helps. Really.
