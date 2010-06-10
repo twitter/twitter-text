@@ -32,7 +32,6 @@ class String
         to_char_a.slice(e.last + position, sub_str.char_length).map{|ci| ci.first }.join == sub_str
       end
       index.nil? ? -1 : index.last + position
-      
     end
   end
 end
