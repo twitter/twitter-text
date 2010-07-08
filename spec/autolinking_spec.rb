@@ -331,7 +331,7 @@ describe Twitter::Autolink do
         end
       end
 
-      context "when surrounded by parentheses;" do
+      context "with a path surrounded by parentheses;" do
         def original_text; "I found a neatness (#{url})"; end
 
         it "should be linked" do
@@ -342,7 +342,14 @@ describe Twitter::Autolink do
           def url; "http://www.google.com/"; end
 
           it "should be linked" do
-            pending # our support for Wikipedia URLS containing parens breaks this corner case
+            @autolinked_text.should have_autolinked_url(url)
+          end
+        end
+        
+        context "when the URL has a path;" do
+          def url; "http://www.google.com/fsdfasdf"; end
+
+          it "should be linked" do
             @autolinked_text.should have_autolinked_url(url)
           end
         end

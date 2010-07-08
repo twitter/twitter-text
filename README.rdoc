@@ -26,7 +26,7 @@ usernames, lists, hashtags and URLs.
   # Auto-link
   class MyClass
     include Twitter::Autolink
-    
+
     html = auto_link("link @user, please #request")
   end
 
@@ -72,7 +72,7 @@ To run the Conformance suite, you'll need to add that project as a git submodule
 
 === Thanks
 
-Thanks to everybody who has filed issues, provided feedback or contibuted patches. Patches coutresy of:
+Thanks to everybody who has filed issues, provided feedback or contributed patches. Patches courtesy of:
 
 * At Twitter …
   * Raffi Krikorian - http://github.com/r
@@ -83,4 +83,4 @@ Thanks to everybody who has filed issues, provided feedback or contibuted patche
 * Patches from the community …
   * Jean-Philippe Bougie - http://github.com/jpbougie
 
-* Anyone who has filed and issue. It helps. Really.
+* Anyone who has filed an issue. It helps. Really.

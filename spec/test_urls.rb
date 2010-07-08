@@ -21,6 +21,8 @@ module TestUrls
     "http://search.twitter.com/search?q=avro&lang=en",
     "http://mrs.domain-dash.biz",
     "http://x.com/has/one/char/domain",
+    "http://t.co/nwcLTFF",
+    # "t.co/nwcLTFF"
   ]
 
   INVALID = [
