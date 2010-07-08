@@ -345,12 +345,44 @@ describe Twitter::Autolink do
             @autolinked_text.should have_autolinked_url(url)
           end
         end
-        
+
         context "when the URL has a path;" do
           def url; "http://www.google.com/fsdfasdf"; end
 
           it "should be linked" do
             @autolinked_text.should have_autolinked_url(url)
+          end
+        end
+      end
+
+      context "when path contains parens" do
+        def original_text; "I found a neatness (#{url})"; end
+
+        it "should be linked" do
+          @autolinked_text.should have_autolinked_url(url)
+        end
+
+        context "wikipedia" do
+          def url; "http://en.wikipedia.org/wiki/Madonna_(artist)"; end
+
+          it "should be linked" do
+            @autolinked_text.should have_autolinked_url(url)
+          end
+        end
+
+        context "IIS session" do
+          def url; "http://msdn.com/S(deadbeef)/page.htm"; end
+
+          it "should be linked" do
+            @autolinked_text.should have_autolinked_url(url)
+          end
+        end
+
+        context "unbalanced parens" do
+          def url; "http://example.com/i_has_a_("; end
+
+          it "should be linked" do
+            @autolinked_text.should have_autolinked_url("http://example.com/i_has_a_")
           end
         end
       end

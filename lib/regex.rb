@@ -46,10 +46,17 @@ module Twitter
     # URL related hash regex collection
     REGEXEN[:valid_preceding_chars] = /(?:[^\/"':!=]|^|\:)/
     REGEXEN[:valid_domain] = /(?:[^[:punct:]\s][\.-](?=[^[:punct:]\s])|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
-    REGEXEN[:valid_url_path_chars] = /[\.\,]?[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~@]/i
+
+    # Allow URL paths to contain balanced parens
+    #  1. Used in Wikipedia URLs like /Primer_(film)
+    #  2. Used in IIS sessions like /S(dfd346)/
+    REGEXEN[:wikipedia_disambiguation] = /(?:\([^\)]+\))/i
+    REGEXEN[:valid_url_path_chars] = /(?:
+      #{REGEXEN[:wikipedia_disambiguation]}|
+      [\.\,]?[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~@]
+    )/ix
     # Valid end-of-path chracters (so /foo. does not gobble the period).
-    #   1. Allow ) for Wikipedia URLs.
-    #   2. Allow =&# for empty URL parameters and other URL-join artifacts
+    #   1. Allow =&# for empty URL parameters and other URL-join artifacts
     REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=#\/]/i
     REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#]/i
@@ -59,9 +66,9 @@ module Twitter
         (                                                                                   #   $3 URL
           (https?:\/\/|www\.)                                                               #   $4 Protocol or beginning
           (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s) and optional post number
-          (/#{REGEXEN[:valid_url_path_chars]}*#{REGEXEN[:valid_url_path_ending_chars]}?
-              (?:_\([a-z0-9_]\))?
-            )?   #   $6 URL Path
+          (/#{REGEXEN[:valid_url_path_chars]}*
+            #{REGEXEN[:valid_url_path_ending_chars]}?
+          )?                                                                                #   $6 URL Path
           (\?#{REGEXEN[:valid_url_query_chars]}*#{REGEXEN[:valid_url_query_ending_chars]})? #   $7 Query String
         )
       )
