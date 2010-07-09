@@ -147,6 +147,18 @@ tests:
       text: "text (http://example.com)"
       expected: "text (<a href=\"http://example.com\">http://example.com</a>)"
 
+    - description: "Autolink url with path surrounded by parentheses"
+      text: "text (http://example.com/test)"
+      expected: "text (<a href=\"http://example.com/test\">http://example.com/test</a>)"
+
+    - description: "Autolink url with embedded parentheses"
+      text: "text http://example.com/(session_id_here)/foo is an IIS thing"
+      expected: "text (<a href=\"http://example.com/(session_id_here)/foo\">http://example.com/(session_id_here)/foo</a>)"
+
+    - description: "Autolink url should NOT capture unbalanced parens"
+      text: "Parenthetically bad http://example.com/i_has_a_) thing"
+      expected: "Parenthetically bad <a href=\"http://example.com/i_has_a_\">http://example.com/i_has_a_</a>) thing"
+
     - description: "Autolink url containing unicode characters"
       text: "I enjoy Macintosh Brand computers: http://✪df.ws/ejp"
       expected: "I enjoy Macintosh Brand computers: <a href=\"http://✪df.ws/ejp\">http://✪df.ws/ejp</a>"
@@ -278,7 +290,7 @@ tests:
     - description: "Autolink URL should autolink a domain with a valid dash"
       text: "Is www.foo-bar.com a valid URL?"
       expected: "Is <a href=\"http://www.foo-bar.com\">www.foo-bar.com</a> a valid URL?"
-    
+
     - description: "Autolink URL should link search urls (with &lang=, not &lang;)"
       text: "Check out http://search.twitter.com/search?q=avro&lang=en"
       expected: "Check out <a href=\"http://search.twitter.com/search?q=avro&lang=en\">http://search.twitter.com/search?q=avro&lang=en</a>"
