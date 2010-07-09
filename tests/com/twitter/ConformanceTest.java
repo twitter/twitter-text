@@ -4,6 +4,7 @@ package com.twitter;
 import java.util.regex.*;
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -63,6 +64,21 @@ public class ConformanceTest extends TestCase {
     }
   }
 
+  public void testHashtagsWithIndicesExtractor() throws Exception {
+    File yamlFile = new File(conformanceDir, "extract.yml");
+    List testCases = loadConformanceData(yamlFile, "hashtags_with_indices");
+    for (Map testCase : (List<Map>)testCases) {
+      List<Map<String, Object>> expectedConfig = (List)testCase.get(KEY_EXPECTED_OUTPUT);
+      List<Extractor.Entity> expected = new ArrayList<Extractor.Entity>();
+      for (Map<String, Object> configEntry : expectedConfig) {
+        expected.add(new Extractor.Entity(configEntry, "hashtag"));
+      }
+      
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   expected,
+                   extractor.extractHashtagsWithIndices((String)testCase.get(KEY_INPUT)));
+    }
+  }
 
   public void testURLsExtractor() throws Exception {
     File yamlFile = new File(conformanceDir, "extract.yml");
