@@ -36,6 +36,13 @@ class ConformanceTest < Test::Unit::TestCase
         assert_equal expected, extract_hashtags(input), description
       end
     end
+
+    def test_hashtags_with_indices_extractor_conformance
+      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :hashtags_with_indices) do |description, expected, input|
+        expected = expected.map{|elem| elem.symbolize_keys }
+        assert_equal expected, extract_hashtags_with_indices(input), description
+      end
+    end
   end
   include ExtractorConformance
 
