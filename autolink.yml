@@ -153,7 +153,7 @@ tests:
 
     - description: "Autolink url with embedded parentheses"
       text: "text http://msdn.com/S(deadbeef)/page.htm"
-      expected: "text (<a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
+      expected: "text <a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
 
     - description: "Autolink url should NOT capture unbalanced parens"
       text: "Parenthetically bad http://example.com/i_has_a_) thing"
