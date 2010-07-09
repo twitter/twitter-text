@@ -170,6 +170,7 @@ tests:
     - description: "Extract a hyphenated TLD (usually a typo)"
       text: "text http://domain.tld-that-you-should-have-put-a-space-after"
       expected: ["http://domain.tld"]
+
   hashtags:
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
@@ -202,3 +203,29 @@ tests:
     - description: "DO NOT Extract a hashtag containing Japanese"
       text: "this is not valid: # 会議中 ハッシュ"
       expected: []
+
+  hashtags_with_indices:
+    - description: "Extract a hastag at the start"
+      text: "#hashtag here"
+      expected:
+        - hashtag: "hashtag"
+          indices: [0, 8]
+
+    - description: "Extract a hastag at the end"
+      text: "test a #hashtag"
+      expected:
+        - hashtag: "hashtag"
+          indices: [7, 15]
+
+    - description: "Extract a hastag in the middle"
+      text: "test a #hashtag in a string"
+      expected:
+        - hashtag: "hashtag"
+          indices: [7, 15]
+
+    - description: "Extract a hastag in a string of multi-byte characters"
+      text: "会議中#hashtag会議中"
+      expected:
+        - hashtag: "hashtag"
+          indices: [3, 11]
+
