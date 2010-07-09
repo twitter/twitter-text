@@ -163,6 +163,10 @@ tests:
       text: "I enjoy Macintosh Brand computers: http://✪df.ws/ejp"
       expected: "I enjoy Macintosh Brand computers: <a href=\"http://✪df.ws/ejp\">http://✪df.ws/ejp</a>"
 
+    - description: "Autolink url with .co. under TLD"
+      text: "test http://www.example.co.jp"
+      expected: "test <a href=\"http://www.example.co.jp\">http://www.example.co.jp</a>"
+
     - description: "DO NOT Autolink url containing ! character in the domain"
       text: "badly formatted http://foo!bar.com"
       expected: "badly formatted http://foo!bar.com"
@@ -279,6 +283,10 @@ tests:
       text: "I think it's proper to end sentences with a period http://tell.me/why?=because.i.want.it. Even when they contain a URL."
       expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me/why?=because.i.want.it\">http://tell.me/why?=because.i.want.it</a>. Even when they contain a URL."
 
+    - description: "Autolink URL with a hyphen in the domain name"
+      text: "Czech out sweet deals at http://mrs.domain-dash.biz ok?"
+      expected: "Czech out sweet deals at <a href=\"http://mrs.domain-dash.biz\">http://mrs.domain-dash.biz</a> ok?"
+
     - description: "Autolink URL should NOT autolink www...foo"
       text: "Is www...foo a valid URL?"
       expected: "Is www...foo a valid URL?"
@@ -297,8 +305,8 @@ tests:
 
   all:
     - description: "Autolink all does not break on URL with @"
-      text: "http://www.flickr.com/photos/29674651@N00/4382024406"
-      expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a>"
+      text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
+      expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a> if you know what's good for you."
 
     - description: "Autolink all does not allow & without ?"
       text: "Check out: http://example.com/test&@chasesechrist"

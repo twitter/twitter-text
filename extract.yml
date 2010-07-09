@@ -119,17 +119,17 @@ tests:
       text: "text http://somehost.com:3000"
       expected: ["http://somehost.com:3000"]
 
-    - description: "Extract valid URL: http://x.com/~matthew+%-x"
-      text: "text http://x.com/~matthew+%-x"
-      expected: ["http://x.com/~matthew+%-x"]
+    - description: "Extract valid URL: http://xo.com/~matthew+%-x"
+      text: "text http://xo.com/~matthew+%-x"
+      expected: ["http://xo.com/~matthew+%-x"]
 
-    - description: "Extract valid URL: http://x.com/~matthew+%-,.;x"
-      text: "text http://x.com/~matthew+%-,.;x"
-      expected: ["http://x.com/~matthew+%-,.;x"]
+    - description: "Extract valid URL: http://xo.com/~matthew+%-,.;x"
+      text: "text http://xo.com/~matthew+%-,.;x"
+      expected: ["http://xo.com/~matthew+%-,.;x"]
 
-    - description: "Extract valid URL: http://x.com/,.;x"
-      text: "text http://x.com/,.;x"
-      expected: ["http://x.com/,.;x"]
+    - description: "Extract valid URL: http://xo.com/,.;x"
+      text: "text http://xo.com/,.;x"
+      expected: ["http://xo.com/,.;x"]
 
     - description: "Extract valid URL: http://en.wikipedia.org/wiki/Primer_(film)"
       text: "text http://en.wikipedia.org/wiki/Primer_(film)"
@@ -142,12 +142,16 @@ tests:
     - description: "Extract valid URL: http://✪df.ws/ejp"
       text: "text http://✪df.ws/ejp"
       expected: ["http://✪df.ws/ejp"]
-      
+
     - description: "Extract valid URL: http://chilp.it/?77e8fd"
       text: "text http://chilp.it/?77e8fd"
       expected: ["http://chilp.it/?77e8fd"]
 
-    - description: "DO NOT extract invalid URL: http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
+    - description: "Extract valid URL: http://x.com/oneletterdomain"
+      text: "text http://x.com/oneletterdomain"
+      expected: ["http://x.com/oneletterdomain"]
+
+    - description: "DO NOT extract invalid URL: http://-begin_dash_2314352345_dfasd.foo-cow_4352.com"
       text: "text http://doman-dash_2314352345_dfasd.foo-cow_4352.com"
       expected: []
 
@@ -158,7 +162,14 @@ tests:
     - description: "DO NOT extract invalid URL: http://tld-too-short.x"
       text: "text http://tld-too-short.x"
       expected: []
-
+  
+    - description: "Extract a very long hyphenated sub-domain URL (single letter hyphens)"
+      text: "text http://word-and-a-number-8-ftw.domain.tld/"
+      expected: ["http://word-and-a-number-8-ftw.domain.tld/"]
+      
+    - description: "Extract a hyphenated TLD (usually a typo)"
+      text: "text http://domain.tld-that-you-should-have-put-a-space-after"
+      expected: ["http://domain.tld"]
   hashtags:
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
