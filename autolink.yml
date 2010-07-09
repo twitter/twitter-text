@@ -143,17 +143,17 @@ tests:
       text: "いまなにしてるhttp://example.comいまなにしてる"
       expected: "いまなにしてる<a href=\"http://example.com\">http://example.com</a>いまなにしてる"
 
-    - description: "Autolink url surrounded by parentheses"
+    - description: "Autolink url surrounded by parentheses does not capture them"
       text: "text (http://example.com)"
       expected: "text (<a href=\"http://example.com\">http://example.com</a>)"
 
-    - description: "Autolink url with path surrounded by parentheses"
+    - description: "Autolink url with path surrounded by parentheses does not capture them"
       text: "text (http://example.com/test)"
       expected: "text (<a href=\"http://example.com/test\">http://example.com/test</a>)"
 
     - description: "Autolink url with embedded parentheses"
-      text: "text http://example.com/(session_id_here)/foo is an IIS thing"
-      expected: "text (<a href=\"http://example.com/(session_id_here)/foo\">http://example.com/(session_id_here)/foo</a>)"
+      text: "text http://msdn.com/S(deadbeef)/page.htm"
+      expected: "text (<a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
 
     - description: "Autolink url should NOT capture unbalanced parens"
       text: "Parenthetically bad http://example.com/i_has_a_) thing"
