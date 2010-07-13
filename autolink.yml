@@ -311,3 +311,7 @@ tests:
     - description: "Autolink all does not allow & without ?"
       text: "Check out: http://example.com/test&@chasesechrist"
       expected: "Check out: <a href=\"http://example.com/test\">http://example.com/test</a>&@<a class=\"tweet-url username\" href=\"http://twitter.com/chasesechrist\">chasesechrist</a>"
+
+    - description: "Currently handles URL follower directly by @user"
+      text: "See: http://example.com/@user"
+      expected: "See: <a href=\"http://example.com/\">http://example.com/</a>@<a class=\"tweet-url username\" href=\"http://twitter.com/user\">user</a>"
