@@ -51,9 +51,11 @@ module Twitter
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
     REGEXEN[:wikipedia_disambiguation] = /(?:\([^\)]+\))/i
+    # Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
     REGEXEN[:valid_url_path_chars] = /(?:
       #{REGEXEN[:wikipedia_disambiguation]}|
-      [\.\,]?[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~@]
+      @[^\/]+\/|
+      [\.\,]?[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]
     )/ix
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow =&# for empty URL parameters and other URL-join artifacts
