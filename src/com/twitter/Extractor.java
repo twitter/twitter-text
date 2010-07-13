@@ -8,6 +8,54 @@ import java.util.regex.*;
  * A class to extract usernames, lists, hashtags and URLs from Tweet text.
  */
 public class Extractor {
+  public static class Entity {
+    protected Integer start = null;
+    protected Integer end = null;
+    protected String  value = null;
+    protected String  type = null;
+
+    public Entity(Matcher matcher, String valueType, Integer groupNumber) {
+      this.start = matcher.start(groupNumber)-1; // 0-indexed.
+      this.end = matcher.end(groupNumber);
+      this.value = matcher.group(groupNumber);
+      this.type = valueType;
+    }
+
+    /** Constructor used from conformance data */
+    public Entity(Map<String, Object> config, String valueType) {
+      this.type = valueType;
+      this.value = (String)config.get(valueType);
+      List<Integer> indices = (List<Integer>)config.get("indices");
+      this.start = indices.get(0);
+      this.end = indices.get(1);
+    }
+
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      
+      if (!(obj instanceof Entity)) {
+        System.out.println("incorrect type");
+        return false;
+      }
+      
+      Entity other = (Entity)obj;
+      
+      if (this.type.equals(other.type) &&
+          this.start.equals(other.start) &&
+          this.end.equals(other.end) &&
+          this.value.equals(other.value)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public int hashCode() {
+      return this.type.hashCode() + this.value.hashCode() + this.start + this.end;
+    }
+  }
 
   /**
    * Create a new extractor.
@@ -85,6 +133,20 @@ public class Extractor {
   }
 
   /**
+   * Extract #hashtag references from Tweet text.
+   *
+   * @param text of the tweet from which to extract hashtags
+   * @return List of hashtags referenced (without the leading # sign)
+   */
+  public List<Entity> extractHashtagsWithIndices(String text) {
+    if (text == null) {
+      return null;
+    }
+
+    return extractListWithIndices(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG, "hashtag");
+  }
+
+  /**
    * Helper method for extracting multiple matches from Tweet text.
    *
    * @param pattern to match and use for extraction
@@ -97,6 +159,17 @@ public class Extractor {
     Matcher matcher = pattern.matcher(text);
     while (matcher.find()) {
       extracted.add(matcher.group(groupNumber));
+    }
+    return extracted;
+  }
+
+  // TODO: Make this a real object, not a Map
+  private List<Entity> extractListWithIndices(Pattern pattern, String text, int groupNumber, String valueType) {
+    List<Entity> extracted = new ArrayList<Entity>();
+    Matcher matcher = pattern.matcher(text);
+
+    while (matcher.find()) {
+      extracted.add(new Entity(matcher, valueType, groupNumber));
     }
     return extracted;
   }
