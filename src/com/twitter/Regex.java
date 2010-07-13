@@ -23,7 +23,8 @@ public class Regex {
   private static final String URL_BALANCE_PARENS = "(?:\\([^\\)]+\\))";
   private static final String URL_VALID_URL_PATH_CHARS = "(?:" +
     URL_BALANCE_PARENS +
-    "|[\\.,]?[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~@]" +
+    "|@[^/]+/" +
+    "|[\\.,]?[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~]" +
   ")";
 
   /** Valid end-of-path chracters (so /foo. does not gobble the period).
