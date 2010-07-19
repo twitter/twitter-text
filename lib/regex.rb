@@ -31,7 +31,12 @@ module Twitter
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(?=(.|$))/o
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
 
-    REGEXEN[:list_name] = /^[a-zA-Z\u0080-\u00ff].{0,79}$/
+    major, minor, patch = RUBY_VERSION.split(/\./)
+    if major >= 1 && minor >= 9
+      REGEXEN[:list_name] = /^[a-zA-Z\u0080-\u00ff].{0,79}$/
+    else
+      REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
+    end
 
     # Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
     LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
