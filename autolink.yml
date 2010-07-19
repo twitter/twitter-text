@@ -130,6 +130,19 @@ tests:
       text: "＃hashtag"
       expected: "<a href=\"http://twitter.com/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">＃hashtag</a>"
 
+    - description: "DO NOT Autolink hashtag with accented character at the start"
+      text: "#éhashtag"
+      expected: "#éhashtag"
+
+    - description: "Autolink hashtag with accented character at the end"
+      text: "#hashtagé"
+      expected: "<a href=\"http://twitter.com/search?q=%23hashtagé\" title=\"#hashtagé\" class=\"tweet-url hashtag\">#hashtagé</a>"
+
+    - description: "Autolink hashtag with accented character in the middle"
+      text: "#hashétag"
+      expected: "<a href=\"http://twitter.com/search?q=%23hashétag\" title=\"#hashétag\" class=\"tweet-url hashtag\">#hashétag</a>"
+
+
   urls:
     - description: "Autolink trailing url"
       text: "text http://example.com"
