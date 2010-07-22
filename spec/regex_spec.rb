@@ -1,4 +1,4 @@
-#encoding: UTF-8
+# encoding: utf-8
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Twitter::Regex regular expressions" do
@@ -21,4 +21,24 @@ describe "Twitter::Regex regular expressions" do
     end
   end
 
+  describe "matching List names" do
+    it "should match if less than 25 characters" do
+      name = "Shuffleboard Community"
+      name.length.should < 25
+      name.should match(Twitter::Regex::REGEXEN[:list_name])
+    end
+
+    it "should not match if greater than 25 characters" do
+      name = "Most Glorious Shady Meadows Shuffleboard Community"
+      name.length.should > 25
+      name.should match(Twitter::Regex[:list_name])
+    end
+
+    it "should match Japense names less than 25 characters" do
+      name = CGI.unescape("%E4%B9%97")
+      name.length.should < 25
+      name.should match(Twitter::Regex[:list_name])
+    end
+
+  end
 end

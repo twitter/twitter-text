@@ -1,4 +1,4 @@
-# coding: UTF-8
+# encoding: utf-8
 
 module Twitter
   # A collection of regular expressions for parsing Tweet text. The regular expression
