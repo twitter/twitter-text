@@ -385,6 +385,22 @@ describe Twitter::Autolink do
             @autolinked_text.should have_autolinked_url("http://example.com/i_has_a_")
           end
         end
+
+        context "balanced parens with a double quote inside" do
+          def url; "http://foo.bar/foo_(\")_bar" end
+
+          it "should be linked" do
+            @autolinked_text.should have_autolinked_url("http://foo.bar/foo_")
+          end
+        end
+
+        context "balanced parens hiding XSS" do
+          def url; 'http://x.xx/("style="color:red"onmouseover="alert(1)' end
+
+          it "should be linked" do
+            @autolinked_text.should have_autolinked_url("http://x.xx/")
+          end
+        end
       end
 
       context "when preceded by a :" do
@@ -471,7 +487,7 @@ describe Twitter::Autolink do
       end
 
     end
-    
+
   end
 
 end
