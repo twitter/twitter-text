@@ -52,15 +52,16 @@ module Twitter
     REGEXEN[:valid_preceding_chars] = /(?:[^\/"':!=]|^|\:)/
     REGEXEN[:valid_domain] = /(?:[^[:punct:]\s][\.-](?=[^[:punct:]\s])|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
 
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
-    REGEXEN[:wikipedia_disambiguation] = /(?:\([^\)]+\))/i
+    REGEXEN[:wikipedia_disambiguation] = /(?:\(#{REGEXEN[:valid_general_url_path_chars]}+\))/i
     # Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
     REGEXEN[:valid_url_path_chars] = /(?:
       #{REGEXEN[:wikipedia_disambiguation]}|
       @[^\/]+\/|
-      [\.\,]?[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]
+      [\.\,]?#{REGEXEN[:valid_general_url_path_chars]}
     )/ix
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow =&# for empty URL parameters and other URL-join artifacts
