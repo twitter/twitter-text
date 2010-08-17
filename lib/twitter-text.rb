@@ -9,6 +9,7 @@ end
 require 'rubygems'
 
 # Needed for auto-linking
+gem 'actionpack'
 require 'action_view'
 
 require File.join(File.dirname(__FILE__), 'regex')

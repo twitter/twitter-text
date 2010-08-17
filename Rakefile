@@ -3,9 +3,13 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rubygems/specification'
 require 'date'
+
+gem 'rspec'
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'digest'
+
+gem 'actionpack'
 
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"

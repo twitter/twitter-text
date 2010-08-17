@@ -35,6 +35,7 @@ module Twitter
     if major.to_i >= 1 && minor.to_i >= 9
       REGEXEN[:list_name] = /^[a-zA-Z\u0080-\u00ff].{0,79}$/
     else
+      # This line barfs at compile time in Ruby 1.9.
       REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
     end
 
