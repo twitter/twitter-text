@@ -9,8 +9,6 @@ require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'digest'
 
-gem 'actionpack'
-
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
   s.version = "1.1.6"

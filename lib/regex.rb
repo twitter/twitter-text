@@ -36,7 +36,7 @@ module Twitter
       REGEXEN[:list_name] = /^[a-zA-Z\u0080-\u00ff].{0,79}$/
     else
       # This line barfs at compile time in Ruby 1.9.
-      REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
+      REGEXEN[:list_name] = eval("/^[a-zA-Z\x80-\xff].{0,79}$/")
     end
 
     # Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
