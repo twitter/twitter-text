@@ -34,11 +34,5 @@ describe "Twitter::Regex regular expressions" do
       name.should match(Twitter::Regex[:list_name])
     end
 
-    it "should match Japense names less than 25 characters" do
-      name = CGI.unescape("%E4%B9%97")
-      name.length.should < 25
-      name.should match(Twitter::Regex[:list_name])
-    end
-
   end
 end
