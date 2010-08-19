@@ -1,8 +1,15 @@
-raise("twitter-text requires the $KCODE variable be set to 'UTF8' or 'u'") unless ['u','UTF8'].include?($KCODE) || ''.respond_to?(:codepoints)
+
+major, minor, patch = RUBY_VERSION.split('.')
+
+if major == 1 && minor < 9
+  # Ruby 1.8 KCODE check. Not needed on 1.9 and later.
+  raise("twitter-text requires the $KCODE variable be set to 'UTF8' or 'u'") unless ['u','UTF8'].include?($KCODE)
+end
 
 require 'rubygems'
 
 # Needed for auto-linking
+gem 'actionpack'
 require 'action_view'
 
 require File.join(File.dirname(__FILE__), 'regex')

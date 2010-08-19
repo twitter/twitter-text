@@ -35,7 +35,8 @@ module Twitter
     if major.to_i >= 1 && minor.to_i >= 9
       REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
     else
-      REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\x80-\xff]{0,24}/
+      # This line barfs at compile time in Ruby 1.9.
+      REGEXEN[:list_name] = eval("/[a-zA-Z][a-zA-Z0-9_\\-\x80-\xff]{0,24}/")
     end
 
     # Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")

@@ -3,6 +3,8 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rubygems/specification'
 require 'date'
+
+gem 'rspec'
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'digest'
