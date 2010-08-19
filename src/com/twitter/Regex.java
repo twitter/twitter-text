@@ -16,15 +16,17 @@ public class Regex {
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^/\"':!=]|^|\\:)";
   private static final String URL_VALID_DOMAIN = "(?:[^\\p{Punct}\\s][\\.-](?=[^\\p{Punct}\\s])|[^\\p{Punct}\\s])+\\.[a-z]{2,}(?::[0-9]+)?";
 
+  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~]";
   /** Allow URL paths to contain balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
    *  2. Used in IIS sessions like /S(dfd346)/
   **/
-  private static final String URL_BALANCE_PARENS = "(?:\\([^\\)]+\\))";
+  private static final String URL_BALANCE_PARENS = "(?:\\(" + URL_VALID_GENERAL_PATH_CHARS + "+\\))";
   private static final String URL_VALID_URL_PATH_CHARS = "(?:" +
     URL_BALANCE_PARENS +
     "|@[^/]+/" +
-    "|[\\.,]?[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~]" +
+    "|[\\.,]" + URL_VALID_GENERAL_PATH_CHARS + "+" +
+    "|" + URL_VALID_GENERAL_PATH_CHARS + "+" +
   ")";
 
   /** Valid end-of-path chracters (so /foo. does not gobble the period).

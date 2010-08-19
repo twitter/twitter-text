@@ -11,7 +11,7 @@
   <property name="docs"  location="docs"/>
   <property name="javadoc"  location="docs/api"/>
   <property name="dist"  location="dist"/>
-  <property name="jar.version" value="1.1.4" />
+  <property name="jar.version" value="1.1.7" />
 
   <path id="jars.tests">
     <pathelement location="jars/junit-4.6.jar"/>
@@ -41,7 +41,7 @@
     </javac>
   </target>
 
-  <target name="test" depends="compile,compile-tests" description="Run the unit tests">
+  <target name="test" depends="compile,compile-tests" description="Run the unit and conformance tests">
     <junit printsummary="yes" haltonfailure="yes">
       <jvmarg value="-Dfile.encoding=UTF-8"/>
       <sysproperty key="conformance.dir" value="${conformance.dir}"/>
@@ -57,6 +57,27 @@
       <batchtest fork="yes">
         <fileset dir="${src.tests}">
           <include name="**/*Test*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+  
+  <target name="local-test" depends="compile,compile-tests" description="Run the unit tests">
+    <junit printsummary="yes" haltonfailure="yes">
+      <jvmarg value="-Dfile.encoding=UTF-8"/>
+
+      <classpath>
+        <pathelement location="${build.tests}"/>
+        <path refid="jars.tests"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+
+      <formatter type="plain" usefile="false"/>
+
+      <batchtest fork="yes">
+        <fileset dir="${src.tests}">
+          <include name="**/*Test*.java"/>
+          <exclude name="**/ConformanceTest.java"/>
         </fileset>
       </batchtest>
     </junit>
