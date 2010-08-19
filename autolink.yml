@@ -73,6 +73,22 @@ tests:
       text: "@username/list567890123456789012345A"
       expected: "@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list567890123456789012345\">username/list567890123456789012345</a>A"
 
+    - description: "Autolink list that contains an _"
+      text: "text @username/list_name"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list_name\">username/list_name</a>"
+
+    - description: "Autolink list that contains a -"
+      text: "text @username/list-name"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list-name\">username/list-name</a>"
+
+    - description: "Autolink list that contains a number"
+      text: "text @username/list123"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list123\">username/list123</a>"
+
+    - description: "DO NOT Autolink list starting with a number"
+      text: "@username/1list"
+      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>/1list"
+
   hashtags:
     - description: "Autolink trailing hashtag"
       text: "text #hashtag"
