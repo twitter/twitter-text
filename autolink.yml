@@ -184,6 +184,10 @@ tests:
       text: "text http://msdn.com/S(deadbeef)/page.htm"
       expected: "text <a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
 
+    - description: "Autolink url with balanced parens hiding XSS"
+      text: 'text http://foo.bar/("onclick="alert(1)")'
+      expected: 'text <a href="http://foo.bar/">http://foo.bar/</a>("onclick="alert(1)")'
+
     - description: "Autolink url should NOT capture unbalanced parens"
       text: "Parenthetically bad http://example.com/i_has_a_) thing"
       expected: "Parenthetically bad <a href=\"http://example.com/i_has_a_\">http://example.com/i_has_a_</a>) thing"
