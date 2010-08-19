@@ -69,9 +69,9 @@ tests:
       text: "@username/list&^$%^"
       expected: "@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list\">username/list</a>&^$%^"
 
-    - description: "Autolink list name over 80 characters (truncated to 80)"
-      text: "@username/list5678901234567890123456789012345678901234567890123456789012345678901234567890A"
-      expected: "@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list5678901234567890123456789012345678901234567890123456789012345678901234567890\">username/list5678901234567890123456789012345678901234567890123456789012345678901234567890</a>A"
+    - description: "Autolink list name over 25 characters (truncated to 25)"
+      text: "@username/list567890123456789012345A"
+      expected: "@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list567890123456789012345\">username/list567890123456789012345</a>A"
 
   hashtags:
     - description: "Autolink trailing hashtag"
