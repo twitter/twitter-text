@@ -474,6 +474,14 @@ describe Twitter::Autolink do
         end
       end
 
+      context "with a @ in a URL" do
+        def original_text; 'http://x.xx/@"style="color:pink"onmouseover=alert(1)//'; end
+
+        it "should not allow XSS follwing @" do
+          @autolinked_text.should have_autolinked_url('http://x.xx/')
+        end
+      end
+
     end
 
     describe "Autolink all" do
