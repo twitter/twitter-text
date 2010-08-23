@@ -11,7 +11,7 @@ require 'digest'
 
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "1.1.7"
+  s.version = "1.1.8"
   s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle", "Raffi Krikorian"]
   s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com", "raffi@twitter.com"]
   s.homepage = "http://twitter.com"
