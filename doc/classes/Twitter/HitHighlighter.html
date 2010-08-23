@@ -87,7 +87,7 @@ auto-linked already. Useful with the results returned from the Search API.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000009">hit_highlight</a>&nbsp;&nbsp;
+      <a href="#M000015">hit_highlight</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -127,11 +127,11 @@ Default Tag used for hit highlighting
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000009" class="method-detail">
-        <a name="M000009"></a>
+      <div id="method-M000015" class="method-detail">
+        <a name="M000015"></a>
 
         <div class="method-heading">
-          <a href="#M000009" class="method-signature">
+          <a href="#M000015" class="method-signature">
           <span class="method-name">hit_highlight</span><span class="method-args">(text, hits = [], options = {})</span>
           </a>
         </div>
@@ -151,8 +151,8 @@ The  tags can be overridden using the <tt>:tag</tt> option. For example:
  =&gt; &quot;test &lt;strong&gt;hit&lt;/strong&gt; here&quot;
 </pre>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000009-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000009-source">
+            onclick="toggleCode('M000015-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000015-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/hithighlighter.rb, line 17</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hit_highlight</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">hits</span> = [], <span class="ruby-identifier">options</span> = {})
@@ -206,7 +206,7 @@ The  tags can be overridden using the <tt>:tag</tt> option. For example:
           <span class="ruby-keyword kw">end</span>
           <span class="ruby-identifier">placed</span> = <span class="ruby-keyword kw">true</span>
         <span class="ruby-keyword kw">end</span>
-        
+
         <span class="ruby-comment cmt"># ultimate fallback, hits that run off the end get a closing tag</span>
         <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">placed</span>
           <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">tag</span>
@@ -223,6 +223,8 @@ The  tags can be overridden using the <tt>:tag</tt> option. For example:
       <span class="ruby-keyword kw">end</span>
 
       <span class="ruby-identifier">result</span>
+    <span class="ruby-keyword kw">rescue</span>
+      <span class="ruby-identifier">text</span>
     <span class="ruby-keyword kw">end</span>
 </pre>
           </div>

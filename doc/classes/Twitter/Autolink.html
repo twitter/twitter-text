@@ -88,10 +88,10 @@ and URLs.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000001">auto_link</a>&nbsp;&nbsp;
-      <a href="#M000003">auto_link_hashtags</a>&nbsp;&nbsp;
-      <a href="#M000004">auto_link_urls_custom</a>&nbsp;&nbsp;
-      <a href="#M000002">auto_link_usernames_or_lists</a>&nbsp;&nbsp;
+      <a href="#M000004">auto_link</a>&nbsp;&nbsp;
+      <a href="#M000006">auto_link_hashtags</a>&nbsp;&nbsp;
+      <a href="#M000007">auto_link_urls_custom</a>&nbsp;&nbsp;
+      <a href="#M000005">auto_link_usernames_or_lists</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -178,11 +178,11 @@ HTML attribute for robot nofollow behavior (default)
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000001" class="method-detail">
-        <a name="M000001"></a>
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
 
         <div class="method-heading">
-          <a href="#M000001" class="method-signature">
+          <a href="#M000004" class="method-signature">
           <span class="method-name">auto_link</span><span class="method-args">(text, options = {})</span>
           </a>
         </div>
@@ -229,8 +229,8 @@ this.
 </td></tr>
 </table>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000001-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000001-source">
+            onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000004-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/autolink.rb, line 34</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})
@@ -245,11 +245,11 @@ this.
         </div>
       </div>
 
-      <div id="method-M000003" class="method-detail">
-        <a name="M000003"></a>
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
 
         <div class="method-heading">
-          <a href="#M000003" class="method-signature">
+          <a href="#M000006" class="method-signature">
           <span class="method-name">auto_link_hashtags</span><span class="method-args">(text, options = {}) {|hashtag_text| ...}</span>
           </a>
         </div>
@@ -276,8 +276,8 @@ following entries in the <tt>options</tt> hash:
 </td></tr>
 </table>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000003-source">
+            onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000006-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/autolink.rb, line 85</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_hashtags</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {})  <span class="ruby-comment cmt"># :yields: hashtag_text</span>
@@ -300,11 +300,11 @@ following entries in the <tt>options</tt> hash:
         </div>
       </div>
 
-      <div id="method-M000004" class="method-detail">
-        <a name="M000004"></a>
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
 
         <div class="method-heading">
-          <a href="#M000004" class="method-signature">
+          <a href="#M000007" class="method-signature">
           <span class="method-name">auto_link_urls_custom</span><span class="method-args">(text, href_options = {})</span>
           </a>
         </div>
@@ -318,8 +318,8 @@ Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt> the
 <tt>rel=&quot;nofollow&quot;</tt> attribute will be added.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000004-source">
+            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000007-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/autolink.rb, line 105</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_urls_custom</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">href_options</span> = {})
@@ -338,11 +338,11 @@ Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt> the
         </div>
       </div>
 
-      <div id="method-M000002" class="method-detail">
-        <a name="M000002"></a>
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
 
         <div class="method-heading">
-          <a href="#M000002" class="method-signature">
+          <a href="#M000005" class="method-signature">
           <span class="method-name">auto_link_usernames_or_lists</span><span class="method-args">(text, options = {}) {|list_or_username| ...}</span>
           </a>
         </div>
@@ -381,8 +381,8 @@ of this.
 </td></tr>
 </table>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000002-source">
+            onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000005-source">
 <pre>
 <span class="ruby-comment cmt"># File lib/autolink.rb, line 53</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">auto_link_usernames_or_lists</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">options</span> = {}) <span class="ruby-comment cmt"># :yields: list_or_username</span>

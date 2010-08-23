@@ -171,12 +171,12 @@ describe Twitter::Autolink do
 
       context "username over twenty characters" do
         def original_text
-          @eighty_character_list = "jack/" + ("a" * 80)
-          "@#{@eighty_character_list}12345"
+          @twentyfive_character_list = "jack/" + ("a" * 25)
+          "@#{@twentyfive_character_list}12345"
         end
 
         it "should be linked" do
-          @autolinked_text.should link_to_list_path(@eighty_character_list)
+          @autolinked_text.should link_to_list_path(@twentyfive_character_list)
         end
       end
     end

@@ -3,13 +3,15 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rubygems/specification'
 require 'date'
+
+gem 'rspec'
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'digest'
 
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "1.1.6"
+  s.version = "1.1.7"
   s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle", "Raffi Krikorian"]
   s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com", "raffi@twitter.com"]
   s.homepage = "http://twitter.com"

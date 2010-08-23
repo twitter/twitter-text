@@ -33,9 +33,10 @@ module Twitter
 
     major, minor, patch = RUBY_VERSION.split(/\./)
     if major.to_i >= 1 && minor.to_i >= 9
-      REGEXEN[:list_name] = /^[a-zA-Z\u0080-\u00ff].{0,79}$/
+      REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
     else
-      REGEXEN[:list_name] = /^[a-zA-Z\x80-\xff].{0,79}$/
+      # This line barfs at compile time in Ruby 1.9.
+      REGEXEN[:list_name] = eval("/[a-zA-Z][a-zA-Z0-9_\\-\x80-\xff]{0,24}/")
     end
 
     # Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
@@ -45,7 +46,7 @@ module Twitter
     # Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
     HASHTAG_CHARACTERS = /[a-z0-9_#{LATIN_ACCENTS}]/io
     REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{HASHTAG_CHARACTERS}*)/io
-    REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9\u0080-\u00ff\-]{0,79})?/
+    REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^)([@＠]+)([a-zA-Z0-9_]{1,20})(\/#{REGEXEN[:list_name]})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
