@@ -24,7 +24,7 @@ public class Regex {
   private static final String URL_BALANCE_PARENS = "(?:\\(" + URL_VALID_GENERAL_PATH_CHARS + "+\\))";
   private static final String URL_VALID_URL_PATH_CHARS = "(?:" +
     URL_BALANCE_PARENS +
-    "|@[^/]+/" +
+    "|@" + URL_VALID_GENERAL_PATH_CHARS + "+/" +
     "|[\\.,]" + URL_VALID_GENERAL_PATH_CHARS + "+" +
     "|" + URL_VALID_GENERAL_PATH_CHARS + "+" +
   ")";
