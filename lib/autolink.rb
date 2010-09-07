@@ -2,7 +2,7 @@
 module Twitter
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
   # usernames, lists, hashtags and URLs.
-  module Autolink
+  module Autolink extend self
     include ActionView::Helpers::TagHelper #tag_options needed by auto_link
 
     WWW_REGEX = /www\./i #:nodoc:

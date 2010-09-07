@@ -1,5 +1,5 @@
 module Twitter
-  module Validation
+  module Validation extend self
     MAX_LENGTH = 140
 
     # Character not allowed in Tweets

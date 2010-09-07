@@ -39,7 +39,7 @@ end
 module Twitter
   # A module for including Tweet parsing in a class. This module provides function for the extraction and processing
   # of usernames, lists, URLs and hashtags.
-  module Extractor
+  module Extractor extend self
 
     # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>. If the
     # <tt>text</tt> is <tt>nil</tt> or contains no username mentions an empty array
