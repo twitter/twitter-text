@@ -356,3 +356,7 @@ tests:
     - description: "Correctly handles URL follower directly by @user"
       text: "See: http://example.com/@user"
       expected: "See: <a href=\"http://example.com/\">http://example.com/</a>@<a class=\"tweet-url username\" href=\"http://twitter.com/user\">user</a>"
+
+    - description: "Does not allow an XSS after an @"
+      text: "See: http://x.xx/@\"style=\"color:pink\"onmouseover=alert(1)//"
+      expected: "See: <a href=\"http://x.xx/\">http://x.xx/</a>@\"style=\"color:pink\"onmouseover=alert(1)//"
