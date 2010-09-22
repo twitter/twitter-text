@@ -474,6 +474,7 @@ describe Twitter::Autolink do
         end
       end
 
+
       context "with a @ in a URL" do
 
         context "with XSS attack" do
@@ -484,10 +485,20 @@ describe Twitter::Autolink do
           end
         end
 
-        context "with a username" do
+        context "with a username not followed by a /" do
           def original_text; 'http://example.com/@foobar'; end
 
-          it "should not link the username" do
+          it "should link small url and username" do
+            @autolinked_text.should have_autolinked_url('http://example.com/')
+            @autolinked_text.should link_to_screen_name('foobar')
+          end
+        end
+
+        context "with a username followed by a /" do
+          def original_text; 'http://example.com/@foobar/'; end
+
+          it "should not link the username but link full url" do
+            @autolinked_text.should have_autolinked_url('http://example.com/@foobar/')
             @autolinked_text.should_not link_to_screen_name('foobar')
           end
         end
