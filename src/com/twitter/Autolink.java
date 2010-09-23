@@ -65,20 +65,28 @@ public class Autolink {
   public String autoLinkUsernamesAndLists(String text) {
     Matcher matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(text);
     StringBuffer sb = new StringBuffer(text.length());
+
     while (matcher.find()) {
       StringBuffer replacement = new StringBuffer();
+
       if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
           matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
         // Username only
-        replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
-                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
-                   .append("<a")
-                   .append(" class=\"").append(urlClass).append(" ").append(usernameClass).append("\"")
-                   .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"");
-        if (noFollow) {
-          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER)).matches()) {
+          replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
+                     .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
+                     .append("<a")
+                     .append(" class=\"").append(urlClass).append(" ").append(usernameClass).append("\"")
+                     .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"");
+          if (noFollow) {
+            replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+          }
+          replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>")
+                     .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
+        } else {
+          // Not a screen name valid for linking
+          replacement.append("$0");
         }
-        replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>");
       } else {
         // Username and list
         replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
@@ -91,10 +99,14 @@ public class Autolink {
           replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
         }
         replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
-                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>");
+                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>")
+                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
       }
+
+      // Apply the replacement from above
       matcher.appendReplacement(sb, replacement.toString());
     }
+
     matcher.appendTail(sb);
     return sb.toString();
   }

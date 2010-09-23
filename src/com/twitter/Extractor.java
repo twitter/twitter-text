@@ -34,14 +34,14 @@ public class Extractor {
       if (this == obj) {
         return true;
       }
-      
+
       if (!(obj instanceof Entity)) {
         System.out.println("incorrect type");
         return false;
       }
-      
+
       Entity other = (Entity)obj;
-      
+
       if (this.type.equals(other.type) &&
           this.start.equals(other.start) &&
           this.end.equals(other.end) &&
@@ -77,7 +77,7 @@ public class Extractor {
     List<String> extracted = new ArrayList<String>();
     Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
     while (matcher.find()) {
-      if (! Regex.AT_SIGNS.matcher(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_AFTER)).matches()) {
+      if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_AFTER)).matches()) {
         extracted.add(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
       }
     }
