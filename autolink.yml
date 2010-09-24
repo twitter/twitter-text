@@ -33,6 +33,10 @@ tests:
       text: "あ@usernameの"
       expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>の"
 
+    - description: "Autolink usernamt in compressed RT"
+      text: "RT@username: long Tweet is loooong"
+      expected: "RT@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>: long Tweet is loooong"
+
     - description: "DO NOT Autolink username followed by accented latin characters"
       text: "@aliceìnheiro something something"
       expected: "@aliceìnheiro something something"
