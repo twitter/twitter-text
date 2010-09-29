@@ -65,7 +65,7 @@ module Twitter
       possible_screen_names = []
       position = 0
       text.to_s.scan(Twitter::Regex[:extract_mentions]) do |before, sn, after|
-        unless after =~ Twitter::Regex[:at_signs]
+        unless after =~ Twitter::Regex[:end_screen_name_match]
           start_position = text.to_s.sub_string_search(sn, position) - 1
           position = start_position + sn.char_length + 1
           possible_screen_names << {
