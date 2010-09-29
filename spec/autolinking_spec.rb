@@ -475,10 +475,30 @@ describe Twitter::Autolink do
       end
 
       context "with a @ in a URL" do
-        def original_text; 'http://x.xx/@"style="color:pink"onmouseover=alert(1)//'; end
+        context "with XSS attack" do
+          def original_text; 'http://x.xx/@"style="color:pink"onmouseover=alert(1)//'; end
 
-        it "should not allow XSS follwing @" do
-          @autolinked_text.should have_autolinked_url('http://x.xx/')
+          it "should not allow XSS follwing @" do
+            @autolinked_text.should have_autolinked_url('http://x.xx/')
+          end
+        end
+
+        context "with a username not followed by a /" do
+          def original_text; 'http://example.com/@foobar'; end
+
+          it "should link small url and username" do
+            @autolinked_text.should have_autolinked_url('http://example.com/')
+            @autolinked_text.should link_to_screen_name('foobar')
+          end
+        end
+
+        context "with a username followed by a /" do
+          def original_text; 'http://example.com/@foobar/'; end
+
+          it "should not link the username but link full url" do
+            @autolinked_text.should have_autolinked_url('http://example.com/@foobar/')
+            @autolinked_text.should_not link_to_screen_name('foobar')
+          end
         end
       end
 

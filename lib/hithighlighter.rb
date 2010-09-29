@@ -22,9 +22,7 @@ module Twitter
       tag_name = options[:tag] || DEFAULT_HIGHLIGHT_TAG
       tags = ["<" + tag_name + ">", "</" + tag_name + ">"]
 
-      chunks = text.split("<").map do |item|
-        item.blank? ? item : item.split(">")
-      end.flatten
+      chunks = text.split(/[<>]/)
 
       result = ""
       chunk_index, chunk = 0, chunks[0]

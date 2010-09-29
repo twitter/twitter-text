@@ -59,26 +59,39 @@ module Twitter
       options[:list_url_base] ||= "http://twitter.com/"
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
-      text.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
-        before, at, user, slash_listname, after = $1, $2, $3, $4, $5
+      new_text = ""
 
-        if slash_listname && !options[:suppress_lists]
-          # the link is a list
-          text = list = "#{user}#{slash_listname}"
-          text = yield(list) if block_given?
-          "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{options[:list_url_base]}#{list.downcase}\"#{extra_html}>#{text}</a>#{after}"
+      # this -1 flag allows strings ending in ">" to work
+      text.split(/[<>]/, -1).each_with_index do |chunk, index|
+        if index != 0
+          new_text << ((index % 2 == 0) ? ">" : "<")
+        end
+
+        if index % 4 != 0
+          new_text << chunk
         else
-          if after =~ Twitter::Regex[:end_screen_name_match]
-            # Followed by something that means we don't autolink
-            "#{before}#{at}#{user}#{slash_listname}#{after}"
-          else
-            # this is a screen name
-            text = user
-            text = yield(text) if block_given?
-            "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{options[:username_url_base]}#{text}\"#{extra_html}>#{text}</a>#{after}"
+          new_text << chunk.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
+            before, at, user, slash_listname, after = $1, $2, $3, $4, $5
+            if slash_listname && !options[:suppress_lists]
+              # the link is a list
+              chunk = list = "#{user}#{slash_listname}"
+              chunk = yield(list) if block_given?
+              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{options[:list_url_base]}#{list.downcase}\"#{extra_html}>#{chunk}</a>#{after}"
+            else
+              if after =~ Twitter::Regex[:end_screen_name_match]
+                # Followed by something that means we don't autolink
+                "#{before}#{at}#{user}#{slash_listname}#{after}"
+              else
+                # this is a screen name
+                chunk = user
+                chunk = yield(chunk) if block_given?
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{options[:username_url_base]}#{chunk}\"#{extra_html}>#{chunk}</a>#{after}"
+              end
+            end
           end
         end
       end
+      new_text
     end
 
     # Add <tt><a></a></tt> tags around the hashtags in the provided <tt>text</tt>. The
