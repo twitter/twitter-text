@@ -46,3 +46,8 @@ tests:
       text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
       hits: [ [0, 14] ]
       expected: "<em>@<a href=\"http://twitter.com/username\">username</a> this</em> is an example"
+
+    - description: "Highlight touching tags"
+      text: "<a>foo</a><a>foo</a>"
+      hits: [ [3, 6] ]
+      expected: "<a>foo</a><a><em>foo</em></a>
