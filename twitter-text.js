@@ -25,7 +25,11 @@ if (!window.twttr) {
     }
 
     return new RegExp(r.replace(/#\{(\w+)\}/g, function(m, name) {
-      return REGEXEN[name] ? REGEXEN[name].source : "";
+      var regex = REGEXEN[name] || "";
+      if (typeof regex !== "string") {
+        regex = regex.source;
+      }
+      return regex;
     }), f);
   }
 
@@ -68,7 +72,7 @@ if (!window.twttr) {
   ];
 
   REGEXEN.spaces = / /; //new RegExp(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|'))
-  REGEXEN.punct = /.,/; // TODO
+  REGEXEN.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~/;
   REGEXEN.atSigns = /[@＠]/;
   REGEXEN.extractMentions = R(/(^|[^a-zA-Z0-9_])#{atSigns}([a-zA-Z0-9_]{1,20})(?=(.|$))/g);
   REGEXEN.extractReply = R(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
@@ -78,16 +82,16 @@ if (!window.twttr) {
   var LATIN_ACCENTS = [
     // (0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a
   ];//.flatten.pack('U*').freeze
-  REGEXEN.latinAccentChars = /a-z/; // todo
+  REGEXEN.latinAccentChars = R("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ\\303\\277");
   REGEXEN.latenAccents = R(/[#{latinAccentChars}]+/);
 
-  REGEXEN.endScreenNameMatch = R(/#{atSigns}|#{latinAccents}/);
+  REGEXEN.endScreenNameMatch = R(/#{atSigns}|[#{latinAccentChars}]/);
 
   // Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
   REGEXEN.hashtagCharacters = R(/[a-z0-9_#{latinAccentChars}]/i);
-  REGEXEN.autoLinkHashtags = R(/(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{hashtagCharacters}*)/i);
-  REGEXEN.autoLinkUsernamesOrLists = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?($|.)/;
-  REGEXEN.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/;
+  REGEXEN.autoLinkHashtags = R(/(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{hashtagCharacters}*)/gi);
+  REGEXEN.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?(.|$)/g;
+  REGEXEN.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
   REGEXEN.validPrecedingChars = /(?:[^\/"':!=]|^|\:)/;
@@ -119,12 +123,9 @@ if (!window.twttr) {
         '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $7 Query String
       ')'                                                          +
     ')'
-  , "i");
+  , "gi");
 
   var WWW_REGEX = /www\./i;
-
-  // REGEXEN.validUrl = /(((?:[^\/"':!=]|^|\:))((https?:\/\/|www\.)((?:[^.,\s][\.-](?=[^.,\s])|[^.,\s]){1,}\.[a-z]{2,}(?::[0-9]+)?)\/\/#{validUrlPathChars]}*[a-z0-9=#\/]?)?(\?[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]*[a-z0-9_&=#])?)/
-
 
 
   // Default CSS class for auto-linked URLs
@@ -199,7 +200,9 @@ if (!window.twttr) {
             d.list = list.toLowerCase();
             return S("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{chunk}</a>#{after}", d);
           } else {
+            console.log(after);
             if (after && after.match(REGEXEN.endScreenNameMatch)) {
+              console.log("matched after");
               // Followed by something that means we don't autolink
               return match;
             } else {
