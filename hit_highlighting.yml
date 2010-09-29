@@ -50,4 +50,4 @@ tests:
     - description: "Highlight touching tags"
       text: "<a>foo</a><a>foo</a>"
       hits: [ [3, 6] ]
-      expected: "<a>foo</a><a><em>foo</em></a>
+      expected: "<a>foo</a><a><em>foo</em></a>"
