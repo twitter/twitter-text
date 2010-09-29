@@ -153,7 +153,7 @@ module Twitter
       tags = []
       position = 0
       text.scan(Twitter::Regex[:auto_link_hashtags]) do |before, hash, hash_text|
-        start_position = text.to_s.sub_string_search(hash, position)
+        start_position = text.to_s.sub_string_search(hash + hash_text, position)
         position = start_position + hash_text.char_length + 1
         tags << {
           :hashtag => hash_text,
