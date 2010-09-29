@@ -10,19 +10,16 @@
   <script src="../test/cases.js"></script>
 
   <script>
-    var twttr = {
-      util: {
-        linkify: function(text) { return text; },
-        extract: function(text) { return text; },
-        hitHighlight: function(text) { return text; },
-      }
+    twttr.util = {
+      extract: function(text) { return text; },
+      hitHighlight: function(text) { return text; },
     };
 
     function getTester(suite) {
       switch (suite) {
         case "autolink":
           return function(test) {
-            return twttr.util.linkify(test.text);
+            return twttr.txt.autoLink(test.text, {suppressNoFollow: true});
           };
         case "extract":
           return function(test) {
@@ -38,24 +35,22 @@
 
 
     for (var suite in cases) {
-      module(suite);
+      (function(suite) {
+        module(suite);
+        var tester = getTester(suite);
 
-      var tester = getTester(suite);
-
-      for (var section in cases[suite]) {
-        test(section, function() {
-          for (var testCase in cases[suite][section]) {
-            same(tester(cases[suite][section][testCase]), cases[suite][section][testCase].expected, cases[suite][section][testCase].description);
-          }
-        });
-      }
+        for (var section in cases[suite]) {
+          (function(section) {
+            test(section, function() {
+              for (var testCase in cases[suite][section]) {
+                same(tester(cases[suite][section][testCase]), cases[suite][section][testCase].expected, cases[suite][section][testCase].description);
+              }
+            });
+          }(section));
+        }
+      }(suite));
 
     }
-
-
-    test("foo", function() {
-      ok(cases, "foo");
-    });
   </script>
 
 </head>

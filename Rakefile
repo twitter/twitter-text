@@ -46,7 +46,7 @@ namespace :test do
 
       test_files.each do |test_file|
         path = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance", test_file + ".yml")
-        yml = YAML.load_file path
+        yml = YAML.load_file(path)
         f.write("cases.#{test_file} = #{yml['tests'].to_json};")
       end
 
@@ -55,7 +55,7 @@ namespace :test do
 
     desc "Run conformance test suite"
     task :run do
-      #todo
+      exec('open test/test.html')
     end
   end
 

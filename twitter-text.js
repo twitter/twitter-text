@@ -2,13 +2,10 @@ if (!window.twttr) {
   window.twttr = {};
 }
 
-if (!window.twttr.util) {
-  window.twttr.util = {};
-}
-
 (function() {
-  twttr.util.twitterText = {};
-  var REGEXEN = {};
+  twttr.txt = {};
+
+  var REGEXEN = twttr.txt.regexen = {};
 
   // Builds a RegExp
   function R(r, f) {
@@ -30,6 +27,13 @@ if (!window.twttr.util) {
     return new RegExp(r.replace(/#\{(\w+)\}/g, function(m, name) {
       return REGEXEN[name] ? REGEXEN[name].source : "";
     }), f);
+  }
+
+  // simple string interpolation
+  function S(s, d) {
+    return s.replace(/#\{(\w+)\}/g, function(m, name) {
+      return d[name] || "";
+    });
   }
 
   // Join Regexes
@@ -93,28 +97,178 @@ if (!window.twttr.util) {
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
-  REGEXEN.wikipediaDisambiguation = R(/(?:\(#{validGeneralUrlPathChars]}+\))/i);
+  REGEXEN.wikipediaDisambiguation = R(/(?:\(#{validGeneralUrlPathChars}+\))/i);
   // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
-  REGEXEN.validUrlPathChars = R(/(?:#{wikipediaDisambiguation}|@#{validGeneralUrlPathChars]}+\/|[\.\,]?#{validGeneralUrlPathChars]})/i);
+  REGEXEN.validUrlPathChars = R(/(?:#{wikipediaDisambiguation}|@#{validGeneralUrlPathChars}+\/|[\.\,]?#{validGeneralUrlPathChars})/i);
 
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
   REGEXEN.validUrlPathEndingChars = /[a-z0-9=#\/]/i;
   REGEXEN.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i;
   REGEXEN.validUrlQueryEndingChars = /[a-z0-9_&=#]/i;
-  REGEXEN.validUrl = J([
-    '(',                                                                                   //   $1 total match
-      R(/(#{validPrecedingChars})/),                                                //  $2 Preceeding chracter
-      '(',                                                                                   //   $3 URL
-        /(https?:\/\/|www\.)/,                                                               //  $4 Protocol or beginning
-        R(/(#{validDomain})/),                                                       //   $5 Domain(s) and optional post number
-        R(/\/#{validUrlPathChars]}*/),
-        R(/#{validUrlPathEndingChars}?/),
-      ')?',                                                                              //   $6 URL Path
-      R(/(\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?/), //   $7 Query String
+  REGEXEN.validUrl = R(
+    '('                                                            + // $1 total match
+      '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
+      '('                                                          + // $3 URL
+        '(https?:\\/\\/|www\\.)'                                   + // $4 Protocol or beginning
+        '(#{validDomain})'                                         + // $5 Domain(s) and optional post number
+        '('                                                        + // $6 URL Path
+          '\\/#{validUrlPathChars}*'                              +
+          '#{validUrlPathEndingChars}?'                            +
+        ')?'                                                       +
+        '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $7 Query String
+      ')'                                                          +
     ')'
-  ], "i");
+  , "i");
 
-  console.log(REGEXEN);
+  var WWW_REGEX = /www\./i;
+
+  // REGEXEN.validUrl = /(((?:[^\/"':!=]|^|\:))((https?:\/\/|www\.)((?:[^.,\s][\.-](?=[^.,\s])|[^.,\s]){1,}\.[a-z]{2,}(?::[0-9]+)?)\/\/#{validUrlPathChars]}*[a-z0-9=#\/]?)?(\?[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]*[a-z0-9_&=#])?)/
+
+
+
+  // Default CSS class for auto-linked URLs
+  var DEFAULT_URL_CLASS = "tweet-url";
+  // Default CSS class for auto-linked lists (along with the url class)
+  var DEFAULT_LIST_CLASS = "list-slug";
+  // Default CSS class for auto-linked usernames (along with the url class)
+  var DEFAULT_USERNAME_CLASS = "username";
+  // Default CSS class for auto-linked hashtags (along with the url class)
+  var DEFAULT_HASHTAG_CLASS = "hashtag";
+  // HTML attribute for robot nofollow behavior (default)
+  var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
+
+  twttr.txt.autoLink = function(text, options) {
+    options = options || {};
+    return twttr.txt.autoLinkUsernamesOrLists(
+      twttr.txt.autoLinkUrlsCustom(
+        twttr.txt.autoLinkHashtags(text, options),
+      options),
+    options);
+  };
+
+
+  twttr.txt.autoLinkUsernamesOrLists = function(text, options, callback) {
+    options = options || {};
+
+    // options = options.dup
+    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
+    options.listClass = options.listClass || DEFAULT_LIST_CLASS;
+    options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
+    options.usernameUrlBase = options.usernameUrlBase || "http://twitter.com/";
+    options.listUrlBase = options.listUrlBase || "http://twitter.com/";
+    if (!options.suppressNoFollow) {
+      var extraHtml = HTML_ATTR_NO_FOLLOW;
+    }
+
+    var newText = "",
+        splitText = text.split(/[<>]/);
+
+    for (var index = 0; index < splitText.length; index++) {
+      var chunk = splitText[index];
+
+      if (index !== 0) {
+        newText += ((index % 2 === 0) ? ">" : "<");
+      }
+
+      if (index % 4 !== 0) {
+        newText += chunk;
+      } else {
+        newText += chunk.replace(REGEXEN.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, after) {
+          var d = {
+            before: before,
+            at: at,
+            user: user,
+            slashListname: slashListname,
+            after: after,
+            extraHtml: extraHtml,
+            chunk: chunk
+          };
+          for (var k in options) {
+            if (options.hasOwnProperty(k)) {
+              d[k] = options[k];
+            }
+          }
+
+          if (slashListname && !options.suppressLists) {
+            // the link is a list
+            var list = d.chunk = S("#{user}#{slashListname}", d);
+            if (callback) {
+              list = callback(list);
+            }
+            d.list = list.toLowerCase();
+            return S("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{chunk}</a>#{after}", d);
+          } else {
+            if (after && after.match(REGEXEN.endScreenNameMatch)) {
+              // Followed by something that means we don't autolink
+              return match;
+            } else {
+              // this is a screen name
+              d.chunk = user;
+              if (callback) {
+                d.chunk = callback(d.chunk);
+              }
+              return S("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{chunk}</a>#{after}", d);
+            }
+          }
+        });
+      }
+    }
+
+    return newText;
+  };
+
+  twttr.txt.autoLinkHashtags = function(text, options, callback) {
+    //    options = options.dup
+    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
+    options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
+    options.hashtagUrlBase = options.hashtagUrlBase || "http://twitter.com/search?q=%23";
+    if (!options.suppressNoFollow) {
+      var extraHtml = HTML_ATTR_NO_FOLLOW;
+    }
+
+    return text.replace(REGEXEN.autoLinkHashtags, function(match, before, hash, text) {
+      if (callback) {
+        text = callback(text);
+      }
+      var d = {
+        before: before,
+        hash: hash,
+        text: text,
+        extraHtml: extraHtml
+      };
+
+      for (var k in options) {
+        if (options.hasOwnProperty(k)) {
+          d[k] = options[k];
+        }
+      }
+
+      return S("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{text}</a>", d);
+    });
+  };
+
+
+  twttr.txt.autoLinkUrlsCustom = function(text, options) {
+    // options = href_options.dup
+    if (!options.suppressNoFollow) {
+      options.rel = "nofollow";
+      delete options.suppressNoFollow;
+    }
+
+    return text.replace(REGEXEN.validUrl, function(match, all, before, url, protocol) {
+      var htmlAttrs = "";//tag_options(options.stringify_keys) || ""
+      var fullUrl = ((protocol && protocol.match(WWW_REGEX)) ? S("http://#{url}", {url: url}) : url);
+
+      var d = {
+        before: before,
+        fullUrl: fullUrl,
+        htmlAttrs: htmlAttrs,
+        url: url
+      };
+
+      return S("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
+    });
+  };
 
 }());
