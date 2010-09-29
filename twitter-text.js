@@ -32,6 +32,19 @@ if (!window.twttr.util) {
     }), f);
   }
 
+  // Join Regexes
+  function J(a, f) {
+    var r = "";
+    for (var i = 0; i < a.length; i++) {
+      var s = a[i];
+      if (typeof s !== "string") {
+        s = s.source;
+      }
+      r += s;
+    }
+    return new RegExp(r, f);
+  }
+
   // Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
   // to access both the list of characters and a pattern suitible for use with String#split
   // Taken from: ActiveSupport::Multibyte::Handlers::UTF8Handler::UNICODE_WHITESPACE
@@ -51,6 +64,7 @@ if (!window.twttr.util) {
   ];
 
   REGEXEN.spaces = / /; //new RegExp(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|'))
+  REGEXEN.punct = /.,/; // TODO
   REGEXEN.atSigns = /[@＠]/;
   REGEXEN.extractMentions = R(/(^|[^a-zA-Z0-9_])#{atSigns}([a-zA-Z0-9_]{1,20})(?=(.|$))/g);
   REGEXEN.extractReply = R(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
@@ -60,62 +74,47 @@ if (!window.twttr.util) {
   var LATIN_ACCENTS = [
     // (0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a
   ];//.flatten.pack('U*').freeze
-  REGEXEN.latinAccents = /[a-z]+/; // todo
+  REGEXEN.latinAccentChars = /a-z/; // todo
+  REGEXEN.latenAccents = R(/[#{latinAccentChars}]+/);
 
   REGEXEN.endScreenNameMatch = R(/#{atSigns}|#{latinAccents}/);
 
   // Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
-  var HASHTAG_CHARACTERS = /[a-z0-9_#{LATIN_ACCENTS}]/i;
-  REGEXEN.autoLinkHashtags = /(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{HASHTAG_CHARACTERS}*)/i;
-  REGEXEN.autoLinkUsernamesOrLists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?($|.)/;
+  REGEXEN.hashtagCharacters = R(/[a-z0-9_#{latinAccentChars}]/i);
+  REGEXEN.autoLinkHashtags = R(/(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{hashtagCharacters}*)/i);
+  REGEXEN.autoLinkUsernamesOrLists = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?($|.)/;
   REGEXEN.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/;
 
   // URL related hash regex collection
-  REGEXEN.validPrecedingChars] = /(?:[^\/"':!=]|^|\:)/;
-  REGEXEN.validDomain = /(?:[^[:punct:]\s][\.-](?=[^[:punct:]\s])|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i;
+  REGEXEN.validPrecedingChars = /(?:[^\/"':!=]|^|\:)/;
+  REGEXEN.validDomain = R(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
 
   REGEXEN.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i;
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
-  REGEXEN.wikipediaDisambiguation] = /(?:\(#{REGEXEN[:valid_general_url_path_chars]}+\))/i;
+  REGEXEN.wikipediaDisambiguation = R(/(?:\(#{validGeneralUrlPathChars]}+\))/i);
   // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
-  REGEXEN.validUrlPathChars] = /(?:
-    #{REGEXEN[:wikipedia_disambiguation]}|
-    @#{REGEXEN[:valid_general_url_path_chars]}+\/|
-    [\.\,]?#{REGEXEN[:valid_general_url_path_chars]}
-  )/i;
+  REGEXEN.validUrlPathChars = R(/(?:#{wikipediaDisambiguation}|@#{validGeneralUrlPathChars]}+\/|[\.\,]?#{validGeneralUrlPathChars]})/i);
 
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
-    REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=#\/]/i
-    REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
-    REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#]/i
-    REGEXEN[:valid_url] = %r{
-      (                                                                                     #   $1 total match
-        (#{REGEXEN[:valid_preceding_chars]})                                                #   $2 Preceeding chracter
-        (                                                                                   #   $3 URL
-          (https?:\/\/|www\.)                                                               #   $4 Protocol or beginning
-          (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s) and optional post number
-          (/#{REGEXEN[:valid_url_path_chars]}*
-            #{REGEXEN[:valid_url_path_ending_chars]}?
-          )?                                                                                #   $6 URL Path
-          (\?#{REGEXEN[:valid_url_query_chars]}*#{REGEXEN[:valid_url_query_ending_chars]})? #   $7 Query String
-        )
-      )
-    }iox;
+  REGEXEN.validUrlPathEndingChars = /[a-z0-9=#\/]/i;
+  REGEXEN.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i;
+  REGEXEN.validUrlQueryEndingChars = /[a-z0-9_&=#]/i;
+  REGEXEN.validUrl = J([
+    '(',                                                                                   //   $1 total match
+      R(/(#{validPrecedingChars})/),                                                //  $2 Preceeding chracter
+      '(',                                                                                   //   $3 URL
+        /(https?:\/\/|www\.)/,                                                               //  $4 Protocol or beginning
+        R(/(#{validDomain})/),                                                       //   $5 Domain(s) and optional post number
+        R(/\/#{validUrlPathChars]}*/),
+        R(/#{validUrlPathEndingChars}?/),
+      ')?',                                                                              //   $6 URL Path
+      R(/(\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?/), //   $7 Query String
+    ')'
+  ], "i");
 
-    REGEXEN.each_pair{|k,v| v.freeze }
-
-    # Return the regular expression for a given <tt>key</tt>. If the <tt>key</tt>
-    # is not a known symbol a <tt>nil</tt> will be returned.
-    def self.[](key)
-      REGEXEN[key]
-    end
-      end
-    end
-
-
-  };
+  console.log(REGEXEN);
 
 }());
