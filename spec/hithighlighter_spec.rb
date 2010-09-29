@@ -76,9 +76,13 @@ describe Twitter::HitHighlighter do
       it "should highlight around a link" do
         @highlighter.hit_highlight("test <a>test</a> test", [[3, 11]]).should == "tes<em>t <a>test</a> t</em>est"
       end
-      
+
       it "should fail gracefully with bad hits" do
         @highlighter.hit_highlight("test test", [[5, 20]]).should == "test <em>test</em>"
+      end
+
+      it "should not mess up with touching tags" do
+        @highlighter.hit_highlight("<a>foo</a><a>foo</a>", [[3,6]]).should == "<a>foo</a><a><em>foo</em></a>"
       end
 
     end

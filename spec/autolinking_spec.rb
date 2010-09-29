@@ -474,9 +474,7 @@ describe Twitter::Autolink do
         end
       end
 
-
       context "with a @ in a URL" do
-
         context "with XSS attack" do
           def original_text; 'http://x.xx/@"style="color:pink"onmouseover=alert(1)//'; end
 
