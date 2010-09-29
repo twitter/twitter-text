@@ -230,6 +230,12 @@ tests:
       expected:
         - hashtag: "hashtag"
           indices: [7, 15]
+          
+    - description: "Extract only a valid hashtag"
+      text: "#123 a #hashtag in a string"
+      expected:
+        - hashtag: "hashtag"
+          indices: [7, 15]
 
     - description: "Extract a hastag in a string of multi-byte characters"
       text: "会議中#hashtag会議中"
