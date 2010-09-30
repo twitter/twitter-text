@@ -12,23 +12,41 @@
 
   <script>
     twttr.util = {
-      extract: function(text) { return text; },
       hitHighlight: function(text) { return text; },
     };
 
-    function getTester(suite) {
+    function getTester(suite, section) {
       switch (suite) {
         case "autolink":
           return function(test) {
             return twttr.txt.autoLink(test.text, {suppressNoFollow: true});
           };
         case "extract":
-          return function(test) {
-            return twttr.util.extract(test.text);
-          };
+          switch (section) {
+            case "mentions":
+              return function(test) {
+                return twttr.txt.extractMentions(test.text);
+              };
+            case "replies":
+              return function(test) {
+                return twttr.txt.extractReplies(test.text);
+              };
+            case "urls":
+              return function(test) {
+                return twttr.txt.extractUrls(test.text);
+              };
+            case "hashtags":
+              return function(test) {
+                return twttr.txt.extractHashtags(test.text);
+              };
+            case "hashtags_with_indices":
+              return function(test) {
+                return twttr.txt.extractHashtagsWithIndices(test.text);
+              };
+          }
         case "hit_highlighting":
           return function(test) {
-            return twttr.util.hitHighlight(test.text, test.hits);
+            return twttr.txt.hitHighlight(test.text, test.hits);
           };
       }
 
@@ -38,10 +56,10 @@
     for (var suite in cases) {
       (function(suite) {
         module(suite);
-        var tester = getTester(suite);
 
         for (var section in cases[suite]) {
           (function(section) {
+            var tester = getTester(suite, section);
             test(section, function() {
               for (var testCase in cases[suite][section]) {
                 same(tester(cases[suite][section][testCase]), cases[suite][section][testCase].expected, cases[suite][section][testCase].description);
