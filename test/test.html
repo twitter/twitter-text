@@ -19,7 +19,7 @@
       switch (suite) {
         case "autolink":
           return function(test) {
-            return twttr.txt.autoLink(test.text, {suppressNoFollow: true});
+            return twttr.txt.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
           };
         case "extract":
           switch (section) {

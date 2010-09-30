@@ -145,8 +145,19 @@ if (!window.twttr) {
   // HTML attribute for robot nofollow behavior (default)
   var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
 
+  function clone(o) {
+    var r = {};
+    for (var k in o) {
+      if (o.hasOwnProperty(k)) {
+        r[k] = o[k];
+      }
+    }
+
+    return r;
+  }
+
   twttr.txt.autoLink = function(text, options) {
-    options = options || {};
+    options = clone(options || {});
     return twttr.txt.autoLinkUsernamesOrLists(
       twttr.txt.autoLinkUrlsCustom(
         twttr.txt.autoLinkHashtags(text, options),
@@ -156,7 +167,7 @@ if (!window.twttr) {
 
 
   twttr.txt.autoLinkUsernamesOrLists = function(text, options) {
-    options = options || {};
+    options = clone(options || {});
 
     // options = options.dup
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
@@ -209,7 +220,8 @@ if (!window.twttr) {
             } else {
               // this is a screen name
               d.chunk = user;
-              return S("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{chunk}</a>#{after}", d);
+              d.dataScreenName = !options.suppressDataScreenName ? S("data-screen-name=\"#{chunk}\" ", d) : "";
+              return S("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{chunk}</a>#{after}", d);
             }
           }
         });
@@ -220,7 +232,7 @@ if (!window.twttr) {
   };
 
   twttr.txt.autoLinkHashtags = function(text, options) {
-    //    options = options.dup
+    options = clone(options || {});
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "http://twitter.com/search?q=%23";
@@ -248,14 +260,24 @@ if (!window.twttr) {
 
 
   twttr.txt.autoLinkUrlsCustom = function(text, options) {
-    // options = href_options.dup
+    options = clone(options || {});
     if (!options.suppressNoFollow) {
       options.rel = "nofollow";
-      delete options.suppressNoFollow;
+    }
+    if (options.urlClass) {
+      options["class"] = options.urlClass;
+      delete options.urlClass;
     }
 
+    delete options.suppressNoFollow;
+    delete options.suppressDataScreenName;
+
     return text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol) {
-      var htmlAttrs = "";//tag_options(options.stringify_keys) || ""
+      var htmlAttrs = "";
+      for (var k in options) {
+        htmlAttrs += S(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+      }
+      options.htmlAttrs || "";
       var fullUrl = ((protocol && protocol.match(WWW_REGEX)) ? S("http://#{url}", {url: url}) : url);
 
       var d = {
