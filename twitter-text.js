@@ -274,4 +274,133 @@ if (!window.twttr) {
     });
   };
 
+  twttr.txt.extractMentionedScreenNames = function(text, callback) {
+    var screenNamesOnly = [],
+        screenNamesWithIndices = twttr.txt.extractMentionedScreenNamesWithIndices(text);
+
+    for (var i = 0; i < screenNamesWithIndices.length; i++) {
+      var screenName = screenNamesWithIndices[i].screenName;
+      if (callback) {
+        screenName = callback(screenName);
+      }
+      screenNamesOnly.push(screenName);
+    }
+
+    screen_names_only.each{|mention| yield mention } if block_given?
+    screen_names_only
+  end
+
+  # Extracts a list of all usersnames mentioned in the Tweet <tt>text</tt>
+  # along with the indices for where the mention ocurred.  If the
+  # <tt>text</tt> is nil or contains no username mentions, an empty array
+  # will be returned.
+  #
+  # If a block is given, then it will be called with each username, the start
+  # index, and the end index in the <tt>text</tt>.
+  def extract_mentioned_screen_names_with_indices(text) # :yields: username, start, end
+    return [] unless text
+
+    possible_screen_names = []
+    position = 0
+    text.to_s.scan(Twitter::Regex[:extract_mentions]) do |before, sn, after|
+      unless after =~ Twitter::Regex[:end_screen_name_match]
+        start_position = text.to_s.sub_string_search(sn, position) - 1
+        position = start_position + sn.char_length + 1
+        possible_screen_names << {
+          :screen_name => sn,
+          :indices => [start_position, position]
+        }
+      end
+    end
+    if block_given?
+      possible_screen_names.each do |mention|
+        yield mention[:screen_name], mention[:indices].first, mention[:indices].last
+      end
+    end
+    possible_screen_names
+  end
+
+  # Extracts the username username replied to in the Tweet <tt>text</tt>. If the
+  # <tt>text</tt> is <tt>nil</tt> or is not a reply nil will be returned.
+  #
+  # If a block is given then it will be called with the username replied to (if any)
+  def extract_reply_screen_name(text) # :yields: username
+    return nil unless text
+
+    possible_screen_name = text.match(Twitter::Regex[:extract_reply])
+    return unless possible_screen_name.respond_to?(:captures)
+    screen_name = possible_screen_name.captures.first
+    yield screen_name if block_given?
+    screen_name
+  end
+
+  # Extracts a list of all URLs included in the Tweet <tt>text</tt>. If the
+  # <tt>text</tt> is <tt>nil</tt> or contains no URLs an empty array
+  # will be returned.
+  #
+  # If a block is given then it will be called for each URL.
+  def extract_urls(text) # :yields: url
+    urls_only = extract_urls_with_indices(text).map{|url| url[:url] }
+    urls_only.each{|url| yield url } if block_given?
+    urls_only
+  end
+
+  # Extracts a list of all URLs included in the Tweet <tt>text</tt> along
+  # with the indices. If the <tt>text</tt> is <tt>nil</tt> or contains no
+  # URLs an empty array will be returned.
+  #
+  # If a block is given then it will be called for each URL.
+  def extract_urls_with_indices(text) # :yields: url, start, end
+    return [] unless text
+    urls = []
+    position = 0
+    text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, path, query|
+      start_position = text.to_s.sub_string_search(url, position)
+      end_position = start_position + url.char_length
+      position = end_position
+      urls << {
+        :url => (protocol == "www." ? "http://#{url}" : url),
+        :indices => [start_position, end_position]
+      }
+    end
+    urls.each{|url| yield url[:url], url[:indices].first, url[:indices].last } if block_given?
+    urls
+  end
+
+  # Extracts a list of all hashtags included in the Tweet <tt>text</tt>. If the
+  # <tt>text</tt> is <tt>nil</tt> or contains no hashtags an empty array
+  # will be returned. The array returned will not include the leading <tt>#</tt>
+  # character.
+  #
+  # If a block is given then it will be called for each hashtag.
+  def extract_hashtags(text) # :yields: hashtag_text
+    hashtags_only = extract_hashtags_with_indices(text).map{|hash| hash[:hashtag] }
+    hashtags_only.each{|hash| yield hash } if block_given?
+    hashtags_only
+  end
+
+  # Extracts a list of all hashtags included in the Tweet <tt>text</tt>. If the
+  # <tt>text</tt> is <tt>nil</tt> or contains no hashtags an empty array
+  # will be returned. The array returned will not include the leading <tt>#</tt>
+  # character.
+  #
+  # If a block is given then it will be called for each hashtag.
+  def extract_hashtags_with_indices(text) # :yields: hashtag_text, start, end
+    return [] unless text
+
+    tags = []
+    position = 0
+    text.scan(Twitter::Regex[:auto_link_hashtags]) do |before, hash, hash_text|
+      start_position = text.to_s.sub_string_search(hash, position)
+      position = start_position + hash_text.char_length + 1
+      tags << {
+        :hashtag => hash_text,
+        :indices => [start_position, position]
+      }
+    end
+    tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last } if block_given?
+    tags
+  end
+
+
 }());
