@@ -518,4 +518,22 @@ describe Twitter::Autolink do
 
   end
 
+  describe "encode" do
+    before do
+      @linker = TestAutolink.new
+    end
+    it "should escape html entities properly" do
+      @linker.encode("&").should == "&amp;"
+      @linker.encode(">").should == "&gt;"
+      @linker.encode("<").should == "&lt;"
+      @linker.encode("\"").should == "&quot;"
+      @linker.encode("&<>\"").should == "&amp;&lt;&gt;&quot;"
+      @linker.encode("<div>").should == "&lt;div&gt;"
+      @linker.encode("a&b").should == "a&amp;b"
+      @linker.encode("<a href=\"http://twitter.com\" target=\"_blank\">twitter & friends</a>").should == "&lt;a href=&quot;http://twitter.com&quot; target=&quot;_blank&quot;&gt;twitter &amp; friends&lt;/a&gt;"
+      @linker.encode("&amp;").should == "&amp;amp;"
+      @linker.encode(nil).should == nil
+    end
+  end
+
 end

@@ -18,6 +18,19 @@ module Twitter
     # HTML attribute for robot nofollow behavior (default)
     HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
 
+    HTML_ENTITIES = {
+      '&' => '&amp;',
+      '>' => '&gt;',
+      '<' => '&lt;',
+      '"' => '&quot;'
+    }
+
+    def encode(text)
+      text && text.gsub(/[&"><]/) do |character|
+        HTML_ENTITIES[character]
+      end
+    end
+
     # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>. The
     # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
     # hash:
@@ -76,7 +89,7 @@ module Twitter
               # the link is a list
               chunk = list = "#{user}#{slash_listname}"
               chunk = yield(list) if block_given?
-              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{options[:list_url_base]}#{list.downcase}\"#{extra_html}>#{chunk}</a>#{after}"
+              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{encode(options[:list_url_base])}#{encode(list.downcase)}\"#{extra_html}>#{encode(chunk)}</a>#{after}"
             else
               if after =~ Twitter::Regex[:end_screen_name_match]
                 # Followed by something that means we don't autolink
@@ -85,7 +98,7 @@ module Twitter
                 # this is a screen name
                 chunk = user
                 chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{options[:username_url_base]}#{chunk}\"#{extra_html}>#{chunk}</a>#{after}"
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{encode(options[:username_url_base])}#{encode(chunk)}\"#{extra_html}>#{encode(chunk)}</a>#{after}"
               end
             end
           end
@@ -114,7 +127,7 @@ module Twitter
         hash = $2
         text = $3
         text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{text}\" title=\"##{text}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{hash}#{text}</a>"
+        "#{before}<a href=\"#{options[:hashtag_url_base]}#{encode(text)}\" title=\"##{encode(text)}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{encode(hash)}#{encode(text)}</a>"
       end
     end
 
@@ -130,7 +143,7 @@ module Twitter
         all, before, url, protocol = $1, $2, $3, $4
         html_attrs = tag_options(options.stringify_keys) || ""
         full_url = (protocol =~ WWW_REGEX ? "http://#{url}" : url)
-        "#{before}<a href=\"#{full_url}\"#{html_attrs}>#{url}</a>"
+        "#{before}<a href=\"#{encode(full_url)}\"#{html_attrs}>#{encode(url)}</a>"
       end
     end
 
