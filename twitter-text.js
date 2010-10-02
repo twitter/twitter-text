@@ -6,6 +6,20 @@ if (!window.twttr) {
   twttr.txt = {};
   twttr.txt.regexen = {};
 
+  var HTML_ENTITIES = {
+    '&': '&amp;',
+    '>': '&gt;',
+    '<': '&lt;',
+    '"': '&quot;'
+  };
+
+  // HTML escaping
+  twttr.txt.encode = function(text) {
+    return text.replace(/[&"><]/g, function(character) {
+      return HTML_ENTITIES[character];
+    });
+  };
+
   // Builds a RegExp
   function R(r, f) {
     f = f || "";
@@ -32,10 +46,10 @@ if (!window.twttr) {
     }), f);
   }
 
-  // simple string interpolation
+  // simple string interpolation w/html encoding
   function S(s, d) {
     return s.replace(/#\{(\w+)\}/g, function(m, name) {
-      return d[name] || "";
+      return twttr.txt.encode(d[name] || "");
     });
   }
 

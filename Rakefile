@@ -4,8 +4,6 @@ require 'json'
 require 'date'
 require 'digest'
 
-
-
 def conformance_version(dir)
   Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
 end
@@ -41,7 +39,7 @@ namespace :test do
       test_files = ['autolink', 'extract', 'hit_highlighting']
       r = {}
 
-      f = File.open(File.join(File.dirname(__FILE__), "test", "cases.js"), "w")
+      f = File.open(File.join(File.dirname(__FILE__), "test", "conformance.js"), "w")
       f.write("var cases = {};")
 
       test_files.each do |test_file|
@@ -55,11 +53,19 @@ namespace :test do
 
     desc "Run conformance test suite"
     task :run do
-      exec('open test/test.html')
+      exec('open test/conformance.html')
     end
   end
 
   desc "Run conformance test suite"
   task :conformance => ['conformance:latest', 'conformance:prepare', 'conformance:run'] do
   end
+
+  desc "Run JavaScript test suite"
+  task :run do
+    exec('open test/test.html')
+  end
 end
+
+desc "Run JavaScript test suite"
+task :test => ['test:run']

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="../lib/jquery-1.4.2.js"></script>
+  <link rel="stylesheet" href="../lib/qunit.css" type="text/css" media="screen" />
+  <script src="../lib/qunit.js"></script>
+
+  <script src="../twitter-text.js"></script>
+
+  <script src="../test/conformance.js"></script>
+
+  <script>
+    twttr.util = {
+      hitHighlight: function(text) { return text; },
+    };
+
+    function getTester(suite, section) {
+      switch (suite) {
+        case "autolink":
+          return function(test) {
+            return twttr.txt.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+          };
+        case "extract":
+          switch (section) {
+            case "mentions":
+              return function(test) {
+                return twttr.txt.extractMentions(test.text);
+              };
+            case "replies":
+              return function(test) {
+                return twttr.txt.extractReplies(test.text);
+              };
+            case "urls":
+              return function(test) {
+                return twttr.txt.extractUrls(test.text);
+              };
+            case "hashtags":
+              return function(test) {
+                return twttr.txt.extractHashtags(test.text);
+              };
+            case "hashtags_with_indices":
+              return function(test) {
+                return twttr.txt.extractHashtagsWithIndices(test.text);
+              };
+          }
+        case "hit_highlighting":
+          return function(test) {
+            return twttr.txt.hitHighlight(test.text, test.hits);
+          };
+      }
+
+    }
+
+
+    for (var suite in cases) {
+      (function(suite) {
+        module(suite);
+
+        for (var section in cases[suite]) {
+          (function(section) {
+            var tester = getTester(suite, section);
+            test(section, function() {
+              for (var testCase in cases[suite][section]) {
+                same(tester(cases[suite][section][testCase]), cases[suite][section][testCase].expected, cases[suite][section][testCase].description);
+              }
+            });
+          }(section));
+        }
+      }(suite));
+
+    }
+  </script>
+
+</head>
+<body>
+  <h1 id="qunit-header">Twitter Text Conformance Suite</h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+</body>
+</html>
