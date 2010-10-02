@@ -15,7 +15,7 @@ if (!window.twttr) {
 
   // HTML escaping
   twttr.txt.encode = function(text) {
-    return text.replace(/[&"><]/g, function(character) {
+    return text && text.replace(/[&"><]/g, function(character) {
       return HTML_ENTITIES[character];
     });
   };
@@ -46,10 +46,10 @@ if (!window.twttr) {
     }), f);
   }
 
-  // simple string interpolation w/html encoding
+  // simple string interpolation
   function S(s, d) {
     return s.replace(/#\{(\w+)\}/g, function(m, name) {
-      return twttr.txt.encode(d[name] || "");
+      return d[name] || "";
     });
   }
 
@@ -210,11 +210,11 @@ if (!window.twttr) {
           var d = {
             before: before,
             at: at,
-            user: user,
-            slashListname: slashListname,
+            user: twttr.txt.encode(user),
+            slashListname: twttr.txt.encode(slashListname),
             after: after,
             extraHtml: extraHtml,
-            chunk: chunk
+            chunk: twttr.txt.encode(chunk)
           };
           for (var k in options) {
             if (options.hasOwnProperty(k)) {
@@ -225,7 +225,7 @@ if (!window.twttr) {
           if (slashListname && !options.suppressLists) {
             // the link is a list
             var list = d.chunk = S("#{user}#{slashListname}", d);
-            d.list = list.toLowerCase();
+            d.list = twttr.txt.encode(list.toLowerCase());
             return S("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{chunk}</a>#{after}", d);
           } else {
             if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
@@ -233,7 +233,7 @@ if (!window.twttr) {
               return match;
             } else {
               // this is a screen name
-              d.chunk = user;
+              d.chunk = twttr.txt.encode(user);
               d.dataScreenName = !options.suppressDataScreenName ? S("data-screen-name=\"#{chunk}\" ", d) : "";
               return S("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{chunk}</a>#{after}", d);
             }
@@ -257,8 +257,8 @@ if (!window.twttr) {
     return text.replace(twttr.txt.regexen.autoLinkHashtags, function(match, before, hash, text) {
       var d = {
         before: before,
-        hash: hash,
-        text: text,
+        hash: twttr.txt.encode(hash),
+        text: twttr.txt.encode(text),
         extraHtml: extraHtml
       };
 
@@ -296,9 +296,9 @@ if (!window.twttr) {
 
       var d = {
         before: before,
-        fullUrl: fullUrl,
+        fullUrl: twttr.txt.encode(fullUrl),
         htmlAttrs: htmlAttrs,
-        url: url
+        url: twttr.txt.encode(url)
       };
 
       return S("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
