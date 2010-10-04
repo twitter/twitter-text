@@ -292,13 +292,41 @@ tests:
       text: "http://example.mobi/path"
       expected: "<a href=\"http://example.mobi/path\">http://example.mobi/path</a>"
 
+    - description: "Autolink url containing ending with #value (not as url + hashtag)"
+      text: "http://foo.com/?#foo"
+      expected: "<a href=\"http://foo.com/?#foo\">http://foo.com/?#foo</a>"
+
     - description: "Autolink url without protocol (with www)"
-      text: "www.example.com"
-      expected: "<a href=\"http://www.example.com\">www.example.com</a>"
+      text: "www.example.biz"
+      expected: "<a href=\"http://www.example.biz\">www.example.biz</a>"
 
     - description: "Autolink url without protocol (with WWW)"
-      text: "WWW.EXAMPLE.COM"
-      expected: "<a href=\"http://WWW.EXAMPLE.COM\">WWW.EXAMPLE.COM</a>"
+      text: "WWW.EXAMPLE.BIZ"
+      expected: "<a href=\"http://WWW.EXAMPLE.BIZ\">WWW.EXAMPLE.biz</a>"
+
+    - description: "Autolink URL without protocol and without www (ending in .com)"
+      text: "foo.com"
+      expected: "<a href=\"http://foo.com\">foo.com</a>"
+
+    - description: "Autolink URL without protocol and without www (ending in .org)"
+      text: "foo.org"
+      expected: "<a href=\"http://foo.org\">foo.org</a>"
+
+    - description: "Autolink URL without protocol and without www (ending in .net)"
+      text: "foo.net"
+      expected: "<a href=\"http://foo.net\">foo.net</a>"
+
+    - description: "Autolink URL without protocol and without www (ending in .gov)"
+      text: "foo.gov"
+      expected: "<a href=\"http://foo.gov\">foo.gov</a>"
+
+    - description: "Autolink URL without protocol and without www (ending in .edu)"
+      text: "foo.edu"
+      expected: "<a href=\"http://foo.edu\">foo.edu</a>"
+
+    - description: "Autolink URL without protocol and without www not ending in /.(edu|com|gov|org|net)/"
+      text: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
+      expected: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
 
     - description: "Multiple URLs with different protocols"
       text:  "http://foo.com AND https://bar.com AND www.foobar.com"
@@ -306,7 +334,7 @@ tests:
 
     - description: "Autolink raw domain followed by domain"
       text: "See http://example.com example.com"
-      expected: "See <a href=\"http://example.com\">http://example.com</a> example.com"
+      expected: "See <a href=\"http://example.com\">http://example.com</a> <a href=\"http://example.com\">example.com</a>"
 
     - description: "Autolink url that includes @-sign and numeric dir under it"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406"
