@@ -527,6 +527,7 @@ describe Twitter::Autolink do
       @linker.encode(">").should == "&gt;"
       @linker.encode("<").should == "&lt;"
       @linker.encode("\"").should == "&quot;"
+      @linker.encode("'").should == "&#39;"
       @linker.encode("&<>\"").should == "&amp;&lt;&gt;&quot;"
       @linker.encode("<div>").should == "&lt;div&gt;"
       @linker.encode("a&b").should == "a&amp;b"

@@ -22,11 +22,12 @@ module Twitter
       '&' => '&amp;',
       '>' => '&gt;',
       '<' => '&lt;',
-      '"' => '&quot;'
+      '"' => '&quot;',
+      "'" => '&#39;'
     }
 
     def encode(text)
-      text && text.gsub(/[&"><]/) do |character|
+      text && text.gsub(/[&"'><]/) do |character|
         HTML_ENTITIES[character]
       end
     end
