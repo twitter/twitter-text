@@ -10,12 +10,13 @@ if (!window.twttr) {
     '&': '&amp;',
     '>': '&gt;',
     '<': '&lt;',
-    '"': '&quot;'
+    '"': '&quot;',
+    "'": '&#32;'
   };
 
   // HTML escaping
   twttr.txt.encode = function(text) {
-    return text && text.replace(/[&"><]/g, function(character) {
+    return text && text.replace(/[&"'><]/g, function(character) {
       return HTML_ENTITIES[character];
     });
   };
