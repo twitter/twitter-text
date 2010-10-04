@@ -195,7 +195,7 @@ if (!window.twttr) {
     }
 
     var newText = "",
-        splitText = text.split(/[<>]/);
+        splitText = twttr.txt.splitTags(text);
 
     for (var index = 0; index < splitText.length; index++) {
       var chunk = splitText[index];
@@ -416,6 +416,31 @@ if (!window.twttr) {
     return tags;
   };
 
+  // this essentially does text.split(/<|>/)
+  // except that won't work in IE, where empty strings are ommitted
+  // so "<>".split(/<|>/) => [] in IE, but is ["", "", ""] in all others
+  // but "<<".split("<") => ["", "", ""]
+  twttr.txt.splitTags = function(text) {
+    var firstSplits = text.split("<"),
+        secondSplits,
+        allSplits = [],
+        split;
+
+    for (var i = 0; i < firstSplits.length; i += 1) {
+      split = firstSplits[i];
+      if (!split) {
+        allSplits.push("");
+      } else {
+        secondSplits = split.split(">");
+        for (var j = 0; j < secondSplits.length; j += 1) {
+          allSplits.push(secondSplits[j]);
+        }
+      }
+    }
+
+    return allSplits;
+  };
+
   twttr.txt.hitHighlight = function(text, hits, options) {
     var defaultHighlightTag = "em";
 
@@ -428,7 +453,7 @@ if (!window.twttr) {
 
     var tagName = options.tag || defaultHighlightTag,
         tags = ["<" + tagName + ">", "</" + tagName + ">"],
-        chunks = text.split(/[<>]/),
+        chunks = twttr.txt.splitTags(text),
         split,
         i,
         j,

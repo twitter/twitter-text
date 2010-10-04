@@ -19,3 +19,16 @@ test("twttr.txt.encode", function() {
     same(twttr.txt.encode(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
   }
 });
+
+test("twttr.txt.splitTags", function() {
+  var tests = [
+    ["foo", ["foo"]],
+    ["foo<a>foo", ["foo", "a", "foo"]],
+    ["<><>", ["", "", "", "", ""]],
+    ["<a><em>foo</em></a>", ["", "a", "", "em", "foo", "/em", "", "/a", ""]]
+  ];
+
+  for (var i = 0; i < tests.length; i++) {
+    same(twttr.txt.splitTags(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
+  }
+});
