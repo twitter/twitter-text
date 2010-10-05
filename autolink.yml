@@ -302,7 +302,7 @@ tests:
 
     - description: "Autolink url without protocol (with WWW)"
       text: "WWW.EXAMPLE.BIZ"
-      expected: "<a href=\"http://WWW.EXAMPLE.BIZ\">WWW.EXAMPLE.biz</a>"
+      expected: "<a href=\"http://WWW.EXAMPLE.BIZ\">WWW.EXAMPLE.BIZ</a>"
 
     - description: "Autolink URL without protocol and without www (ending in .com)"
       text: "foo.com"
