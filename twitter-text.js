@@ -106,12 +106,12 @@ if (!window.twttr) {
   twttr.txt.regexen.latinAccentChars = R("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ\\303\\277");
   twttr.txt.regexen.latenAccents = R(/[#{latinAccentChars}]+/);
 
-  twttr.txt.regexen.endScreenNameMatch = R(/#{atSigns}|[#{latinAccentChars}]/);
+  twttr.txt.regexen.endScreenNameMatch = R(/^#{atSigns}|[#{latinAccentChars}]/);
 
   // Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
   twttr.txt.regexen.hashtagCharacters = R(/[a-z0-9_#{latinAccentChars}]/i);
   twttr.txt.regexen.autoLinkHashtags = R(/(^|[^0-9A-Z&\/\?]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{hashtagCharacters}*)/gi);
-  twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?(.|$)/g;
+  twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
@@ -210,13 +210,14 @@ if (!window.twttr) {
       if (index % 4 !== 0) {
         newText += chunk;
       } else {
-        newText += chunk.replace(twttr.txt.regexen.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, after) {
+        newText += chunk.replace(twttr.txt.regexen.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, offset, chunk) {
+          var after = chunk.slice(offset + match.length);
+
           var d = {
             before: before,
             at: at,
             user: twttr.txt.encode(user),
             slashListname: twttr.txt.encode(slashListname),
-            after: after,
             extraHtml: extraHtml,
             chunk: twttr.txt.encode(chunk)
           };
@@ -230,7 +231,7 @@ if (!window.twttr) {
             // the link is a list
             var list = d.chunk = S("#{user}#{slashListname}", d);
             d.list = twttr.txt.encode(list.toLowerCase());
-            return S("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{chunk}</a>#{after}", d);
+            return S("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{chunk}</a>", d);
           } else {
             if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
               // Followed by something that means we don't autolink
@@ -239,7 +240,7 @@ if (!window.twttr) {
               // this is a screen name
               d.chunk = twttr.txt.encode(user);
               d.dataScreenName = !options.suppressDataScreenName ? S("data-screen-name=\"#{chunk}\" ", d) : "";
-              return S("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{chunk}</a>#{after}", d);
+              return S("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{chunk}</a>", d);
             }
           }
         });
