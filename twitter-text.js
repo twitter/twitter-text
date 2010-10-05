@@ -110,13 +110,16 @@ if (!window.twttr) {
 
   // Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
   twttr.txt.regexen.hashtagCharacters = R(/[a-z0-9_#{latinAccentChars}]/i);
-  twttr.txt.regexen.autoLinkHashtags = R(/(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{hashtagCharacters}*)/gi);
+  twttr.txt.regexen.autoLinkHashtags = R(/(^|[^0-9A-Z&\/\?]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{hashtagCharacters}*)/gi);
   twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?(.|$)/g;
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
-  twttr.txt.regexen.validPrecedingChars = /(?:[^\/"':!=]|^|\:)/;
+  twttr.txt.regexen.validPrecedingChars = /(?:[^-\/"':!=A-Za-z0-9_]|^|\:)/;
   twttr.txt.regexen.validDomain = R(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
+
+  // For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
+  twttr.txt.regexen.probableTld = /\.(?:com|net|org|gov|edu)$/i;
 
   twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i;
   // Allow URL paths to contain balanced parens
@@ -135,10 +138,10 @@ if (!window.twttr) {
     '('                                                            + // $1 total match
       '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
       '('                                                          + // $3 URL
-        '(https?:\\/\\/|www\\.)'                                   + // $4 Protocol or beginning
+        '((?:https?:\\/\\/|www\\.)?)'                              + // $4 Protocol or beginning
         '(#{validDomain})'                                         + // $5 Domain(s) and optional post number
         '('                                                        + // $6 URL Path
-          '\\/#{validUrlPathChars}*'                              +
+          '\\/#{validUrlPathChars}*'                               +
           '#{validUrlPathEndingChars}?'                            +
         ')?'                                                       +
         '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $7 Query String
@@ -147,7 +150,6 @@ if (!window.twttr) {
   , "gi");
 
   var WWW_REGEX = /www\./i;
-
 
   // Default CSS class for auto-linked URLs
   var DEFAULT_URL_CLASS = "tweet-url";
@@ -160,6 +162,7 @@ if (!window.twttr) {
   // HTML attribute for robot nofollow behavior (default)
   var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
 
+  // Simple object cloning function for simple objects
   function clone(o) {
     var r = {};
     for (var k in o) {
@@ -287,22 +290,26 @@ if (!window.twttr) {
     delete options.suppressNoFollow;
     delete options.suppressDataScreenName;
 
-    return text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol) {
-      var htmlAttrs = "";
-      for (var k in options) {
-        htmlAttrs += S(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+    return text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, queryString) {
+      if (protocol || domain.match(twttr.txt.regexen.probableTld)) {
+        var htmlAttrs = "";
+        for (var k in options) {
+          htmlAttrs += S(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+        }
+        options.htmlAttrs || "";
+        var fullUrl = ((!protocol || protocol.match(WWW_REGEX)) ? S("http://#{url}", {url: url}) : url);
+
+        var d = {
+          before: before,
+          fullUrl: twttr.txt.encode(fullUrl),
+          htmlAttrs: htmlAttrs,
+          url: twttr.txt.encode(url)
+        };
+
+        return S("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
+      } else {
+        return all;
       }
-      options.htmlAttrs || "";
-      var fullUrl = ((protocol && protocol.match(WWW_REGEX)) ? S("http://#{url}", {url: url}) : url);
-
-      var d = {
-        before: before,
-        fullUrl: twttr.txt.encode(fullUrl),
-        htmlAttrs: htmlAttrs,
-        url: twttr.txt.encode(url)
-      };
-
-      return S("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
     });
   };
 
@@ -373,13 +380,15 @@ if (!window.twttr) {
         position = 0;
 
     text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, query) {
-      var startPosition = text.indexOf(url, position),
-          position = startPosition + url.length;
+      if (protocol || domain.match(twttr.txt.regexen.probableTld)) {
+        var startPosition = text.indexOf(url, position),
+            position = startPosition + url.length;
 
-      urls.push({
-        url: (protocol === "www." ? S("http://#{url}", {url: url}) : url),
-        indices: [startPosition, position]
-      });
+        urls.push({
+          url: (protocol === "www." ? S("http://#{url}", {url: url}) : url),
+          indices: [startPosition, position]
+        });
+      }
     });
 
     return urls;
