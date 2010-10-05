@@ -117,13 +117,15 @@ module Twitter
       urls = []
       position = 0
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, path, query|
-        start_position = text.to_s.sub_string_search(url, position)
-        end_position = start_position + url.char_length
-        position = end_position
-        urls << {
-          :url => (protocol == "www." ? "http://#{url}" : url),
-          :indices => [start_position, end_position]
-        }
+        if !protocol.blank? || domain =~ Twitter::Regex[:probable_tld]
+          start_position = text.to_s.sub_string_search(url, position)
+          end_position = start_position + url.char_length
+          position = end_position
+          urls << {
+            :url => (protocol == "www." ? "http://#{url}" : url),
+            :indices => [start_position, end_position]
+          }
+        end
       end
       urls.each{|url| yield url[:url], url[:indices].first, url[:indices].last } if block_given?
       urls

@@ -141,10 +141,14 @@ module Twitter
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
 
       text.gsub(Twitter::Regex[:valid_url]) do
-        all, before, url, protocol = $1, $2, $3, $4
-        html_attrs = tag_options(options.stringify_keys) || ""
-        full_url = (protocol =~ WWW_REGEX ? "http://#{url}" : url)
-        "#{before}<a href=\"#{encode(full_url)}\"#{html_attrs}>#{encode(url)}</a>"
+        all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
+        if !protocol.blank? || domain =~ Twitter::Regex[:probable_tld]
+          html_attrs = tag_options(options.stringify_keys) || ""
+          full_url = ((protocol =~ WWW_REGEX || protocol.blank?) ? "http://#{url}" : url)
+          "#{before}<a href=\"#{encode(full_url)}\"#{html_attrs}>#{encode(url)}</a>"
+        else
+          all
+        end
       end
     end
 

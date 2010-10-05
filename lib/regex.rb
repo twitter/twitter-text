@@ -52,8 +52,11 @@ module Twitter
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
-    REGEXEN[:valid_preceding_chars] = /(?:[^\/"':!=]|^|\:)/
+    REGEXEN[:valid_preceding_chars] = /(?:[^-\/"':!=A-Z0-9_]|^|\:)/i
     REGEXEN[:valid_domain] = /(?:[^[:punct:]\s][\.-](?=[^[:punct:]\s])|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
+
+    # For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
+    REGEXEN[:probable_tld] = /.(?:com|net|org|gov|edu)$/i
 
     REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i
     # Allow URL paths to contain balanced parens
@@ -75,7 +78,7 @@ module Twitter
       (                                                                                     #   $1 total match
         (#{REGEXEN[:valid_preceding_chars]})                                                #   $2 Preceeding chracter
         (                                                                                   #   $3 URL
-          (https?:\/\/|www\.)                                                               #   $4 Protocol or beginning
+          ((?:https?:\/\/|www\.)?)                                                          #   $4 Protocol or beginning
           (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s) and optional post number
           (/#{REGEXEN[:valid_url_path_chars]}*
             #{REGEXEN[:valid_url_path_ending_chars]}?
