@@ -121,6 +121,8 @@ if (!window.twttr) {
   // For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
   twttr.txt.regexen.probableTld = /\.(?:com|net|org|gov|edu)$/i;
 
+  twttr.txt.regexen.www = /www\./i;
+
   twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i;
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
@@ -148,8 +150,6 @@ if (!window.twttr) {
       ')'                                                          +
     ')'
   , "gi");
-
-  var WWW_REGEX = /www\./i;
 
   // Default CSS class for auto-linked URLs
   var DEFAULT_URL_CLASS = "tweet-url";
@@ -297,7 +297,7 @@ if (!window.twttr) {
           htmlAttrs += S(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
         }
         options.htmlAttrs || "";
-        var fullUrl = ((!protocol || protocol.match(WWW_REGEX)) ? S("http://#{url}", {url: url}) : url);
+        var fullUrl = ((!protocol || protocol.match(twttr.txt.regexen.www)) ? S("http://#{url}", {url: url}) : url);
 
         var d = {
           before: before,
@@ -385,7 +385,7 @@ if (!window.twttr) {
             position = startPosition + url.length;
 
         urls.push({
-          url: (protocol === "www." ? S("http://#{url}", {url: url}) : url),
+          url: ((!protocol || protocol.match(twttr.txt.regexen.www)) ? S("http://#{url}", {url: url}) : url),
           indices: [startPosition, position]
         });
       }
