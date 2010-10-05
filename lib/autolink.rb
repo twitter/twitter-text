@@ -5,8 +5,6 @@ module Twitter
   module Autolink extend self
     include ActionView::Helpers::TagHelper #tag_options needed by auto_link
 
-    WWW_REGEX = /www\./i #:nodoc:
-
     # Default CSS class for auto-linked URLs
     DEFAULT_URL_CLASS = "tweet-url"
     # Default CSS class for auto-linked lists (along with the url class)
@@ -144,7 +142,7 @@ module Twitter
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
         if !protocol.blank? || domain =~ Twitter::Regex[:probable_tld]
           html_attrs = tag_options(options.stringify_keys) || ""
-          full_url = ((protocol =~ WWW_REGEX || protocol.blank?) ? "http://#{url}" : url)
+          full_url = ((protocol =~ Twitter::Regex[:www] || protocol.blank?) ? "http://#{url}" : url)
           "#{before}<a href=\"#{encode(full_url)}\"#{html_attrs}>#{encode(url)}</a>"
         else
           all

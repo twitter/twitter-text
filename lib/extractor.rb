@@ -122,7 +122,7 @@ module Twitter
           end_position = start_position + url.char_length
           position = end_position
           urls << {
-            :url => (protocol == "www." ? "http://#{url}" : url),
+            :url => ((protocol =~ Twitter::Regex[:www] || protocol.blank?) ? "http://#{url}" : url),
             :indices => [start_position, end_position]
           }
         end

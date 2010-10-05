@@ -47,7 +47,7 @@ module Twitter
 
     # Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
     HASHTAG_CHARACTERS = /[a-z0-9_#{LATIN_ACCENTS}]/io
-    REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{HASHTAG_CHARACTERS}*)/io
+    REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/\?]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{HASHTAG_CHARACTERS}*)/io
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?($|.)/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
@@ -57,6 +57,8 @@ module Twitter
 
     # For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
     REGEXEN[:probable_tld] = /\.(?:com|net|org|gov|edu)$/i
+
+    REGEXEN[:www] = /www\./i
 
     REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i
     # Allow URL paths to contain balanced parens
