@@ -83,21 +83,21 @@ module Twitter
           new_text << chunk
         else
           new_text << chunk.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
-            before, at, user, slash_listname, after = $1, $2, $3, $4, $5
+            before, at, user, slash_listname, after = $1, $2, $3, $4, $'
             if slash_listname && !options[:suppress_lists]
               # the link is a list
               chunk = list = "#{user}#{slash_listname}"
               chunk = yield(list) if block_given?
-              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{encode(options[:list_url_base])}#{encode(list.downcase)}\"#{extra_html}>#{encode(chunk)}</a>#{after}"
+              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{encode(options[:list_url_base])}#{encode(list.downcase)}\"#{extra_html}>#{encode(chunk)}</a>"
             else
               if after =~ Twitter::Regex[:end_screen_name_match]
                 # Followed by something that means we don't autolink
-                "#{before}#{at}#{user}#{slash_listname}#{after}"
+                "#{before}#{at}#{user}#{slash_listname}"
               else
                 # this is a screen name
                 chunk = user
                 chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{encode(options[:username_url_base])}#{encode(chunk)}\"#{extra_html}>#{encode(chunk)}</a>#{after}"
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{encode(options[:username_url_base])}#{encode(chunk)}\"#{extra_html}>#{encode(chunk)}</a>"
               end
             end
           end
