@@ -170,14 +170,26 @@ tests:
     - description: "DO NOT extract invalid URL: http://tld-too-short.x"
       text: "text http://tld-too-short.x"
       expected: []
-  
+
     - description: "Extract a very long hyphenated sub-domain URL (single letter hyphens)"
       text: "text http://word-and-a-number-8-ftw.domain.tld/"
       expected: ["http://word-and-a-number-8-ftw.domain.tld/"]
-      
+
     - description: "Extract a hyphenated TLD (usually a typo)"
       text: "text http://domain.tld-that-you-should-have-put-a-space-after"
       expected: ["http://domain.tld"]
+
+    - description: "Extract URL ending with # value"
+      text: "text http://foo.com?#foo text"
+      expected: ["http://foo.com?#foo"]
+
+    - description: "Extract URLs without protocol on (com|org|edu|gov|net) domains"
+      text: "foo.com foo.net foo.org foo.edu foo.gov"
+      expected: ["http://foo.com", "http://foo.net", "http://foo.org", "http://foo.edu", "http://foo.gov"]
+
+    - description: "DO NOT extract URLs withour protocol not on (com|org|edu|gov|net) domains, unless preceded by www."
+      text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu"
+      expected: ["http://www.foo.bar", "http://www.foo.co.uk"]
 
   hashtags:
     - description: "Extract an all-alpha hashtag"
@@ -230,7 +242,7 @@ tests:
       expected:
         - hashtag: "hashtag"
           indices: [7, 15]
-          
+
     - description: "Extract only a valid hashtag"
       text: "#123 a #hashtag in a string"
       expected:
