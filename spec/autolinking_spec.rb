@@ -518,22 +518,22 @@ describe Twitter::Autolink do
 
   end
 
-  describe "encode" do
+  describe "html_escape" do
     before do
       @linker = TestAutolink.new
     end
     it "should escape html entities properly" do
-      @linker.encode("&").should == "&amp;"
-      @linker.encode(">").should == "&gt;"
-      @linker.encode("<").should == "&lt;"
-      @linker.encode("\"").should == "&quot;"
-      @linker.encode("'").should == "&#39;"
-      @linker.encode("&<>\"").should == "&amp;&lt;&gt;&quot;"
-      @linker.encode("<div>").should == "&lt;div&gt;"
-      @linker.encode("a&b").should == "a&amp;b"
-      @linker.encode("<a href=\"http://twitter.com\" target=\"_blank\">twitter & friends</a>").should == "&lt;a href=&quot;http://twitter.com&quot; target=&quot;_blank&quot;&gt;twitter &amp; friends&lt;/a&gt;"
-      @linker.encode("&amp;").should == "&amp;amp;"
-      @linker.encode(nil).should == nil
+      @linker.html_escape("&").should == "&amp;"
+      @linker.html_escape(">").should == "&gt;"
+      @linker.html_escape("<").should == "&lt;"
+      @linker.html_escape("\"").should == "&quot;"
+      @linker.html_escape("'").should == "&#39;"
+      @linker.html_escape("&<>\"").should == "&amp;&lt;&gt;&quot;"
+      @linker.html_escape("<div>").should == "&lt;div&gt;"
+      @linker.html_escape("a&b").should == "a&amp;b"
+      @linker.html_escape("<a href=\"http://twitter.com\" target=\"_blank\">twitter & friends</a>").should == "&lt;a href=&quot;http://twitter.com&quot; target=&quot;_blank&quot;&gt;twitter &amp; friends&lt;/a&gt;"
+      @linker.html_escape("&amp;").should == "&amp;amp;"
+      @linker.html_escape(nil).should == nil
     end
   end
 

@@ -24,7 +24,7 @@ module Twitter
       "'" => '&#39;'
     }
 
-    def encode(text)
+    def html_escape(text)
       text && text.gsub(/[&"'><]/) do |character|
         HTML_ENTITIES[character]
       end
@@ -88,7 +88,7 @@ module Twitter
               # the link is a list
               chunk = list = "#{user}#{slash_listname}"
               chunk = yield(list) if block_given?
-              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{encode(options[:list_url_base])}#{encode(list.downcase)}\"#{extra_html}>#{encode(chunk)}</a>"
+              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{html_escape(options[:list_url_base])}#{html_escape(list.downcase)}\"#{extra_html}>#{html_escape(chunk)}</a>"
             else
               if after =~ Twitter::Regex[:end_screen_name_match]
                 # Followed by something that means we don't autolink
@@ -97,7 +97,7 @@ module Twitter
                 # this is a screen name
                 chunk = user
                 chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{encode(options[:username_url_base])}#{encode(chunk)}\"#{extra_html}>#{encode(chunk)}</a>"
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>"
               end
             end
           end
@@ -126,7 +126,7 @@ module Twitter
         hash = $2
         text = $3
         text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{encode(text)}\" title=\"##{encode(text)}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{encode(hash)}#{encode(text)}</a>"
+        "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
       end
     end
 
@@ -143,7 +143,7 @@ module Twitter
         if !protocol.blank? || domain =~ Twitter::Regex[:probable_tld]
           html_attrs = tag_options(options.stringify_keys) || ""
           full_url = ((protocol =~ Twitter::Regex[:www] || protocol.blank?) ? "http://#{url}" : url)
-          "#{before}<a href=\"#{encode(full_url)}\"#{html_attrs}>#{encode(url)}</a>"
+          "#{before}<a href=\"#{html_escape(full_url)}\"#{html_attrs}>#{html_escape(url)}</a>"
         else
           all
         end
