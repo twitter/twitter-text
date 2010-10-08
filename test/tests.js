@@ -1,6 +1,6 @@
 module("twttr.txt");
 
-test("twttr.txt.encode", function() {
+test("twttr.txt.htmlEscape", function() {
   var tests = [
     ["&", "&amp;"],
     [">", "&gt;"],
@@ -16,7 +16,7 @@ test("twttr.txt.encode", function() {
   ];
 
   for (var i = 0; i < tests.length; i++) {
-    same(twttr.txt.encode(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
+    same(twttr.txt.htmlEscape(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
   }
 });
 
