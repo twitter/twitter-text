@@ -102,7 +102,7 @@ if (!window.twttr) {
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
-  twttr.txt.regexen.validPrecedingChars = /(?:[^-\/"':!=A-Za-z0-9_]|^|\:)/;
+  twttr.txt.regexen.validPrecedingChars = /(?:[^-\/"':!=A-Za-z0-9_@＠]|^|\:)/;
   twttr.txt.regexen.validDomain = regexSupplant(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
 
   // For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
