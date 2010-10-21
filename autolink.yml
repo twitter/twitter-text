@@ -284,6 +284,14 @@ tests:
       text: "text =http://example.com"
       expected: "text =http://example.com"
 
+    - description: "DO NOT Autolink url preceded by @"
+      text: "@http://example.com"
+      expected: "@http://example.com"
+
+    - description: "DO NOT Autolink domain in email address"
+      text: "foo@bar.com"
+      expected: "foo@bar.com"
+
     - description: "Autolink url embedded in link tag"
       text: "<link rel='true'>http://example.com</link>"
       expected: "<link rel='true'><a href=\"http://example.com\">http://example.com</a></link>"
