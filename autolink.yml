@@ -58,8 +58,8 @@ tests:
       expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/foo\">foo</a> @<a class=\"tweet-url username\" href=\"http://twitter.com/bar\">bar</a>"
 
     - description: "Autolink usernames that are followed by international characters"
-         text: "@foo îs in the house"
-         expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/foo\">foo</a> îs in the house"
+      text: "@foo îs in the house"
+      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/foo\">foo</a> îs in the house"
   lists:
     - description: "Autolink list preceded by a space"
       text: "text @username/list"
