@@ -32,7 +32,7 @@ module Twitter
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
 
     major, minor, patch = RUBY_VERSION.split(/\./)
-    if major.to_i >= 1 && minor.to_i >= 9
+    if major.to_i >= 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && RUBY_ENGINE == "jruby")
       REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
     else
       # This line barfs at compile time in Ruby 1.9.
