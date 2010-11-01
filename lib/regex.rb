@@ -43,7 +43,7 @@ module Twitter
     LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
-    REGEXEN[:end_screen_name_match] = /^#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}/o
+    REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     # Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
     HASHTAG_CHARACTERS = /[a-z0-9_#{LATIN_ACCENTS}]/io
