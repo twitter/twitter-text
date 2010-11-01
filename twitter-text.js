@@ -90,7 +90,7 @@ if (!window.twttr) {
   twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ\\303\\277");
   twttr.txt.regexen.latenAccents = regexSupplant(/[#{latinAccentChars}]+/);
 
-  twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^#{atSigns}|[#{latinAccentChars}]/);
+  twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^#{atSigns}|[#{latinAccentChars}]|:\/\//);
 
   // Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
   twttr.txt.regexen.hashtagCharacters = regexSupplant(/[a-z0-9_#{latinAccentChars}]/i);
@@ -99,7 +99,7 @@ if (!window.twttr) {
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
-  twttr.txt.regexen.validPrecedingChars = /(?:[^-\/"':!=A-Za-z0-9_@＠]|^|\:)/;
+  twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"':!=A-Za-z0-9_@＠]|^|\:)/);
   twttr.txt.regexen.validDomain = regexSupplant(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
 
   // For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
