@@ -90,7 +90,7 @@ if (!window.twttr) {
   twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ\\303\\277");
   twttr.txt.regexen.latenAccents = regexSupplant(/[#{latinAccentChars}]+/);
 
-  twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^#{atSigns}|[#{latinAccentChars}]|:\/\//);
+  twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
   twttr.txt.regexen.hashtagCharacters = regexSupplant(/[a-z0-9_#{latinAccentChars}]/i);
