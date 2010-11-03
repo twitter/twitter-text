@@ -52,7 +52,17 @@ tests:
       hits: [ [3, 6] ]
       expected: "<a>foo</a><a><em>foo</em></a>"
 
-    - description: "Highlight link at end that is second hit"
+    - description: "Highlight two links"
+      text: "foo <a>bar</a> <a>baz</a>"
+      hits: [ [4, 7], [8, 11] ]
+      expected: "foo <a><em>bar</em></a> <a><em>baz</em></a>"
+
+    - description: "Highlight non-link then link not at end"
+      text: "foo bar <a>baz</a> something else"
+      hits: [ [4, 7], [8, 11] ]
+      expected: "foo <em>bar</em> <a><em>baz</em></a> something else"
+
+    - description: "Highlight non-link then link at end"
       text: "foo bar <a>baz</a>"
       hits: [ [4, 7], [8, 11] ]
       expected: "foo <em>bar</em> <a><em>baz</em></a>"
