@@ -54,5 +54,5 @@ tests:
 
     - description: "Highlight link at end"
       text: "foo <a>bar</a>"
-      hits: [ [3, 6] ]
+      hits: [ [4, 7] ]
       expected: "foo <a><em>foo</em></a>"
