@@ -51,3 +51,8 @@ tests:
       text: "<a>foo</a><a>foo</a>"
       hits: [ [3, 6] ]
       expected: "<a>foo</a><a><em>foo</em></a>"
+
+    - description: "Highlight link at end"
+      text: "foo <a>bar</a>"
+      hits: [ [3, 6] ]
+      expected: "foo <a><em>foo</em></a>"
