@@ -60,6 +60,8 @@ module Twitter
           chunk_cursor = hit_spot
           if index % 2 == 0
             start_in_chunk = true
+          else
+            start_in_chunk = false
           end
           placed = true
         end
