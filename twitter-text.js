@@ -500,6 +500,8 @@ if (!window.twttr) {
         chunkCursor = hitSpot;
         if (index % 2 === 0) {
           startInChunk = true;
+        } else {
+          startInChunk = false;
         }
       }
     }
