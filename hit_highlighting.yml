@@ -52,7 +52,7 @@ tests:
       hits: [ [3, 6] ]
       expected: "<a>foo</a><a><em>foo</em></a>"
 
-    - description: "Highlight link at end"
-      text: "foo <a>bar</a>"
-      hits: [ [4, 7] ]
-      expected: "foo <a><em>bar</em></a>"
+    - description: "Highlight link at end that is second hit"
+      text: "foo bar <a>baz</a>"
+      hits: [ [4, 7], [8, 11] ]
+      expected: "foo <em>bar</em> <a><em>baz</em></a>"
