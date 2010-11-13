@@ -5,17 +5,17 @@ require 'twitter-text'
 require 'hpricot'
 require 'spec/test_urls'
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include TestUrls
 end
 
-Spec::Matchers.define :match_autolink_expression do
+RSpec::Matchers.define :match_autolink_expression do
   match do |string|
     Twitter::Regex[:valid_url].match(string)
   end
 end
 
-Spec::Matchers.define :match_autolink_expression_in do |text|
+RSpec::Matchers.define :match_autolink_expression_in do |text|
   match do |url|
     @match_data = Twitter::Regex[:valid_url].match(text)
     @match_data && @match_data.to_s.strip == url
@@ -26,7 +26,7 @@ Spec::Matchers.define :match_autolink_expression_in do |text|
   end
 end
 
-Spec::Matchers.define :have_autolinked_url do |url|
+RSpec::Matchers.define :have_autolinked_url do |url|
   match do |text|
     @link = Hpricot(text).at("a[@href='#{url}']")
     @link &&
@@ -39,7 +39,7 @@ Spec::Matchers.define :have_autolinked_url do |url|
   end
 end
 
-Spec::Matchers.define :link_to_screen_name do |screen_name|
+RSpec::Matchers.define :link_to_screen_name do |screen_name|
   match do |text|
     @link = Hpricot(text).at("a.username")
     @link && @link.inner_text == screen_name && "http://twitter.com/#{screen_name}".downcase.should == @link['href']
@@ -58,7 +58,7 @@ Spec::Matchers.define :link_to_screen_name do |screen_name|
   end
 end
 
-Spec::Matchers.define :link_to_list_path do |list_path|
+RSpec::Matchers.define :link_to_list_path do |list_path|
   match do |text|
     @link = Hpricot(text).at("a.list-slug")
     !@link.nil? && @link.inner_text == list_path && "http://twitter.com/#{list_path}".downcase.should == @link['href']
@@ -77,7 +77,7 @@ Spec::Matchers.define :link_to_list_path do |list_path|
   end
 end
 
-Spec::Matchers.define :have_autolinked_hashtag do |hashtag|
+RSpec::Matchers.define :have_autolinked_hashtag do |hashtag|
   match do |text|
     @link = Hpricot(text).at("a[@href='http://twitter.com/search?q=#{CGI.escape hashtag}']")
     @link &&

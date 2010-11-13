@@ -3,21 +3,19 @@ Bundler::GemHelper.install_tasks
 
 task :default => :spec
 
-require 'spec'
-require 'spec/rake/spectask'
-require 'spec/rake/verify_rcov'
-desc "Run specs"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
-  t.spec_opts = %w(-fs --color)
-  t.libs << ["spec", '.']
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
+
+task :cleanup_rcov_files do
+  rm_rf 'coverage'
 end
 
-desc "Run all examples with RCov"
-Spec::Rake::SpecTask.new('spec:rcov') do |t|
-  t.spec_files = FileList['spec/**/*.rb']
-  t.rcov = true
-  t.rcov_opts = ['--exclude', 'spec']
+namespace :spec do
+  desc "Run all examples using rcov"
+  RSpec::Core::RakeTask.new(:rcov => :cleanup_rcov_files) do |task|
+    task.rcov = true
+    task.rcov_opts = %[-Ilib --exclude "spec" --text-report --sort coverage]
+  end
 end
 
 def conformance_version(dir)
@@ -71,6 +69,6 @@ namespace :doc do
   end
 end
 
-desc "runs cruise control build"
+desc "Run cruise control build"
 task :cruise => [:spec, 'test:conformance'] do
 end

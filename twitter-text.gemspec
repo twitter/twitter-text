@@ -13,7 +13,7 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency "hpricot"
   s.add_development_dependency "rake"
   s.add_development_dependency "rcov"
-  s.add_development_dependency "rspec", "1.3.1"
+  s.add_development_dependency "rspec"
   s.add_runtime_dependency "actionpack"
 
   s.files         = `git ls-files`.split("\n")
