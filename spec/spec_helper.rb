@@ -1,9 +1,14 @@
 $TESTING=true
 $:.push File.join(File.dirname(__FILE__), '..', 'lib')
 
-require 'twitter-text'
 require 'hpricot'
-require 'spec/test_urls'
+require 'simplecov'
+SimpleCov.start do
+  add_group 'Libraries', 'lib'
+end
+
+require File.expand_path('../../lib/twitter-text', __FILE__)
+require File.expand_path('../test_urls', __FILE__)
 
 RSpec.configure do |config|
   config.include TestUrls

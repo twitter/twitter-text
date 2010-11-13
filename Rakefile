@@ -6,18 +6,6 @@ task :default => :spec
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
 
-task :cleanup_rcov_files do
-  rm_rf 'coverage'
-end
-
-namespace :spec do
-  desc "Run all examples using rcov"
-  RSpec::Core::RakeTask.new(:rcov => :cleanup_rcov_files) do |task|
-    task.rcov = true
-    task.rcov_opts = %[-Ilib --exclude "spec" --text-report --sort coverage]
-  end
-end
-
 def conformance_version(dir)
   require 'digest'
   Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
