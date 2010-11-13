@@ -1,35 +1,11 @@
-require 'rubygems' unless ENV['NO_RUBYGEMS']
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
-require 'rubygems/specification'
-require 'date'
-
-gem 'rspec'
-require 'spec/rake/spectask'
-require 'spec/rake/verify_rcov'
-require 'digest'
-
-spec = Gem::Specification.new do |s|
-  s.name = "twitter-text"
-  s.version = "1.2.4"
-  s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle", "Raffi Krikorian"]
-  s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com", "raffi@twitter.com"]
-  s.homepage = "http://twitter.com"
-  s.description = s.summary = "A gem that provides text handling for Twitter"
-
-  s.platform = Gem::Platform::RUBY
-  s.has_rdoc = true
-  s.summary = "Twitter text handling library"
-
-  s.add_dependency "actionpack"
-
-  s.require_path = 'lib'
-  s.autorequire = ''
-  s.files = %w(LICENSE README.rdoc Rakefile TODO) + Dir.glob("{lib,spec}/**/*")
-end
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
 task :default => :spec
 
+require 'spec'
+require 'spec/rake/spectask'
+require 'spec/rake/verify_rcov'
 desc "Run specs"
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
@@ -45,6 +21,7 @@ Spec::Rake::SpecTask.new('spec:rcov') do |t|
 end
 
 def conformance_version(dir)
+  require 'digest'
   Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
 end
 
@@ -85,27 +62,12 @@ namespace :test do
   end
 end
 
+require 'rake/rdoctask'
 namespace :doc do
   Rake::RDocTask.new do |rd|
     rd.main = "README.rdoc"
     rd.rdoc_dir = 'doc'
     rd.rdoc_files.include("README.rdoc", "lib/**/*.rb")
-  end
-end
-
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
-
-desc "install the gem locally"
-task :install => [:package] do
-  sh %{sudo gem install pkg/#{GEM}-#{GEM_VERSION}}
-end
-
-desc "create a gemspec file"
-task :make_spec do
-  File.open("#{GEM}.gemspec", "w") do |file|
-    file.puts spec.to_ruby
   end
 end
 

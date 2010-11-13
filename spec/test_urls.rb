@@ -23,12 +23,12 @@ module TestUrls
     "http://x.com/has/one/char/domain",
     "http://t.co/nwcLTFF",
     # "t.co/nwcLTFF"
-  ]
+  ] unless defined?(TestUrls::VALID)
 
   INVALID = [
     "http://no-tld",
     "http://tld-too-short.x",
     "http://-doman_dash.com"
-  ]
+  ] unless defined?(TestUrls::INVALID)
 
 end
