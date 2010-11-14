@@ -10,7 +10,7 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.summary = "Twitter text handling library"
 
-  s.add_development_dependency "hpricot"
+  s.add_development_dependency "nokogiri"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
   s.add_development_dependency "simplecov"

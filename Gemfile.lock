@@ -27,9 +27,10 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
-    hpricot (0.8.3)
-    hpricot (0.8.3-java)
     i18n (0.4.2)
+    nokogiri (1.4.3.1)
+    nokogiri (1.4.3.1-java)
+      weakling (>= 0.0.3)
     rack (1.2.1)
     rack-mount (0.6.13)
       rack (>= 1.0.0)
@@ -48,6 +49,7 @@ GEM
       simplecov-html (>= 0.3.7)
     simplecov-html (0.3.9)
     tzinfo (0.3.23)
+    weakling (0.0.4-java)
 
 PLATFORMS
   java
@@ -55,7 +57,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack
-  hpricot
+  nokogiri
   rake
   rspec
   simplecov

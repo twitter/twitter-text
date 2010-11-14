@@ -2,7 +2,7 @@ $TESTING=true
 $KCODE='u'
 $:.push File.join(File.dirname(__FILE__), '..', 'lib')
 
-require 'hpricot'
+require 'nokogiri'
 require 'simplecov'
 SimpleCov.start do
   add_group 'Libraries', 'lib'
@@ -34,7 +34,7 @@ end
 
 RSpec::Matchers.define :have_autolinked_url do |url|
   match do |text|
-    @link = Hpricot(text).at("a[@href='#{url}']")
+    @link = Nokogiri::HTML(text).search("a[@href='#{url}']")
     @link &&
     @link.inner_text &&
     @link.inner_text == url
@@ -47,8 +47,8 @@ end
 
 RSpec::Matchers.define :link_to_screen_name do |screen_name|
   match do |text|
-    @link = Hpricot(text).at("a.username")
-    @link && @link.inner_text == screen_name && "http://twitter.com/#{screen_name}".downcase.should == @link['href']
+    @link = Nokogiri::HTML(text).search("a.username")
+    @link && @link.inner_text == screen_name && "http://twitter.com/#{screen_name}".downcase.should == @link.first['href']
   end
 
   failure_message_for_should do |text|
@@ -66,8 +66,8 @@ end
 
 RSpec::Matchers.define :link_to_list_path do |list_path|
   match do |text|
-    @link = Hpricot(text).at("a.list-slug")
-    !@link.nil? && @link.inner_text == list_path && "http://twitter.com/#{list_path}".downcase.should == @link['href']
+    @link = Nokogiri::HTML(text).search("a.list-slug")
+    !@link.nil? && @link.inner_text == list_path && "http://twitter.com/#{list_path}".downcase.should == @link.first['href']
   end
 
   failure_message_for_should do |text|
@@ -85,7 +85,7 @@ end
 
 RSpec::Matchers.define :have_autolinked_hashtag do |hashtag|
   match do |text|
-    @link = Hpricot(text).at("a[@href='http://twitter.com/search?q=#{CGI.escape hashtag}']")
+    @link = Nokogiri::HTML(text).search("a[@href='http://twitter.com/search?q=#{CGI.escape hashtag}']")
     @link &&
     @link.inner_text &&
     @link.inner_text == hashtag
