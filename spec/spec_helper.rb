@@ -1,4 +1,5 @@
 $TESTING=true
+$KCODE='u'
 $:.push File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'hpricot'
