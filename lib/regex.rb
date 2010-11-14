@@ -30,11 +30,11 @@ module Twitter
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(?=(.|$))/o
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
 
-    major, minor, patch = RUBY_VERSION.split(/\./)
-    if major.to_i >= 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && RUBY_ENGINE == "jruby")
+    major, minor, patch = RUBY_VERSION.split('.')
+    if major.to_i >= 2 || major.to_i == 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && ["jruby", "rbx"].include?(RUBY_ENGINE))
       REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
     else
-      # This line barfs at compile time in Ruby 1.9.
+      # This line barfs at compile time in Ruby 1.9, JRuby, or Rubinius.
       REGEXEN[:list_name] = eval("/[a-zA-Z][a-zA-Z0-9_\\-\x80-\xff]{0,24}/")
     end
 
