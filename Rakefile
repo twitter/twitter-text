@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-task :default => :spec
+task :default => ["spec", "test:conformance"]
 
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
