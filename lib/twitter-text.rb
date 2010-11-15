@@ -5,7 +5,7 @@ if major.to_i == 1 && minor.to_i < 9
   raise("twitter-text requires the $KCODE variable be set to 'UTF8' or 'u'") unless $KCODE[0].chr =~ /u/i
 end
 
-require 'rubygems'
+# External libraries required. (for gems, use: ruby -rubygems ...)
 require 'action_pack'
 require 'action_view'
 
