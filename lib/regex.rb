@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 module Twitter
   # A collection of regular expressions for parsing Tweet text. The regular expression
   # list is frozen at load time to ensure immutability. These reular expressions are
@@ -31,15 +30,17 @@ module Twitter
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(?=(.|$))/o
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
 
-    major, minor, patch = RUBY_VERSION.split(/\./)
-    if major.to_i >= 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && RUBY_ENGINE == "jruby")
+    major, minor, patch = RUBY_VERSION.split('.')
+    if major.to_i >= 2 || major.to_i == 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && ["jruby", "rbx"].include?(RUBY_ENGINE))
       REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
     else
-      # This line barfs at compile time in Ruby 1.9.
+      # This line barfs at compile time in Ruby 1.9, JRuby, or Rubinius.
       REGEXEN[:list_name] = eval("/[a-zA-Z][a-zA-Z0-9_\\-\x80-\xff]{0,24}/")
     end
 
-    # Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
+    # Latin accented characters
+    # Excludes 0xd7 from the range (the multiplication sign, confusable with "x").
+    # Also excludes 0xf7, the division sign
     LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
@@ -47,7 +48,7 @@ module Twitter
 
     # Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
     HASHTAG_CHARACTERS = /[a-z0-9_#{LATIN_ACCENTS}]/io
-    REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/\?]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{HASHTAG_CHARACTERS}*)/io
+    REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/\?]+)(#|＃)([0-9a-z_]*[a-z_]+#{HASHTAG_CHARACTERS}*)/io
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
@@ -56,7 +57,7 @@ module Twitter
     REGEXEN[:valid_domain] = /(?:[^[:punct:]\s][\.-](?=[^[:punct:]\s])|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
 
     # For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
-    REGEXEN[:probable_tld] = /\.(?:com|net|org|gov|edu)$/i
+    REGEXEN[:probable_tld_domain] = /^(.*?)((?:[a-z0-9_\.\-]+)\.(?:com|net|org|gov|edu))$/i
 
     REGEXEN[:www] = /www\./i
 
