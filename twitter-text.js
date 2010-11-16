@@ -275,6 +275,8 @@ if (!window.twttr) {
     delete options.suppressDataScreenName;
 
     return text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, queryString) {
+      var tldComponents;
+
       if (protocol) {
         var htmlAttrs = "";
         for (var k in options) {
@@ -291,23 +293,31 @@ if (!window.twttr) {
         };
 
         return stringSupplant("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
-      } else if (tld_components = all.match(twttr.txt.regexen.probableTld)) {
-        var tld_before = tld_components[1];
-        var tld_url = tld_components[2];
+      } else if (tldComponents = all.match(twttr.txt.regexen.probableTld)) {
+        var tldBefore = tldComponents[1];
+        var tldUrl = tldComponents[2];
         var htmlAttrs = "";
         for (var k in options) {
-          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {
+            k: k,
+            v: twttr.txt.htmlEscape(options[k].toString())
+          });
         }
         options.htmlAttrs || "";
 
-        var fullUrl = stringSupplant("http://#{url}", {url: tld_url});
-        var prefix = (tld_before == before ? before : stringSupplant("#{before}#{tld_before}", { before: before, tld_before: tld_before }));
+        var fullUrl = stringSupplant("http://#{url}", {
+          url: tldUrl
+        });
+        var prefix = (tldBefore == before ? before : stringSupplant("#{before}#{tldBefore}", {
+          before: before,
+          tldBefore: tldBefore
+        }));
 
         var d = {
           before: prefix,
           fullUrl: twttr.txt.htmlEscape(fullUrl),
           htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(tld_url)
+          url: twttr.txt.htmlEscape(tldUrl)
         };
 
         return stringSupplant("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
@@ -384,21 +394,27 @@ if (!window.twttr) {
         position = 0;
 
     text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, query) {
+      var tldComponents;
+
       if (protocol) {
         var startPosition = text.indexOf(url, position),
             position = startPosition + url.length;
 
         urls.push({
-          url: ((!protocol || protocol.match(twttr.txt.regexen.www)) ? stringSupplant("http://#{url}", {url: url}) : url),
+          url: ((!protocol || protocol.match(twttr.txt.regexen.www)) ? stringSupplant("http://#{url}", {
+            url: url
+          }) : url),
           indices: [startPosition, position]
         });
-      } else if (tld_components = all.match(twttr.txt.regexen.probableTld)) {
-        var tld_url = tld_components[2];
-        var startPosition = text.indexOf(tld_url, position),
-            position = startPosition + tld_url.length;
+      } else if (tldComponents = all.match(twttr.txt.regexen.probableTld)) {
+        var tldUrl = tldComponents[2];
+        var startPosition = text.indexOf(tldUrl, position),
+            position = startPosition + tldUrl.length;
 
         urls.push({
-          url: stringSupplant("http://#{tld_url}", { tld_url: tld_url }),
+          url: stringSupplant("http://#{tldUrl}", {
+            tldUrl: tldUrl
+          }),
           indices: [startPosition, position]
         });
       }
