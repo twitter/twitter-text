@@ -57,7 +57,7 @@ module Twitter
     REGEXEN[:valid_domain] = /(?:[^[:punct:]\s][\.-](?=[^[:punct:]\s])|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
 
     # For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
-    REGEXEN[:probable_tld] = /\.(?:com|net|org|gov|edu)$/i
+    REGEXEN[:probable_tld_domain] = /^(.*?)((?:[a-z0-9_\.\-]+)\.(?:com|net|org|gov|edu))$/i
 
     REGEXEN[:www] = /www\./i
 

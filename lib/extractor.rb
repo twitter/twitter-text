@@ -117,12 +117,21 @@ module Twitter
       urls = []
       position = 0
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, path, query|
-        if !protocol.blank? || domain =~ Twitter::Regex[:probable_tld]
+        if !protocol.blank?
           start_position = text.to_s.sub_string_search(url, position)
           end_position = start_position + url.char_length
           position = end_position
           urls << {
             :url => ((protocol =~ Twitter::Regex[:www] || protocol.blank?) ? "http://#{url}" : url),
+            :indices => [start_position, end_position]
+          }
+        elsif all =~ Twitter::Regex[:probable_tld_domain]
+          before_tld, tld_domain = $1, $2
+          start_position = text.to_s.sub_string_search(tld_domain, position)
+          end_position = start_position + tld_domain.char_length
+          position = end_position
+          urls << {
+            :url => "http://#{tld_domain}",
             :indices => [start_position, end_position]
           }
         end

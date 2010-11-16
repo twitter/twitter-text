@@ -139,10 +139,17 @@ module Twitter
 
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
-        if !protocol.blank? || domain =~ Twitter::Regex[:probable_tld]
+        if !protocol.blank? # || domain =~ Twitter::Regex[:probable_tld_domain]
           html_attrs = tag_options(options.stringify_keys) || ""
           full_url = ((protocol =~ Twitter::Regex[:www] || protocol.blank?) ? "http://#{url}" : url)
           "#{before}<a href=\"#{html_escape(full_url)}\"#{html_attrs}>#{html_escape(url)}</a>"
+        elsif all =~ Twitter::Regex[:probable_tld_domain]
+          before_tld, tld_domain = $1, $2
+
+          html_attrs = tag_options(options.stringify_keys) || ""
+          full_url = "http://#{tld_domain}"
+          prefix = (before_tld == before ? before : "#{before}#{before_tld}")
+          "#{prefix}<a href=\"#{html_escape(full_url)}\"#{html_attrs}>#{html_escape(tld_domain)}</a>"
         else
           all
         end
