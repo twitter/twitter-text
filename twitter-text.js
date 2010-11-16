@@ -103,7 +103,7 @@ if (!window.twttr) {
   twttr.txt.regexen.validDomain = regexSupplant(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
 
   // For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
-  twttr.txt.regexen.probableTld = /\.(?:com|net|org|gov|edu)$/i;
+  twttr.txt.regexen.probableTld = /^(.*?)((?:[a-z0-9_\.\-]+)\.(?:com|net|org|gov|edu))$/i;
 
   twttr.txt.regexen.www = /www\./i;
 
@@ -275,7 +275,7 @@ if (!window.twttr) {
     delete options.suppressDataScreenName;
 
     return text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, queryString) {
-      if (protocol || domain.match(twttr.txt.regexen.probableTld)) {
+      if (protocol) {
         var htmlAttrs = "";
         for (var k in options) {
           htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
@@ -288,6 +288,26 @@ if (!window.twttr) {
           fullUrl: twttr.txt.htmlEscape(fullUrl),
           htmlAttrs: htmlAttrs,
           url: twttr.txt.htmlEscape(url)
+        };
+
+        return stringSupplant("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
+      } else if (tld_components = all.match(twttr.txt.regexen.probableTld)) {
+        var tld_before = tld_components[1];
+        var tld_url = tld_components[2];
+        var htmlAttrs = "";
+        for (var k in options) {
+          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+        }
+        options.htmlAttrs || "";
+
+        var fullUrl = stringSupplant("http://#{url}", {url: tld_url});
+        var prefix = (tld_before == before ? before : stringSupplant("#{before}#{tld_before}", { before: before, tld_before: tld_before }));
+
+        var d = {
+          before: prefix,
+          fullUrl: twttr.txt.htmlEscape(fullUrl),
+          htmlAttrs: htmlAttrs,
+          url: twttr.txt.htmlEscape(tld_url)
         };
 
         return stringSupplant("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
@@ -364,12 +384,21 @@ if (!window.twttr) {
         position = 0;
 
     text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, query) {
-      if (protocol || domain.match(twttr.txt.regexen.probableTld)) {
+      if (protocol) {
         var startPosition = text.indexOf(url, position),
             position = startPosition + url.length;
 
         urls.push({
           url: ((!protocol || protocol.match(twttr.txt.regexen.www)) ? stringSupplant("http://#{url}", {url: url}) : url),
+          indices: [startPosition, position]
+        });
+      } else if (tld_components = all.match(twttr.txt.regexen.probableTld)) {
+        var tld_url = tld_components[2];
+        var startPosition = text.indexOf(tld_url, position),
+            position = startPosition + tld_url.length;
+
+        urls.push({
+          url: stringSupplant("http://#{tld_url}", { tld_url: tld_url }),
           indices: [startPosition, position]
         });
       }
