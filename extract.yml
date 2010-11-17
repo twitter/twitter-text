@@ -52,7 +52,7 @@ tests:
       text: "username @username"
       expected:
         - screen_name: "username"
-          indices: [10, 18]
+          indices: [9, 18]
 
   replies:
     - description: "Extract reply at the begining of a tweet"
