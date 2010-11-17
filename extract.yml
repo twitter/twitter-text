@@ -41,6 +41,19 @@ tests:
       text: "@username email me @test@example.com"
       expected: ["username"]
 
+  mentions_with_indices:
+    - description: "Extract a mention at the start"
+      text: "@username yo!"
+      expected:
+        - screen_name: "username"
+          indices: [0, 9]
+
+    - description: "Extract a mention that has the same thing mentioned at the start"
+      text: "username @username"
+      expected:
+        - screen_name: "username"
+          indices: [10, 18]
+
   replies:
     - description: "Extract reply at the begining of a tweet"
       text: "@username reply"
