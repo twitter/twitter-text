@@ -58,7 +58,7 @@ tests:
       text: "の@usernameに到着を待っている"
       expected:
         - screen_name: "username"
-          indices: [1, 11]
+          indices: [1, 10]
 
   replies:
     - description: "Extract reply at the begining of a tweet"
