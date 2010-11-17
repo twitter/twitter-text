@@ -54,6 +54,12 @@ tests:
         - screen_name: "username"
           indices: [9, 18]
 
+    - description: "Extract a mention in the middle of a Japanese tweet"
+      text: "の@usernameに到着を待っている"
+      expected:
+        - screen_name: "username"
+          indices: [1, 11]
+
   replies:
     - description: "Extract reply at the begining of a tweet"
       text: "@username reply"
