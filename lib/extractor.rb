@@ -20,18 +20,23 @@ class String
       char_array
     end
   end
+end
 
-  # Helper function to find the index of the <tt>sub_string</tt> in
-  # <tt>str</tt>.  This is needed because with unicode strings, the return
-  # of index may be incorrect.
-  def sub_string_search(sub_str, position = 0)
-    if respond_to? :codepoints
-      index(sub_str, position)
+# Helper functions to return character offsets instead of byte offsets.
+class MatchData
+  def char_begin(n)
+    if string.respond_to? :codepoints
+      self.begin(n)
     else
-      index = to_char_a[position..-1].each_with_index.find do |e|
-        to_char_a.slice(e.last + position, sub_str.char_length).map{|ci| ci.first }.join == sub_str
-      end
-      index.nil? ? -1 : index.last + position
+      string[0, self.begin(n)].char_length
+    end
+  end
+
+  def char_end(n)
+    if string.respond_to? :codepoints
+      self.end(n)
+    else
+      string[0, self.end(n)].char_length
     end
   end
 end
@@ -63,14 +68,14 @@ module Twitter
       return [] unless text
 
       possible_screen_names = []
-      position = 0
       text.to_s.scan(Twitter::Regex[:extract_mentions]) do |before, sn, after|
+        extract_mentions_match_data = $~
         unless after =~ Twitter::Regex[:end_screen_name_match]
-          start_position = text.to_s.sub_string_search(sn, position) - 1
-          position = start_position + sn.char_length + 1
+          start_position = extract_mentions_match_data.char_begin(2) - 1
+          end_position = extract_mentions_match_data.char_end(2)
           possible_screen_names << {
             :screen_name => sn,
-            :indices => [start_position, position]
+            :indices => [start_position, end_position]
           }
         end
       end
@@ -117,19 +122,18 @@ module Twitter
       urls = []
       position = 0
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, path, query|
+        valid_url_match_data = $~
         if !protocol.blank?
-          start_position = text.to_s.sub_string_search(url, position)
-          end_position = start_position + url.char_length
-          position = end_position
+          start_position = valid_url_match_data.char_begin(3)
+          end_position = valid_url_match_data.char_end(3)
           urls << {
             :url => ((protocol =~ Twitter::Regex[:www] || protocol.blank?) ? "http://#{url}" : url),
             :indices => [start_position, end_position]
           }
         elsif all =~ Twitter::Regex[:probable_tld_domain]
-          before_tld, tld_domain = $1, $2
-          start_position = text.to_s.sub_string_search(tld_domain, position)
-          end_position = start_position + tld_domain.char_length
-          position = end_position
+          tld_domain = $2
+          start_position = valid_url_match_data.char_begin(1) + $~.char_begin(2)
+          end_position = valid_url_match_data.char_begin(1) + $~.char_end(2)
           urls << {
             :url => "http://#{tld_domain}",
             :indices => [start_position, end_position]
@@ -162,13 +166,12 @@ module Twitter
       return [] unless text
 
       tags = []
-      position = 0
       text.scan(Twitter::Regex[:auto_link_hashtags]) do |before, hash, hash_text|
-        start_position = text.to_s.sub_string_search(hash + hash_text, position)
-        position = start_position + hash_text.char_length + 1
+        start_position = $~.char_begin(2)
+        end_position = $~.char_end(3)
         tags << {
           :hashtag => hash_text,
-          :indices => [start_position, position]
+          :indices => [start_position, end_position]
         }
       end
       tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last } if block_given?
