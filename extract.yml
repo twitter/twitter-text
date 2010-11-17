@@ -210,6 +210,19 @@ tests:
       text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu"
       expected: ["http://www.foo.bar", "http://www.foo.co.uk"]
 
+  urls_with_indices:
+    - description: "Extract a URL"
+      text: "text http://google.com"
+      expected:
+        - url: "http://google.com"
+          indices: [5, 22]
+
+    - description: "Extract a URL from a Japanese tweet"
+      text: "皆さん見てください！ http://google.com"
+      expected:
+        - url: "http://google.com"
+          indices: [11, 28]
+
   hashtags:
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
