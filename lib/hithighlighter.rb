@@ -1,4 +1,3 @@
-
 module Twitter
   # Module for doing "hit highlighting" on tweets that have been auto-linked already.
   # Useful with the results returned from the Search API.

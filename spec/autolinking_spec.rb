@@ -36,7 +36,7 @@ describe Twitter::Autolink do
         def original_text; "meet@the beach"; end
 
         it "should not be linked" do
-          Hpricot(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
         end
       end
 
@@ -132,7 +132,7 @@ describe Twitter::Autolink do
         def original_text; "hello @/my-list"; end
 
         it "should NOT be linked" do
-          Hpricot(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
         end
       end
 
@@ -148,7 +148,7 @@ describe Twitter::Autolink do
         def original_text; "meet@the/beach"; end
 
         it "should not be linked" do
-          Hpricot(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
         end
       end
 
@@ -304,9 +304,9 @@ describe Twitter::Autolink do
         def original_text; "#{[0xFF03].pack('U')}twj_dev"; end
 
         it "should be linked" do
-          link = Hpricot(@autolinked_text).at('a')
+          link = Nokogiri::HTML(@autolinked_text).search('a')
           (link.inner_text.respond_to?(:force_encoding) ? link.inner_text.force_encoding("utf-8") : link.inner_text).should == "#{[0xFF03].pack('U')}twj_dev"
-          link['href'].should == 'http://twitter.com/search?q=%23twj_dev'
+          link.first['href'].should == 'http://twitter.com/search?q=%23twj_dev'
         end
       end
 
@@ -468,9 +468,9 @@ describe Twitter::Autolink do
         def original_text; "I like www.foobar.com dudes"; end
 
         it "links to the original text with the full href" do
-          link = Hpricot(@autolinked_text).at('a')
+          link = Nokogiri::HTML(@autolinked_text).search('a')
           link.inner_text.should == 'www.foobar.com'
-          link['href'].should == 'http://www.foobar.com'
+          link.first['href'].should == 'http://www.foobar.com'
         end
       end
 
