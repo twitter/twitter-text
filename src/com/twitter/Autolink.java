@@ -63,51 +63,70 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLinkUsernamesAndLists(String text) {
-    Matcher matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(text);
+    Matcher matcher;
     StringBuffer sb = new StringBuffer(text.length());
+    String[] chunks = text.split("[<>]", -1);
 
-    while (matcher.find()) {
-      StringBuffer replacement = new StringBuffer();
-
-      if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
-          matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
-        // Username only
-        if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER)).matches()) {
-          replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
-                     .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
-                     .append("<a")
-                     .append(" class=\"").append(urlClass).append(" ").append(usernameClass).append("\"")
-                     .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"");
-          if (noFollow) {
-            replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-          }
-          replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>")
-                     .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
+    for (int i = 0; i < chunks.length; i++) {
+      if (0 != i) {
+        if (i%2 == 0) {
+          sb.append(">");
         } else {
-          // Not a screen name valid for linking
-          replacement.append("$0");
+          sb.append("<");
         }
-      } else {
-        // Username and list
-        replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
-                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
-                   .append("<a")
-                   .append(" class=\"").append(urlClass).append(" ").append(listClass).append("\"")
-                   .append(" href=\"").append(listUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
-                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("\"");
-        if (noFollow) {
-          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-        }
-        replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
-                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>")
-                   .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
       }
 
-      // Apply the replacement from above
-      matcher.appendReplacement(sb, replacement.toString());
+      if (i%4 != 0) {
+        // Inside of a tag, just copy over the chunk.
+        sb.append(chunks[i]);
+      } else {
+        // Outside of a tag, do real work with this chunk
+        matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(chunks[i]);
+        while (matcher.find()) {
+          StringBuffer replacement = new StringBuffer();
+
+          if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
+              matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
+            // Username only
+            if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER)).matches()) {
+              replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
+                         .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
+                         .append("<a")
+                         .append(" class=\"").append(urlClass).append(" ").append(usernameClass).append("\"")
+                         .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"");
+              if (noFollow) {
+                replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+              }
+              replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>")
+                         .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
+            } else {
+              // Not a screen name valid for linking
+              replacement.append("$0");
+            }
+          } else {
+            // Username and list
+            replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
+                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
+                       .append("<a")
+                       .append(" class=\"").append(urlClass).append(" ").append(listClass).append("\"")
+                       .append(" href=\"").append(listUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
+                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("\"");
+            if (noFollow) {
+              replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+            }
+            replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
+                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>")
+                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
+          }
+
+          // Apply the replacement from above
+          matcher.appendReplacement(sb, replacement.toString());
+        }
+
+        matcher.appendTail(sb);
+      }
     }
 
-    matcher.appendTail(sb);
     return sb.toString();
   }
 
