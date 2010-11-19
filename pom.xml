@@ -1,0 +1,72 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.twitter.text</groupId>
+  <artifactId>twitter-text</artifactId>
+  <version>1.2.0</version>
+
+  <build>
+    <directory>out</directory>
+    <outputDirectory>build</outputDirectory>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>tests</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>conformance.dir</name>
+              <value>test-data/twitter-text-conformance</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+           <outputDirectory>dist/lib</outputDirectory>
+        </configuration>
+      </plugin>
+
+
+    </plugins>
+  </build>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.6</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jyaml</groupId>
+      <artifactId>jyaml</artifactId>
+      <version>1.3</version>
+    </dependency>
+
+  </dependencies>
+</project>
