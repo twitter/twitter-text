@@ -6,6 +6,7 @@ module TestUrls
     "http://google.com/#foo",
     "http://google.com/#search?q=iphone%20-filter%3Alinks",
     "http://twitter.com/#search?q=iphone%20-filter%3Alinks",
+    "http://somedomain.com/index.php?path=/abc/def/",
     "http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html",
     "http://somehost.com:3000",
     "http://xo.com/~matthew+%-x",
