@@ -34,7 +34,7 @@ public class Regex {
   **/
   private static final String URL_VALID_URL_PATH_ENDING_CHARS = "[a-z0-9=#/]";
   private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~]";
-  private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#]";
+  private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING = "(" +     //  $1 total match
     "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceeding chracter
     "(" +                                                          //  $3 URL
