@@ -134,6 +134,10 @@ tests:
       text: "text http://twitter.com/#search?q=iphone%20-filter%3Alinks"
       expected: ["http://twitter.com/#search?q=iphone%20-filter%3Alinks"]
 
+    - description: "Extract valid URL: http://somedomain.com/index.php?path=/abc/def/"
+      text: "text http://somedomain.com/index.php?path=/abc/def/"
+      expected: ["http://somedomain.com/index.php?path=/abc/def/"]
+
     - description: "Extract valid URL: http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html"
       text: "text http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html"
       expected: ["http://www.boingboing.net/2007/02/14/katamari_damacy_phon.html"]
