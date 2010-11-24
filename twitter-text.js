@@ -82,7 +82,7 @@ if (!window.twttr) {
   twttr.txt.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
   twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~/;
   twttr.txt.regexen.atSigns = /[@＠]/;
-  twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_])#{atSigns}([a-zA-Z0-9_]{1,20})(?=(.|$))/g);
+  twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_])(#{atSigns})([a-zA-Z0-9_]{1,20})(?=(.|$))/g);
   twttr.txt.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
   twttr.txt.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
 
@@ -350,9 +350,9 @@ if (!window.twttr) {
     var possibleScreenNames = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.extractMentions, function(match, before, screenName, after) {
+    text.replace(twttr.txt.regexen.extractMentions, function(match, before, atSign, screenName, after) {
       if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
-        var startPosition = text.indexOf(screenName, position) - 1;
+        var startPosition = text.indexOf(atSign + screenName, position);
         position = startPosition + screenName.length + 1;
         possibleScreenNames.push({
           screenName: screenName,
