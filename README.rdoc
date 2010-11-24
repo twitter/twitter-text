@@ -79,6 +79,7 @@ Thanks to everybody who has filed issues, provided feedback or contributed patch
   * Ben Cherry - http://github.com/bcherry
   * Patrick Ewing - http://github.com/hoverbird
   * Jeff Smick - http://github.com/sprsquish
+  * Kenneth Kufluk - https://github.com/kennethkufluk
 
 * Patches from the community …
   * Jean-Philippe Bougie - http://github.com/jpbougie
