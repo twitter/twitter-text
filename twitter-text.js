@@ -113,11 +113,11 @@ if (!window.twttr) {
   //  2. Used in IIS sessions like /S(dfd346)/
   twttr.txt.regexen.wikipediaDisambiguation = regexSupplant(/(?:\(#{validGeneralUrlPathChars}+\))/i);
   // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
-  twttr.txt.regexen.validUrlPathChars = regexSupplant(/(?:#{wikipediaDisambiguation}|@#{validGeneralUrlPathChars}+\/|[\.\,]?#{validGeneralUrlPathChars})/i);
+  twttr.txt.regexen.validUrlPathChars = regexSupplant(/(?:#{wikipediaDisambiguation}|@#{validGeneralUrlPathChars}+\/|[\.,]?#{validGeneralUrlPathChars})/i);
 
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
-  twttr.txt.regexen.validUrlPathEndingChars = /[a-z0-9=#\/]/i;
+  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/(?:[a-z0-9=_#\/]|#{wikipediaDisambiguation})/i);
   twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.validUrl = regexSupplant(
@@ -126,9 +126,12 @@ if (!window.twttr) {
       '('                                                          + // $3 URL
         '((?:https?:\\/\\/|www\\.)?)'                              + // $4 Protocol or beginning
         '(#{validDomain})'                                         + // $5 Domain(s) and optional post number
-        '('                                                        + // $6 URL Path
-          '\\/#{validUrlPathChars}*'                               +
-          '#{validUrlPathEndingChars}?'                            +
+        '(\\/'                                                     + // $6 URL Path
+           '(?:'                                                   +
+             '#{validUrlPathChars}+#{validUrlPathEndingChars}|'    +
+             '#{validUrlPathChars}+#{validUrlPathEndingChars}?|'   +
+             '#{validUrlPathEndingChars}'                          +
+           ')?'                                                    +
         ')?'                                                       +
         '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $7 Query String
       ')'                                                          +

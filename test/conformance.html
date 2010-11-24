@@ -23,6 +23,15 @@
               return function(test) {
                 return twttr.txt.extractMentions(test.text);
               };
+            case "mentions_with_indices":
+              return function(test) {
+                var results = twttr.txt.extractMentionsWithIndices(test.text);
+                return $.map(results, function(res) {
+                  res['screen_name'] = res.screenName;
+                  delete res.screenName
+                  return res
+                });
+              };
             case "replies":
               return function(test) {
                 return twttr.txt.extractReplies(test.text);
@@ -30,6 +39,10 @@
             case "urls":
               return function(test) {
                 return twttr.txt.extractUrls(test.text);
+              };
+            case "urls_with_indices":
+              return function(test) {
+                return twttr.txt.extractUrlsWithIndices(test.text);
               };
             case "hashtags":
               return function(test) {
