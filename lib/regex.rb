@@ -61,7 +61,7 @@ module Twitter
 
     REGEXEN[:www] = /www\./i
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~]/i
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
@@ -70,11 +70,12 @@ module Twitter
     REGEXEN[:valid_url_path_chars] = /(?:
       #{REGEXEN[:wikipedia_disambiguation]}|
       @#{REGEXEN[:valid_general_url_path_chars]}+\/|
-      [\.\,]?#{REGEXEN[:valid_general_url_path_chars]}
+      [\.,]#{REGEXEN[:valid_general_url_path_chars]}+|
+      #{REGEXEN[:valid_general_url_path_chars]}+
     )/ix
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow =&# for empty URL parameters and other URL-join artifacts
-    REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=#\/]/i
+    REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=_#\/]|#{REGEXEN[:wikipedia_disambiguation]}/io
     REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/]/i
     REGEXEN[:valid_url] = %r{
@@ -83,9 +84,13 @@ module Twitter
         (                                                                                   #   $3 URL
           ((?:https?:\/\/|www\.)?)                                                          #   $4 Protocol or beginning
           (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s) and optional post number
-          (/#{REGEXEN[:valid_url_path_chars]}*
-            #{REGEXEN[:valid_url_path_ending_chars]}?
-          )?                                                                                #   $6 URL Path
+          (/
+            (?:
+              #{REGEXEN[:valid_url_path_chars]}+#{REGEXEN[:valid_url_path_ending_chars]}|   # 1+ path chars and a valid last char
+              #{REGEXEN[:valid_url_path_chars]}+#{REGEXEN[:valid_url_path_ending_chars]}?|  # Optional last char to handle /@foo/ case
+              #{REGEXEN[:valid_url_path_ending_chars]}                                      # Just a # case
+            )?
+          )?                                                                                #   $6 URL Path and anchor
           (\?#{REGEXEN[:valid_url_query_chars]}*#{REGEXEN[:valid_url_query_ending_chars]})? #   $7 Query String
         )
       )
