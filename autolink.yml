@@ -252,6 +252,10 @@ tests:
       text: "text http://example.com,"
       expected: "text <a href=\"http://example.com\">http://example.com</a>,"
 
+    - description: "Autolink url with path followed by a comma (wihout the comma)"
+      text: "In http://example.com/test, Douglas explains 42."
+      expected: "In <a href=\"http://example.com/test\">http://example.com/test</a>, Douglas explains 42."
+
     - description: "Autolink url followed by . (without it)"
       text: "text http://example.com."
       expected: "text <a href=\"http://example.com\">http://example.com</a>."
