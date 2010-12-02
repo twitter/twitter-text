@@ -29,7 +29,15 @@ usernames, lists, hashtags and URLs.
 
     html = auto_link("link @user, please #request")
   end
-
+  
+  # For Ruby on Rails you want to add this to app/helpers/application_helper.rb
+  module ApplicationHelper
+    include Twitter::Autolink
+  end
+  
+  # Now the auto_link function is available in every view. So in index.html.erb:
+  <%= auto_link("link @user, please #request") %>
+  
 === Usernames
 
 Username extraction and linking matches all valid Twitter usernames but does
