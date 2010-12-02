@@ -322,47 +322,47 @@ tests:
 
     - description: "Autolink url containing ending with #value (not as url + hashtag)"
       text: "http://foo.com/?#foo"
-      expected: "<a href=\"http://foo.com/?#foo\">http://foo.com/?#foo</a>"
+      expected: "http://foo.com/?#foo"
 
-    - description: "Autolink url without protocol (with www)"
+    - description: "DO NOT Autolink url without protocol (with www)"
       text: "www.example.biz"
-      expected: "<a href=\"http://www.example.biz\">www.example.biz</a>"
+      expected: "www.example.biz"
 
-    - description: "Autolink url without protocol (with WWW)"
+    - description: "DO NOT Autolink url without protocol (with WWW)"
       text: "WWW.EXAMPLE.BIZ"
-      expected: "<a href=\"http://WWW.EXAMPLE.BIZ\">WWW.EXAMPLE.BIZ</a>"
+      expected: "WWW.EXAMPLE.BIZ"
 
-    - description: "Autolink URL without protocol and without www (ending in .com)"
+    - description: "DO NOT Autolink URL without protocol and without www (ending in .com)"
       text: "foo.com"
-      expected: "<a href=\"http://foo.com\">foo.com</a>"
+      expected: "foo.com"
 
-    - description: "Autolink URL without protocol and without www (ending in .org)"
+    - description: "DO NOT Autolink URL without protocol and without www (ending in .org)"
       text: "foo.org"
-      expected: "<a href=\"http://foo.org\">foo.org</a>"
+      expected: "foo.org"
 
-    - description: "Autolink URL without protocol and without www (ending in .net)"
+    - description: "DO NOT Autolink URL without protocol and without www (ending in .net)"
       text: "foo.net"
-      expected: "<a href=\"http://foo.net\">foo.net</a>"
+      expected: "foo.net"
 
-    - description: "Autolink URL without protocol and without www (ending in .gov)"
+    - description: "DO NOT Autolink URL without protocol and without www (ending in .gov)"
       text: "foo.gov"
-      expected: "<a href=\"http://foo.gov\">foo.gov</a>"
+      expected: "foo.gov"
 
-    - description: "Autolink URL without protocol and without www (ending in .edu)"
+    - description: "DO NOT Autolink URL without protocol and without www (ending in .edu)"
       text: "foo.edu"
-      expected: "<a href=\"http://foo.edu\">foo.edu</a>"
+      expected: "foo.edu"
 
     - description: "Autolink URL without protocol and without www not ending in /.(edu|com|gov|org|net)/"
       text: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
       expected: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
 
-    - description: "Multiple URLs with different protocols"
+    - description: "Multiple URLs with different protocols but not without a protocol"
       text:  "http://foo.com AND https://bar.com AND www.foobar.com"
-      expected: "<a href=\"http://foo.com\">http://foo.com</a> AND <a href=\"https://bar.com\">https://bar.com</a> AND <a href=\"http://www.foobar.com\">www.foobar.com</a>"
+      expected: "<a href=\"http://foo.com\">http://foo.com</a> AND <a href=\"https://bar.com\">https://bar.com</a> AND www.foobar.com"
 
-    - description: "Autolink raw domain followed by domain"
+    - description: "Autolink raw domain followed by domain only links the first"
       text: "See http://example.com example.com"
-      expected: "See <a href=\"http://example.com\">http://example.com</a> <a href=\"http://example.com\">example.com</a>"
+      expected: "See <a href=\"http://example.com\">http://example.com</a> example.com"
 
     - description: "Autolink url that includes @-sign and numeric dir under it"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406"
@@ -396,8 +396,12 @@ tests:
       text: "Is www.-foo.com a valid URL?"
       expected: "Is www.-foo.com a valid URL?"
 
-    - description: "Autolink URL should autolink a domain with a valid dash"
+    - description: "Autolink URL should NOT autolink a domain with a valid dash but no protocol"
       text: "Is www.foo-bar.com a valid URL?"
+      expected: "Is www.foo-bar.com a valid URL?"
+
+    - description: "Autolink URL should  autolink a domain with a valid dash and a protocol"
+      text: "Is http://www.foo-bar.com a valid URL?"
       expected: "Is <a href=\"http://www.foo-bar.com\">www.foo-bar.com</a> a valid URL?"
 
     - description: "Autolink URL should link search urls (with &lang=, not &lang;)"
