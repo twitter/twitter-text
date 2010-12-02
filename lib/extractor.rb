@@ -127,15 +127,7 @@ module Twitter
           start_position = valid_url_match_data.char_begin(3)
           end_position = valid_url_match_data.char_end(3)
           urls << {
-            :url => ((protocol =~ Twitter::Regex[:www] || protocol.blank?) ? "http://#{url}" : url),
-            :indices => [start_position, end_position]
-          }
-        elsif all =~ Twitter::Regex[:probable_tld_domain]
-          tld_domain = $2
-          start_position = valid_url_match_data.char_begin(1) + $~.char_begin(2)
-          end_position = valid_url_match_data.char_begin(1) + $~.char_end(2)
-          urls << {
-            :url => "http://#{tld_domain}",
+            :url => url,
             :indices => [start_position, end_position]
           }
         end
