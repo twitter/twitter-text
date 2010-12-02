@@ -4,6 +4,8 @@ package com.twitter;
 import java.util.*;
 import java.util.regex.*;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 /**
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
  */
@@ -87,8 +89,9 @@ public class Autolink {
 
           if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
               matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
+
             // Username only
-            if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER)).matches()) {
+            if (! Regex.SCREEN_NAME_MATCH_END.matcher(text.substring(matcher.end())).find()) {
               replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
                          .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
                          .append("<a")
@@ -97,8 +100,7 @@ public class Autolink {
               if (noFollow) {
                 replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
               }
-              replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>")
-                         .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
+              replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>");
             } else {
               // Not a screen name valid for linking
               replacement.append("$0");
@@ -115,8 +117,7 @@ public class Autolink {
               replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
             }
             replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
-                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>")
-                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AFTER);
+                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>");
           }
 
           // Apply the replacement from above
@@ -161,27 +162,59 @@ public class Autolink {
   public String autoLinkURLs(String text) {
     Matcher matcher = Regex.VALID_URL.matcher(text);
     StringBuffer sb = new StringBuffer(text.length());
+
     while (matcher.find()) {
       StringBuffer replacement = new StringBuffer(text.length());
-      if (matcher.group(Regex.VALID_URL_GROUP_URL).startsWith("http://") ||
-          matcher.group(Regex.VALID_URL_GROUP_URL).startsWith("https://")) {
-        replacement.append("$").append(Regex.VALID_URL_GROUP_BEFORE)
-                   .append("<a href=\"$").append(Regex.VALID_URL_GROUP_URL).append("\"");
+
+      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
+      if (!protocol.isEmpty()) {
+        replacement.append(String.format("$%s", Regex.VALID_URL_GROUP_BEFORE));
+
+        replacement.append("<a href=\"");
+        Matcher matcherWWW = Regex.VALID_WWW.matcher(protocol);
+        if (matcherWWW.find())
+          replacement.append("http://");
+        String url = matcher.group(Regex.VALID_URL_GROUP_URL);
+        String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
+        if (query_string != null)
+            url = url.replace(query_string, StringEscapeUtils.escapeHtml(query_string));
+        replacement.append(url);
+        replacement.append("\"");
+
         if (noFollow) {
           replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
         }
-        replacement.append(">$")
-                   .append(Regex.VALID_URL_GROUP_URL).append("</a>");
-      } else {
-        replacement.append("$").append(Regex.VALID_URL_GROUP_BEFORE)
-                   .append("<a href=\"http://$").append(Regex.VALID_URL_GROUP_URL).append("\"");
-        if (noFollow) {
-          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-        }
-        replacement.append(">$")
-                   .append(Regex.VALID_URL_GROUP_URL).append("</a>");
+
+        replacement.append(String.format(">%s</a>", url));
+
+        matcher.appendReplacement(sb, replacement.toString());
+        continue;
       }
-      matcher.appendReplacement(sb, replacement.toString());
+
+      Matcher matcherProbableTLD = Regex.PROBABLE_TLD_DOMAIN.matcher(matcher.group(Regex.VALID_URL_GROUP_ALL));
+      if(matcherProbableTLD.find()) {
+        String tldDomain = matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_TLD_DOMAIN);
+        String fullURL = String.format("http://%s", StringEscapeUtils.escapeHtml(tldDomain));
+
+        String prefix = matcher.group(Regex.VALID_URL_GROUP_BEFORE);
+        String beforeTLD = matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_BEFORE_TLD);
+        if (!prefix.equals(beforeTLD))
+            prefix += beforeTLD;
+
+        replacement.append(String.format("%s<a href=\"%s\"", prefix, fullURL));
+
+        if (noFollow) {
+          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        }
+
+        replacement.append(String.format(">%s</a>", StringEscapeUtils.escapeHtml(tldDomain)));
+
+        matcher.appendReplacement(sb, replacement.toString());
+        continue;
+      }
+
+      matcher.appendReplacement(sb, String.format("$%s", Regex.VALID_URL_GROUP_ALL));
+
     }
     matcher.appendTail(sb);
     return sb.toString();

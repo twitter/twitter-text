@@ -12,8 +12,8 @@ public class RegexTest extends TestCase {
   }
 
   public void testAutoLinkUsernamesOrLists() {
-    assertCaptureCount(5, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username");
-    assertCaptureCount(5, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username/list");
+    assertCaptureCount(4, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username");
+    assertCaptureCount(4, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username/list");
   }
 
   public void testValidURL() {

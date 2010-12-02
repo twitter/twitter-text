@@ -115,7 +115,29 @@ public class Extractor {
       return null;
     }
 
-    return extractList(Regex.VALID_URL, text, Regex.VALID_URL_GROUP_URL);
+    List<String> urls = new ArrayList<String>();
+
+    Matcher matcher = Regex.VALID_URL.matcher(text);
+    while (matcher.find()) {
+      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
+      if (!protocol.isEmpty()) {
+        Matcher matcherWWW = Regex.VALID_WWW.matcher(protocol);
+        if (matcherWWW.find()) {
+          urls.add(String.format("http://%s", matcher.group(Regex.VALID_URL_GROUP_URL)));
+          continue;
+        }
+
+        urls.add(matcher.group(Regex.VALID_URL_GROUP_URL));
+        continue;
+      }
+
+      Matcher matcherProbableTLD = Regex.PROBABLE_TLD_DOMAIN.matcher(matcher.group(Regex.VALID_URL_GROUP_ALL));
+      if(matcherProbableTLD.find()) {
+        urls.add(String.format("http://%s", matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_TLD_DOMAIN)));
+      }
+    }
+
+    return urls;
   }
 
   /**
