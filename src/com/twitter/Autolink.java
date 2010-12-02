@@ -85,43 +85,45 @@ public class Autolink {
         // Outside of a tag, do real work with this chunk
         matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(chunks[i]);
         while (matcher.find()) {
-          StringBuffer replacement = new StringBuffer();
-
           if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
               matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
 
             // Username only
             if (! Regex.SCREEN_NAME_MATCH_END.matcher(text.substring(matcher.end())).find()) {
-              replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
-                         .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
-                         .append("<a")
-                         .append(" class=\"").append(urlClass).append(" ").append(usernameClass).append("\"")
-                         .append(" href=\"").append(usernameUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("\"");
-              if (noFollow) {
-                replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-              }
-              replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME).append("</a>");
+              matcher.appendReplacement(sb,
+                String.format("$%s$%s<a class=\"%s %s\" href=\"%s$%s\"%s>$%s</a>",
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE,
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT,
+                urlClass,
+                usernameClass,
+                usernameUrlBase,
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME,
+                noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME
+                ));
+              continue;
             } else {
               // Not a screen name valid for linking
-              replacement.append("$0");
+              matcher.appendReplacement(sb, "$0");
+              continue;
             }
           } else {
             // Username and list
-            replacement.append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE)
-                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT)
-                       .append("<a")
-                       .append(" class=\"").append(urlClass).append(" ").append(listClass).append("\"")
-                       .append(" href=\"").append(listUrlBase).append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
-                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("\"");
-            if (noFollow) {
-              replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-            }
-            replacement.append(">$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME)
-                       .append("$").append(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).append("</a>");
+            matcher.appendReplacement(sb,
+              String.format("$%s$%s<a class=\"%s %s\" href=\"%s$%s$%s\"%s>$%s$%s</a>",
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE,
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT,
+                urlClass,
+                listClass,
+                listUrlBase,
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME,
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST,
+                noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME,
+                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST
+              ));
+            continue;
           }
-
-          // Apply the replacement from above
-          matcher.appendReplacement(sb, replacement.toString());
         }
 
         matcher.appendTail(sb);
@@ -164,52 +166,44 @@ public class Autolink {
     StringBuffer sb = new StringBuffer(text.length());
 
     while (matcher.find()) {
-      StringBuffer replacement = new StringBuffer(text.length());
-
       String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
       if (!protocol.isEmpty()) {
-        replacement.append(String.format("$%s", Regex.VALID_URL_GROUP_BEFORE));
-
-        replacement.append("<a href=\"");
-        Matcher matcherWWW = Regex.VALID_WWW.matcher(protocol);
-        if (matcherWWW.find())
-          replacement.append("http://");
+        // query string needs to be html escaped
         String url = matcher.group(Regex.VALID_URL_GROUP_URL);
         String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
         if (query_string != null)
             url = url.replace(query_string, StringEscapeUtils.escapeHtml(query_string));
-        replacement.append(url);
-        replacement.append("\"");
 
-        if (noFollow) {
-          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-        }
-
-        replacement.append(String.format(">%s</a>", url));
-
-        matcher.appendReplacement(sb, replacement.toString());
+        matcher.appendReplacement(sb,
+          String.format("$%s<a href=\"%s%s\"%s>%s</a>",
+            Regex.VALID_URL_GROUP_BEFORE,
+            // if missing protocl (i.e. www), then needs "http://"
+            Regex.VALID_WWW.matcher(protocol).find() ? "http://" : "",
+            url,
+            noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
+            url
+          ));
         continue;
       }
 
-      Matcher matcherProbableTLD = Regex.PROBABLE_TLD_DOMAIN.matcher(matcher.group(Regex.VALID_URL_GROUP_ALL));
+      Matcher matcherProbableTLD = Regex.PROBABLE_TLD_DOMAIN.matcher(
+        matcher.group(Regex.VALID_URL_GROUP_ALL));
       if(matcherProbableTLD.find()) {
-        String tldDomain = matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_TLD_DOMAIN);
-        String fullURL = String.format("http://%s", StringEscapeUtils.escapeHtml(tldDomain));
-
+        // construct prefix
         String prefix = matcher.group(Regex.VALID_URL_GROUP_BEFORE);
         String beforeTLD = matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_BEFORE_TLD);
         if (!prefix.equals(beforeTLD))
             prefix += beforeTLD;
 
-        replacement.append(String.format("%s<a href=\"%s\"", prefix, fullURL));
+        String tldDomain = matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_TLD_DOMAIN);
 
-        if (noFollow) {
-          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-        }
-
-        replacement.append(String.format(">%s</a>", StringEscapeUtils.escapeHtml(tldDomain)));
-
-        matcher.appendReplacement(sb, replacement.toString());
+        matcher.appendReplacement(sb,
+          String.format("%s<a href=\"http://%s\"%s>%s</a>",
+            prefix,
+            tldDomain,
+            noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
+            tldDomain
+          ));
         continue;
       }
 
