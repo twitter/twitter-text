@@ -196,10 +196,6 @@ tests:
       text: "いまなにしてるhttp://example.comいまなにしてる"
       expected: "いまなにしてる<a href=\"http://example.com\">http://example.com</a>いまなにしてる"
 
-    - description: "Autolink URL without protocol in Japanese text"
-      text: "ABCあああDEF.com"
-      expected: "ABCあああ<a href=\"http://DEF.com\">DEF.com</a>"
-
     - description: "Autolink url surrounded by parentheses does not capture them"
       text: "text (http://example.com)"
       expected: "text (<a href=\"http://example.com\">http://example.com</a>)"
@@ -322,7 +318,7 @@ tests:
 
     - description: "Autolink url containing ending with #value (not as url + hashtag)"
       text: "http://foo.com/?#foo"
-      expected: "http://foo.com/?#foo"
+      expected: "<a href=\"http://foo.com/?#foo\">http://foo.com/?#foo</a>"
 
     - description: "DO NOT Autolink url without protocol (with www)"
       text: "www.example.biz"
@@ -402,7 +398,7 @@ tests:
 
     - description: "Autolink URL should  autolink a domain with a valid dash and a protocol"
       text: "Is http://www.foo-bar.com a valid URL?"
-      expected: "Is <a href=\"http://www.foo-bar.com\">www.foo-bar.com</a> a valid URL?"
+      expected: "Is <a href=\"http://www.foo-bar.com\">http://www.foo-bar.com</a> a valid URL?"
 
     - description: "Autolink URL should link search urls (with &lang=, not &lang;)"
       text: "Check out http://search.twitter.com/search?q=avro&lang=en"

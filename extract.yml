@@ -206,13 +206,13 @@ tests:
       text: "text http://foo.com?#foo text"
       expected: ["http://foo.com?#foo"]
 
-    - description: "Extract URLs without protocol on (com|org|edu|gov|net) domains"
+    - description: "SHOULD NOT Extract URLs without protocol on (com|org|edu|gov|net) domains"
       text: "foo.com foo.net foo.org foo.edu foo.gov"
-      expected: ["http://foo.com", "http://foo.net", "http://foo.org", "http://foo.edu", "http://foo.gov"]
+      expected: []
 
-    - description: "DO NOT extract URLs withour protocol not on (com|org|edu|gov|net) domains, unless preceded by www."
+    - description: "DO NOT extract URLs withour protocol not on (com|org|edu|gov|net) domains, even when preceded by www."
       text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu"
-      expected: ["http://www.foo.bar", "http://www.foo.co.uk"]
+      expected: []
 
   urls_with_indices:
     - description: "Extract a URL"
