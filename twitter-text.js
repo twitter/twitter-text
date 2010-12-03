@@ -102,11 +102,6 @@ if (!window.twttr) {
   twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"':!=A-Za-z0-9_@＠]|^|\:)/);
   twttr.txt.regexen.validDomain = regexSupplant(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
 
-  // For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs
-  twttr.txt.regexen.probableTld = /^(.*?)((?:[a-z0-9_\.\-]+)\.(?:com|net|org|gov|edu))$/i;
-
-  twttr.txt.regexen.www = /www\./i;
-
   twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i;
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
@@ -124,7 +119,7 @@ if (!window.twttr) {
     '('                                                            + // $1 total match
       '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
       '('                                                          + // $3 URL
-        '((?:https?:\\/\\/|www\\.)?)'                              + // $4 Protocol or beginning
+        '(https?:\\/\\/)'                                          + // $4 Protocol
         '(#{validDomain})'                                         + // $5 Domain(s) and optional post number
         '(\\/'                                                     + // $6 URL Path
            '(?:'                                                   +
@@ -286,44 +281,14 @@ if (!window.twttr) {
           htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
         }
         options.htmlAttrs || "";
-        var fullUrl = ((!protocol || protocol.match(twttr.txt.regexen.www)) ? stringSupplant("http://#{url}", {url: url}) : url);
 
         var d = {
           before: before,
-          fullUrl: twttr.txt.htmlEscape(fullUrl),
           htmlAttrs: htmlAttrs,
           url: twttr.txt.htmlEscape(url)
         };
 
-        return stringSupplant("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
-      } else if (tldComponents = all.match(twttr.txt.regexen.probableTld)) {
-        var tldBefore = tldComponents[1];
-        var tldUrl = tldComponents[2];
-        var htmlAttrs = "";
-        for (var k in options) {
-          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {
-            k: k,
-            v: twttr.txt.htmlEscape(options[k].toString())
-          });
-        }
-        options.htmlAttrs || "";
-
-        var fullUrl = stringSupplant("http://#{url}", {
-          url: tldUrl
-        });
-        var prefix = (tldBefore == before ? before : stringSupplant("#{before}#{tldBefore}", {
-          before: before,
-          tldBefore: tldBefore
-        }));
-
-        var d = {
-          before: prefix,
-          fullUrl: twttr.txt.htmlEscape(fullUrl),
-          htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(tldUrl)
-        };
-
-        return stringSupplant("#{before}<a href=\"#{fullUrl}\"#{htmlAttrs}>#{url}</a>", d);
+        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{url}</a>", d);
       } else {
         return all;
       }
@@ -404,20 +369,7 @@ if (!window.twttr) {
             position = startPosition + url.length;
 
         urls.push({
-          url: ((!protocol || protocol.match(twttr.txt.regexen.www)) ? stringSupplant("http://#{url}", {
-            url: url
-          }) : url),
-          indices: [startPosition, position]
-        });
-      } else if (tldComponents = all.match(twttr.txt.regexen.probableTld)) {
-        var tldUrl = tldComponents[2];
-        var startPosition = text.indexOf(tldUrl, position),
-            position = startPosition + tldUrl.length;
-
-        urls.push({
-          url: stringSupplant("http://#{tldUrl}", {
-            tldUrl: tldUrl
-          }),
+          url: url,
           indices: [startPosition, position]
         });
       }
