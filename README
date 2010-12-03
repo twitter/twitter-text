@@ -1,13 +1,14 @@
 
 == Purpose
 
-This conformance package provides a cross-platform definition of the test cases for auto linking, extracting and hit highlighting
-of Tweets. The primary use for this is the twitter-text-* libraries; both those managed by Twitter and those created
+This conformance package provides a cross-platform definition of the test cases for auto linking, extracting and hit
+highlighting of Tweets. The primary use for this is the twitter-text-* libraries; both those managed by Twitter and
+those created
 by the community.
 
 The reason for this conformance suite is to provide a way to keep the various implementations of Twitter text handling
-working in a consistent and interoperable way. While anyone can feel free to implement this logic however they choose the
-recommendation to developers is to use libraries which pass this conformance suite.
+working in a consistent and interoperable way. While anyone can feel free to implement this logic however they choose
+the recommendation to developers is to use libraries which pass this conformance suite.
 
 == Format
 
