@@ -175,34 +175,11 @@ public class Autolink {
             url = url.replace(query_string, StringEscapeUtils.escapeHtml(query_string));
 
         matcher.appendReplacement(sb,
-          String.format("$%s<a href=\"%s%s\"%s>%s</a>",
+          String.format("$%s<a href=\"%s\"%s>%s</a>",
             Regex.VALID_URL_GROUP_BEFORE,
-            // if missing protocl (i.e. www), then needs "http://"
-            Regex.VALID_WWW.matcher(protocol).find() ? "http://" : "",
             url,
             noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
             url
-          ));
-        continue;
-      }
-
-      Matcher matcherProbableTLD = Regex.PROBABLE_TLD_DOMAIN.matcher(
-        matcher.group(Regex.VALID_URL_GROUP_ALL));
-      if(matcherProbableTLD.find()) {
-        // construct prefix
-        String prefix = matcher.group(Regex.VALID_URL_GROUP_BEFORE);
-        String beforeTLD = matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_BEFORE_TLD);
-        if (!prefix.equals(beforeTLD))
-            prefix += beforeTLD;
-
-        String tldDomain = matcherProbableTLD.group(Regex.PROBABLE_TLD_DOMAIN_GROUP_TLD_DOMAIN);
-
-        matcher.appendReplacement(sb,
-          String.format("%s<a href=\"http://%s\"%s>%s</a>",
-            prefix,
-            tldDomain,
-            noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
-            tldDomain
           ));
         continue;
       }

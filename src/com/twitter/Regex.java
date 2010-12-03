@@ -16,11 +16,6 @@ public class Regex {
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"':!=A-Z0-9_@＠]+|^|\\:)";
   private static final String URL_VALID_DOMAIN = "(?:[^\\p{Punct}\\s][\\.-](?=[^\\p{Punct}\\s])|[^\\p{Punct}\\s]){1,}\\.[a-z]{2,}(?::[0-9]+)?";
 
-  /* For protocol-less URLs, we'll accept them if they end in one of a handful of likely TLDs */
-  private static final String PROBABLE_TLD_DOMAIN_PATTERN_STRING = "^(.*?)((?:[a-z0-9_\\.\\-]+)\\.(?:com|net|org|gov|edu))$";
-
-  private static final String VALID_WWW_PATTERN_STRING = "www\\.";
-
   private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~]";
   /** Allow URL paths to contain balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
@@ -43,7 +38,7 @@ public class Regex {
   "(" +                                                            //  $1 total match
     "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceeding chracter
     "(" +                                                          //  $3 URL
-      "((?:https?://|www\\.)?)" +                                  //  $4 Protocol or beginning
+      "(https?://)" +                                              //  $4 Protocol
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s) and optional port number
       "(/" +
         "(?:" +
@@ -88,13 +83,6 @@ public class Regex {
   public static final int VALID_URL_GROUP_DOMAIN       = 5;
   public static final int VALID_URL_GROUP_PATH         = 6;
   public static final int VALID_URL_GROUP_QUERY_STRING = 7;
-
-  public static final Pattern PROBABLE_TLD_DOMAIN = Pattern.compile(PROBABLE_TLD_DOMAIN_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
-  public static final int PROBABLE_TLD_DOMAIN_GROUP_BEFORE_TLD = 1;
-  public static final int PROBABLE_TLD_DOMAIN_GROUP_TLD_DOMAIN = 2;
-
-  public static final Pattern VALID_WWW = Pattern.compile(VALID_WWW_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
-
 
   public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})(?=(.|$))", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;
