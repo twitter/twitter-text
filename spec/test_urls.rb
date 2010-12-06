@@ -13,8 +13,6 @@ module TestUrls
     "http://en.wikipedia.org/wiki/Primer_(film)",
     "http://www.ams.org/bookstore-getitem/item=mbk-59",
     "http://chilp.it/?77e8fd",
-    "www.foobar.com",
-    "WWW.FOOBAR.COM",
     "http://tell.me/why",
     "http://longtlds.info",
     "http://✪df.ws/ejp",
@@ -29,6 +27,8 @@ module TestUrls
   INVALID = [
     "http://no-tld",
     "http://tld-too-short.x",
+    "www.foobar.com",
+    "WWW.FOOBAR.COM",
     "http://-doman_dash.com"
   ] unless defined?(TestUrls::INVALID)
 

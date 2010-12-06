@@ -467,10 +467,9 @@ describe Twitter::Autolink do
       context "with a url lacking the protocol" do
         def original_text; "I like www.foobar.com dudes"; end
 
-        it "links to the original text with the full href" do
+        it "does not link at all" do
           link = Nokogiri::HTML(@autolinked_text).search('a')
-          link.inner_text.should == 'www.foobar.com'
-          link.first['href'].should == 'http://www.foobar.com'
+          link.should be_empty
         end
       end
 
