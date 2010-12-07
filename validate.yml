@@ -1,0 +1,54 @@
+
+tests:
+  tweets:
+    - description: "Valid Tweet: < 20 characters"
+      text: "I am a Tweet"
+      expected: true
+
+  usernames:
+    - description: "Valid username: a-z < 20 characters"
+      text: "@username"
+      expected: true
+
+    - description: "All numeric username are allowed"
+      text: "@12345"
+      expected: true
+
+    - description: "Usernames should allow the _ character"
+      text: "@example_name"
+      expected: true
+
+    - description: "Usernames SHOULD NOT allow the - character"
+      text: "@example-name"
+      expected: false
+
+  lists:
+    - description: "Valid list: a-z < 20 characters"
+      text: "@username/list"
+      expected: true
+
+    - description: "A username alone SHOULD NOT be considered a valid list"
+      text: "@username"
+      expected: false
+
+    - description: "A username followed by a slash SHOULD NOT be considered a valid list"
+      text: "@username/"
+      expected: false
+
+    - description: "Validation SHOULD NOT allow leading spaces"
+      text: " @username/list"
+      expected: false
+
+    - description: "Validation SHOULD NOT allow trailing spaces"
+      text: "@username/list "
+      expected: false
+      
+  hashtags:
+    - description: "Valid hashtag: a-z < 20 characters"
+      text: "#hashtag"
+      expected: true
+
+  urls:
+    - description: "Valid url: protocol + domain"
+      text: "http://example.com"
+      expected: true
