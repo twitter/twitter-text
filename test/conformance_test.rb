@@ -7,6 +7,7 @@ class ConformanceTest < Test::Unit::TestCase
   include Twitter::Extractor
   include Twitter::Autolink
   include Twitter::HitHighlighter
+  include Twitter::Validation
 
   def setup
     @conformance_dir = ENV['CONFORMANCE_DIR'] || File.join(File.dirname(__FILE__), 'twitter-text-conformance')
@@ -108,6 +109,39 @@ class ConformanceTest < Test::Unit::TestCase
     end
   end
   include HitHighlighterConformance
+
+  module ValidationConformance
+    def test_tweet_validation_conformance
+      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :tweets) do |description, expected, input|
+        assert_equal expected, valid_tweet?(input), description
+      end
+    end
+
+    def test_users_validation_conformance
+      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :usernames) do |description, expected, input|
+        assert_equal expected, valid_username?(input), description
+      end
+    end
+
+    def test_lists_validation_conformance
+      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :lists) do |description, expected, input|
+        assert_equal expected, valid_list?(input), description
+      end
+    end
+
+    def test_urls_validation_conformance
+      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :urls) do |description, expected, input|
+        assert_equal expected, valid_url?(input), description
+      end
+    end
+
+    def test_hashtags_validation_conformance
+      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :hashtags) do |description, expected, input|
+        assert_equal expected, valid_hashtag?(input), description
+      end
+    end
+  end
+  include ValidationConformance
 
   private
 
