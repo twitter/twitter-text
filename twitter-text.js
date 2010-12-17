@@ -503,6 +503,9 @@ if (!window.twttr) {
         } else {
           startInChunk = false;
         }
+      } else if(!placed) {
+        placed = true;
+        result += tag;
       }
     }
 
