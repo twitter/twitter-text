@@ -12,9 +12,11 @@ module Twitter
     DEFAULT_USERNAME_CLASS = "username"
     # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag"
+    # Default target for auto-linked urls
+    DEFAULT_TARGET = "tweet-window"    
     # HTML attribute for robot nofollow behavior (default)
     HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
-
+    
     HTML_ENTITIES = {
       '&' => '&amp;',
       '>' => '&gt;',
@@ -42,6 +44,7 @@ module Twitter
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
     def auto_link(text, options = {})
       auto_link_usernames_or_lists(
         auto_link_urls_custom(
@@ -61,6 +64,7 @@ module Twitter
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items    
     def auto_link_usernames_or_lists(text, options = {}) # :yields: list_or_username
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
@@ -68,8 +72,9 @@ module Twitter
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
       options[:username_url_base] ||= "http://twitter.com/"
       options[:list_url_base] ||= "http://twitter.com/"
+      options[:target] ||= DEFAULT_TARGET
+      
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
-
       new_text = ""
 
       # this -1 flag allows strings ending in ">" to work
@@ -96,7 +101,7 @@ module Twitter
                 # this is a screen name
                 chunk = user
                 chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>"
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" target=\"#{options[:target]}\" href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>"
               end
             end
           end
@@ -113,11 +118,13 @@ module Twitter
     # <tt>:hashtag_class</tt>:: class to add to hashtag <tt><a></tt> tags
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items    
     def auto_link_hashtags(text, options = {})  # :yields: hashtag_text
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
       options[:hashtag_url_base] ||= "http://twitter.com/search?q=%23"
+      options[:target] ||= DEFAULT_TARGET
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
       text.gsub(Twitter::Regex[:auto_link_hashtags]) do
@@ -125,7 +132,7 @@ module Twitter
         hash = $2
         text = $3
         text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
+        "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" target=\"#{options[:target]}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
       end
     end
 
@@ -136,6 +143,7 @@ module Twitter
     def auto_link_urls_custom(text, href_options = {})
       options = href_options.dup
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
+      options[:target] = "_blank" if options.delete(:open_url_in_new_window)
 
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
