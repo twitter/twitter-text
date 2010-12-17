@@ -13,7 +13,7 @@ module Twitter
     # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag"
     # Default target for auto-linked urls
-    DEFAULT_TARGET = "tweet-window"    
+    DEFAULT_TARGET = "_self"    
     # HTML attribute for robot nofollow behavior (default)
     HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
     
@@ -143,7 +143,6 @@ module Twitter
     def auto_link_urls_custom(text, href_options = {})
       options = href_options.dup
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
-      options[:target] = "_blank" if options.delete(:open_url_in_new_window)
 
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
