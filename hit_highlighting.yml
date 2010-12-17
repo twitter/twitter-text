@@ -66,3 +66,8 @@ tests:
       text: "foo bar <a>baz</a>"
       hits: [ [4, 7], [8, 11] ]
       expected: "foo <em>bar</em> <a><em>baz</em></a>"
+
+    - description: "Highlight mention at end"
+      text: "something via @<a href=\"http://twitter.com/twitter\">twitter</a>"
+      hits: [ [14, 22] ]
+      expected: "something via <em>@<a href=\"http://twitter.com/twitter\">twitter</a></em>"
