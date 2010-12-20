@@ -12,8 +12,8 @@ module Twitter
     DEFAULT_USERNAME_CLASS = "username"
     # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag"
-    # Default target for auto-linked urls
-    DEFAULT_TARGET = "_self"
+    # Default target for auto-linked urls (nil will not add a target attribute)
+    DEFAULT_TARGET = nil
     # HTML attribute for robot nofollow behavior (default)
     HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
 
@@ -92,7 +92,7 @@ module Twitter
               # the link is a list
               chunk = list = "#{user}#{slash_listname}"
               chunk = yield(list) if block_given?
-              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" href=\"#{html_escape(options[:list_url_base])}#{html_escape(list.downcase)}\"#{extra_html}>#{html_escape(chunk)}</a>"
+              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:list_url_base])}#{html_escape(list.downcase)}\"#{extra_html}>#{html_escape(chunk)}</a>"
             else
               if after =~ Twitter::Regex[:end_screen_name_match]
                 # Followed by something that means we don't autolink
@@ -101,7 +101,7 @@ module Twitter
                 # this is a screen name
                 chunk = user
                 chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" target=\"#{options[:target]}\" href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>"
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>"
               end
             end
           end
@@ -132,7 +132,7 @@ module Twitter
         hash = $2
         text = $3
         text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" target=\"#{options[:target]}\" class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
+        "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" #{target_tag(options)}class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
       end
     end
 
@@ -152,6 +152,17 @@ module Twitter
         else
           all
         end
+      end
+    end
+
+    private
+
+    def target_tag(options)
+      target_option = options[:target]
+      if target_option.blank?
+        ""
+      else
+        "target=\"#{html_escape(target_option)}\""
       end
     end
 
