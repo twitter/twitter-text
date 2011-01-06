@@ -130,7 +130,7 @@ if (!window.twttr) {
 
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
-  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/(?:[a-z0-9=_#\/]|#{wikipediaDisambiguation})/i);
+  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/(?:[\+\-a-z0-9=_#\/]|#{wikipediaDisambiguation})/i);
   twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.validUrl = regexSupplant(
