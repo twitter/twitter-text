@@ -218,7 +218,7 @@ tests:
       text: "Go to http://example.com/a+ or http://example.com/a-"
       expected: ["http://example.com/a+", "http://example.com/a-"]
 
-    - description: "Autolink URL should autolink URLs with longer paths ending in -"
+    - description: "Extract URLs with longer paths ending in -"
       text: "Go to http://example.com/view/slug-url-?foo=bar"
       expected: ["http://example.com/view/slug-url-?foo=bar"]
 
