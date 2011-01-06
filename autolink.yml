@@ -416,6 +416,14 @@ tests:
       text: "Go to http://example.com/a+ or http://example.com/a-"
       expected: "Go to <a href=\"http://example.com/a+\">http://example.com/a+</a> or <a href=\"http://example.com/a-\">http://example.com/a-</a>"
 
+    - description: "Autolink URL should autolink a URL with a - or + at the end of the path and query parameters"
+      text: "Go to http://example.com/a+?this=that or http://example.com/a-?this=that"
+      expected: "Go to <a href=\"http://example.com/a+?this=that\">http://example.com/a+?this=that</a> or <a href=\"http://example.com/a-?this=that\">http://example.com/a-?this=that</a>"
+
+    - description: "Autolink URL should autolink URLs with longer paths ending in -"
+      text: "Go to http://example.com/view/slug-url-?foo=bar"
+      expected: "Go to <a href=\"http://example.com/view/slug-url-?foo=bar\">http://example.com/view/slug-url-?foo=bar</a>"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
