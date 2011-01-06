@@ -214,6 +214,10 @@ tests:
       text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu"
       expected: []
 
+    - description: "Extract URLs with a - or + at the end of the path"
+      text: "Go to http://example.com/a+ or http://example.com/a-"
+      expected: ["http://example.com/a+", "http://example.com/a-"]
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
