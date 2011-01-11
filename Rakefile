@@ -39,7 +39,7 @@ namespace :test do
 
     desc "Run conformance test suite"
     task :run do
-      ruby "test/conformance_test.rb"
+      ruby "-rubygems test/conformance_test.rb"
     end
   end
 
