@@ -186,7 +186,7 @@ tests:
   urls:
     - description: "Autolink URL with pipe character"
       text: "text http://example.com/pipe|character?yes|pipe|character"
-      expected: "text <a href=\"http://example.com/pipe|character?yes|pipe|character\">http://example.com/pipe|character?yes|pipe|character</
+      expected: "text <a href=\"http://example.com/pipe|character?yes|pipe|character\">http://example.com/pipe|character?yes|pipe|character</a>"
 
     - description: "Autolink trailing url"
       text: "text http://example.com"
