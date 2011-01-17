@@ -517,6 +517,38 @@ describe Twitter::Autolink do
 
   end
 
+  describe "autolinking options" do
+    it "should apply :url_class as a CSS class" do
+      linked = TestAutolink.new.auto_link("http://example.com/", :url_class => 'myclass')
+      linked.should have_autolinked_url('http://example.com/')
+      linked.should match(/myclass/)
+    end
+
+    it "should add rel=nofollow by default" do
+      linked = TestAutolink.new.auto_link("http://example.com/")
+      linked.should have_autolinked_url('http://example.com/')
+      linked.should match(/nofollow/)
+    end
+
+    it "should not add rel=nofollow when passed :suppress_no_follow" do
+      linked = TestAutolink.new.auto_link("http://example.com/", :suppress_no_follow => true)
+      linked.should have_autolinked_url('http://example.com/')
+      linked.should_not match(/nofollow/)
+    end
+
+    it "should not add a target attribute by default" do
+      linked = TestAutolink.new.auto_link("http://example.com/")
+      linked.should have_autolinked_url('http://example.com/')
+      linked.should_not match(/target=/)
+    end
+
+    it "should respect the :target option" do
+      linked = TestAutolink.new.auto_link("http://example.com/", :target => 'mywindow')
+      linked.should have_autolinked_url('http://example.com/')
+      linked.should match(/target="mywindow"/)
+    end
+  end
+
   describe "html_escape" do
     before do
       @linker = TestAutolink.new
