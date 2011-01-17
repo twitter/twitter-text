@@ -49,7 +49,7 @@ module Twitter
       auto_link_usernames_or_lists(
         auto_link_urls_custom(
           auto_link_hashtags(text, options),
-        options),
+        options), # FIXME It can expose internal options
       options)
     end
 
@@ -147,7 +147,7 @@ module Twitter
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
         if !protocol.blank?
-          html_attrs = tag_options(options.stringify_keys) || ""
+          html_attrs = tag_options(options.stringify_keys) || "" # FIXME It can expose internal options.
           "#{before}<a href=\"#{html_escape(url)}\"#{html_attrs}>#{html_escape(url)}</a>"
         else
           all
