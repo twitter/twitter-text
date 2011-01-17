@@ -547,6 +547,26 @@ describe Twitter::Autolink do
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/target="mywindow"/)
     end
+
+    it "should customize href by username_url_block option" do
+      linked = TestAutolink.new.auto_link("@test", :username_url_block => lambda{|a| "dummy"})
+      linked.should have_autolinked_url('dummy', 'test')
+    end
+
+    it "should customize href by list_url_block option" do
+      linked = TestAutolink.new.auto_link("@test/list", :list_url_block => lambda{|a| "dummy"})
+      linked.should have_autolinked_url('dummy', 'test/list')
+    end
+
+    it "should customize href by hashtag_url_block option" do
+      linked = TestAutolink.new.auto_link("#hashtag", :hashtag_url_block => lambda{|a| "dummy"})
+      linked.should have_autolinked_url('dummy', '#hashtag')
+    end
+
+    it "should customize href by link_url_block option" do
+      linked = TestAutolink.new.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
+      linked.should have_autolinked_url('dummy', 'http://example.com/')
+    end
   end
 
   describe "html_escape" do
