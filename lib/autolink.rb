@@ -101,7 +101,7 @@ module Twitter
                 # this is a screen name
                 chunk = user
                 chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>"
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>#{slash_listname}"
               end
             end
           end

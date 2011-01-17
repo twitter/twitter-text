@@ -108,6 +108,7 @@ describe Twitter::Autolink do
         it "should not be linked" do
           @autolinked_text = TestAutolink.new.auto_link_usernames_or_lists("hello @jacob/my-list", :suppress_lists => true)
           @autolinked_text.should_not link_to_list_path('jacob/my-list')
+          @autolinked_text.should include('my-list')
         end
       end
 
