@@ -38,3 +38,19 @@ If you are creating a new twitter-text library in a different programming langua
 
  * You can open an issue on github.com at https://github.com/twitter/twitter-text-conformance/issues
    * Please be sure to provide example input and output as well as a brief description of the problem.
+
+== Changelog
+
+  * v1.3.1 - 2010-12-03 - [ Git tag v1.3.1 ]
+    * [DOC] Updated README with Changelog section
+    * [FIX] Autolink URLs with paths ending in + and -
+    * [FIX] Extract URLs with paths ending in + and -
+
+  * v1.3.0 - 2010-12-03 - [ Git tag v1.3.0 ]
+    * [NOTE] First tagged version (sorry)
+    * [DOC] Updated README file with guidelines for use and format information
+    * [FIX] Do not autolink URLs without protocols
+    * [FIX] Do not extract URLs without protocols
+
+  * v1.0.0 - 2010-01-21 - [ Git tag v1.0.0 (retroactively) ]
+    * Initial version
