@@ -47,7 +47,7 @@ module Twitter
       return false
     end
 
-    def valid_tweet?(text)
+    def valid_tweet_text?(text)
       !tweet_invalid?(text)
     end
 
@@ -56,14 +56,14 @@ module Twitter
 
       extracted = Twitter::Extractor.extract_mentioned_screen_names(username)
       # Should extract the username minus the @ sign, hence the [1..-1]
-      return (extracted.size == 1 && extracted.first == username[1..-1])
+      extracted.size == 1 && extracted.first == username[1..-1]
     end
 
     VALID_LIST_RE = /\A#{Twitter::Regex[:auto_link_usernames_or_lists]}\z/o
     def valid_list?(username_list)
       match = username_list.match(VALID_LIST_RE)
       # Must have matched and had nothing before or after
-      return !!(match && match[1] == "" && !match[4].blank?)
+      !!(match && match[1] == "" && !match[4].blank?)
     end
 
     def valid_hashtag?(hashtag)
@@ -71,14 +71,14 @@ module Twitter
 
       extracted = Twitter::Extractor.extract_hashtags(hashtag)
       # Should extract the hashtag minus the # sign, hence the [1..-1]
-      return (extracted.size == 1 && extracted.first == hashtag[1..-1])
+      extracted.size == 1 && extracted.first == hashtag[1..-1]
     end
 
     def valid_url?(url)
       return false if url.blank?
 
       extracted = Twitter::Extractor.extract_urls(url)
-      return (extracted.size == 1 && extracted.first == url)
+      extracted.size == 1 && extracted.first == url
     end
 
   end
