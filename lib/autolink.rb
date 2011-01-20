@@ -116,7 +116,7 @@ module Twitter
                 else
                   "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
                 end
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{href}\"#{extra_html}>#{html_escape(chunk)}</a>"
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{href}\"#{extra_html}>#{html_escape(chunk)}</a>#{slash_listname}"
               end
             end
           end
