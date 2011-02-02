@@ -121,6 +121,10 @@ tests:
       text: "http://☃.net/"
       expected: false
 
+    - description: "Invalid url: improperly encoded unicode domain"
+      text: "http://%e2%98%83.net/"
+      expected: false
+
     - description: "Invalid url: invalid char in path"
       text: "http://en.wikipedia.org/wiki/\"#Punctuation"
       expected: false
