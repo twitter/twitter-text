@@ -88,3 +88,43 @@ tests:
     - description: "Valid url: protocol + domain"
       text: "http://example.com"
       expected: true
+
+    - description: "Valid url: ssl + domain + path + query"
+      text: "https://example.com/path/to/resource?search=foo&lang=en"
+      expected: true
+
+    - description: "Valid url: protocol + domain + path + fragment"
+      text: "http://twitter.com/#!/twitter"
+      expected: true
+
+    - description: "Valid url: cased protocol and domain"
+      text: "HTTPS://www.ExaMPLE.COM/index.html"
+      expected: true
+
+    - description: "Valid url: port and userinfo"
+      text: "http://user:PASSW0RD@example.com:8080/login.php"
+      expected: true
+
+    - description: "Valid url: matrix path parameters"
+      text: "http://sports.yahoo.com/nfl/news;_ylt=Aom0;ylu=XyZ?slug=ap-superbowlnotebook"
+      expected: true
+
+    - description: "Invalid url: invalid domain underscore"
+      text: "http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
+      expected: false
+
+    - description: "Invalid url: invalid domain beginning dash"
+      text: "http://www.-domain4352.com/"
+      expected: false
+
+    - description: "Invalid url: unencoded unicode domain"
+      text: "http://☃.net/"
+      expected: false
+
+    - description: "Invalid url: invalid char in path"
+      text: "http://en.wikipedia.org/wiki/\"#Punctuation"
+      expected: false
+
+    - description: "Invalid url: trailing space"
+      text: "http://example.com/#anchor "
+      expected: false
