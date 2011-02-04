@@ -115,7 +115,7 @@ module Twitter
       /(?:#{REGEXEN[:validate_url_dec_octet]}(?:\.#{REGEXEN[:validate_url_dec_octet]}){3})/iox
 
     # Punting on real IPv6 validation for now
-    REGEXEN[:validate_url_ipv6] = /(?:\[[a-f0-9:\.]\])/i
+    REGEXEN[:validate_url_ipv6] = /(?:\[[a-f0-9:\.]+\])/i
 
     # Also punting on IPvFuture for now
     REGEXEN[:validate_url_ip] = /(?:
@@ -125,17 +125,22 @@ module Twitter
 
     # This is more strict than the rfc specifies
     REGEXEN[:validate_url_domain_segment] = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i
-    REGEXEN[:validate_url_domain] = /(?:#{REGEXEN[:validate_url_domain_segment]}\.?)+/iox
+    REGEXEN[:validate_url_domain_tld] = /(?:[a-z](?:[a-z0-9\-]*[a-z0-9])?)/i
+    REGEXEN[:validate_url_domain] = /(?:(?:#{REGEXEN[:validate_url_domain_segment]}\.)+
+                                     #{REGEXEN[:validate_url_domain_tld]})/iox
 
     REGEXEN[:validate_url_host] = /(?:
       #{REGEXEN[:validate_url_ip]}|
       #{REGEXEN[:validate_url_domain]}
     )/iox
 
-    # Unencoded internationalized domains - this doesn't check for invalid UTF sequences
+    # Unencoded internationalized domains - this doesn't check for invalid UTF-8 sequences
     REGEXEN[:validate_url_unicode_domain_segment] =
       /(?:(?:[a-z0-9]|[^\x00-\x7f])(?:(?:[a-z0-9\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/ix
-    REGEXEN[:validate_url_unicode_domain] = /(?:#{REGEXEN[:validate_url_unicode_domain_segment]}\.?)+/iox
+    REGEXEN[:validate_url_unicode_domain_tld] =
+      /(?:(?:[a-z]|[^\x00-\x7f])(?:(?:[a-z0-9\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/ix
+    REGEXEN[:validate_url_unicode_domain] = /(?:(?:#{REGEXEN[:validate_url_unicode_domain_segment]}\.)+
+                                             #{REGEXEN[:validate_url_unicode_domain_tld]})/iox
 
     REGEXEN[:validate_url_unicode_host] = /(?:
       #{REGEXEN[:validate_url_ip]}|
@@ -144,9 +149,15 @@ module Twitter
 
     REGEXEN[:validate_url_port] = /[0-9]{1,5}/
 
+    REGEXEN[:validate_url_unicode_authority] = %r{
+      (?:(#{REGEXEN[:validate_url_userinfo]})@)?     #  $1 userinfo
+      (#{REGEXEN[:validate_url_unicode_host]})       #  $2 host
+      (?::(#{REGEXEN[:validate_url_port]}))?         #  $3 port
+    }iox
+
     REGEXEN[:validate_url_authority] = %r{
       (?:(#{REGEXEN[:validate_url_userinfo]})@)?     #  $1 userinfo
-      ([^/?#:]+)                                     #  $2 host
+      (#{REGEXEN[:validate_url_host]})               #  $2 host
       (?::(#{REGEXEN[:validate_url_port]}))?         #  $3 port
     }iox
 

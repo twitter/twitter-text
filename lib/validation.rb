@@ -81,19 +81,22 @@ module Twitter
       return false unless (url_parts && url_parts.to_s == url)
 
       scheme, authority, path, query, fragment = url_parts.captures
-      return false unless (scheme && scheme.match(Twitter::Regex[:validate_url_scheme]) && scheme.match(/\Ahttps?\Z/i))
-      return false unless (path && path.match(Twitter::Regex[:validate_url_path]) && $~.to_s == path)
 
-      # query and fragment are optional
-      return false if (query && (!query.match(Twitter::Regex[:validate_url_query]) || $~.to_s != query))
-      return false if (fragment && (!fragment.match(Twitter::Regex[:validate_url_fragment]) || $~.to_s != fragment))
+      return false unless (valid_match?(scheme, Twitter::Regex[:validate_url_scheme]) && scheme.match(/\Ahttps?\Z/i) &&
+                           valid_match?(path, Twitter::Regex[:validate_url_path]) &&
+                           valid_match?(query, Twitter::Regex[:validate_url_query], true) &&
+                           valid_match?(fragment, Twitter::Regex[:validate_url_fragment], true))
 
-      return false unless (authority && authority.match(Twitter::Regex[:validate_url_authority]) && $~.to_s == authority)
-      host = $~.captures[1]
-      return (host &&
-        ((unicode_domains && host.match(Twitter::Regex[:validate_url_unicode_host])) ||
-         (!unicode_domains && host.match(Twitter::Regex[:validate_url_unicode_host]))) &&
-        $~.to_s == host)
+      return (unicode_domains && valid_match?(authority, Twitter::Regex[:validate_url_unicode_authority])) ||
+             (!unicode_domains && valid_match?(authority, Twitter::Regex[:validate_url_authority]))
+    end
+
+    private
+
+    def valid_match?(string, regex, optional=false)
+      return (string && string.match(regex) && $~.to_s == string) unless optional
+
+      !(string && (!string.match(regex) || $~.to_s != string))
     end
   end
 end
