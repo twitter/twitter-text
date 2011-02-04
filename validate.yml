@@ -109,6 +109,10 @@ tests:
       text: "http://sports.yahoo.com/nfl/news;_ylt=Aom0;ylu=XyZ?slug=ap-superbowlnotebook"
       expected: true
 
+    - description: "Valid unicode url: unicode domain"
+      text: "http://☃.net/"
+      expected: true
+
     - description: "Invalid url: invalid domain underscore"
       text: "http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
       expected: false
@@ -117,8 +121,12 @@ tests:
       text: "http://www.-domain4352.com/"
       expected: false
 
-    - description: "Invalid url: unencoded unicode domain"
-      text: "http://☃.net/"
+    - description: "Invalid url: invalid domain trailing dash"
+      text: "http://www.domain4352-.com/"
+      expected: false
+
+    - description: "Invalid url: invalid unicode domain trailing dash"
+      text: "http://☃-.net/"
       expected: false
 
     - description: "Invalid url: improperly encoded unicode domain"

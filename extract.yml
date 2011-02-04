@@ -146,13 +146,13 @@ tests:
       text: "text http://somehost.com:3000"
       expected: ["http://somehost.com:3000"]
 
-    - description: "Extract valid URL: http://xo.com/~matthew+%-x"
-      text: "text http://xo.com/~matthew+%-x"
-      expected: ["http://xo.com/~matthew+%-x"]
+    - description: "Extract valid URL: http://xo.com/~matthew+%ff-x"
+      text: "text http://xo.com/~matthew+%ff-x"
+      expected: ["http://xo.com/~matthew+%ff-x"]
 
-    - description: "Extract valid URL: http://xo.com/~matthew+%-,.;x"
-      text: "text http://xo.com/~matthew+%-,.;x"
-      expected: ["http://xo.com/~matthew+%-,.;x"]
+    - description: "Extract valid URL: http://xo.com/~matthew+%ff-,.;x"
+      text: "text http://xo.com/~matthew+%ff-,.;x"
+      expected: ["http://xo.com/~matthew+%ff-,.;x"]
 
     - description: "Extract valid URL: http://xo.com/,.;x"
       text: "text http://xo.com/,.;x"
