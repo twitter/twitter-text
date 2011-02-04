@@ -36,6 +36,9 @@ class ConformanceTest < Test::Unit::TestCase
     def test_url_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls) do |description, expected, input|
         assert_equal expected, extract_urls(input), description
+        expected.each do |expected_url|
+          assert_equal true, valid_url?(expected_url), "expected url [#{expected_url}] not valid"
+        end
       end
     end
 
