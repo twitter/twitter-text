@@ -100,7 +100,7 @@ module Twitter
       #{REGEXEN[:validate_url_pct_encoded]}|
       #{REGEXEN[:validate_url_sub_delims]}|
       :|@
-    )/ix
+    )/iox
 
     REGEXEN[:validate_url_scheme] = /(?:[a-z][a-z0-9+\-.]*)/i
     REGEXEN[:validate_url_userinfo] = /(?:
@@ -108,10 +108,11 @@ module Twitter
       #{REGEXEN[:validate_url_pct_encoded]}|
       #{REGEXEN[:validate_url_sub_delims]}|
       :
-    )*/ix
+    )*/iox
 
     REGEXEN[:validate_url_dec_octet] = /(?:[0-9]|(?:[1-9][0-9])|(?:1[0-9]{2})|(?:2[0-4][0-9])|(?:25[0-5]))/i
-    REGEXEN[:validate_url_ipv4] = /(?:#{REGEXEN[:validate_url_dec_octet]}(?:\.#{REGEXEN[:validate_url_dec_octet]}){3})/i
+    REGEXEN[:validate_url_ipv4] =
+      /(?:#{REGEXEN[:validate_url_dec_octet]}(?:\.#{REGEXEN[:validate_url_dec_octet]}){3})/iox
 
     # Punting on real IPv6 validation for now
     REGEXEN[:validate_url_ipv6] = /(?:\[[a-f0-9:\.]\])/i
@@ -120,41 +121,40 @@ module Twitter
     REGEXEN[:validate_url_ip] = /(?:
       #{REGEXEN[:validate_url_ipv4]}|
       #{REGEXEN[:validate_url_ipv6]}
-    )/ix
+    )/iox
 
     # This is more strict than the rfc specifies
     REGEXEN[:validate_url_domain_segment] = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i
-    REGEXEN[:validate_url_domain] = /(?:#{REGEXEN[:validate_url_domain_segment]}\.?)+/i
+    REGEXEN[:validate_url_domain] = /(?:#{REGEXEN[:validate_url_domain_segment]}\.?)+/iox
 
     REGEXEN[:validate_url_host] = /(?:
       #{REGEXEN[:validate_url_ip]}|
       #{REGEXEN[:validate_url_domain]}
-    )/ix
+    )/iox
 
     # Unencoded internationalized domains - this doesn't check for invalid UTF sequences
     REGEXEN[:validate_url_unicode_domain_segment] =
       /(?:(?:[a-z0-9]|[^\x00-\x7f])(?:(?:[a-z0-9\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/ix
-    REGEXEN[:validate_url_unicode_domain] = /(?:#{REGEXEN[:validate_url_unicode_domain_segment]}\.?)+/i
+    REGEXEN[:validate_url_unicode_domain] = /(?:#{REGEXEN[:validate_url_unicode_domain_segment]}\.?)+/iox
 
     REGEXEN[:validate_url_unicode_host] = /(?:
       #{REGEXEN[:validate_url_ip]}|
       #{REGEXEN[:validate_url_unicode_domain]}
-    )/ix
+    )/iox
 
-    REGEXEN[:validate_url_port] = "[0-9]{1,5}";
+    REGEXEN[:validate_url_port] = /[0-9]{1,5}/
 
     REGEXEN[:validate_url_authority] = %r{
       (?:(#{REGEXEN[:validate_url_userinfo]})@)?     #  $1 userinfo
       ([^/?#:]+)                                     #  $2 host
       (?::(#{REGEXEN[:validate_url_port]}))?         #  $3 port
-    }ix
+    }iox
 
     REGEXEN[:validate_url_path] = %r{(/#{REGEXEN[:validate_url_pchar]}*)*}i
     REGEXEN[:validate_url_query] = %r{(#{REGEXEN[:validate_url_pchar]}|/|\?)*}i
     REGEXEN[:validate_url_fragment] = %r{(#{REGEXEN[:validate_url_pchar]}|/|\?)*}i
 
     # Modified version of RFC 3986 Appendix B
- #\A(?:([^:\/\?#]+):)(?:\/\/([^\/\?#]*))([^?#]*)(?:\?([^#]*))?(?:\#(.*))?\Z}ix
     REGEXEN[:validate_url_unencoded] = %r{
       \A                                #  Full URL
       (?:
