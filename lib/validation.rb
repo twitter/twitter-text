@@ -74,12 +74,26 @@ module Twitter
       extracted.size == 1 && extracted.first == hashtag[1..-1]
     end
 
-    def valid_url?(url)
+    def valid_url?(url, unicode_domains=true)
       return false if url.blank?
 
-      extracted = Twitter::Extractor.extract_urls(url)
-      extracted.size == 1 && extracted.first == url
-    end
+      url_parts = url.match(Twitter::Regex[:validate_url_unencoded])
+      return false unless (url_parts && url_parts.to_s == url)
 
+      scheme, authority, path, query, fragment = url_parts.captures
+      return false unless (scheme && scheme.match(Twitter::Regex[:validate_url_scheme]) && scheme.match(/\Ahttps?\Z/i))
+      return false unless (path && path.match(Twitter::Regex[:validate_url_path]) && $~.to_s == path)
+
+      # query and fragment are optional
+      return false if (query && (!query.match(Twitter::Regex[:validate_url_query]) || $~.to_s != query))
+      return false if (fragment && (!fragment.match(Twitter::Regex[:validate_url_fragment]) || $~.to_s != fragment))
+
+      return false unless (authority && authority.match(Twitter::Regex[:validate_url_authority]) && $~.to_s == authority)
+      host = $~.captures[1]
+      return (host &&
+        ((unicode_domains && host.match(Twitter::Regex[:validate_url_unicode_host])) ||
+         (!unicode_domains && host.match(Twitter::Regex[:validate_url_unicode_host]))) &&
+        $~.to_s == host)
+    end
   end
 end

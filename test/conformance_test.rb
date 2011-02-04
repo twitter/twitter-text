@@ -113,7 +113,7 @@ class ConformanceTest < Test::Unit::TestCase
   module ValidationConformance
     def test_tweet_validation_conformance
       run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :tweets) do |description, expected, input|
-        assert_equal expected, valid_tweet?(input), description
+        assert_equal expected, valid_tweet_text?(input), description
       end
     end
 
