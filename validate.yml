@@ -109,28 +109,52 @@ tests:
       text: "http://sports.yahoo.com/nfl/news;_ylt=Aom0;ylu=XyZ?slug=ap-superbowlnotebook"
       expected: true
 
+    - description: "Valid url: ipv4"
+      text: "http://192.168.0.1/index.html?src=asdf"
+      expected: true
+
+    - description: "Valid url: ipv6"
+      text: "http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80/index.html"
+      expected: true
+
+    - description: "Valid url: sub delims and question marks"
+      text: "http://example.com?foo=$bar.;baz?BAZ&c=d-#top/?stories+"
+      expected: true
+
     - description: "Valid unicode url: unicode domain"
       text: "http://☃.net/"
       expected: true
 
-    - description: "Invalid url: invalid domain underscore"
+    - description: "Invalid url: invalid scheme"
+      text: "ftp://www.example.com/"
+      expected: false
+
+    - description: "Invalid url: invalid userinfo characters"
+      text: "https://user:pass[word]@www.example.com/"
+      expected: false
+
+    - description: "Invalid url: underscore in domain"
       text: "http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
       expected: false
 
-    - description: "Invalid url: invalid domain beginning dash"
+    - description: "Invalid url: domain beginning dash"
       text: "http://www.-domain4352.com/"
       expected: false
 
-    - description: "Invalid url: invalid domain trailing dash"
+    - description: "Invalid url: domain trailing dash"
       text: "http://www.domain4352-.com/"
       expected: false
 
-    - description: "Invalid url: invalid unicode domain trailing dash"
+    - description: "Invalid url: unicode domain trailing dash"
       text: "http://☃-.net/"
       expected: false
 
     - description: "Invalid url: improperly encoded unicode domain"
       text: "http://%e2%98%83.net/"
+      expected: false
+
+    - description: "Invalid url: invalid IP"
+      text: "http://256.1.2.3/"
       expected: false
 
     - description: "Invalid url: invalid char in path"
