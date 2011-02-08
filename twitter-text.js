@@ -102,7 +102,7 @@ if (!window.twttr) {
   twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"':!=A-Za-z0-9_@＠]|^|\:)/);
   twttr.txt.regexen.validDomain = regexSupplant(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i;
+  twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~|]/i;
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
@@ -113,7 +113,7 @@ if (!window.twttr) {
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
   twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/(?:[\+\-a-z0-9=_#\/]|#{wikipediaDisambiguation})/i);
-  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i;
+  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.validUrl = regexSupplant(
     '('                                                            + // $1 total match
@@ -521,5 +521,95 @@ if (!window.twttr) {
     return result;
   };
 
+  var MAX_LENGTH = 140;
+
+  // Characters not allowed in Tweets
+  var INVALID_CHARACTERS = [
+    // BOM
+    fromCode(0xFFFE),
+    fromCode(0xFEFF),
+
+    // Special
+    fromCode(0xFFFF),
+
+    // Directional Change
+    fromCode(0x202A),
+    fromCode(0x202B),
+    fromCode(0x202C),
+    fromCode(0x202D),
+    fromCode(0x202E)
+  ];
+
+  // Check the <tt>text</tt> for any reason that it may not be valid as a Tweet. This is meant as a pre-validation
+  // before posting to api.twitter.com. There are several server-side reasons for Tweets to fail but this pre-validation
+  // will allow quicker feedback.
+  //
+  // Returns <tt>false</tt> if this <tt>text</tt> is valid. Otherwise one of the following Symbols will be returned:
+  //
+  //   <tt>:too_long</tt>:: if the <tt>text</tt> is too long
+  //   <tt>:empty</tt>:: if the <tt>text</tt> is nil or empty
+  //   <tt>:invalid_characters</tt>:: if the <tt>text</tt> contains non-Unicode or any of the disallowed Unicode characters
+  twttr.txt.isInvalidTweet = function(text) {
+    if (!text) {
+      return "empty";
+    }
+
+    if (text.length > MAX_LENGTH) {
+      return "too_long";
+    }
+
+    for (var i = 0; i < INVALID_CHARACTERS.length; i++) {
+      if (text.indexOf(INVALID_CHARACTERS[i]) >= 0) {
+        return "invalid_characters";
+      }
+    }
+
+    return false
+  };
+
+  twttr.txt.isValidTweetText = function(text) {
+    return !twttr.txt.isInvalidTweet(text);
+  };
+
+  twttr.txt.isValidUsername = function(username) {
+    if (!username) {
+      return false;
+    }
+
+    var extracted = twttr.txt.extractMentions(username);
+
+    // Should extract the username minus the @ sign, hence the .slice(1)
+    return extracted.length === 1 && extracted[0] === username.slice(1);
+  };
+
+  var VALID_LIST_RE = regexSupplant(/^#{autoLinkUsernamesOrLists}$/);
+
+  twttr.txt.isValidList = function(usernameList) {
+    var match = usernameList.match(VALID_LIST_RE);
+
+    // Must have matched and had nothing before or after
+    return !!(match && match[1] == "" && match[4]);
+  };
+
+  twttr.txt.isValidHashtag = function(hashtag) {
+    if (!hashtag) {
+      return false;
+    }
+
+    var extracted = twttr.txt.extractHashtags(hashtag);
+
+    // Should extract the hashtag minus the # sign, hence the .slice(1)
+    return extracted.length === 1 && extracted[0] === hashtag.slice(1);
+  };
+
+  twttr.txt.isValidUrl = function(url) {
+    if (!url) {
+      return false;
+    }
+
+    var extracted = twttr.txt.extractUrls(url);
+
+    return extracted.length === 1 && extracted[0] === url;
+  };
 
 }());
