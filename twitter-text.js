@@ -133,6 +133,95 @@ if (!window.twttr) {
     ')'
   , "gi");
 
+
+  // These URL validation pattern strings are based on the ABNF from RFC 3986
+  twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
+  twttr.txt.regexen.validateUrlPctEncoded = /(?:%[0-9a-f]{2})/i;
+  twttr.txt.regexen.validateUrlSubDelims = /[!$&'()*+,;=]/i;
+  twttr.txt.regexen.validateUrlPchar = regexSupplant('(?:' +
+    '#{validateUrlUnreserved}|' +
+    '#{validateUrlPctEncoded}|' +
+    '#{validateUrlSubDelims}|' +
+    ':|@' +
+  ')', 'i');
+
+  twttr.txt.regexen.validateUrlScheme = /(?:[a-z][a-z0-9+\-.]*)/i;
+  twttr.txt.regexen.validateUrlUserinfo = regexSupplant('(?:' +
+    '#{validateUrlUnreserved}|' +
+    '#{validateUrlPctEncoded}|' +
+    '#{validateUrlSubDelims}|' +
+    ':' +
+  ')*', 'i');
+
+  twttr.txt.regexen.validateUrlDecOctet = /(?:[0-9]|(?:[1-9][0-9])|(?:1[0-9]{2})|(?:2[0-4][0-9])|(?:25[0-5]))/i;
+  twttr.txt.regexen.validateUrlIpv4 = regexSupplant(/(?:#{validateUrlDecOctet}(?:\.#{validateUrlDecOctet}){3})/i);
+
+  // Punting on real IPv6 validation for now
+  twttr.txt.regexen.validateUrlIpv6 = /(?:\[[a-f0-9:\.]+\])/i;
+
+  // Also punting on IPvFuture for now
+  twttr.txt.regexen.validateUrlIp = regexSupplant('(?:' +
+    '#{validateUrlIpv4}|' +
+    '#{validateUrlIpv6}' +
+  ')', 'i');
+
+  // This is more strict than the rfc specifies
+  twttr.txt.regexen.validateUrlDomainSegment = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i;
+  twttr.txt.regexen.validateUrlDomainTld = /(?:[a-z](?:[a-z0-9\-]*[a-z0-9])?)/i;
+  twttr.txt.regexen.validateUrlDomain = regexSupplant(/(?:(?:#{validateUrlDomainSegment]}\.)+#{validateUrlDomainTld})/i);
+
+  twttr.txt.regexen.validateUrlHost = regexSupplant('(?:' +
+    '#{validateUrlIp}|' +
+    '#{validateUrlDomain}' +
+  ')', 'i');
+
+  // Unencoded internationalized domains - this doesn't check for invalid UTF-8 sequences
+  twttr.txt.regexen.validateUrlUnicodeDomainSegment = /(?:(?:[a-z0-9]|[^\x00-\x7f])(?:(?:[a-z0-9\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/i;
+  twttr.txt.regexen.validateUrlUnicodeDomainTld = /(?:(?:[a-z]|[^\x00-\x7f])(?:(?:[a-z0-9\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/i;
+  twttr.txt.regexen.validateUrlUnicodeDomain = regexSupplant(/(?:(?:#{validateUrlUnicodeDomainSegment}\.)+#{validateUrlUnicodeDomainTld})/i);
+
+  twttr.txt.regexen.validateUrlUnicodeHost = regexSupplant('(?:' +
+    '#{validateUrlIp}|' +
+    '#{validateUrlUnicodeDomain}' +
+  ')', 'i');
+
+  twttr.txt.regexen.validateUrlPort = /[0-9]{1,5}/;
+
+  twttr.txt.regexen.validateUrlUnicodeAuthority = regexSupplant(
+    '(?:(#{validateUrlUserinfo})@)?'  + // $1 userinfo
+    '(#{validateUrlUnicodeHost})'     + // $2 host
+    '(?::(#{validateUrlPort}))?'        //$3 port
+  , "i");
+
+  twttr.txt.regexen.validateUrlAuthority = regexSupplant(
+    '(?:(#{validateUrlUserinfo})@)?' + // $1 userinfo
+    '(#{validateUrlHost})'           + // $2 host
+    '(?::(#{validateUrlPort}))?'       // $3 port
+  , "i");
+
+  twttr.txt.regexen.validateUrlPath = regexSupplant(/(\/#{validateUrlPchar}*)*/i);
+  twttr.txt.regexen.validateUrlQuery = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
+  twttr.txt.regexen.validateUrlFragment = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
+
+  // Modified version of RFC 3986 Appendix B
+  twttr.txt.regexen.validateUrlUnencoded = regexSupplant(
+    '^'                               + // Full URL
+    '(?:'                             +
+      '([^:/?#]+):'                   + // $1 Scheme
+    ')'                               +
+    '(?://'                           +
+      '([^/?#]*)'                     + // $2 Authority
+    ')'                               +
+    '([^?#]*)'                        + // $3 Path
+    '(?:'                             +
+      '\\?([^#]*)'                    + // $4 Query
+    ')?'                              +
+    '(?:'                             +
+      '#(.*)'                         + // $5 Fragment
+    ')?$'
+  , "i");
+
+
   // Default CSS class for auto-linked URLs
   var DEFAULT_URL_CLASS = "tweet-url";
   // Default CSS class for auto-linked lists (along with the url class)
@@ -602,14 +691,50 @@ if (!window.twttr) {
     return extracted.length === 1 && extracted[0] === hashtag.slice(1);
   };
 
-  twttr.txt.isValidUrl = function(url) {
+  twttr.txt.isValidUrl = function(url, unicodeDomains) {
+    if (unicodeDomains == null) {
+      unicodeDomains = true;
+    }
+
     if (!url) {
       return false;
     }
 
-    var extracted = twttr.txt.extractUrls(url);
+    var urlParts = url.match(twttr.txt.regexen.validateUrlUnencoded);
 
-    return extracted.length === 1 && extracted[0] === url;
+    if (!urlParts || urlParts[0] !== url) {
+      return false;
+    }
+
+    var scheme = urlParts[1],
+        authority = urlParts[2],
+        path = urlParts[3],
+        query = urlParts[4],
+        fragment = urlParts[5];
+
+    if (!(
+      isValidMatch(scheme, twttr.txt.regexen.validateUrlScheme) && scheme.match(/^https?$/i) &&
+      isValidMatch(path, twttr.txt.regexen.validateUrlPath) &&
+      isValidMatch(query, twttr.txt.regexen.validateUrlQuery, true) &&
+      isValidMatch(fragment, twttr.txt.regexen.validateUrlFragment, true)
+    )) {
+      return false;
+    }
+
+    return (unicodeDomains && isValidMatch(authority, twttr.txt.regexen.validateUrlUnicodeAuthority)) ||
+           (!unicodeDomains && isValidMatch(authority, twttr.txt.regexen.validateUrlAuthority));
   };
+
+  function isValidMatch(string, regex, optional) {
+    if (!optional) {
+      // RegExp["$&"] is the text of the last match
+      // blank strings are ok, but are falsy, so we check stringiness instead of truthiness
+      return ((typeof string === "string") && string.match(regex) && RegExp["$&"] === string);
+    }
+
+    // RegExp["$&"] is the text of the last match
+    return (!string || (string.match(regex) && RegExp["$&"] === string));
+  }
+
 
 }());
