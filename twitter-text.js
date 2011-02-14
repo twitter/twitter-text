@@ -115,7 +115,7 @@ if (!window.twttr) {
   twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/(?:[\+\-a-z0-9=_#\/]|#{wikipediaDisambiguation})/i);
   twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
-  twttr.txt.regexen.validUrl = regexSupplant(
+  twttr.txt.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
       '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
       '('                                                          + // $3 URL
@@ -361,7 +361,7 @@ if (!window.twttr) {
     delete options.suppressNoFollow;
     delete options.suppressDataScreenName;
 
-    return text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, queryString) {
+    return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, path, queryString) {
       var tldComponents;
 
       if (protocol) {
@@ -450,7 +450,7 @@ if (!window.twttr) {
     var urls = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, query) {
+    text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, path, query) {
       var tldComponents;
 
       if (protocol) {
