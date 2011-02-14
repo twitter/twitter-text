@@ -629,15 +629,15 @@ if (!window.twttr) {
     fromCode(0x202E)
   ];
 
-  // Check the <tt>text</tt> for any reason that it may not be valid as a Tweet. This is meant as a pre-validation
+  // Check the text for any reason that it may not be valid as a Tweet. This is meant as a pre-validation
   // before posting to api.twitter.com. There are several server-side reasons for Tweets to fail but this pre-validation
   // will allow quicker feedback.
   //
-  // Returns <tt>false</tt> if this <tt>text</tt> is valid. Otherwise one of the following Symbols will be returned:
+  // Returns false if this text is valid. Otherwise one of the following strings will be returned:
   //
-  //   <tt>:too_long</tt>:: if the <tt>text</tt> is too long
-  //   <tt>:empty</tt>:: if the <tt>text</tt> is nil or empty
-  //   <tt>:invalid_characters</tt>:: if the <tt>text</tt> contains non-Unicode or any of the disallowed Unicode characters
+  //   "too_long": if the text is too long
+  //   "empty": if the text is nil or empty
+  //   "invalid_characters": if the text contains non-Unicode or any of the disallowed Unicode characters
   twttr.txt.isInvalidTweet = function(text) {
     if (!text) {
       return "empty";
