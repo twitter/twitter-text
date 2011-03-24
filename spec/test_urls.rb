@@ -21,6 +21,7 @@ module TestUrls
     "http://mrs.domain-dash.biz",
     "http://x.com/has/one/char/domain",
     "http://t.co/nwcLTFF",
+    "http://sub_domain-dash.twitter.com",
     # "t.co/nwcLTFF"
   ] unless defined?(TestUrls::VALID)
 
