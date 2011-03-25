@@ -22,6 +22,10 @@ module TestUrls
     "http://x.com/has/one/char/domain",
     "http://t.co/nwcLTFF",
     "http://sub_domain-dash.twitter.com",
+    "http://a.b.cd",
+    "http://a_b.c-d.com",
+    "http://a-b.b.com",
+    "http://twitter-dash.com",
     # "t.co/nwcLTFF"
   ] unless defined?(TestUrls::VALID)
 
@@ -30,7 +34,16 @@ module TestUrls
     "http://tld-too-short.x",
     "www.foobar.com",
     "WWW.FOOBAR.COM",
-    "http://-doman_dash.com"
+    "http://-doman_dash.com",
+    "http://_leadingunderscore.twitter.com",
+    "http://trailingunderscore_.twitter.com",
+    "http://-leadingdash.twitter.com",
+    "http://trailingdash-.twitter.com",
+    "http://-leadingdash.com",
+    "http://trailingdash-.com",
+    "http://no_underscores.com",
+    "http://test.c_o_m",
+    "http://test.c-o-m"
   ] unless defined?(TestUrls::INVALID)
 
 end
