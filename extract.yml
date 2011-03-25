@@ -255,7 +255,7 @@ tests:
       expected: []
 
     - description: "DO NOT extract URLs containing trailing underscores in the subdomain"
-      text: "test http://trailingunderscore.twitter.com"
+      text: "test http://trailingunderscore_.twitter.com"
       expected: []
 
     - description: "DO NOT extract URLs containing leading dashes in the domain name"
