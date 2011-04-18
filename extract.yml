@@ -222,6 +222,59 @@ tests:
       text: "Go to http://example.com/view/slug-url-?foo=bar"
       expected: ["http://example.com/view/slug-url-?foo=bar"]
 
+    - description: "Extract URLs with underscores and dashes in the subdomain"
+      text: "test http://sub_domain-dash.twitter.com"
+      expected: ["http://sub_domain-dash.twitter.com"]
+
+    - description: "Extract URL with minimum number of valid characters"
+      text: "test http://a.b.cd"
+      expected: ["http://a.b.cd"]
+
+    - description: "Extract URLs containing underscores and dashes"
+      text: "test http://a_b.c-d.com"
+      expected: ["http://a_b.c-d.com"]
+
+    - description: "Extract URLs containing dashes in the subdomain"
+      text: "test http://a-b.c.com"
+      expected: ["http://a-b.c.com"]
+
+    - description: "Extract URLs with dashes in the domain name"
+      text: "test http://twitter-dash.com"
+      expected: ["http://twitter-dash.com"]
+
+    - description: "DO NOT extract URLs containing leading dashes in the subdomain"
+      text: "test http://-leadingdash.twitter.com"
+      expected: []
+
+    - description: "DO NOT extract URLs containing trailing dashes in the subdomain"
+      text: "test http://trailingdash-.twitter.com"
+      expected: []
+
+    - description: "DO NOT extract URLs containing leading underscores in the subdomain"
+      text: "test http://_leadingunderscore.twitter.com"
+      expected: []
+
+    - description: "DO NOT extract URLs containing trailing underscores in the subdomain"
+      text: "test http://trailingunderscore_.twitter.com"
+      expected: []
+
+    - description: "DO NOT extract URLs containing leading dashes in the domain name"
+      text: "test http://-twitter.com"
+      expected: []
+
+    - description: "DO NOT extract URLs containing trailing dashes in the domain name"
+      text: "test http://twitter-.com"
+      expected: []
+
+    - description: "DO NOT extract URLs containing underscores in the domain name"
+      text: "test http://twitter_underscore.com"
+      expected: []
+
+    - description: "DO NOT extract URLs containing underscores in the tld"
+      text: "test http://twitter.c_o_m"
+      expected: []
+
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
