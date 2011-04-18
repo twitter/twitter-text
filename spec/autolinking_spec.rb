@@ -310,6 +310,17 @@ describe Twitter::Autolink do
         end
       end
 
+      context "with a hashtag containing an accented latin character" do
+        def original_text
+          # the hashtag is #éhashtag
+          "##{[0x00e9].pack('U')}hashtag"
+        end
+
+        it "should be linked" do
+          @autolinked_text.should == "<a href=\"http://twitter.com/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
+        end
+      end
+
     end
 
     describe "URL autolinking" do
