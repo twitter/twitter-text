@@ -128,9 +128,11 @@ module Twitter
     )/iox
 
     # This is more strict than the rfc specifies
+    REGEXEN[:validate_url_subdomain_segment] = /(?:[a-z0-9](?:[a-z0-9_\-]*[a-z0-9])?)/i
     REGEXEN[:validate_url_domain_segment] = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i
     REGEXEN[:validate_url_domain_tld] = /(?:[a-z](?:[a-z0-9\-]*[a-z0-9])?)/i
-    REGEXEN[:validate_url_domain] = /(?:(?:#{REGEXEN[:validate_url_domain_segment]}\.)+
+    REGEXEN[:validate_url_domain] = /(?:(?:#{REGEXEN[:validate_url_subdomain_segment]}\.)*
+                                     (?:#{REGEXEN[:validate_url_domain_segment]}\.)
                                      #{REGEXEN[:validate_url_domain_tld]})/iox
 
     REGEXEN[:validate_url_host] = /(?:
@@ -139,11 +141,14 @@ module Twitter
     )/iox
 
     # Unencoded internationalized domains - this doesn't check for invalid UTF-8 sequences
+    REGEXEN[:validate_url_unicode_subdomain_segment] =
+      /(?:(?:[a-z0-9]|[^\x00-\x7f])(?:(?:[a-z0-9_\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/ix
     REGEXEN[:validate_url_unicode_domain_segment] =
       /(?:(?:[a-z0-9]|[^\x00-\x7f])(?:(?:[a-z0-9\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/ix
     REGEXEN[:validate_url_unicode_domain_tld] =
       /(?:(?:[a-z]|[^\x00-\x7f])(?:(?:[a-z0-9\-]|[^\x00-\x7f])*(?:[a-z0-9]|[^\x00-\x7f]))?)/ix
-    REGEXEN[:validate_url_unicode_domain] = /(?:(?:#{REGEXEN[:validate_url_unicode_domain_segment]}\.)+
+    REGEXEN[:validate_url_unicode_domain] = /(?:(?:#{REGEXEN[:validate_url_unicode_subdomain_segment]}\.)*
+                                             (?:#{REGEXEN[:validate_url_unicode_domain_segment]}\.)
                                              #{REGEXEN[:validate_url_unicode_domain_tld]})/iox
 
     REGEXEN[:validate_url_unicode_host] = /(?:
