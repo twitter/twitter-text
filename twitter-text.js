@@ -170,9 +170,10 @@ if (!window.twttr) {
   ')', 'i');
 
   // This is more strict than the rfc specifies
+  twttr.txt.regexen.validateUrlSubDomainSegment = /(?:[a-z0-9](?:[a-z0-9_\-]*[a-z0-9])?)/i;
   twttr.txt.regexen.validateUrlDomainSegment = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i;
   twttr.txt.regexen.validateUrlDomainTld = /(?:[a-z](?:[a-z0-9\-]*[a-z0-9])?)/i;
-  twttr.txt.regexen.validateUrlDomain = regexSupplant(/(?:(?:#{validateUrlDomainSegment]}\.)+#{validateUrlDomainTld})/i);
+  twttr.txt.regexen.validateUrlDomain = regexSupplant(/(?:(?:#{validateUrlSubDomainSegment]}\.)*(?:#{validateUrlDomainSegment]}\.)#{validateUrlDomainTld})/i);
 
   twttr.txt.regexen.validateUrlHost = regexSupplant('(?:' +
     '#{validateUrlIp}|' +
@@ -180,9 +181,10 @@ if (!window.twttr) {
   ')', 'i');
 
   // Unencoded internationalized domains - this doesn't check for invalid UTF-8 sequences
+  twttr.txt.regexen.validateUrlUnicodeSubDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9_\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
   twttr.txt.regexen.validateUrlUnicodeDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
   twttr.txt.regexen.validateUrlUnicodeDomainTld = /(?:(?:[a-z]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
-  twttr.txt.regexen.validateUrlUnicodeDomain = regexSupplant(/(?:(?:#{validateUrlUnicodeDomainSegment}\.)+#{validateUrlUnicodeDomainTld})/i);
+  twttr.txt.regexen.validateUrlUnicodeDomain = regexSupplant(/(?:(?:#{validateUrlUnicodeSubDomainSegment}\.)*(?:#{validateUrlUnicodeDomainSegment}\.)#{validateUrlUnicodeDomainTld})/i);
 
   twttr.txt.regexen.validateUrlUnicodeHost = regexSupplant('(?:' +
     '#{validateUrlIp}|' +
