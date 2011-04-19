@@ -108,6 +108,7 @@ describe Twitter::Autolink do
         it "should not be linked" do
           @autolinked_text = TestAutolink.new.auto_link_usernames_or_lists("hello @jacob/my-list", :suppress_lists => true)
           @autolinked_text.should_not link_to_list_path('jacob/my-list')
+          @autolinked_text.should include('my-list')
         end
       end
 
@@ -307,6 +308,17 @@ describe Twitter::Autolink do
           link = Nokogiri::HTML(@autolinked_text).search('a')
           (link.inner_text.respond_to?(:force_encoding) ? link.inner_text.force_encoding("utf-8") : link.inner_text).should == "#{[0xFF03].pack('U')}twj_dev"
           link.first['href'].should == 'http://twitter.com/search?q=%23twj_dev'
+        end
+      end
+
+      context "with a hashtag containing an accented latin character" do
+        def original_text
+          # the hashtag is #éhashtag
+          "##{[0x00e9].pack('U')}hashtag"
+        end
+
+        it "should be linked" do
+          @autolinked_text.should == "<a href=\"http://twitter.com/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
         end
       end
 
@@ -511,6 +523,13 @@ describe Twitter::Autolink do
       it "should allow url/hashtag overlap" do
         auto_linked = @linker.auto_link("http://twitter.com/#search")
         auto_linked.should have_autolinked_url('http://twitter.com/#search')
+      end
+
+      it "should not add invalid option in HTML tags" do
+        auto_linked = @linker.auto_link("http://twitter.com/ is a URL, not a hashtag", :hashtag_class => 'hashtag_classname')
+        auto_linked.should have_autolinked_url('http://twitter.com/')
+        auto_linked.should_not include('hashtag_class')
+        auto_linked.should_not include('hashtag_classname')
       end
 
     end
