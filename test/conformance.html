@@ -57,6 +57,29 @@
           return function(test) {
             return twttr.txt.hitHighlight(test.text, test.hits);
           };
+        case "validate":
+          switch (section) {
+            case "tweets":
+              return function(test) {
+                return twttr.txt.isValidTweetText(test.text);
+              };
+            case "usernames":
+              return function(test) {
+                return twttr.txt.isValidUsername(test.text);
+              };
+            case "lists":
+              return function(test) {
+                return twttr.txt.isValidList(test.text);
+              };
+            case "hashtags":
+              return function(test) {
+                return twttr.txt.isValidHashtag(test.text);
+              };
+            case "urls":
+              return function(test) {
+                return twttr.txt.isValidUrl(test.text);
+              };
+          }
       }
 
     }
