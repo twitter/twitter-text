@@ -92,9 +92,10 @@ if (!window.twttr) {
 
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
-  // Characters considered valid in a hashtag but not at the beginning, where only a-z and 0-9 are valid.
-  twttr.txt.regexen.hashtagCharacters = regexSupplant(/[a-z0-9_#{latinAccentChars}]/i);
-  twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(^|[^0-9A-Z&\/\?]+)(#|＃)([0-9A-Z_]*[A-Z_]+#{hashtagCharacters}*)/gi);
+  // A hashtag must contain latin characters, numbers and underscores, but not all numbers.
+  twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}]/i);
+  twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}]/i);
+  twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(^|[^0-9A-Z&\/\?]+)(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
   twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
