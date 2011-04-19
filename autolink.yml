@@ -172,7 +172,7 @@ tests:
 
     - description: "Autolink hashtag with accented character at the start"
       text: "#éhashtag"
-      expected: "<a href=\"http://twitter.com/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\">＃éhashtag</a>"
+      expected: "<a href=\"http://twitter.com/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\">#éhashtag</a>"
 
     - description: "Autolink hashtag with accented character at the end"
       text: "#hashtagé"
