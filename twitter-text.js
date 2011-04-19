@@ -200,7 +200,9 @@ if (!window.twttr) {
             user: twttr.txt.htmlEscape(user),
             slashListname: twttr.txt.htmlEscape(slashListname),
             extraHtml: extraHtml,
-            chunk: twttr.txt.htmlEscape(chunk)
+            preChunk: "",
+            chunk: twttr.txt.htmlEscape(chunk),
+            postChunk: ""
           };
           for (var k in options) {
             if (options.hasOwnProperty(k)) {
@@ -221,7 +223,7 @@ if (!window.twttr) {
               // this is a screen name
               d.chunk = twttr.txt.htmlEscape(user);
               d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{chunk}</a>", d);
+              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{chunk}#{postChunk}</a>", d);
             }
           }
         });
@@ -244,7 +246,9 @@ if (!window.twttr) {
       var d = {
         before: before,
         hash: twttr.txt.htmlEscape(hash),
+        preText: "",
         text: twttr.txt.htmlEscape(text),
+        postText: "",
         extraHtml: extraHtml
       };
 
@@ -254,7 +258,7 @@ if (!window.twttr) {
         }
       }
 
-      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{text}</a>", d);
+      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
     });
   };
 
