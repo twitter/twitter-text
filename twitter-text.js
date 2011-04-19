@@ -100,7 +100,10 @@ if (!window.twttr) {
 
   // URL related hash regex collection
   twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"':!=A-Za-z0-9_@＠]|^|\:)/);
-  twttr.txt.regexen.validDomain = regexSupplant(/(?:[^#{punct}\s][\.-](?=[^#{punct}\s])|[^#{punct}\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i);
+
+  twttr.txt.regexen.validSubdomain = regexSupplant(/([^#{punct}\s]([_-]|[^#{punct}\s])*)?[^#{punct}\s]\./);
+  twttr.txt.regexen.validDomainName = regexSupplant(/([^#{punct}\s]([-]|[^#{punct}\s])*)?[^#{punct}\s]/);
+  twttr.txt.regexen.validDomain = regexSupplant(/(#{validSubdomain})*#{validDomainName}\.[a-z]{2,}(?::[0-9]+)?/i);
 
   twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i;
   // Allow URL paths to contain balanced parens
