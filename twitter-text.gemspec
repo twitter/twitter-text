@@ -1,8 +1,8 @@
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "1.3.1"
-  s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle", "Raffi Krikorian"]
-  s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com", "raffi@twitter.com"]
+  s.version = "1.4.2"
+  s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle", "Raffi Krikorian", "J.P. Cummins", "Yoshimasa Niwa"]
+  s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com", "raffi@twitter.com", "jcummins@twitter.com", "niw@niw.at"]
   s.homepage = "http://twitter.com"
   s.description = s.summary = "A gem that provides text handling for Twitter"
 

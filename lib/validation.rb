@@ -46,5 +46,57 @@ module Twitter
 
       return false
     end
+
+    def valid_tweet_text?(text)
+      !tweet_invalid?(text)
+    end
+
+    def valid_username?(username)
+      return false if username.blank?
+
+      extracted = Twitter::Extractor.extract_mentioned_screen_names(username)
+      # Should extract the username minus the @ sign, hence the [1..-1]
+      extracted.size == 1 && extracted.first == username[1..-1]
+    end
+
+    VALID_LIST_RE = /\A#{Twitter::Regex[:auto_link_usernames_or_lists]}\z/o
+    def valid_list?(username_list)
+      match = username_list.match(VALID_LIST_RE)
+      # Must have matched and had nothing before or after
+      !!(match && match[1] == "" && !match[4].blank?)
+    end
+
+    def valid_hashtag?(hashtag)
+      return false if hashtag.blank?
+
+      extracted = Twitter::Extractor.extract_hashtags(hashtag)
+      # Should extract the hashtag minus the # sign, hence the [1..-1]
+      extracted.size == 1 && extracted.first == hashtag[1..-1]
+    end
+
+    def valid_url?(url, unicode_domains=true)
+      return false if url.blank?
+
+      url_parts = url.match(Twitter::Regex[:validate_url_unencoded])
+      return false unless (url_parts && url_parts.to_s == url)
+
+      scheme, authority, path, query, fragment = url_parts.captures
+
+      return false unless (valid_match?(scheme, Twitter::Regex[:validate_url_scheme]) && scheme.match(/\Ahttps?\Z/i) &&
+                           valid_match?(path, Twitter::Regex[:validate_url_path]) &&
+                           valid_match?(query, Twitter::Regex[:validate_url_query], true) &&
+                           valid_match?(fragment, Twitter::Regex[:validate_url_fragment], true))
+
+      return (unicode_domains && valid_match?(authority, Twitter::Regex[:validate_url_unicode_authority])) ||
+             (!unicode_domains && valid_match?(authority, Twitter::Regex[:validate_url_authority]))
+    end
+
+    private
+
+    def valid_match?(string, regex, optional=false)
+      return (string && string.match(regex) && $~.to_s == string) unless optional
+
+      !(string && (!string.match(regex) || $~.to_s != string))
+    end
   end
 end
