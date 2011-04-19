@@ -524,6 +524,13 @@ describe Twitter::Autolink do
         auto_linked.should have_autolinked_url('http://twitter.com/#search')
       end
 
+      it "should not add invalid option in HTML tags" do
+        auto_linked = @linker.auto_link("http://twitter.com/ is a URL, not a hashtag", :hashtag_class => 'hashtag_classname')
+        auto_linked.should have_autolinked_url('http://twitter.com/')
+        auto_linked.should_not include('hashtag_class')
+        auto_linked.should_not include('hashtag_classname')
+      end
+
     end
 
   end

@@ -16,6 +16,10 @@ module Twitter
     DEFAULT_TARGET = nil
     # HTML attribute for robot nofollow behavior (default)
     HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
+    # Options which should not be passed as HTML attributes
+    OPTIONS_NOT_ATTRIBUTES = [:url_class, :list_class, :username_class, :hashtag_class,
+                              :username_url_base, :list_url_base, :hashtag_url_base,
+                              :suppress_lists, :suppress_no_follow]
 
     HTML_ENTITIES = {
       '&' => '&amp;',
@@ -143,11 +147,12 @@ module Twitter
     def auto_link_urls_custom(text, href_options = {})
       options = href_options.dup
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
+      options[:class] = options.delete(:url_class)
 
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
         if !protocol.blank?
-          html_attrs = tag_options(options.stringify_keys) || ""
+          html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k) }.stringify_keys) || ""
           "#{before}<a href=\"#{html_escape(url)}\"#{html_attrs}>#{html_escape(url)}</a>"
         else
           all
