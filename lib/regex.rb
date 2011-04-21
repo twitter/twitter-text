@@ -56,11 +56,11 @@ module Twitter
     # URL related hash regex collection
     REGEXEN[:valid_preceding_chars] = /(?:[^-\/"':!=A-Z0-9_@＠]|^|\:)/i
 
-    REGEXEN[:valid_subdomain] = /([^[:punct:]\s]([_-]|[^[:punct:]\s])*)?[^[:punct:]\s]\./
-    REGEXEN[:valid_domain_name] = /([^[:punct:]\s]([-]|[^[:punct:]\s])*)?[^[:punct:]\s]/
+    REGEXEN[:valid_subdomain] = /(?:[^[:punct:]\s](?:[_-]|[^[:punct:]\s])*)?[^[:punct:]\s]\./
+    REGEXEN[:valid_domain_name] = /(?:[^[:punct:]\s](?:[-]|[^[:punct:]\s])*)?[^[:punct:]\s]/
     REGEXEN[:valid_domain] = /#{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}\.[a-z]{2,}(?::[0-9]+)?/i
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|]/i
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|\.]/i
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
