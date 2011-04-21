@@ -1,3 +1,21 @@
+/*!
+ * twitter-text-js 1.3.4
+ *
+ * Copyright 2010 Twitter, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 if (!window.twttr) {
   window.twttr = {};
 }
@@ -106,8 +124,7 @@ if (!window.twttr) {
   twttr.txt.regexen.validDomainName = regexSupplant(/(?:[^#{punct}\s](?:[-]|[^#{punct}\s])*)?[^#{punct}\s]/);
   twttr.txt.regexen.validDomain = regexSupplant(/(#{validSubdomain})*#{validDomainName}\.[a-z]{2,}(?::[0-9]+)?/i);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~|\.]/i;
->>>>>>> v1.3.4
+  twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~\.]/i;
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
@@ -118,9 +135,9 @@ if (!window.twttr) {
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
   twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/(?:[\+\-a-z0-9=_#\/]|#{wikipediaDisambiguation})/i);
-  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
+  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
-  twttr.txt.regexen.extractUrl = regexSupplant(
+  twttr.txt.regexen.validUrl = regexSupplant(
     '('                                                            + // $1 total match
       '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
       '('                                                          + // $3 URL
@@ -137,97 +154,6 @@ if (!window.twttr) {
       ')'                                                          +
     ')'
   , "gi");
-
-
-  // These URL validation pattern strings are based on the ABNF from RFC 3986
-  twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
-  twttr.txt.regexen.validateUrlPctEncoded = /(?:%[0-9a-f]{2})/i;
-  twttr.txt.regexen.validateUrlSubDelims = /[!$&'()*+,;=]/i;
-  twttr.txt.regexen.validateUrlPchar = regexSupplant('(?:' +
-    '#{validateUrlUnreserved}|' +
-    '#{validateUrlPctEncoded}|' +
-    '#{validateUrlSubDelims}|' +
-    ':|@' +
-  ')', 'i');
-
-  twttr.txt.regexen.validateUrlScheme = /(?:[a-z][a-z0-9+\-.]*)/i;
-  twttr.txt.regexen.validateUrlUserinfo = regexSupplant('(?:' +
-    '#{validateUrlUnreserved}|' +
-    '#{validateUrlPctEncoded}|' +
-    '#{validateUrlSubDelims}|' +
-    ':' +
-  ')*', 'i');
-
-  twttr.txt.regexen.validateUrlDecOctet = /(?:[0-9]|(?:[1-9][0-9])|(?:1[0-9]{2})|(?:2[0-4][0-9])|(?:25[0-5]))/i;
-  twttr.txt.regexen.validateUrlIpv4 = regexSupplant(/(?:#{validateUrlDecOctet}(?:\.#{validateUrlDecOctet}){3})/i);
-
-  // Punting on real IPv6 validation for now
-  twttr.txt.regexen.validateUrlIpv6 = /(?:\[[a-f0-9:\.]+\])/i;
-
-  // Also punting on IPvFuture for now
-  twttr.txt.regexen.validateUrlIp = regexSupplant('(?:' +
-    '#{validateUrlIpv4}|' +
-    '#{validateUrlIpv6}' +
-  ')', 'i');
-
-  // This is more strict than the rfc specifies
-  twttr.txt.regexen.validateUrlSubDomainSegment = /(?:[a-z0-9](?:[a-z0-9_\-]*[a-z0-9])?)/i;
-  twttr.txt.regexen.validateUrlDomainSegment = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i;
-  twttr.txt.regexen.validateUrlDomainTld = /(?:[a-z](?:[a-z0-9\-]*[a-z0-9])?)/i;
-  twttr.txt.regexen.validateUrlDomain = regexSupplant(/(?:(?:#{validateUrlSubDomainSegment]}\.)*(?:#{validateUrlDomainSegment]}\.)#{validateUrlDomainTld})/i);
-
-  twttr.txt.regexen.validateUrlHost = regexSupplant('(?:' +
-    '#{validateUrlIp}|' +
-    '#{validateUrlDomain}' +
-  ')', 'i');
-
-  // Unencoded internationalized domains - this doesn't check for invalid UTF-8 sequences
-  twttr.txt.regexen.validateUrlUnicodeSubDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9_\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
-  twttr.txt.regexen.validateUrlUnicodeDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
-  twttr.txt.regexen.validateUrlUnicodeDomainTld = /(?:(?:[a-z]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
-  twttr.txt.regexen.validateUrlUnicodeDomain = regexSupplant(/(?:(?:#{validateUrlUnicodeSubDomainSegment}\.)*(?:#{validateUrlUnicodeDomainSegment}\.)#{validateUrlUnicodeDomainTld})/i);
-
-  twttr.txt.regexen.validateUrlUnicodeHost = regexSupplant('(?:' +
-    '#{validateUrlIp}|' +
-    '#{validateUrlUnicodeDomain}' +
-  ')', 'i');
-
-  twttr.txt.regexen.validateUrlPort = /[0-9]{1,5}/;
-
-  twttr.txt.regexen.validateUrlUnicodeAuthority = regexSupplant(
-    '(?:(#{validateUrlUserinfo})@)?'  + // $1 userinfo
-    '(#{validateUrlUnicodeHost})'     + // $2 host
-    '(?::(#{validateUrlPort}))?'        //$3 port
-  , "i");
-
-  twttr.txt.regexen.validateUrlAuthority = regexSupplant(
-    '(?:(#{validateUrlUserinfo})@)?' + // $1 userinfo
-    '(#{validateUrlHost})'           + // $2 host
-    '(?::(#{validateUrlPort}))?'       // $3 port
-  , "i");
-
-  twttr.txt.regexen.validateUrlPath = regexSupplant(/(\/#{validateUrlPchar}*)*/i);
-  twttr.txt.regexen.validateUrlQuery = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
-  twttr.txt.regexen.validateUrlFragment = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
-
-  // Modified version of RFC 3986 Appendix B
-  twttr.txt.regexen.validateUrlUnencoded = regexSupplant(
-    '^'                               + // Full URL
-    '(?:'                             +
-      '([^:/?#]+):'                   + // $1 Scheme
-    ')'                               +
-    '(?://'                           +
-      '([^/?#]*)'                     + // $2 Authority
-    ')'                               +
-    '([^?#]*)'                        + // $3 Path
-    '(?:'                             +
-      '\\?([^#]*)'                    + // $4 Query
-    ')?'                              +
-    '(?:'                             +
-      '#(.*)'                         + // $5 Fragment
-    ')?$'
-  , "i");
-
 
   // Default CSS class for auto-linked URLs
   var DEFAULT_URL_CLASS = "tweet-url";
@@ -372,7 +298,7 @@ if (!window.twttr) {
     delete options.suppressNoFollow;
     delete options.suppressDataScreenName;
 
-    return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, path, queryString) {
+    return text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, queryString) {
       var tldComponents;
 
       if (protocol) {
@@ -461,7 +387,7 @@ if (!window.twttr) {
     var urls = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, path, query) {
+    text.replace(twttr.txt.regexen.validUrl, function(match, all, before, url, protocol, domain, path, query) {
       var tldComponents;
 
       if (protocol) {
@@ -620,132 +546,6 @@ if (!window.twttr) {
 
     return result;
   };
-
-  var MAX_LENGTH = 140;
-
-  // Characters not allowed in Tweets
-  var INVALID_CHARACTERS = [
-    // BOM
-    fromCode(0xFFFE),
-    fromCode(0xFEFF),
-
-    // Special
-    fromCode(0xFFFF),
-
-    // Directional Change
-    fromCode(0x202A),
-    fromCode(0x202B),
-    fromCode(0x202C),
-    fromCode(0x202D),
-    fromCode(0x202E)
-  ];
-
-  // Check the text for any reason that it may not be valid as a Tweet. This is meant as a pre-validation
-  // before posting to api.twitter.com. There are several server-side reasons for Tweets to fail but this pre-validation
-  // will allow quicker feedback.
-  //
-  // Returns false if this text is valid. Otherwise one of the following strings will be returned:
-  //
-  //   "too_long": if the text is too long
-  //   "empty": if the text is nil or empty
-  //   "invalid_characters": if the text contains non-Unicode or any of the disallowed Unicode characters
-  twttr.txt.isInvalidTweet = function(text) {
-    if (!text) {
-      return "empty";
-    }
-
-    if (text.length > MAX_LENGTH) {
-      return "too_long";
-    }
-
-    for (var i = 0; i < INVALID_CHARACTERS.length; i++) {
-      if (text.indexOf(INVALID_CHARACTERS[i]) >= 0) {
-        return "invalid_characters";
-      }
-    }
-
-    return false
-  };
-
-  twttr.txt.isValidTweetText = function(text) {
-    return !twttr.txt.isInvalidTweet(text);
-  };
-
-  twttr.txt.isValidUsername = function(username) {
-    if (!username) {
-      return false;
-    }
-
-    var extracted = twttr.txt.extractMentions(username);
-
-    // Should extract the username minus the @ sign, hence the .slice(1)
-    return extracted.length === 1 && extracted[0] === username.slice(1);
-  };
-
-  var VALID_LIST_RE = regexSupplant(/^#{autoLinkUsernamesOrLists}$/);
-
-  twttr.txt.isValidList = function(usernameList) {
-    var match = usernameList.match(VALID_LIST_RE);
-
-    // Must have matched and had nothing before or after
-    return !!(match && match[1] == "" && match[4]);
-  };
-
-  twttr.txt.isValidHashtag = function(hashtag) {
-    if (!hashtag) {
-      return false;
-    }
-
-    var extracted = twttr.txt.extractHashtags(hashtag);
-
-    // Should extract the hashtag minus the # sign, hence the .slice(1)
-    return extracted.length === 1 && extracted[0] === hashtag.slice(1);
-  };
-
-  twttr.txt.isValidUrl = function(url, unicodeDomains) {
-    if (unicodeDomains == null) {
-      unicodeDomains = true;
-    }
-
-    if (!url) {
-      return false;
-    }
-
-    var urlParts = url.match(twttr.txt.regexen.validateUrlUnencoded);
-
-    if (!urlParts || urlParts[0] !== url) {
-      return false;
-    }
-
-    var scheme = urlParts[1],
-        authority = urlParts[2],
-        path = urlParts[3],
-        query = urlParts[4],
-        fragment = urlParts[5];
-
-    if (!(
-      isValidMatch(scheme, twttr.txt.regexen.validateUrlScheme) && scheme.match(/^https?$/i) &&
-      isValidMatch(path, twttr.txt.regexen.validateUrlPath) &&
-      isValidMatch(query, twttr.txt.regexen.validateUrlQuery, true) &&
-      isValidMatch(fragment, twttr.txt.regexen.validateUrlFragment, true)
-    )) {
-      return false;
-    }
-
-    return (unicodeDomains && isValidMatch(authority, twttr.txt.regexen.validateUrlUnicodeAuthority)) ||
-           (!unicodeDomains && isValidMatch(authority, twttr.txt.regexen.validateUrlAuthority));
-  };
-
-  function isValidMatch(string, regex, optional) {
-    if (!optional) {
-      // RegExp["$&"] is the text of the last match
-      // blank strings are ok, but are falsy, so we check stringiness instead of truthiness
-      return ((typeof string === "string") && string.match(regex) && RegExp["$&"] === string);
-    }
-
-    // RegExp["$&"] is the text of the last match
-    return (!string || (string.match(regex) && RegExp["$&"] === string));
-  }
 
 
 }());
