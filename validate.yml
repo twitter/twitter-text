@@ -117,6 +117,10 @@ tests:
       text: "http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80/index.html"
       expected: true
 
+    - description: "Valid url: underscore in subdomain"
+      text: "http://test_underscore.twitter.com"
+      expected: true
+
     - description: "Valid url: sub delims and question marks"
       text: "http://example.com?foo=$bar.;baz?BAZ&c=d-#top/?stories+"
       expected: true
