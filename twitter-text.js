@@ -106,7 +106,7 @@ if (!window.twttr) {
   twttr.txt.regexen.validDomainName = regexSupplant(/(?:[^#{punct}\s](?:[-]|[^#{punct}\s])*)?[^#{punct}\s]/);
   twttr.txt.regexen.validDomain = regexSupplant(/(#{validSubdomain})*#{validDomainName}\.[a-z]{2,}(?::[0-9]+)?/i);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~]/i;
+  twttr.txt.regexen.validGeneralUrlPathChars = /[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~\.]/i;
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
