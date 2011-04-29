@@ -29,15 +29,15 @@ usernames, lists, hashtags and URLs.
 
     html = auto_link("link @user, please #request")
   end
-  
+
   # For Ruby on Rails you want to add this to app/helpers/application_helper.rb
   module ApplicationHelper
     include Twitter::Autolink
   end
-  
+
   # Now the auto_link function is available in every view. So in index.html.erb:
   <%= auto_link("link @user, please #request") %>
-  
+
 === Usernames
 
 Username extraction and linking matches all valid Twitter usernames but does
@@ -93,3 +93,19 @@ Thanks to everybody who has filed issues, provided feedback or contributed patch
   * Jean-Philippe Bougie - http://github.com/jpbougie
 
 * Anyone who has filed an issue. It helps. Really.
+
+=== Copyright and License
+
+Copyright 2011 Twitter, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this work except in compliance with the License.
+You may obtain a copy of the License in the LICENSE file, or at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
