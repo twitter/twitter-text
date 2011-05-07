@@ -379,7 +379,6 @@ if (!window.twttr) {
         for (var k in options) {
           htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
         }
-        options.htmlAttrs || "";
 
         var d = {
           before: before,
