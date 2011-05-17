@@ -222,6 +222,10 @@ tests:
       text: "Go to http://example.com/view/slug-url-?foo=bar"
       expected: ["http://example.com/view/slug-url-?foo=bar"]
 
+    - description: "DO NOT extract URLs beginning with a space"
+      text: "@user Try http:// example.com/path"
+      expected: []
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"

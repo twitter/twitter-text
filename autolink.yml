@@ -428,6 +428,10 @@ tests:
       text: "Go to http://example.com/view/slug-url-?foo=bar"
       expected: "Go to <a href=\"http://example.com/view/slug-url-?foo=bar\">http://example.com/view/slug-url-?foo=bar</a>"
 
+    - description: "Autolink URL should NOT link URLs with domains beginning in a space"
+      text: "@user Try http:// example.com/path"
+      expected: "@user Try http:// example.com/path"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
