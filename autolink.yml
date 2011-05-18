@@ -432,6 +432,10 @@ tests:
       text: "@user Try http:// example.com/path"
       expected: "@user Try http:// example.com/path"
 
+    - description: "Autolink URL should NOT link URLs with domains beginning in a non-breaking space (U+00A0)"
+      text: "@user Try http:// example.com/path"
+      expected: "@user Try http:// example.com/path"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."

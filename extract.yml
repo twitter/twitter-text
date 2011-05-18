@@ -226,6 +226,10 @@ tests:
       text: "@user Try http:// example.com/path"
       expected: []
 
+    - description: "DO NOT extract URLs beginning with a non-breaking space (U+00A0)"
+      text: "@user Try http:// example.com/path"
+      expected: []
+
     - description: "Extract URLs with underscores and dashes in the subdomain"
       text: "test http://sub_domain-dash.twitter.com"
       expected: ["http://sub_domain-dash.twitter.com"]
