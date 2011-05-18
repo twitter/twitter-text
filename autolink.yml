@@ -64,6 +64,7 @@ tests:
     - description: "Autolink usernames that are followed by international characters"
       text: "@foo îs in the house"
       expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/foo\">foo</a> îs in the house"
+
   lists:
     - description: "Autolink list preceded by a space"
       text: "text @username/list"
@@ -182,6 +183,13 @@ tests:
       text: "#hashétag"
       expected: "<a href=\"http://twitter.com/search?q=%23hashétag\" title=\"#hashétag\" class=\"tweet-url hashtag\">#hashétag</a>"
 
+    - description: "Autolink hashtags in Korean"
+      text: "What is #트위터 anyway?"
+      expected: "What is <a href=\"http://twitter.com/search?q=%23트위터\" title=\"#트위터\" class=\"tweet-url hashtag\">#트위터</a> anyway?"
+
+    - description: "Autolink hashtags in Russian"
+      text: "What is #ашок anyway?"
+      expected: "What is <a href=\"http://twitter.com/search?q=%23ашок\" title=\"#ашок\" class=\"tweet-url hashtag\">#ашок</a> anyway?"
 
   urls:
     - description: "Autolink URL with pipe character"

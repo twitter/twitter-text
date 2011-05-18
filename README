@@ -29,7 +29,7 @@ If you are creating a new twitter-text library in a different programming langua
 
 3. Only expose the public API method and not the underlying regular expressions
   3.a. If your language or environment does not allow for this please make a comment to the effect
-  3.b. This prevent breakage when regular expressions need to change in fundamental ways
+  3.b. This prevents breakage when regular expressions need to change in fundamental ways
 
 == Submitting new conformance tests
 
@@ -40,6 +40,11 @@ If you are creating a new twitter-text library in a different programming langua
    * Please be sure to provide example input and output as well as a brief description of the problem.
 
 == Changelog
+
+  * v1.4.0 - 2011-05-18 [ Git tag v1.4.0 ]
+    * [FIX] Add support for Russian hashtags
+    * [FIX] Add support for Korean hashtags
+    * [DOC] Update README and License
 
   * v1.3.1 - 2010-12-03 - [ Git tag v1.3.1 ]
     * [DOC] Updated README with Changelog section

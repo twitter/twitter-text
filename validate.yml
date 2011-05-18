@@ -84,6 +84,14 @@ tests:
       text: "#12345"
       expected: false
 
+    - description: "Valid hashtag: Russian text"
+      text: "#ашок"
+      expected: true
+
+    - description: "Valid hashtag: Korean text"
+      text: "#트위터"
+      expected: true
+
   urls:
     - description: "Valid url: protocol + domain"
       text: "http://example.com"

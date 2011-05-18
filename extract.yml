@@ -324,6 +324,14 @@ tests:
       text: "this is not valid: # 会議中 ハッシュ"
       expected: []
 
+    - description: "Extract a hashtag in Korean"
+      text: "What is #트위터 anyway?"
+      expected: ["트위터"]
+
+    - description: "Extract a hashtag in Russian"
+      text: "What is #ашок anyway?"
+      expected: ["ашок"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
