@@ -54,6 +54,13 @@ if (!window.twttr) {
     });
   }
 
+  function addCharsToCharClass(charClass, start, end) {
+    for (var i = start; i <= end; i++) {
+      charClass.push(String.fromCharCode(i));
+    }
+    return charClass;
+  }
+
   // Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
   // to access both the list of characters and a pattern suitible for use with String#split
   // Taken from: ActiveSupport::Multibyte::Handlers::UTF8Handler::UNICODE_WHITESPACE
@@ -70,14 +77,8 @@ if (!window.twttr) {
     fromCode(0x205F), // White_Space # Zs       MEDIUM MATHEMATICAL SPACE
     fromCode(0x3000)  // White_Space # Zs       IDEOGRAPHIC SPACE
   ];
-
-  for (var i = 0x009; i <= 0x000D; i++) { // White_Space # Cc   [5] <control-0009>..<control-000D>
-    UNICODE_SPACES.push(String.fromCharCode(i));
-  }
-
-  for (var i = 0x2000; i <= 0x200A; i++) { // White_Space # Zs  [11] EN QUAD..HAIR SPACE
-    UNICODE_SPACES.push(String.fromCharCode(i));
-  }
+  addCharsToCharClass(UNICODE_SPACES, 0x009, 0x00D); // White_Space # Cc   [5] <control-0009>..<control-000D>
+  addCharsToCharClass(UNICODE_SPACES, 0x2000, 0x200A); // White_Space # Zs  [11] EN QUAD..HAIR SPACE
 
   twttr.txt.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
   twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~/;
@@ -86,6 +87,18 @@ if (!window.twttr) {
   twttr.txt.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
   twttr.txt.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
 
+  var nonLatinHashtagChars = [];
+  // Cyrillic
+  addCharsToCharClass(nonLatinHashtagChars, 0x0400, 0x04ff); // Cyrillic
+  addCharsToCharClass(nonLatinHashtagChars, 0x0500, 0x0527); // Cyrillic Supplement
+  // Hangul (Korean)
+  addCharsToCharClass(nonLatinHashtagChars, 0x1100, 0x11ff); // Hangul Jamo
+  addCharsToCharClass(nonLatinHashtagChars, 0x3130, 0x3185); // Hangul Compatibility Jamo
+  addCharsToCharClass(nonLatinHashtagChars, 0xA960, 0xA97F); // Hangul Jamo Extended-A
+  addCharsToCharClass(nonLatinHashtagChars, 0xAC00, 0xD7AF); // Hangul Syllables
+  addCharsToCharClass(nonLatinHashtagChars, 0xD7B0, 0xD7FF); // Hangul Jamo Extended-B
+
+  twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
   twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ\\303\\277");
   twttr.txt.regexen.latenAccents = regexSupplant(/[#{latinAccentChars}]+/);
@@ -93,8 +106,8 @@ if (!window.twttr) {
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // A hashtag must contain latin characters, numbers and underscores, but not all numbers.
-  twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}]/i);
-  twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}]/i);
+  twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(^|[^0-9A-Z&\/\?]+)(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
   twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
