@@ -42,13 +42,24 @@ module Twitter
     # Excludes 0xd7 from the range (the multiplication sign, confusable with "x").
     # Also excludes 0xf7, the division sign
     LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
+    NON_LATIN_HASHTAG_CHARS = [
+      # Cyrillic (Russian, Ukrainian, etc.)
+      (0x0400..0x04ff).to_a, # Cyrillic
+      (0x0500..0x0527).to_a, # Cyrillic Supplement
+      # Hangul (Korean)
+      (0x1100..0x11ff).to_a, # Hangul Jamo
+      (0x3130..0x3185).to_a, # Hangul Compatibility Jamo
+      (0xA960..0xA97F).to_a, # Hangul Jamo Extended-A
+      (0xAC00..0xD7AF).to_a, # Hangul Syllables
+      (0xD7B0..0xD7FF).to_a # Hangul Jamo Extended-B
+    ].flatten.pack('U*').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
     REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
-    HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}]/io
-    HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}]/io
+    HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}]/io
+    HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}]/io
     REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/\?]+)(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
