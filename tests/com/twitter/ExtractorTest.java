@@ -11,7 +11,7 @@ public class ExtractorTest extends TestCase {
   protected Extractor extractor;
 
   public static Test suite() {
-    Class[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class };
+    Class[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, UrlTest.class };
     return new TestSuite(testClasses);
   }
 
@@ -35,7 +35,7 @@ public class ExtractorTest extends TestCase {
   }
 
   /**
-   * Tests for the extractMentionedScreennames method
+   * Tests for the extractMentionedScreennames{WithIndicies} methods
    */
   public static class MentionTest extends ExtractorTest {
     public void testMentionAtTheBeginning() {
@@ -57,12 +57,23 @@ public class ExtractorTest extends TestCase {
       List<String> extracted = extractor.extractMentionedScreennames("mention @user1 here and @user2 here");
       assertList("Failed to extract multiple mentioned users", new String[]{"user1", "user2"}, extracted);
     }
+
+    public void testMentionWithIndicies() {
+      List<Extractor.Entity> extracted = extractor.extractMentionedScreennamesWithIndicies(" @user1 mention @user2 here @user3 ");
+      assertEquals(extracted.size(), 3);
+      assertEquals(extracted.get(0).start.intValue(), 1);
+      assertEquals(extracted.get(0).end.intValue(), 7);
+      assertEquals(extracted.get(1).start.intValue(), 16);
+      assertEquals(extracted.get(1).end.intValue(), 22);
+      assertEquals(extracted.get(2).start.intValue(), 28);
+      assertEquals(extracted.get(2).end.intValue(), 34);
+    }
   }
 
    /**
    * Tests for the extractHashtags method
    */
-  public static class HashtagTest extends ExtractorTest {
+  public static class UrlTest extends ExtractorTest {
     public void testHashtagAtTheBeginning() {
       List<String> extracted = extractor.extractHashtags("#hashtag mention");
       assertList("Failed to extract hashtag at the beginning", new String[]{"hashtag"}, extracted);
@@ -84,6 +95,15 @@ public class ExtractorTest extends TestCase {
     }
   }
 
+  public static class HashtagTest extends ExtractorTest {
+   public void testUrlWithIndicies() {
+      List<Extractor.Entity> extracted = extractor.extractURLsWithIndicies(" http://t.co url http://www.twitter.com ");
+      assertEquals(extracted.get(0).start.intValue(), 0);
+      assertEquals(extracted.get(0).end.intValue(), 12);
+      assertEquals(extracted.get(1).start.intValue(), 16);
+      assertEquals(extracted.get(1).end.intValue(), 39);
+   }
+  }
   /**
    * Helper method for asserting that the List of extracted Strings match the expected values.
    *
