@@ -11,7 +11,7 @@ public class ExtractorTest extends TestCase {
   protected Extractor extractor;
 
   public static Test suite() {
-    Class[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, UrlTest.class };
+    Class[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, URLTest.class };
     return new TestSuite(testClasses);
   }
 
@@ -73,7 +73,7 @@ public class ExtractorTest extends TestCase {
    /**
    * Tests for the extractHashtags method
    */
-  public static class UrlTest extends ExtractorTest {
+  public static class HashtagTest extends ExtractorTest {
     public void testHashtagAtTheBeginning() {
       List<String> extracted = extractor.extractHashtags("#hashtag mention");
       assertList("Failed to extract hashtag at the beginning", new String[]{"hashtag"}, extracted);
@@ -95,7 +95,10 @@ public class ExtractorTest extends TestCase {
     }
   }
 
-  public static class HashtagTest extends ExtractorTest {
+   /**
+   * Tests for the extractURLsWithIndicies method
+   */
+  public static class URLTest extends ExtractorTest {
    public void testUrlWithIndicies() {
       List<Extractor.Entity> extracted = extractor.extractURLsWithIndicies(" http://t.co url http://www.twitter.com ");
       assertEquals(extracted.get(0).start.intValue(), 0);
