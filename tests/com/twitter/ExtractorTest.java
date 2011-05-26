@@ -100,9 +100,9 @@ public class ExtractorTest extends TestCase {
    */
   public static class URLTest extends ExtractorTest {
    public void testUrlWithIndicies() {
-      List<Extractor.Entity> extracted = extractor.extractURLsWithIndicies(" http://t.co url http://www.twitter.com ");
+      List<Extractor.Entity> extracted = extractor.extractURLsWithIndicies("http://t.co url https://www.twitter.com ");
       assertEquals(extracted.get(0).start.intValue(), 0);
-      assertEquals(extracted.get(0).end.intValue(), 12);
+      assertEquals(extracted.get(0).end.intValue(), 11);
       assertEquals(extracted.get(1).start.intValue(), 16);
       assertEquals(extracted.get(1).end.intValue(), 39);
    }

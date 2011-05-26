@@ -15,12 +15,16 @@ public class Extractor {
     protected String  type = null;
 
     public Entity(Matcher matcher, String valueType, Integer groupNumber) {
-      this.start = matcher.start(groupNumber)-1; // 0-indexed.
+      // Offset -1 on start index to include @, # symbols for mentions and hashtags
+      this(matcher, valueType, groupNumber, -1);
+    }
+
+    public Entity(Matcher matcher, String valueType, Integer groupNumber, int startOffset) {
+      this.start = matcher.start(groupNumber) + startOffset; // 0-indexed.
       this.end = matcher.end(groupNumber);
       this.value = matcher.group(groupNumber);
       this.type = valueType;
     }
-
     /** Constructor used from conformance data */
     public Entity(Map<String, Object> config, String valueType) {
       this.type = valueType;
@@ -167,7 +171,7 @@ public class Extractor {
     while (matcher.find()) {
       String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
       if (!protocol.isEmpty()) {
-        urls.add(new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL));
+        urls.add(new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0));
       }
     }
 
