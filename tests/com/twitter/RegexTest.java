@@ -25,6 +25,20 @@ public class RegexTest extends TestCase {
     assertTrue("Failed to correctly match a very long path", Regex.VALID_URL.matcher(longPathIsLong).find());
   }
 
+  public void testValidUrlDoesNotTakeForeverOnRepeatedPuctuationAtEnd() {
+    String repeatedPath = "Try http://example.com/path**********************";
+
+    long start = System.currentTimeMillis();
+    Matcher matcher = Regex.VALID_URL.matcher(repeatedPath);
+    boolean isValid = matcher.find();
+    long end = System.currentTimeMillis();
+
+    assertTrue("Repeated puctuation should still produce a valid URL", isValid);
+
+    long duration = (end - start);
+    assertTrue("Matching a repeated path end should take less than 10ms (took " + duration + "ms)", (duration < 10) );
+  }
+
   public void testExtractMentions() {
     assertCaptureCount(3, Regex.EXTRACT_MENTIONS, "sample @user mention");
   }
