@@ -94,7 +94,7 @@ public class Extractor {
    * @param text of the tweet from which to extract usernames
    * @return List of usernames referenced (without the leading @ sign)
    */
-  public List<Entity> extractMentionedScreennamesWithIndicies(String text) {
+  public List<Entity> extractMentionedScreennamesWithIndices(String text) {
     if (text == null) {
       return null;
     }
@@ -160,7 +160,7 @@ public class Extractor {
    * @param text of the tweet from which to extract URLs
    * @return List of URLs referenced.
    */
-  public List<Entity> extractURLsWithIndicies(String text) {
+  public List<Entity> extractURLsWithIndices(String text) {
     if (text == null) {
       return null;
     }

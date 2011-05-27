@@ -35,7 +35,7 @@ public class ExtractorTest extends TestCase {
   }
 
   /**
-   * Tests for the extractMentionedScreennames{WithIndicies} methods
+   * Tests for the extractMentionedScreennames{WithIndices} methods
    */
   public static class MentionTest extends ExtractorTest {
     public void testMentionAtTheBeginning() {
@@ -58,8 +58,8 @@ public class ExtractorTest extends TestCase {
       assertList("Failed to extract multiple mentioned users", new String[]{"user1", "user2"}, extracted);
     }
 
-    public void testMentionWithIndicies() {
-      List<Extractor.Entity> extracted = extractor.extractMentionedScreennamesWithIndicies(" @user1 mention @user2 here @user3 ");
+    public void testMentionWithIndices() {
+      List<Extractor.Entity> extracted = extractor.extractMentionedScreennamesWithIndices(" @user1 mention @user2 here @user3 ");
       assertEquals(extracted.size(), 3);
       assertEquals(extracted.get(0).start.intValue(), 1);
       assertEquals(extracted.get(0).end.intValue(), 7);
@@ -93,14 +93,25 @@ public class ExtractorTest extends TestCase {
       List<String> extracted = extractor.extractHashtags("text #hashtag1 #hashtag2");
       assertList("Failed to extract multiple hashtags", new String[]{"hashtag1", "hashtag2"}, extracted);
     }
+
+    public void testHashtagWithIndices() {
+      List<Extractor.Entity> extracted = extractor.extractHashtagsWithIndices(" #user1 mention #user2 here #user3 ");
+      assertEquals(extracted.size(), 3);
+      assertEquals(extracted.get(0).start.intValue(), 1);
+      assertEquals(extracted.get(0).end.intValue(), 7);
+      assertEquals(extracted.get(1).start.intValue(), 16);
+      assertEquals(extracted.get(1).end.intValue(), 22);
+      assertEquals(extracted.get(2).start.intValue(), 28);
+      assertEquals(extracted.get(2).end.intValue(), 34);
+    }
   }
 
    /**
-   * Tests for the extractURLsWithIndicies method
+   * Tests for the extractURLsWithIndices method
    */
   public static class URLTest extends ExtractorTest {
-   public void testUrlWithIndicies() {
-      List<Extractor.Entity> extracted = extractor.extractURLsWithIndicies("http://t.co url https://www.twitter.com ");
+   public void testUrlWithIndices() {
+      List<Extractor.Entity> extracted = extractor.extractURLsWithIndices("http://t.co url https://www.twitter.com ");
       assertEquals(extracted.get(0).start.intValue(), 0);
       assertEquals(extracted.get(0).end.intValue(), 11);
       assertEquals(extracted.get(1).start.intValue(), 16);
