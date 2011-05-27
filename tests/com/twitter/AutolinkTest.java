@@ -33,6 +33,14 @@ public class AutolinkTest extends TestCase {
     assertAutolink(expected, linker.autoLinkURLs(tweet));
   }
 
+  /** See also: https://github.com/mzsanford/twitter-text-java/issues/8 */
+  public void testURLWithDollarThatLooksLikeARegex() {
+    linker.setNoFollow(false);
+    String tweet = "Url: http://example.com/$ABC";
+    String expected = "Url: <a href=\"http://example.com/$ABC\">http://example.com/$ABC</a>";
+    assertAutolink(expected, linker.autoLinkURLs(tweet));
+  }
+
   protected void assertAutolink(String expected, String linked) {
     assertEquals("Autolinked text should not equal the input", expected, linked);
   }
