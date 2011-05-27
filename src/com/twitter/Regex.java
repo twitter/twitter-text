@@ -17,6 +17,9 @@ public class Regex {
   private static final String URL_VALID_DOMAIN = "(?:[^\\p{Punct}\\s][\\.-](?=[^\\p{Punct}\\s])|[^\\p{Punct}\\s]){1,}\\.[a-z]{2,}(?::[0-9]+)?";
 
   private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~]";
+  private static final String URL_VALID_PATH_CHARS_WITHOUT_SLASH = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^/]]";
+  private static final String URL_VALID_PATH_CHARS_WITHOUT_COMMA = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^,]]";
+
   /** Allow URL paths to contain balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
    *  2. Used in IIS sessions like /S(dfd346)/
@@ -24,8 +27,8 @@ public class Regex {
   private static final String URL_BALANCE_PARENS = "(?:\\(" + URL_VALID_GENERAL_PATH_CHARS + "+\\))";
   private static final String URL_VALID_URL_PATH_CHARS = "(?:" +
     URL_BALANCE_PARENS +
-    "|@" + URL_VALID_GENERAL_PATH_CHARS + "+/" +
-    "|[\\.,]?" + URL_VALID_GENERAL_PATH_CHARS + "+" +
+    "|@" + URL_VALID_PATH_CHARS_WITHOUT_SLASH + "++/" +
+    "|(?:[.,]*+" + URL_VALID_PATH_CHARS_WITHOUT_COMMA + ")++" +
   ")";
 
   /** Valid end-of-path chracters (so /foo. does not gobble the period).
@@ -42,10 +45,7 @@ public class Regex {
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s) and optional port number
       "(/" +
         "(?:" +
-          URL_VALID_URL_PATH_CHARS + "+" +
-            URL_VALID_URL_PATH_ENDING_CHARS + "|" +                //     1+ path chars and a valid last char
-          URL_VALID_URL_PATH_CHARS + "+" +
-            URL_VALID_URL_PATH_ENDING_CHARS + "?|" +               //     Optional last char to handle /@foo/ case
+          URL_VALID_URL_PATH_CHARS + "+|" +                        //     1+ path chars and a valid last char
           URL_VALID_URL_PATH_ENDING_CHARS +                        //     Just a # case
         ")?" +
       ")?" +                                                       //  $6 URL Path and anchor

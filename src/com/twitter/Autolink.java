@@ -177,9 +177,9 @@ public class Autolink {
         matcher.appendReplacement(sb,
           String.format("$%s<a href=\"%s\"%s>%s</a>",
             Regex.VALID_URL_GROUP_BEFORE,
-            url,
+            url.replaceAll("\\$", "\\\\\\$"),
             noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
-            url
+            url.replaceAll("\\$", "\\\\\\$")
           ));
         continue;
       }
