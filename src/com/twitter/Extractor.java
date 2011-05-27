@@ -15,12 +15,16 @@ public class Extractor {
     protected String  type = null;
 
     public Entity(Matcher matcher, String valueType, Integer groupNumber) {
-      this.start = matcher.start(groupNumber)-1; // 0-indexed.
+      // Offset -1 on start index to include @, # symbols for mentions and hashtags
+      this(matcher, valueType, groupNumber, -1);
+    }
+
+    public Entity(Matcher matcher, String valueType, Integer groupNumber, int startOffset) {
+      this.start = matcher.start(groupNumber) + startOffset; // 0-indexed.
       this.end = matcher.end(groupNumber);
       this.value = matcher.group(groupNumber);
       this.type = valueType;
     }
-
     /** Constructor used from conformance data */
     public Entity(Map<String, Object> config, String valueType) {
       this.type = valueType;
@@ -85,6 +89,28 @@ public class Extractor {
   }
 
   /**
+   * Extract @username references from Tweet text. A mention is an occurance of @username anywhere in a Tweet.
+   *
+   * @param text of the tweet from which to extract usernames
+   * @return List of usernames referenced (without the leading @ sign)
+   */
+  public List<Entity> extractMentionedScreennamesWithIndices(String text) {
+    if (text == null) {
+      return null;
+    }
+
+    List<Entity> extracted = new ArrayList<Entity>();
+    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
+    while (matcher.find()) {
+      if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_AFTER)).matches()) {
+        extracted.add(new Entity(matcher, "mention", Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
+      }
+    }
+    return extracted;
+  }
+
+
+  /**
    * Extract a @username reference from the beginning of Tweet text. A reply is an occurance of @username at the
    * beginning of a Tweet, preceded by 0 or more spaces.
    *
@@ -127,6 +153,31 @@ public class Extractor {
 
     return urls;
   }
+
+  /**
+   * Extract URL references from Tweet text.
+   *
+   * @param text of the tweet from which to extract URLs
+   * @return List of URLs referenced.
+   */
+  public List<Entity> extractURLsWithIndices(String text) {
+    if (text == null) {
+      return null;
+    }
+
+    List<Entity> urls = new ArrayList<Entity>();
+
+    Matcher matcher = Regex.VALID_URL.matcher(text);
+    while (matcher.find()) {
+      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
+      if (!protocol.isEmpty()) {
+        urls.add(new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0));
+      }
+    }
+
+    return urls;
+  }
+
 
   /**
    * Extract #hashtag references from Tweet text.
