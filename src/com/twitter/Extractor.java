@@ -9,10 +9,10 @@ import java.util.regex.*;
  */
 public class Extractor {
   public static class Entity {
-   public Integer start = null;
-   public Integer end = null;
-   public String  value = null;
-   public String  type = null;
+    public Integer start = null;
+    public Integer end = null;
+    public String  value = null;
+    public String  type = null;
 
     public Entity(Matcher matcher, String valueType, Integer groupNumber) {
       // Offset -1 on start index to include @, # symbols for mentions and hashtags
