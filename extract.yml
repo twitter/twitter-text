@@ -332,6 +332,42 @@ tests:
       text: "What is #ашок anyway?"
       expected: ["ашок"]
 
+    - description: "Extract a starting katakana hashtag"
+      text: "#カタカナ is a hashtag"
+      expected: ["カタカナ"]
+
+    - description: "Extract a starting hiragana hashtag"
+      text: "#ひらがな FTW!"
+      expected: ["ひらがな"]
+
+    - description: "Extract a starting kanji hashtag"
+      text: "#漢字 is the future"
+      expected: ["漢字"]
+
+    - description: "Extract a trailing katakana hashtag"
+      text: "Hashtag #カタカナ"
+      expected: ["カタカナ"]
+
+    - description: "Extract a trailing hiragana hashtag"
+      text: "Japanese hashtags #ひらがな"
+      expected: ["ひらがな"]
+
+    - description: "Extract a trailing kanji hashtag"
+      text: "Study time #漢字"
+      expected: ["漢字"]
+
+    - description: "Extract a central katakana hashtag"
+      text: "See my #カタカナ hashtag?"
+      expected: ["カタカナ"]
+
+    - description: "Extract a central hiragana hashtag"
+      text: "Study #ひらがな for fun and profit"
+      expected: ["ひらがな"]
+
+    - description: "Extract a central kanji hashtag"
+      text: "Some say #漢字 is the past. what do they know?"
+      expected: ["漢字"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
