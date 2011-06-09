@@ -504,6 +504,10 @@ tests:
       text: "Czech out sweet deals at http://mrs.domain-dash.biz ok?"
       expected: "Czech out sweet deals at <a href=\"http://mrs.domain-dash.biz\">http://mrs.domain-dash.biz</a> ok?"
 
+    - description: "Autolink an IDN (punycode) domain and TLD"
+      text: "See also: http://xn--80abe5aohbnkjb.xn--p1ai/"
+      expected: "See also: <a href=\"http://xn--80abe5aohbnkjb.xn--p1ai/\">http://xn--80abe5aohbnkjb.xn--p1ai/</a>"
+
     - description: "Autolink URL should NOT autolink www...foo"
       text: "Is www...foo a valid URL?"
       expected: "Is www...foo a valid URL?"
