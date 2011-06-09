@@ -59,6 +59,22 @@ public class Extractor {
     public int hashCode() {
       return this.type.hashCode() + this.value.hashCode() + this.start + this.end;
     }
+
+    public Integer getStart() {
+      return start;
+    }
+
+    public Integer getEnd() {
+      return end;
+    }
+    
+    public String getValue() {
+      return value;
+    }
+
+    public String getType() {
+      return type;
+    }
   }
 
   /**

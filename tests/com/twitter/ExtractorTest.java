@@ -61,12 +61,12 @@ public class ExtractorTest extends TestCase {
     public void testMentionWithIndices() {
       List<Extractor.Entity> extracted = extractor.extractMentionedScreennamesWithIndices(" @user1 mention @user2 here @user3 ");
       assertEquals(extracted.size(), 3);
-      assertEquals(extracted.get(0).start.intValue(), 1);
-      assertEquals(extracted.get(0).end.intValue(), 7);
-      assertEquals(extracted.get(1).start.intValue(), 16);
-      assertEquals(extracted.get(1).end.intValue(), 22);
-      assertEquals(extracted.get(2).start.intValue(), 28);
-      assertEquals(extracted.get(2).end.intValue(), 34);
+      assertEquals(extracted.get(0).getStart().intValue(), 1);
+      assertEquals(extracted.get(0).getEnd().intValue(), 7);
+      assertEquals(extracted.get(1).getStart().intValue(), 16);
+      assertEquals(extracted.get(1).getEnd().intValue(), 22);
+      assertEquals(extracted.get(2).getStart().intValue(), 28);
+      assertEquals(extracted.get(2).getEnd().intValue(), 34);
     }
   }
 
@@ -97,12 +97,12 @@ public class ExtractorTest extends TestCase {
     public void testHashtagWithIndices() {
       List<Extractor.Entity> extracted = extractor.extractHashtagsWithIndices(" #user1 mention #user2 here #user3 ");
       assertEquals(extracted.size(), 3);
-      assertEquals(extracted.get(0).start.intValue(), 1);
-      assertEquals(extracted.get(0).end.intValue(), 7);
-      assertEquals(extracted.get(1).start.intValue(), 16);
-      assertEquals(extracted.get(1).end.intValue(), 22);
-      assertEquals(extracted.get(2).start.intValue(), 28);
-      assertEquals(extracted.get(2).end.intValue(), 34);
+      assertEquals(extracted.get(0).getStart().intValue(), 1);
+      assertEquals(extracted.get(0).getEnd().intValue(), 7);
+      assertEquals(extracted.get(1).getStart().intValue(), 16);
+      assertEquals(extracted.get(1).getEnd().intValue(), 22);
+      assertEquals(extracted.get(2).getStart().intValue(), 28);
+      assertEquals(extracted.get(2).getEnd().intValue(), 34);
     }
   }
 
@@ -112,10 +112,10 @@ public class ExtractorTest extends TestCase {
   public static class URLTest extends ExtractorTest {
    public void testUrlWithIndices() {
       List<Extractor.Entity> extracted = extractor.extractURLsWithIndices("http://t.co url https://www.twitter.com ");
-      assertEquals(extracted.get(0).start.intValue(), 0);
-      assertEquals(extracted.get(0).end.intValue(), 11);
-      assertEquals(extracted.get(1).start.intValue(), 16);
-      assertEquals(extracted.get(1).end.intValue(), 39);
+      assertEquals(extracted.get(0).getStart().intValue(), 0);
+      assertEquals(extracted.get(0).getEnd().intValue(), 11);
+      assertEquals(extracted.get(1).getStart().intValue(), 16);
+      assertEquals(extracted.get(1).getEnd().intValue(), 39);
    }
   }
   /**
