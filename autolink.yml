@@ -299,6 +299,22 @@ tests:
       text: "#ひらがな"
       expected: "<a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a>"
 
+    - description: "Autolink a Kanji/Katakana mix hashtag"
+      text: "日本語ハッシュタグ #日本語ハッシュタグ"
+      expected: "日本語ハッシュタグ <a href="http://twitter.com/search?q=%23日本語ハッシュタグ" title="#日本語ハッシュタグ" class="tweet-url hashtag">#日本語ハッシュタグ</a>"
+
+    - description: "DO NOT autolink a hashtag without a preceding space"
+      text: "日本語ハッシュタグ#日本語ハッシュタグ"
+      expected: "日本語ハッシュタグ#日本語ハッシュタグ"
+
+    - description: "DO NOT include a punctuation in a hashtag"
+      text: "#日本語ハッシュタグ。"
+      expected: "<a href="http://twitter.com/search?q=%23日本語ハッシュタグ" title="#日本語ハッシュタグ" class="tweet-url hashtag">#日本語ハッシュタグ</a>。"
+
+    - description: "Autolink a hashtag after a punctuation"
+      text: "日本語ハッシュタグ。#日本語ハッシュタグ"
+      expected: "日本語ハッシュタグ。<a href="http://twitter.com/search?q=%23日本語ハッシュタグ" title="#日本語ハッシュタグ" class="tweet-url hashtag">#日本語ハッシュタグ</a>"
+
   urls:
     - description: "Autolink URL with pipe character"
       text: "text http://example.com/pipe|character?yes|pipe|character"

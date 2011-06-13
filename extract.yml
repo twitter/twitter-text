@@ -368,6 +368,26 @@ tests:
       text: "Some say #漢字 is the past. what do they know?"
       expected: ["漢字"]
 
+    - description: "Extract a Kanji/Katakana mixed hashtag"
+      text: "日本語ハッシュタグテスト #日本語ハッシュタグ"
+      expected: ["日本語ハッシュタグ"]
+
+    - description: "Extract a hashtag after a punctuation"
+      text: "日本語ハッシュテスト。#日本語ハッシュタグ"
+      expected: ["日本語ハッシュタグ"]
+
+    - description: "DO NOT include a punctuation in a hashtag"
+      text: "#日本語ハッシュタグ。"
+      expected: ["日本語ハッシュタグ"]
+
+    - description: "Extract a full-width Alnum hashtag"
+      text: "全角英数字ハッシュタグ ＃ｈａｓｈｔａｇ１２３"
+      expected: ["＃ｈａｓｈｔａｇ１２３"]
+
+    - description: "DO NOT extract a hashtag without a preceding space"
+      text: "日本語ハッシュタグ#日本語ハッシュタグ"
+      expected: []
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
