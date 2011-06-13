@@ -193,115 +193,115 @@ tests:
 
     - description: "Autolink a katakana hashtag preceded by a space and followed by a space"
       text: "カタカナ #カタカナ カタカナ"
-      expected: "カタカナ <a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a> カタカナ"
+      expected: "カタカナ <a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a space and followed by a bracket"
       text: "カタカナ #カタカナ」カタカナ"
-      expected: "カタカナ <a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a>」カタカナ"
+      expected: "カタカナ <a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a space and followed by a edge"
       text: "カタカナ #カタカナ"
-      expected: "カタカナ <a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a>"
+      expected: "カタカナ <a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
 
     - description: "Autolink a katakana hashtag preceded by a bracket and followed by a space"
       text: "カタカナ「#カタカナ カタカナ"
-      expected: "カタカナ「<a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a> カタカナ"
+      expected: "カタカナ「<a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a bracket and followed by a bracket"
       text: "カタカナ「#カタカナ」カタカナ"
-      expected: "カタカナ「<a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a>」カタカナ"
+      expected: "カタカナ「<a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a bracket and followed by a edge"
       text: "カタカナ「#カタカナ"
-      expected: "カタカナ「<a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a>"
+      expected: "カタカナ「<a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
 
     - description: "Autolink a katakana hashtag preceded by a edge and followed by a space"
       text: "#カタカナ カタカナ"
-      expected: "<a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a> カタカナ"
+      expected: "<a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a edge and followed by a bracket"
       text: "#カタカナ」カタカナ"
-      expected: "<a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a>」カタカナ"
+      expected: "<a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a edge and followed by a edge"
       text: "#カタカナ"
-      expected: "<a href="http://twitter.com/search?q=%23カタカナ" title="#カタカナ" class="tweet-url hashtag">#カタカナ</a>"
+      expected: "<a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
 
     - description: "Autolink a kanji hashtag preceded by a space and followed by a space"
       text: "漢字 #漢字 漢字"
-      expected: "漢字 <a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a> 漢字"
+      expected: "漢字 <a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
 
     - description: "Autolink a kanji hashtag preceded by a space and followed by a bracket"
       text: "漢字 #漢字」漢字"
-      expected: "漢字 <a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a>」漢字"
+      expected: "漢字 <a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
 
     - description: "Autolink a kanji hashtag preceded by a space and followed by a edge"
       text: "漢字 #漢字"
-      expected: "漢字 <a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a>"
+      expected: "漢字 <a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
 
     - description: "Autolink a kanji hashtag preceded by a bracket and followed by a space"
       text: "漢字「#漢字 漢字"
-      expected: "漢字「<a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a> 漢字"
+      expected: "漢字「<a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
 
     - description: "Autolink a kanji hashtag preceded by a bracket and followed by a bracket"
       text: "漢字「#漢字」漢字"
-      expected: "漢字「<a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a>」漢字"
+      expected: "漢字「<a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
 
     - description: "Autolink a kanji hashtag preceded by a bracket and followed by a edge"
       text: "漢字「#漢字"
-      expected: "漢字「<a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a>"
+      expected: "漢字「<a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
 
     - description: "Autolink a kanji hashtag preceded by a edge and followed by a space"
       text: "#漢字 漢字"
-      expected: "<a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a> 漢字"
+      expected: "<a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
 
     - description: "Autolink a kanji hashtag preceded by a edge and followed by a bracket"
       text: "#漢字」漢字"
-      expected: "<a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a>」漢字"
+      expected: "<a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
 
     - description: "Autolink a kanji hashtag preceded by a edge and followed by a edge"
       text: "#漢字"
-      expected: "<a href="http://twitter.com/search?q=%23漢字" title="#漢字" class="tweet-url hashtag">#漢字</a>"
+      expected: "<a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a space"
       text: "ひらがな #ひらがな ひらがな"
-      expected: "ひらがな <a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a> ひらがな"
+      expected: "ひらがな <a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a bracket"
       text: "ひらがな #ひらがな」ひらがな"
-      expected: "ひらがな <a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a>」ひらがな"
+      expected: "ひらがな <a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a edge"
       text: "ひらがな #ひらがな"
-      expected: "ひらがな <a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a>"
+      expected: "ひらがな <a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
 
     - description: "Autolink a hiragana hashtag preceded by a bracket and followed by a space"
       text: "ひらがな「#ひらがな ひらがな"
-      expected: "ひらがな「<a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a> ひらがな"
+      expected: "ひらがな「<a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a bracket and followed by a bracket"
       text: "ひらがな「#ひらがな」ひらがな"
-      expected: "ひらがな「<a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a>」ひらがな"
+      expected: "ひらがな「<a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a bracket and followed by a edge"
       text: "ひらがな「#ひらがな"
-      expected: "ひらがな「<a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a>"
+      expected: "ひらがな「<a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
 
     - description: "Autolink a hiragana hashtag preceded by a edge and followed by a space"
       text: "#ひらがな ひらがな"
-      expected: "<a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a> ひらがな"
+      expected: "<a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a edge and followed by a bracket"
       text: "#ひらがな」ひらがな"
-      expected: "<a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a>」ひらがな"
+      expected: "<a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a edge and followed by a edge"
       text: "#ひらがな"
-      expected: "<a href="http://twitter.com/search?q=%23ひらがな" title="#ひらがな" class="tweet-url hashtag">#ひらがな</a>"
+      expected: "<a href=\"http://twitter.com/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
 
     - description: "Autolink a Kanji/Katakana mix hashtag"
       text: "日本語ハッシュタグ #日本語ハッシュタグ"
-      expected: "日本語ハッシュタグ <a href="http://twitter.com/search?q=%23日本語ハッシュタグ" title="#日本語ハッシュタグ" class="tweet-url hashtag">#日本語ハッシュタグ</a>"
+      expected: "日本語ハッシュタグ <a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>"
 
     - description: "DO NOT autolink a hashtag without a preceding space"
       text: "日本語ハッシュタグ#日本語ハッシュタグ"
@@ -309,11 +309,11 @@ tests:
 
     - description: "DO NOT include a punctuation in a hashtag"
       text: "#日本語ハッシュタグ。"
-      expected: "<a href="http://twitter.com/search?q=%23日本語ハッシュタグ" title="#日本語ハッシュタグ" class="tweet-url hashtag">#日本語ハッシュタグ</a>。"
+      expected: "<a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>。"
 
     - description: "Autolink a hashtag after a punctuation"
       text: "日本語ハッシュタグ。#日本語ハッシュタグ"
-      expected: "日本語ハッシュタグ。<a href="http://twitter.com/search?q=%23日本語ハッシュタグ" title="#日本語ハッシュタグ" class="tweet-url hashtag">#日本語ハッシュタグ</a>"
+      expected: "日本語ハッシュタグ。<a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>"
 
   urls:
     - description: "Autolink URL with pipe character"

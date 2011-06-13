@@ -44,7 +44,7 @@ If you are creating a new twitter-text library in a different programming langua
   * v1.4.0 - 2011-05-18 [ Git tag v1.4.0 ]
     * [FIX] Add support for Russian hashtags
     * [FIX] Add support for Korean hashtags
-    * [FIX] Add support for Japanese hashtags (all Katakana, all Hiragana or all Kanji, not mized scirpt)
+    * [FIX] Add support for Japanese hashtags (Katakana, Hiragana and Kanji)
     * [FIX] Add support for autolinking punycode domain names and TLDs (via punycode)
     * [DOC] Update README and License
 
