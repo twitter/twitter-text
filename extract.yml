@@ -390,7 +390,7 @@ tests:
 
     - description: "Extract a full-width Alnum hashtag"
       text: "全角英数字ハッシュタグ ＃ｈａｓｈｔａｇ１２３"
-      expected: ["＃ｈａｓｈｔａｇ１２３"]
+      expected: ["ｈａｓｈｔａｇ１２３"]
 
     - description: "DO NOT extract a hashtag without a preceding space"
       text: "日本語ハッシュタグ#日本語ハッシュタグ"
