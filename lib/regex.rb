@@ -24,6 +24,7 @@ module Twitter
           0x205F,          # White_Space # Zs       MEDIUM MATHEMATICAL SPACE
           0x3000,          # White_Space # Zs       IDEOGRAPHIC SPACE
         ].flatten.freeze
+    SPACE_CHAR_CLASS_VALUE = Regexp.new(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join(''))
     REGEXEN[:spaces] = Regexp.new(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|'))
 
     REGEXEN[:at_signs] = /[@＠]/
@@ -57,19 +58,41 @@ module Twitter
 
     REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
+    CJ_HASHTAG_CHARACTERS = [
+      (0x30A1..0x30FA).to_a, # Katakana (full-width)
+      (0xFF66..0xFF9D).to_a, # Katakana (half-width)
+      (0xFF10..0xFF19).to_a, (0xFF21..0xFF3A).to_a, (0xFF41..0xFF5A).to_a, # Latin (full-width)
+      (0x3041..0x3096).to_a, # Hiragana
+      (0x3400..0x4DBF).to_a, # Kanji (CJK Extension A)
+      (0x4E00..0x9FFF).to_a, # Kanji (Unified)
+      (0x20000..0x2A6DF).to_a, # Kanji (CJK Extension B)
+      (0x2A700..0x2B73F).to_a, # Kanji (CJK Extension C)
+      (0x2B740..0x2B81F).to_a, # Kanji (CJK Extension D)
+      (0x2F800..0x2FA1F).to_a # Kanji (CJK supplement)
+    ].flatten.pack('U*').freeze
+
+    CJ_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|\.)/
+
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
     HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}]/io
     HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}]/io
-    REGEXEN[:auto_link_hashtags] = /(^|[^0-9A-Z&\/\?]+)(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
+
+    CJ_HASHTAG = /(#{CJ_BOUNDARY})(#|＃)([#{CJ_HASHTAG_CHARACTERS}]+)(?=#{CJ_BOUNDARY})/o
+    NON_CJ_HASHTAG = /(^|[^0-9A-Z&\/\?]+)(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
+
+    REGEXEN[:auto_link_hashtags] = /#{NON_CJ_HASHTAG}/io
+    REGEXEN[:auto_link_cj_hashtags] = /#{CJ_HASHTAG}/io
+
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
     REGEXEN[:valid_preceding_chars] = /(?:[^-\/"':!=A-Z0-9_@＠]|^|\:)/i
 
-    REGEXEN[:valid_subdomain] = /(?:[^[:punct:]\s](?:[_-]|[^[:punct:]\s])*)?[^[:punct:]\s]\./
-    REGEXEN[:valid_domain_name] = /(?:[^[:punct:]\s](?:[-]|[^[:punct:]\s])*)?[^[:punct:]\s]/
-    REGEXEN[:valid_domain] = /#{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}\.[a-z]{2,}(?::[0-9]+)?/i
+    DOMAIN_EXCLUDE_PART = "[:punct:][:space:][:blank:]#{[0x00A0].pack('U')}"
+    REGEXEN[:valid_subdomain] = /(?:[^#{DOMAIN_EXCLUDE_PART}](?:[_-]|[^#{DOMAIN_EXCLUDE_PART}])*)?[^#{DOMAIN_EXCLUDE_PART}]\./
+    REGEXEN[:valid_domain_name] = /(?:[^#{DOMAIN_EXCLUDE_PART}](?:[-]|[^#{DOMAIN_EXCLUDE_PART}])*)?[^#{DOMAIN_EXCLUDE_PART}]/
+    REGEXEN[:valid_domain] = /#{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}\.(?:xn--[a-z0-9]{2,}|[a-z]{2,})(?::[0-9]+)?/i
 
     REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|\.]/i
     # Allow URL paths to contain balanced parens
