@@ -422,8 +422,8 @@ tests:
           indices: [7, 15]
 
     - description: "Extract a hastag in a string of multi-byte characters"
-      text: "会議中#hashtag会議中"
+      text: "会議中 #hashtag 会議中"
       expected:
         - hashtag: "hashtag"
-          indices: [3, 11]
+          indices: [4, 12]
 
