@@ -9,6 +9,12 @@ public class RegexTest extends TestCase {
   public void testAutoLinkHashtags() {
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#hashtag");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#caf\u00E9");
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#日本語ハッシュタグ");
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "＃日本語ハッシュタグ");
+
+    assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これはOK #ハッシュタグ").find());
+    assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これもOK。#ハッシュタグ").find());
+    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("これはダメ#ハッシュタグ").find());
   }
 
   public void testAutoLinkUsernamesOrLists() {
