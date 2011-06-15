@@ -26,9 +26,11 @@ public class Regex {
   /* URL related hash regex collection */
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"':!=A-Z0-9_@＠]+|^|\\:)";
 
-  private static final String URL_VALID_SUBDOMAIN = "(?:(?:[^\\p{Punct}\\s](?:[_-]|[^\\p{Punct}\\s])*)?[^\\p{Punct}\\s]\\.)";
-  private static final String URL_VALID_DOMAIN_NAME = "(?:[^\\p{Punct}\\s](?:[-]|[^\\p{Punct}\\s])*)?[^\\p{Punct}\\s]";
-  private static final String URL_VALID_DOMAIN = URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME + "\\.[a-z]{2,}(?::[0-9]+)?";
+  private static final String URL_VALID_CHARS = "[^\\p{Punct}\\s\\u00a0]";
+  private static final String URL_PUNYCODE = "xn--[0-9a-z]+";
+  private static final String URL_VALID_SUBDOMAIN = "(?:(?:" + URL_VALID_CHARS + "(?:[_-]|" + URL_VALID_CHARS + ")*)?" + URL_VALID_CHARS + "\\.)";
+  private static final String URL_VALID_DOMAIN_NAME = "(?:" + URL_VALID_CHARS + "(?:[-]|" + URL_VALID_CHARS + ")*)?" + URL_VALID_CHARS;
+  private static final String URL_VALID_DOMAIN = URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME + "\\.(?:" + URL_PUNYCODE + "|[a-z]{2,})(?::[0-9]+)?";
 
   private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~\\.\\|]";
   private static final String URL_VALID_PATH_CHARS_WITHOUT_SLASH = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^/]]";
