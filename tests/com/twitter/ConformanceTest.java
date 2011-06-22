@@ -73,7 +73,7 @@ public class ConformanceTest extends TestCase {
       for (Map<String, Object> configEntry : expectedConfig) {
         expected.add(new Extractor.Entity(configEntry, "hashtag"));
       }
-      
+
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
                    expected,
                    extractor.extractHashtagsWithIndices((String)testCase.get(KEY_INPUT)));
