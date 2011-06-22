@@ -67,7 +67,7 @@ public class Extractor {
     public Integer getEnd() {
       return end;
     }
-    
+
     public String getValue() {
       return value;
     }
