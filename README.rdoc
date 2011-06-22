@@ -89,6 +89,7 @@ Thanks to everybody who has filed issues, provided feedback or contributed patch
   * Patrick Ewing - http://github.com/hoverbird
   * Jeff Smick - http://github.com/sprsquish
   * Kenneth Kufluk - https://github.com/kennethkufluk
+  * Keita Fujii - https://github.com/keitaf
 
 * Patches from the community …
   * Jean-Philippe Bougie - http://github.com/jpbougie
