@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    twitter-text (1.4.3)
+    twitter-text (1.4.5)
       actionpack
 
 GEM
