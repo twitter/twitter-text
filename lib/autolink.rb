@@ -137,12 +137,6 @@ module Twitter
         text = $3
         text = yield(text) if block_given?
         "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" #{target_tag(options)}class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
-      end.gsub(Twitter::Regex[:auto_link_cj_hashtags]) do
-          before = $1
-          hash = $2
-          text = $3
-          text = yield(text) if block_given?
-          "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" #{target_tag(options)}class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
       end
     end
 

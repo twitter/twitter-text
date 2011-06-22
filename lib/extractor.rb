@@ -165,13 +165,6 @@ module Twitter
           :hashtag => hash_text,
           :indices => [start_position, end_position]
         }
-      end.scan(Twitter::Regex[:auto_link_cj_hashtags]) do |before, hash, hash_text|
-        start_position = $~.char_begin(2)
-        end_position = $~.char_end(3)
-        tags << {
-          :hashtag => hash_text,
-          :indices => [start_position, end_position]
-        }
       end
       tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last } if block_given?
       tags

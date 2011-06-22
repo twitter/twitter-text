@@ -71,17 +71,15 @@ module Twitter
       (0x2F800..0x2FA1F).to_a # Kanji (CJK supplement)
     ].flatten.pack('U*').freeze
 
-    CJ_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|\.)/
+    HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|\.|!)/
 
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
-    HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}]/io
-    HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}]/io
+    HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
+    HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
 
-    CJ_HASHTAG = /(#{CJ_BOUNDARY})(#|＃)([#{CJ_HASHTAG_CHARACTERS}]+)(?=#{CJ_BOUNDARY})/o
-    NON_CJ_HASHTAG = /(^|[^0-9A-Z&\/\?]+)(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
+    HASHTAG = /(#{HASHTAG_BOUNDARY})(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)(?=#{HASHTAG_BOUNDARY})/io
 
-    REGEXEN[:auto_link_hashtags] = /#{NON_CJ_HASHTAG}/io
-    REGEXEN[:auto_link_cj_hashtags] = /#{CJ_HASHTAG}/io
+    REGEXEN[:auto_link_hashtags] = /#{HASHTAG}/io
 
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
