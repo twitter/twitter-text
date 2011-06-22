@@ -157,7 +157,7 @@ tests:
 
     - description: "Autolink hashtag followed by Japanese"
       text: "text #hashtagの"
-      expected: "text <a href=\"http://twitter.com/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>の"
+      expected: "text <a href=\"http://twitter.com/search?q=%23hashtagの\" title=\"#hashtagの\" class=\"tweet-url hashtag\">#hashtagの</a>"
 
     - description: "Autolink hashtag preceded by full-width space (U+3000)"
       text: "text　#hashtag"
