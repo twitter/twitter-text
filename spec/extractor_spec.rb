@@ -236,17 +236,6 @@ describe Twitter::Extractor do
         end
       end
 
-      context "should NOT allow Japanese" do
-        %w(会議中 ハッシュ).each do |hashtag|
-          it "should NOT extract ##{hashtag}" do
-            @extractor.extract_hashtags("##{hashtag}").should == []
-          end
-
-          it "should NOT extract ##{hashtag} within text" do
-            @extractor.extract_hashtags("pre-text ##{hashtag} post-text").should == []
-          end
-        end
-      end
     end
 
     it "should not extract numeric hashtags" do
@@ -299,18 +288,6 @@ describe Twitter::Extractor do
 
         it "should not allow the division character" do
           match_hashtag_in_text('pre', "#pre#{[0xf7].pack('U')}post")
-        end
-      end
-
-      context "should NOT allow Japanese" do
-        %w(会議中 ハッシュ).each do |hashtag|
-          it "should NOT extract ##{hashtag}" do
-            no_match_hashtag_in_text("##{hashtag}")
-          end
-
-          it "should NOT extract ##{hashtag} within text" do
-            no_match_hashtag_in_text("pre-text ##{hashtag} post-text")
-          end
         end
       end
     end
