@@ -11,21 +11,26 @@ public class Regex {
   "favourite","favorite","favorites"};
 
   private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff";
-  private static final String HASHTAG_ALPHA_NUMERIC = "[a-z0-9_" + LATIN_ACCENTS_CHARS +
+  private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff0\\u0500-\\u0527" + // Cyrillic
                                                    "\\u1100-\\u11ff\\u3130-\\u3185\\uA960-\\uA97F\\uAC00-\\uD7AF\\uD7B0-\\uD7FF" + // Hangul (Korean)
-                                                   "]";
-  private static final String HASHTAG_ALPHA = "[a-z" + LATIN_ACCENTS_CHARS +
-                                                   "\\u0400-\\u04ff0\\u0500-\\u0527" + // Cyrillic
-                                                   "\\u1100-\\u11ff\\u3130-\\u3185\\uA960-\\uA97F\\uAC00-\\uD7AF\\uD7B0-\\uD7FF" + // Hangul (Korean)
-                                                   "]";
+                                                   "\\p{InHiragana}\\p{InKatakana}" + // Japanese Hiragana and Katakana
+                                                   "\\p{InCJKUnifiedIdeographs}" + // Japanese Kanji / Chinese Han
+                                                   "\\uff21-\\uff3a\\uff41-\\uff5a" + // full width Alphabet
+                                                   "\\uff66-\\uff9f" + // half width Katakana
+                                                   "\\uffa1-\\uffdc"; // half width Hangul (Korean)
+  private static final String HASHTAG_ALPHA_NUMERIC_CHARS = "0-9\\uff10-\\uff19_" + HASHTAG_ALPHA_CHARS;
+  private static final String HASHTAG_ALPHA = "[" + HASHTAG_ALPHA_CHARS +"]";
+  private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS +"]";
 
   /* URL related hash regex collection */
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"':!=A-Z0-9_@＠]+|^|\\:)";
 
-  private static final String URL_VALID_SUBDOMAIN = "(?:(?:[^\\p{Punct}\\s](?:[_-]|[^\\p{Punct}\\s])*)?[^\\p{Punct}\\s]\\.)";
-  private static final String URL_VALID_DOMAIN_NAME = "(?:[^\\p{Punct}\\s](?:[-]|[^\\p{Punct}\\s])*)?[^\\p{Punct}\\s]";
-  private static final String URL_VALID_DOMAIN = URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME + "\\.[a-z]{2,}(?::[0-9]+)?";
+  private static final String URL_VALID_CHARS = "[^\\p{Punct}\\s\\u00a0]";
+  private static final String URL_PUNYCODE = "xn--[0-9a-z]+";
+  private static final String URL_VALID_SUBDOMAIN = "(?:(?:" + URL_VALID_CHARS + "(?:[_-]|" + URL_VALID_CHARS + ")*)?" + URL_VALID_CHARS + "\\.)";
+  private static final String URL_VALID_DOMAIN_NAME = "(?:" + URL_VALID_CHARS + "(?:[-]|" + URL_VALID_CHARS + ")*)?" + URL_VALID_CHARS;
+  private static final String URL_VALID_DOMAIN = URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME + "\\.(?:" + URL_PUNYCODE + "|[a-z]{2,})(?::[0-9]+)?";
 
   private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~\\.\\|]";
   private static final String URL_VALID_PATH_CHARS_WITHOUT_SLASH = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^/]]";
@@ -73,7 +78,7 @@ public class Regex {
 
   public static final Pattern SCREEN_NAME_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
 
-  public static final Pattern AUTO_LINK_HASHTAGS = Pattern.compile("(^|[^0-9A-Z&/]+)(#|\uFF03)(" + HASHTAG_ALPHA_NUMERIC + "*" + HASHTAG_ALPHA + HASHTAG_ALPHA_NUMERIC + "*)", Pattern.CASE_INSENSITIVE);
+  public static final Pattern AUTO_LINK_HASHTAGS = Pattern.compile("(^|[^&/" + HASHTAG_ALPHA_NUMERIC_CHARS + "]+)(#|\uFF03)(" + HASHTAG_ALPHA_NUMERIC + "*" + HASHTAG_ALPHA + HASHTAG_ALPHA_NUMERIC + "*)", Pattern.CASE_INSENSITIVE);
   public static final int AUTO_LINK_HASHTAGS_GROUP_BEFORE = 1;
   public static final int AUTO_LINK_HASHTAGS_GROUP_HASH = 2;
   public static final int AUTO_LINK_HASHTAGS_GROUP_TAG = 3;
