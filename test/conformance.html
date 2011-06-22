@@ -14,9 +14,28 @@
     function getTester(suite, section) {
       switch (suite) {
         case "autolink":
-          return function(test) {
-            return twttr.txt.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
-          };
+          switch (section) {
+            case "urls":
+              return function(test) {
+                return twttr.txt.autoLinkUrlsCustom(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "hashtags":
+              return function(test) {
+                return twttr.txt.autoLinkHashtags(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "usernames":
+              return function(test) {
+                return twttr.txt.autoLinkUsernamesOrLists(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "lists":
+              return function(test) {
+                return twttr.txt.autoLinkUsernamesOrLists(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "all":
+              return function(test) {
+                return twttr.txt.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+          }
         case "extract":
           switch (section) {
             case "mentions":
