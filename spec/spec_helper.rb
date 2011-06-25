@@ -85,7 +85,7 @@ end
 
 RSpec::Matchers.define :have_autolinked_hashtag do |hashtag|
   match do |text|
-    @link = Nokogiri::HTML(text).search("a[@href='http://twitter.com/search?q=#{CGI.escape hashtag}']")
+    @link = Nokogiri::HTML(text).search("a[@href='http://twitter.com/search?q=#{hashtag.sub(/^#/, '%23')}']")
     @link &&
     @link.inner_text &&
     @link.inner_text == hashtag
@@ -93,7 +93,7 @@ RSpec::Matchers.define :have_autolinked_hashtag do |hashtag|
 
   failure_message_for_should do |text|
     if @link
-      "Expected link text to be #{hashtag}, but it was #{@link.inner_text}"
+      "Expected link text to be [#{hashtag}], but it was [#{@link.inner_text}] in #{text}"
     else
       "Expected hashtag #{hashtag} to be autolinked in '#{text}', but no link was found."
     end
