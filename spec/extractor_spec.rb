@@ -228,25 +228,14 @@ describe Twitter::Extractor do
         end
 
         it "should not allow the multiplication character" do
-          @extractor.extract_hashtags("#pre#{[0xd7].pack('U')}post").should == ["pre"]
+          @extractor.extract_hashtags("#pre#{[0xd7].pack('U')}post").should == []
         end
 
         it "should not allow the division character" do
-          @extractor.extract_hashtags("#pre#{[0xf7].pack('U')}post").should == ["pre"]
+          @extractor.extract_hashtags("#pre#{[0xf7].pack('U')}post").should == []
         end
       end
 
-      context "should NOT allow Japanese" do
-        %w(会議中 ハッシュ).each do |hashtag|
-          it "should NOT extract ##{hashtag}" do
-            @extractor.extract_hashtags("##{hashtag}").should == []
-          end
-
-          it "should NOT extract ##{hashtag} within text" do
-            @extractor.extract_hashtags("pre-text ##{hashtag} post-text").should == []
-          end
-        end
-      end
     end
 
     it "should not extract numeric hashtags" do
@@ -264,7 +253,7 @@ describe Twitter::Extractor do
       extracted_hashtag[:indices].last.should == offset + hashtag.chars.to_a.size + 1
     end
 
-    def no_match_hashtag_in_text(text)
+    def not_match_hashtag_in_text(text)
       extracted_hashtags = @extractor.extract_hashtags_with_indices(text)
       extracted_hashtags.size.should == 0
     end
@@ -294,29 +283,17 @@ describe Twitter::Extractor do
         end
 
         it "should not allow the multiplication character" do
-          match_hashtag_in_text('pre', "#pre#{[0xd7].pack('U')}post")
+          not_match_hashtag_in_text("#pre#{[0xd7].pack('U')}post")
         end
 
         it "should not allow the division character" do
-          match_hashtag_in_text('pre', "#pre#{[0xf7].pack('U')}post")
-        end
-      end
-
-      context "should NOT allow Japanese" do
-        %w(会議中 ハッシュ).each do |hashtag|
-          it "should NOT extract ##{hashtag}" do
-            no_match_hashtag_in_text("##{hashtag}")
-          end
-
-          it "should NOT extract ##{hashtag} within text" do
-            no_match_hashtag_in_text("pre-text ##{hashtag} post-text")
-          end
+          not_match_hashtag_in_text("#pre#{[0xf7].pack('U')}post")
         end
       end
     end
 
     it "should not extract numeric hashtags" do
-      no_match_hashtag_in_text("#1234")
+      not_match_hashtag_in_text("#1234")
     end
   end
 end

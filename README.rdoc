@@ -29,15 +29,15 @@ usernames, lists, hashtags and URLs.
 
     html = auto_link("link @user, please #request")
   end
-  
+
   # For Ruby on Rails you want to add this to app/helpers/application_helper.rb
   module ApplicationHelper
     include Twitter::Autolink
   end
-  
+
   # Now the auto_link function is available in every view. So in index.html.erb:
   <%= auto_link("link @user, please #request") %>
-  
+
 === Usernames
 
 Username extraction and linking matches all valid Twitter usernames but does
@@ -50,8 +50,8 @@ format.
 
 === Hashtags
 
-Auto-link and extract hashtags, where a hashtag contains any latin letter or
-number but cannot be solely numbers.
+Auto-link and extract hashtags, where a hashtag can contain most letters or
+numbers but cannot be solely numbers and cannot contain punctuation.
 
 === URLs
 
@@ -74,7 +74,7 @@ to work against text that has been auto-linked already.
 
 To run the Conformance suite, you'll need to add that project as a git submodule.  From the root twitter-text-rb directory, run:
 
-  git submodule add git@github.com:mzsanford/twitter-text-conformance.git test/twitter-text-conformance/
+  git submodule add git@github.com:twitter/twitter-text-conformance.git test/twitter-text-conformance/
   git submodule init
   git submodule update
 
@@ -83,13 +83,32 @@ To run the Conformance suite, you'll need to add that project as a git submodule
 Thanks to everybody who has filed issues, provided feedback or contributed patches. Patches courtesy of:
 
 * At Twitter …
+  * Matt Sanford - http://github.com/mzsanford
   * Raffi Krikorian - http://github.com/r
   * Ben Cherry - http://github.com/bcherry
   * Patrick Ewing - http://github.com/hoverbird
   * Jeff Smick - http://github.com/sprsquish
   * Kenneth Kufluk - https://github.com/kennethkufluk
+  * Keita Fujii - https://github.com/keitaf
 
 * Patches from the community …
   * Jean-Philippe Bougie - http://github.com/jpbougie
+  * Erik Michaels-Ober - https://github.com/sferik
 
 * Anyone who has filed an issue. It helps. Really.
+
+=== Copyright and License
+
+    Copyright 2011 Twitter, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this work except in compliance with the License.
+    You may obtain a copy of the License in the LICENSE file, or at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

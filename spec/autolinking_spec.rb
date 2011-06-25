@@ -269,19 +269,11 @@ describe Twitter::Autolink do
         end
       end
 
-      context "with a hashtag preceded by Japanese" do
-        def original_text; "の#twj_dev"; end
-
-        it "should be linked" do
-          @autolinked_text.should have_autolinked_hashtag('#twj_dev')
-        end
-      end
-
       context "with a hashtag followed by Japanese" do
          def original_text; "#twj_devの"; end
 
         it "should be linked" do
-          @autolinked_text.should have_autolinked_hashtag('#twj_dev')
+          @autolinked_text.should have_autolinked_hashtag('#twj_devの')
         end
       end
 
