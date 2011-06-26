@@ -179,9 +179,9 @@ module Twitter
       options = href_options.dup
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
       options[:class] = options.delete(:url_class)
+      html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k)}.stringify_keys) || ""
 
       Twitter::Rewriter.rewrite_urls_custom(text) do |url|
-        html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k)}.stringify_keys) || ""
         %(<a href="#{html_escape(url)}"#{html_attrs}>#{html_escape(url)}</a>)
       end
     end
