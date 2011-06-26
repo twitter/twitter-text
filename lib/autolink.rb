@@ -1,4 +1,5 @@
 module Twitter
+  # A module provides base methods to rewrite usernames, lists, hashtags and URLs.
   module Rewriter extend self
     def rewrite_usernames_or_lists(text)
       new_text = ""
@@ -165,7 +166,6 @@ module Twitter
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
       Twitter::Rewriter.rewrite_hashtags(text) do |hash, hashtag|
-        # To keep backward compatibility, this seems weird though.
         hashtag = yield(hashtag) if block_given?
         %(<a href="#{options[:hashtag_url_base]}#{html_escape(hashtag)}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{html_escape(hash)}#{html_escape(hashtag)}</a>)
       end
