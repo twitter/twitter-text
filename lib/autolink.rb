@@ -1,4 +1,59 @@
 module Twitter
+  module Rewriter extend self
+    def rewrite_usernames_or_lists(text)
+      new_text = ""
+
+      # this -1 flag allows strings ending in ">" to work
+      text.to_s.split(/[<>]/, -1).each_with_index do |chunk, index|
+        if index != 0
+          new_text << ((index % 2 == 0) ? ">" : "<")
+        end
+
+        if index % 4 != 0
+          new_text << chunk
+        else
+          new_text << chunk.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
+            before, at, user, slash_listname, after = $1, $2, $3, $4, $'
+            if slash_listname
+              # the link is a list
+              "#{before}#{yield(at, user, slash_listname)}"
+            else
+              if after =~ Twitter::Regex[:end_screen_name_match]
+                # Followed by something that means we don't autolink
+                "#{before}#{at}#{user}#{slash_listname}"
+              else
+                # this is a screen name
+                "#{before}#{yield(at, user, nil)}#{slash_listname}"
+              end
+            end
+          end
+        end
+      end
+
+      new_text
+    end
+
+    def rewrite_hashtags(text)
+      text.to_s.gsub(Twitter::Regex[:auto_link_hashtags]) do
+        before = $1
+        hash = $2
+        hashtag = $3
+        "#{before}#{yield(hash, hashtag)}"
+      end
+    end
+
+    def rewrite_urls_custom(text)
+      text.to_s.gsub(Twitter::Regex[:valid_url]) do
+        all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
+        if !protocol.blank?
+          "#{before}#{yield(url)}"
+        else
+          all
+        end
+      end
+    end
+  end
+
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
   # usernames, lists, hashtags and URLs.
   module Autolink extend self
@@ -68,7 +123,7 @@ module Twitter
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
-    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items    
+    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
     def auto_link_usernames_or_lists(text, options = {}) # :yields: list_or_username
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
@@ -79,39 +134,17 @@ module Twitter
       options[:target] ||= DEFAULT_TARGET
 
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
-      new_text = ""
 
-      # this -1 flag allows strings ending in ">" to work
-      text.split(/[<>]/, -1).each_with_index do |chunk, index|
-        if index != 0
-          new_text << ((index % 2 == 0) ? ">" : "<")
-        end
+      Twitter::Rewriter.rewrite_usernames_or_lists(text) do |at, username, slash_listname|
+        name = "#{username}#{slash_listname}"
+        chunk = block_given? ? yield(name) : name
 
-        if index % 4 != 0
-          new_text << chunk
+        if slash_listname && !options[:suppress_lists]
+          %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"#{extra_html}>#{html_escape(chunk)}</a>)
         else
-          new_text << chunk.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
-            before, at, user, slash_listname, after = $1, $2, $3, $4, $'
-            if slash_listname && !options[:suppress_lists]
-              # the link is a list
-              chunk = list = "#{user}#{slash_listname}"
-              chunk = yield(list) if block_given?
-              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:list_url_base])}#{html_escape(list.downcase)}\"#{extra_html}>#{html_escape(chunk)}</a>"
-            else
-              if after =~ Twitter::Regex[:end_screen_name_match]
-                # Followed by something that means we don't autolink
-                "#{before}#{at}#{user}#{slash_listname}"
-              else
-                # this is a screen name
-                chunk = user
-                chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>#{slash_listname}"
-              end
-            end
-          end
+          %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{html_escape(options[:username_url_base])}#{html_escape(name)}"#{extra_html}>#{html_escape(chunk)}</a>)
         end
       end
-      new_text
     end
 
     # Add <tt><a></a></tt> tags around the hashtags in the provided <tt>text</tt>. The
@@ -122,7 +155,7 @@ module Twitter
     # <tt>:hashtag_class</tt>:: class to add to hashtag <tt><a></tt> tags
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
-    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items    
+    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
     def auto_link_hashtags(text, options = {})  # :yields: hashtag_text
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
@@ -131,12 +164,10 @@ module Twitter
       options[:target] ||= DEFAULT_TARGET
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
-      text.gsub(Twitter::Regex[:auto_link_hashtags]) do
-        before = $1
-        hash = $2
-        text = $3
-        text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" #{target_tag(options)}class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
+      Twitter::Rewriter.rewrite_hashtags(text) do |hash, hashtag|
+        # To keep backward compatibility, this seems weird though.
+        hashtag = yield(hashtag) if block_given?
+        %(<a href="#{options[:hashtag_url_base]}#{html_escape(hashtag)}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{html_escape(hash)}#{html_escape(hashtag)}</a>)
       end
     end
 
@@ -149,14 +180,9 @@ module Twitter
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
       options[:class] = options.delete(:url_class)
 
-      text.gsub(Twitter::Regex[:valid_url]) do
-        all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
-        if !protocol.blank?
-          html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k) }.stringify_keys) || ""
-          "#{before}<a href=\"#{html_escape(url)}\"#{html_attrs}>#{html_escape(url)}</a>"
-        else
-          all
-        end
+      Twitter::Rewriter.rewrite_urls_custom(text) do |url|
+        html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k)}.stringify_keys) || ""
+        %(<a href="#{html_escape(url)}"#{html_attrs}>#{html_escape(url)}</a>)
       end
     end
 
@@ -170,6 +196,5 @@ module Twitter
         "target=\"#{html_escape(target_option)}\""
       end
     end
-
   end
 end
