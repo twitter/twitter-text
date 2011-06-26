@@ -1,6 +1,12 @@
 module Twitter
   # A module provides base methods to rewrite usernames, lists, hashtags and URLs.
   module Rewriter extend self
+    def rewrite(text, options = {})
+      [:hashtags, :urls, :usernames_or_lists].inject(text) do |key|
+        send("rewrite_#{key}", text, &options[key]) if options[key]
+      end
+    end
+
     def rewrite_usernames_or_lists(text)
       new_text = ""
 
