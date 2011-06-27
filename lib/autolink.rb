@@ -125,7 +125,7 @@ module Twitter
       options[:class] = options.delete(:url_class)
       html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k)}.stringify_keys) || ""
 
-      Twitter::Rewriter.rewrite_urls_custom(text) do |url|
+      Twitter::Rewriter.rewrite_urls(text) do |url|
         %(<a href="#{html_escape(url)}"#{html_attrs}>#{html_escape(url)}</a>)
       end
     end
