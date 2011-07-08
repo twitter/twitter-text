@@ -273,7 +273,7 @@ tests:
 
     - description: "Autolink a kanji hashtag preceded by an ideographic comma, followed by an ideographic period"
       text: "これは、＃大丈夫。"
-      expected: "これは、<a href=\"http://twitter.com/search?q=%23大丈夫\" title=\"＃大丈夫\" class=\"tweet-url hashtag\">＃大丈夫</a>。"
+      expected: "これは、<a href=\"http://twitter.com/search?q=%23大丈夫\" title=\"#大丈夫\" class=\"tweet-url hashtag\">＃大丈夫</a>。"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a space"
       text: "ひらがな #ひらがな ひらがな"
