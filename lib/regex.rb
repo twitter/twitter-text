@@ -60,7 +60,7 @@ module Twitter
 
     CJ_HASHTAG_CHARACTERS = [
       (0x30A1..0x30FA).to_a, # Katakana (full-width)
-      (0xFF66..0xFF9D).to_a, # Katakana (half-width)
+      (0xFF66..0xFF9E).to_a, # Katakana (half-width)
       (0xFF10..0xFF19).to_a, (0xFF21..0xFF3A).to_a, (0xFF41..0xFF5A).to_a, # Latin (full-width)
       (0x3041..0x3096).to_a, # Hiragana
       (0x3400..0x4DBF).to_a, # Kanji (CJK Extension A)
@@ -71,7 +71,7 @@ module Twitter
       (0x2F800..0x2FA1F).to_a # Kanji (CJK supplement)
     ].flatten.pack('U*').freeze
 
-    HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|\.|!)/
+    HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|、|\.|!)/
 
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
     HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
