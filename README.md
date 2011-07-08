@@ -41,7 +41,10 @@ If you are creating a new twitter-text library in a different programming langua
 
 ## Changelog
 
-  * v1.4.0 - 2011-05-18 [ Git tag v1.4.0 ]
+  * v1.4.2 - 2011-07-08 [ Git tag v1.4.2 ]
+    * [FIX] Additional Japanese hashtag autolinking tests
+
+  * v1.4.1 - 2011-05-18 [ Git tag v1.4.1 ]
     * [FIX] Add support for Russian hashtags
     * [FIX] Add support for Korean hashtags
     * [FIX] Add support for Japanese hashtags (Katakana, Hiragana and Kanji)
