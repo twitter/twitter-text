@@ -227,6 +227,14 @@ tests:
       text: "#カタカナ"
       expected: "<a href=\"http://twitter.com/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
 
+    - description: "Autolink a katakana hashtag with a voiced sounds mark followed by a space"
+      text: "#ﾊｯｼｭﾀｸﾞ　テスト"
+      expected: "<a href=\"http://twitter.com/search?q=%23ﾊｯｼｭﾀｸﾞ\" title=\"#ﾊｯｼｭﾀｸﾞ\" class=\"tweet-url hashtag\">#ﾊｯｼｭﾀｸﾞ</a>　テスト"
+
+    - description: "Autolink a katakana hashtag with a voiced sounds mark followed by numbers"
+      text: "#ﾊｯｼｭﾀｸﾞ123"
+      expected: "<a href=\"http://twitter.com/search?q=%23ﾊｯｼｭﾀｸﾞ123\" title=\"#ﾊｯｼｭﾀｸﾞ123\" class=\"tweet-url hashtag\">#ﾊｯｼｭﾀｸﾞ123</a>"
+
     - description: "Autolink a kanji hashtag preceded by a space and followed by a space"
       text: "漢字 #漢字 漢字"
       expected: "漢字 <a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
@@ -262,6 +270,10 @@ tests:
     - description: "Autolink a kanji hashtag preceded by a edge and followed by a edge"
       text: "#漢字"
       expected: "<a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
+
+    - description: "Autolink a kanji hashtag preceded by an ideographic comma, followed by an ideographic period"
+      text: "これは、＃大丈夫。"
+      expected: "これは、<a href=\"http://twitter.com/search?q=%23大丈夫\" title=\"＃大丈夫\" class=\"tweet-url hashtag\">＃大丈夫</a>。"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a space"
       text: "ひらがな #ひらがな ひらがな"
