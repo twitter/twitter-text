@@ -327,6 +327,23 @@ tests:
       text: "日本語ハッシュタグ。#日本語ハッシュタグ"
       expected: "日本語ハッシュタグ。<a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>"
 
+    - description: "Autolink a hashtag with chouon"
+      text: "長音ハッシュタグ。#サッカー"
+      expected: "長音ハッシュタグ。<a href=\"http://twitter.com/search?q=%23サッカー\" title=\"#サッカー\" class=\"tweet-url hashtag\">#サッカー</a>"
+
+    - description: "Autolink a hashtag with half-width chouon"
+      text: "長音ハッシュタグ。#ｻｯｶｰ"
+      expected: "長音ハッシュタグ。<a href=\"http://twitter.com/search?q=%23ｻｯｶｰ\" title=\"#ｻｯｶｰ\" class=\"tweet-url hashtag\">#ｻｯｶｰ</a>"
+
+    - description: "Autolink a hashtag with half-width # after full-width ！"
+      text: "できましたよー！#日本語ハッシュタグ。"
+      expected: "できましたよー！<a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>。"
+
+    - description: "Autolink a hashtag with full-width ＃ after full-width ！"
+      text: "できましたよー！＃日本語ハッシュタグ。"
+      expected: "できましたよー！<a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">＃日本語ハッシュタグ</a>。"
+
+
   urls:
     - description: "Autolink URL with pipe character"
       text: "text http://example.com/pipe|character?yes|pipe|character"

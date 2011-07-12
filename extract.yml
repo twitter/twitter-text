@@ -396,6 +396,22 @@ tests:
       text: "日本語ハッシュタグ#日本語ハッシュタグ"
       expected: []
 
+    - description: "Hashtag with chouon"
+      text: "長音ハッシュタグ。#サッカー"
+      expected: ["サッカー"]
+
+    - description: "Hashtag with half-width chouon"
+      text: "長音ハッシュタグ。#ｻｯｶｰ"
+      expected: ["ｻｯｶｰ"]
+
+    - description: "Hashtag with half-width # after full-width ！"
+      text: "できましたよー！#日本語ハッシュタグ。"
+      expected: ["日本語ハッシュタグ"]
+
+    - description: "Hashtag with full-width ＃ after full-width ！"
+      text: "できましたよー！＃日本語ハッシュタグ。"
+      expected: ["日本語ハッシュタグ"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
