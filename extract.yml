@@ -445,9 +445,35 @@ tests:
         - hashtag: "hashtag"
           indices: [7, 15]
 
-    - description: "Extract a hastag in a string of multi-byte characters"
+    - description: "Extract a hashtag in a string of multi-byte characters"
       text: "会議中 #hashtag 会議中"
       expected:
         - hashtag: "hashtag"
           indices: [4, 12]
+
+    - description: "Extract multiple valid hashtags"
+      text: "One #two three #four"
+      expected:
+        - hashtag: "two"
+          indices: [4, 8]
+        - hashtag: "four"
+          indices: [15, 20]
+
+    - description: "Extract a non-latin hashtag"
+      text: "Hashtags in #русский!"
+      expected:
+        - hashtag: "русский"
+          indices: [12, 20]
+
+    - description: "Extract multiple non-latin hashtags"
+      text: "Hashtags in #中文, #日本語, #한국말, and #русский! Try it out!"
+      expected:
+        - hashtag: "中文"
+          indices: [12, 15]
+        - hashtag: "日本語"
+          indices: [17, 21]
+        - hashtag: "한국말"
+          indices: [23, 27]
+        - hashtag: "русский"
+          indices: [33, 41]
 

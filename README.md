@@ -45,6 +45,8 @@ If you are creating a new twitter-text library in a different programming langua
     * [FIX] Japanese autolink including long vowel mark (chouon)
     * [FIX] Japanese autolink after a full-width exclamation point
     * [FIX] Japanese autolink including ideographic iteration mark
+    * [FIX] Add hashtag extraction with indices test for new language hashtags
+    * [FIX] Add hashtag extraction with indices test for multiple latin hashtags
   
   * v1.4.2 - 2011-07-08 [ Git tag v1.4.2 ]
     * [FIX] Additional Japanese hashtag autolinking tests

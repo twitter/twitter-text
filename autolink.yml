@@ -347,10 +347,13 @@ tests:
       text: "できましたよー！＃日本語ハッシュタグ。"
       expected: "できましたよー！<a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">＃日本語ハッシュタグ</a>。"
 
-
     - description: "Autolink a hashtag containing ideographic iteration mark"
       text: "#云々"
       expected: "<a href=\"http://twitter.com/search?q=%23云々\" title=\"#云々\" class=\"tweet-url hashtag\">#云々</a>"
+
+    - description: "Autolink multiple hashtags in multiple languages"
+      text: "Hashtags in #中文, #日本語, #한국말, and #русский! Try it out!"
+      expected: "Hashtags in <a href=\"http://twitter.com/search?q=%23中文\" title=\"#中文\" class=\"tweet-url hashtag\">#中文</a>, <a href=\"http://twitter.com/search?q=%23日本語\" title=\"#日本語\" class=\"tweet-url hashtag\">#日本語</a>, <a href=\"http://twitter.com/search?q=%23한국말\" title=\"#한국말\" class=\"tweet-url hashtag\">#한국말</a>, and <a href=\"http://twitter.com/search?q=%23русский\" title=\"#русский\" class=\"tweet-url hashtag\">#русский</a>! Try it out!"
 
   urls:
     - description: "Autolink URL with pipe character"
