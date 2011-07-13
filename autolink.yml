@@ -235,6 +235,10 @@ tests:
       text: "#ﾊｯｼｭﾀｸﾞ123"
       expected: "<a href=\"http://twitter.com/search?q=%23ﾊｯｼｭﾀｸﾞ123\" title=\"#ﾊｯｼｭﾀｸﾞ123\" class=\"tweet-url hashtag\">#ﾊｯｼｭﾀｸﾞ123</a>"
 
+    - description: "Autolink a katakana hashtag with another voiced sounds mark"
+      text: "#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ"
+      expected: "<a href=\"http://twitter.com/search?q=%23ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ\" title=\"#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ\" class=\"tweet-url hashtag\">#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ</a>"
+
     - description: "Autolink a kanji hashtag preceded by a space and followed by a space"
       text: "漢字 #漢字 漢字"
       expected: "漢字 <a href=\"http://twitter.com/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
@@ -343,6 +347,10 @@ tests:
       text: "できましたよー！＃日本語ハッシュタグ。"
       expected: "できましたよー！<a href=\"http://twitter.com/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">＃日本語ハッシュタグ</a>。"
 
+
+    - description: "Autolink a hashtag containing ideographic iteration mark"
+      text: "#云々"
+      expected: "<a href=\"http://twitter.com/search?q=%23云々\" title=\"#云々\" class=\"tweet-url hashtag\">#云々</a>"
 
   urls:
     - description: "Autolink URL with pipe character"

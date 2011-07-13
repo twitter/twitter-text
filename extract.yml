@@ -404,6 +404,10 @@ tests:
       text: "長音ハッシュタグ。#ｻｯｶｰ"
       expected: ["ｻｯｶｰ"]
 
+    - description: "Hashtag with half-widh voiced sounds marks"
+      text: "#ﾊｯｼｭﾀｸﾞ #ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ"
+      expected: ["ﾊｯｼｭﾀｸﾞ", "ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ"]
+
     - description: "Hashtag with half-width # after full-width ！"
       text: "できましたよー！#日本語ハッシュタグ。"
       expected: ["日本語ハッシュタグ"]
@@ -411,6 +415,10 @@ tests:
     - description: "Hashtag with full-width ＃ after full-width ！"
       text: "できましたよー！＃日本語ハッシュタグ。"
       expected: ["日本語ハッシュタグ"]
+
+    - description: "Hashtag with ideographic iteration mark"
+      text: "#云々"
+      expected: ["云々"]
 
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
