@@ -100,7 +100,9 @@ if (!window.twttr) {
   addCharsToCharClass(nonLatinHashtagChars, 0xD7B0, 0xD7FF); // Hangul Jamo Extended-B
   // Japanese and Chinese
   addCharsToCharClass(nonLatinHashtagChars, 0x30A1, 0x30FA); // Katakana (full-width)
-  addCharsToCharClass(nonLatinHashtagChars, 0xFF66, 0xFF9E); // Katakana (half-width)
+  addCharsToCharClass(nonLatinHashtagChars, 0x30FC, 0x30FC); // Katakana Chouon (full-width)
+  addCharsToCharClass(nonLatinHashtagChars, 0xFF66, 0xFF9F); // Katakana (half-width)
+  addCharsToCharClass(nonLatinHashtagChars, 0xFF70, 0xFF70); // Katakana Chouon (half-width)
   addCharsToCharClass(nonLatinHashtagChars, 0xFF10, 0xFF19); // \
   addCharsToCharClass(nonLatinHashtagChars, 0xFF21, 0xFF3A); //  - Latin (full-width)
   addCharsToCharClass(nonLatinHashtagChars, 0xFF41, 0xFF5A); // /
@@ -112,6 +114,7 @@ if (!window.twttr) {
   addCharsToCharClass(nonLatinHashtagChars, 0x2A700, 0x2B73F); // Kanji (CJK Extension C)
   addCharsToCharClass(nonLatinHashtagChars, 0x2B740, 0x2B81F); // Kanji (CJK Extension D)
   addCharsToCharClass(nonLatinHashtagChars, 0x2F800, 0x2FA1F); // Kanji (CJK supplement)
+  addCharsToCharClass(nonLatinHashtagChars, 0x3005, 0x3005); // Kanji (CJK iteration mark)
 
   twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
@@ -121,7 +124,7 @@ if (!window.twttr) {
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
-  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|#{spaces}|「|」|。|、|\.|!)/);
+  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|#{spaces}|「|」|。|、|\.|!|！|\?|？)/);
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
