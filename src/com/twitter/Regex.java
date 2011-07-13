@@ -15,7 +15,7 @@ public class Regex {
                                                    "\\u0400-\\u04ff0\\u0500-\\u0527" + // Cyrillic
                                                    "\\u1100-\\u11ff\\u3130-\\u3185\\uA960-\\uA97F\\uAC00-\\uD7AF\\uD7B0-\\uD7FF" + // Hangul (Korean)
                                                    "\\p{InHiragana}\\p{InKatakana}" + // Japanese Hiragana and Katakana
-                                                   "\\p{InCJKUnifiedIdeographs}" + // Japanese Kanji / Chinese Han
+                                                   "\\p{InCJKUnifiedIdeographs}\\u3005" + // Japanese Kanji / Chinese Han
                                                    "\\uff21-\\uff3a\\uff41-\\uff5a" + // full width Alphabet
                                                    "\\uff66-\\uff9f" + // half width Katakana
                                                    "\\uffa1-\\uffdc"; // half width Hangul (Korean)
