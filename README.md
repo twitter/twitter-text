@@ -1,6 +1,17 @@
 # twitter-text-js
 
-A JavaScript library that provides text processing routines for Tweets.  This library conforms to a common test suite shared by many other implementations, particularly twitter-text.gem (Ruby).  The library provides autolinking and extraction for URLs, usernames, lists, and hashtags.
+A JavaScript utility that provides text processing routines for Tweets.  This library conforms to a common test suite shared by many other implementations, particularly twitter-text.gem (Ruby).  The library provides autolinking and extraction for URLs, usernames, lists, and hashtags.
+
+## NPM Users
+
+Install it with: `npm install twitter-text`
+
+The `twttr.txt` namespace is exported, making it available as such:
+
+``` js
+var twitter = require('twitter-text')
+twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
+```
 
 ## Extraction Examples
 
