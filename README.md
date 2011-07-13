@@ -41,6 +41,11 @@ If you are creating a new twitter-text library in a different programming langua
 
 ## Changelog
 
+  * v1.4.3 - 2011-07-13 [ Git tag v1.4.3 ]
+    * [FIX] Japanese autolink including long vowel mark (chouon)
+    * [FIX] Japanese autolink after a full-width exclamation point
+    * [FIX] Japanese autolink including ideographic iteration mark
+  
   * v1.4.2 - 2011-07-08 [ Git tag v1.4.2 ]
     * [FIX] Additional Japanese hashtag autolinking tests
 
