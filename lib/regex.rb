@@ -52,7 +52,8 @@ module Twitter
       (0x3130..0x3185).to_a, # Hangul Compatibility Jamo
       (0xA960..0xA97F).to_a, # Hangul Jamo Extended-A
       (0xAC00..0xD7AF).to_a, # Hangul Syllables
-      (0xD7B0..0xD7FF).to_a # Hangul Jamo Extended-B
+      (0xD7B0..0xD7FF).to_a, # Hangul Jamo Extended-B
+      (0xFFA1..0xFFDC).to_a  # half-width Hangul
     ].flatten.pack('U*').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
@@ -60,16 +61,17 @@ module Twitter
 
     CJ_HASHTAG_CHARACTERS = [
       (0x30A1..0x30FA).to_a, 0x30FC, # Katakana (full-width)
+      (0x30A1..0x30FA).to_a, (0x30FC..0x30FE).to_a, # Katakana (full-width)
       (0xFF66..0xFF9F).to_a, # Katakana (half-width)
       (0xFF10..0xFF19).to_a, (0xFF21..0xFF3A).to_a, (0xFF41..0xFF5A).to_a, # Latin (full-width)
-      (0x3041..0x3096).to_a, # Hiragana
+      (0x3041..0x3096).to_a, (0x3099..0x309E).to_a, # Hiragana
       (0x3400..0x4DBF).to_a, # Kanji (CJK Extension A)
       (0x4E00..0x9FFF).to_a, # Kanji (Unified)
       (0x20000..0x2A6DF).to_a, # Kanji (CJK Extension B)
       (0x2A700..0x2B73F).to_a, # Kanji (CJK Extension C)
       (0x2B740..0x2B81F).to_a, # Kanji (CJK Extension D)
       (0x2F800..0x2FA1F).to_a, # Kanji (CJK supplement)
-      0x3005                   # Kanji (iteration mark)
+      0x3005, 0x303B           # Kanji (iteration mark)
     ].flatten.pack('U*').freeze
 
     HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|、|\.|!|\?|！|？|,)/
