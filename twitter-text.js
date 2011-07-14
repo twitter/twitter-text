@@ -55,11 +55,11 @@ if (!window.twttr) {
   }
 
   function addCharsToCharClass(charClass, start, end) {
-    if (end == start) {
-      charClass.push(String.fromCharCode(start));
-    } else {
-      charClass.push(String.fromCharCode(start) + "-" + String.fromCharCode(end));
+    var s = String.fromCharCode(start);
+    if (end !== start) {
+      s += "-" + String.fromCharCode(end);
     }
+    charClass.push(s);
     return charClass;
   }
 
