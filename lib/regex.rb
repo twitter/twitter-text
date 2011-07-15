@@ -47,6 +47,8 @@ module Twitter
       # Cyrillic (Russian, Ukrainian, etc.)
       (0x0400..0x04ff).to_a, # Cyrillic
       (0x0500..0x0527).to_a, # Cyrillic Supplement
+      (0x2de0..0x2dff).to_a, # Cyrillic Extended A
+      (0xa640..0xa69f).to_a, # Cyrillic Extended B
       # Hangul (Korean)
       (0x1100..0x11ff).to_a, # Hangul Jamo
       (0x3130..0x3185).to_a, # Hangul Compatibility Jamo
