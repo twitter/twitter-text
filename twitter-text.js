@@ -696,7 +696,7 @@ if (!window.twttr) {
       }
     }
 
-    return false
+    return false;
   };
 
   twttr.txt.isValidTweetText = function(text) {
