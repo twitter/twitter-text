@@ -11,7 +11,7 @@ if (!window.twttr) {
     '>': '&gt;',
     '<': '&lt;',
     '"': '&quot;',
-    "'": '&#32;'
+    "'": '&#39;'
   };
 
   // HTML escaping
