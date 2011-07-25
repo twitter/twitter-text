@@ -6,7 +6,7 @@ test("twttr.txt.htmlEscape", function() {
     [">", "&gt;"],
     ["<", "&lt;"],
     ["\"", "&quot;"],
-    ["'", "&#32;"],
+    ["'", "&#39;"],
     ["&<>\"", "&amp;&lt;&gt;&quot;"],
     ["<div>", "&lt;div&gt;"],
     ["a&b", "a&amp;b"],
