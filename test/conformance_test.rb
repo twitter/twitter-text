@@ -33,6 +33,13 @@ class ConformanceTest < Test::Unit::TestCase
       end
     end
 
+    def test_mentions_or_lists_with_indices_conformance
+      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_or_lists_with_indices) do |description, expected, input|
+        expected = expected.map{|elem| elem.symbolize_keys }
+        assert_equal expected, extract_mentions_or_lists_with_indices(input), description
+      end
+    end
+
     def test_url_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls) do |description, expected, input|
         assert_equal expected, extract_urls(input), description

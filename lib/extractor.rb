@@ -57,7 +57,7 @@ module Twitter
       screen_names_only
     end
 
-    # Extracts a list of all usersnames mentioned in the Tweet <tt>text</tt>
+    # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>
     # along with the indices for where the mention ocurred.  If the
     # <tt>text</tt> is nil or contains no username mentions, an empty array
     # will be returned.
@@ -85,6 +85,40 @@ module Twitter
         end
       end
       possible_screen_names
+    end
+
+    # Extracts a list of all usernames or lists mentioned in the Tweet <tt>text</tt>
+    # along with the indices for where the mention ocurred.  If the
+    # <tt>text</tt> is nil or contains no username or list mentions, an empty array
+    # will be returned.
+    #
+    # If a block is given, then it will be called with each username, list slug, the start
+    # index, and the end index in the <tt>text</tt>. The list_slug will be an empty stirng
+    # if this is a username mention.
+    def extract_mentions_or_lists_with_indices(text) # :yields: username, list_slug, start, end
+      return [] unless text
+
+      possible_entries = []
+      text.to_s.scan(Twitter::Regex[:extract_mentions_or_lists]) do |before, sn, list_slug, after|
+        extract_mentions_match_data = $~
+        unless after =~ Twitter::Regex[:end_screen_name_match]
+          start_position = extract_mentions_match_data.char_begin(2) - 1
+          end_position = extract_mentions_match_data.char_end(list_slug.nil? ? 2 : 3)
+          possible_entries << {
+            :screen_name => sn,
+            :list_slug => list_slug || "",
+            :indices => [start_position, end_position]
+          }
+        end
+      end
+
+      if block_given?
+        possible_entries.each do |mention|
+          yield mention[:screen_name], mention[:list_slug], mention[:indices].first, mention[:indices].last
+        end
+      end
+
+      possible_entries
     end
 
     # Extracts the username username replied to in the Tweet <tt>text</tt>. If the

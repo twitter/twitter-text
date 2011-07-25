@@ -56,7 +56,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack
   nokogiri
   rake
   rspec
