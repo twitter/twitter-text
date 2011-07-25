@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'yaml'
 $KCODE = 'UTF8'
-require File.dirname(__FILE__) + '/../lib/twitter-text'
+require File.expand_path(File.dirname(__FILE__) + '/../lib/twitter-text')
 
 class ConformanceTest < Test::Unit::TestCase
   include Twitter::Extractor

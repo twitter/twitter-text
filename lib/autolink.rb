@@ -19,6 +19,7 @@ module Twitter
     # Options which should not be passed as HTML attributes
     OPTIONS_NOT_ATTRIBUTES = [:url_class, :list_class, :username_class, :hashtag_class,
                               :username_url_base, :list_url_base, :hashtag_url_base,
+                              :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
                               :suppress_lists, :suppress_no_follow]
 
     HTML_ENTITIES = {
@@ -96,7 +97,12 @@ module Twitter
               # the link is a list
               chunk = list = "#{user}#{slash_listname}"
               chunk = yield(list) if block_given?
-              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:list_url_base])}#{html_escape(list.downcase)}\"#{extra_html}>#{html_escape(chunk)}</a>"
+              href = if options[:list_url_block]
+                options[:list_url_block].call(list.downcase)
+              else
+                "#{html_escape(options[:list_url_base])}#{html_escape(list.downcase)}"
+              end
+              "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:list_class]}\" #{target_tag(options)}href=\"#{href}\"#{extra_html}>#{html_escape(chunk)}</a>"
             else
               if after =~ Twitter::Regex[:end_screen_name_match]
                 # Followed by something that means we don't autolink
@@ -105,7 +111,12 @@ module Twitter
                 # this is a screen name
                 chunk = user
                 chunk = yield(chunk) if block_given?
-                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{html_escape(options[:username_url_base])}#{html_escape(chunk)}\"#{extra_html}>#{html_escape(chunk)}</a>#{slash_listname}"
+                href = if options[:username_url_block]
+                  options[:username_url_block].call(chunk)
+                else
+                  "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
+                end
+                "#{before}#{at}<a class=\"#{options[:url_class]} #{options[:username_class]}\" #{target_tag(options)}href=\"#{href}\"#{extra_html}>#{html_escape(chunk)}</a>#{slash_listname}"
               end
             end
           end
@@ -136,7 +147,12 @@ module Twitter
         hash = $2
         text = $3
         text = yield(text) if block_given?
-        "#{before}<a href=\"#{options[:hashtag_url_base]}#{html_escape(text)}\" title=\"##{html_escape(text)}\" #{target_tag(options)}class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
+        href = if options[:hashtag_url_block]
+          options[:hashtag_url_block].call(text)
+        else
+          "#{options[:hashtag_url_base]}#{html_escape(text)}"
+        end
+        "#{before}<a href=\"#{href}\" title=\"##{html_escape(text)}\" #{target_tag(options)}class=\"#{options[:url_class]} #{options[:hashtag_class]}\"#{extra_html}>#{html_escape(hash)}#{html_escape(text)}</a>"
       end
     end
 
@@ -152,8 +168,13 @@ module Twitter
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
         if !protocol.blank?
+          href = if options[:link_url_block]
+            options.delete(:link_url_block).call(url)
+          else
+            html_escape(url)
+          end
           html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k) }.stringify_keys) || ""
-          "#{before}<a href=\"#{html_escape(url)}\"#{html_attrs}>#{html_escape(url)}</a>"
+          "#{before}<a href=\"#{href}\"#{html_attrs}>#{html_escape(url)}</a>"
         else
           all
         end
