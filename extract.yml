@@ -60,6 +60,45 @@ tests:
         - screen_name: "username"
           indices: [1, 10]
 
+  mentions_or_lists_with_indices:
+    - description: "Extract a mention"
+      text: "@username yo!"
+      expected:
+        - screen_name: "username"
+          list_slug: ""
+          indices: [0, 9]
+
+    - description: "Extract a list"
+      text: "@username/list-name is a great list!"
+      expected:
+        - screen_name: "username"
+          list_slug: "/list-name"
+          indices: [0, 19]
+
+    - description: "Extract a mention and list"
+      text: "Hey @username, check out out @otheruser/list_name-01!"
+      expected:
+        - screen_name: "username"
+          list_slug: ""
+          indices: [4, 13]
+        - screen_name: "otheruser"
+          list_slug: "/list_name-01"
+          indices: [29, 52]
+
+    - description: "Extract a list in the middle of a Japanese tweet"
+      text: "の@username/list_name-01に到着を待っている"
+      expected:
+        - screen_name: "username"
+          list_slug: "/list_name-01"
+          indices: [1, 23]
+
+    - description: "DO NOT extract a list with slug that starts with a number"
+      text: "@username/7list-name is a great list!"
+      expected:
+        - screen_name: "username"
+          list_slug: ""
+          indices: [0, 9]
+
   replies:
     - description: "Extract reply at the begining of a tweet"
       text: "@username reply"
