@@ -51,6 +51,17 @@
                   return res
                 });
               };
+            case "mentions_or_lists_with_indices":
+              return function(test) {
+                var results = twttr.txt.extractMentionsOrListsWithIndices(test.text);
+                return $.map(results, function(res) {
+                  res['screen_name'] = res.screenName;
+                  res['list_slug'] = res.listSlug;
+                  delete res.screenName;
+                  delete res.listSlug;
+                  return res;
+                });
+              };
             case "replies":
               return function(test) {
                 return twttr.txt.extractReplies(test.text);

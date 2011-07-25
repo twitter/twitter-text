@@ -89,6 +89,7 @@ if (!window.twttr) {
   twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_])(#{atSigns})([a-zA-Z0-9_]{1,20})(?=(.|$))/g);
   twttr.txt.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
   twttr.txt.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
+  twttr.txt.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?(?=(.|$))/g);
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -461,6 +462,35 @@ if (!window.twttr) {
 
     return possibleScreenNames;
   };
+
+  /**
+   * Extract list or user mentions.
+   * (Presence of listSlug indicates a list)
+   */
+  twttr.txt.extractMentionsOrListsWithIndices = function(text) {
+    if (!text) {
+      return [];
+    }
+
+    var possibleNames = [],
+        position = 0;
+
+    text.replace(twttr.txt.regexen.extractMentionsOrLists, function(match, before, atSign, screenName, slashListname, after) {
+      if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
+        slashListname = slashListname || '';
+        var startPosition = text.indexOf(atSign + screenName + slashListname, position);
+        position = startPosition + screenName.length + slashListname.length + 1;
+        possibleNames.push({
+          screenName: screenName,
+          listSlug: slashListname,
+          indices: [startPosition, position]
+        });
+      }
+    });
+
+    return possibleNames;
+  };
+
 
   twttr.txt.extractReplies = function(text) {
     if (!text) {
