@@ -15,6 +15,9 @@ public class RegexTest extends TestCase {
     assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これはOK #ハッシュタグ").find());
     assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これもOK。#ハッシュタグ").find());
     assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("これはダメ#ハッシュタグ").find());
+
+    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("#1").find());
+    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("#0").find());
   }
 
   public void testAutoLinkUsernamesOrLists() {
