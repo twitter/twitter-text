@@ -405,6 +405,10 @@ if (!window.twttr) {
 
     delete options.suppressNoFollow;
     delete options.suppressDataScreenName;
+    delete options.listClass;
+    delete options.usernameClass;
+    delete options.usernameUrlBase;
+    delete options.listUrlBase;
 
     return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, path, queryString) {
       var tldComponents;
