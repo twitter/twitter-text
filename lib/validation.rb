@@ -63,7 +63,7 @@ module Twitter
     def valid_list?(username_list)
       match = username_list.match(VALID_LIST_RE)
       # Must have matched and had nothing before or after
-      !!(match && match[1] == "" && !match[4].empty?)
+      !!(match && match[1] == "" && match[4] && !match[4].empty?)
     end
 
     def valid_hashtag?(hashtag)
