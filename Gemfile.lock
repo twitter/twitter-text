@@ -3,14 +3,12 @@ PATH
   specs:
     twitter-text (1.4.8)
       activesupport
-      i18n
 
 GEM
   remote: http://rubygems.org/
   specs:
     activesupport (3.0.3)
     diff-lcs (1.1.2)
-    i18n (0.5.0)
     nokogiri (1.4.4)
     nokogiri (1.4.4-java)
       weakling (>= 0.0.3)
