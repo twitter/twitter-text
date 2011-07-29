@@ -28,14 +28,14 @@ class ConformanceTest < Test::Unit::TestCase
 
     def test_mentions_with_indices_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_mentioned_screen_names_with_indices(input), description
       end
     end
 
     def test_mentions_or_lists_with_indices_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_or_lists_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_mentions_or_lists_with_indices(input), description
       end
     end
@@ -51,7 +51,7 @@ class ConformanceTest < Test::Unit::TestCase
 
     def test_urls_with_indices_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_urls_with_indices(input), description
       end
     end
@@ -64,7 +64,7 @@ class ConformanceTest < Test::Unit::TestCase
 
     def test_hashtags_with_indices_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :hashtags_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_hashtags_with_indices(input), description
       end
     end

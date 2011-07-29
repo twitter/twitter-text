@@ -6,6 +6,7 @@ if major.to_i == 1 && minor.to_i < 9
 end
 
 require 'active_support'
+require 'active_support/core_ext/string/multibyte.rb'
 
 require File.join(File.dirname(__FILE__), 'regex')
 require File.join(File.dirname(__FILE__), 'autolink')
