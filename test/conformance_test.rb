@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'yaml'
 $KCODE = 'UTF8'
-require File.dirname(__FILE__) + '/../lib/twitter-text'
+require File.expand_path(File.dirname(__FILE__) + '/../lib/twitter-text')
 
 class ConformanceTest < Test::Unit::TestCase
   include Twitter::Extractor
@@ -30,6 +30,13 @@ class ConformanceTest < Test::Unit::TestCase
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_with_indices) do |description, expected, input|
         expected = expected.map{|elem| elem.symbolize_keys }
         assert_equal expected, extract_mentioned_screen_names_with_indices(input), description
+      end
+    end
+
+    def test_mentions_or_lists_with_indices_conformance
+      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_or_lists_with_indices) do |description, expected, input|
+        expected = expected.map{|elem| elem.symbolize_keys }
+        assert_equal expected, extract_mentions_or_lists_with_indices(input), description
       end
     end
 

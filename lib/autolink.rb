@@ -19,6 +19,7 @@ module Twitter
     # Options which should not be passed as HTML attributes
     OPTIONS_NOT_ATTRIBUTES = [:url_class, :list_class, :username_class, :hashtag_class,
                               :username_url_base, :list_url_base, :hashtag_url_base,
+                              :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
                               :suppress_lists, :suppress_no_follow]
 
     HTML_ENTITIES = {
@@ -85,9 +86,19 @@ module Twitter
         chunk = block_given? ? yield(name) : name
 
         if slash_listname && !options[:suppress_lists]
-          %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"#{extra_html}>#{html_escape(chunk)}</a>)
+          href = if options[:list_url_block]
+            options[:list_url_block].call(name.downcase)
+          else
+            "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
+          end
+          %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
         else
-          %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{html_escape(options[:username_url_base])}#{html_escape(name)}"#{extra_html}>#{html_escape(chunk)}</a>)
+          href = if options[:username_url_block]
+            options[:username_url_block].call(chunk)
+          else
+            "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
+          end
+          %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
         end
       end
     end
@@ -111,7 +122,12 @@ module Twitter
 
       Twitter::Rewriter.rewrite_hashtags(text) do |hash, hashtag|
         hashtag = yield(hashtag) if block_given?
-        %(<a href="#{options[:hashtag_url_base]}#{html_escape(hashtag)}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{html_escape(hash)}#{html_escape(hashtag)}</a>)
+        href = if options[:hashtag_url_block]
+          options[:hashtag_url_block].call(hashtag)
+        else
+          "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
+        end
+        %(<a href="#{href}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{html_escape(hash)}#{html_escape(hashtag)}</a>)
       end
     end
 
@@ -126,7 +142,12 @@ module Twitter
       html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k)}.stringify_keys) || ""
 
       Twitter::Rewriter.rewrite_urls(text) do |url|
-        %(<a href="#{html_escape(url)}"#{html_attrs}>#{html_escape(url)}</a>)
+        href = if options[:link_url_block]
+          options.delete(:link_url_block).call(url)
+        else
+          html_escape(url)
+        end
+        %(<a href="#{href}"#{html_attrs}>#{html_escape(url)}</a>)
       end
     end
 

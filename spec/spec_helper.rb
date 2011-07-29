@@ -32,16 +32,16 @@ RSpec::Matchers.define :match_autolink_expression_in do |text|
   end
 end
 
-RSpec::Matchers.define :have_autolinked_url do |url|
+RSpec::Matchers.define :have_autolinked_url do |url, inner_text|
   match do |text|
     @link = Nokogiri::HTML(text).search("a[@href='#{url}']")
     @link &&
     @link.inner_text &&
-    @link.inner_text == url
+    (inner_text && @link.inner_text == inner_text) || (!inner_text && @link.inner_text == url)
   end
 
   failure_message_for_should do |text|
-    "Expected url '#{url}' to be autolinked in '#{text}'"
+    "Expected url '#{url}'#{", inner_text '#{inner_text}'" if inner_text} to be autolinked in '#{text}'"
   end
 end
 
