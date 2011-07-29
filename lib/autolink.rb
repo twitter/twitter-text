@@ -165,7 +165,7 @@ module Twitter
 
       text.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
-        if !protocol.blank?
+        if protocol && !protocol.empty?
           href = if options[:link_url_block]
             options.delete(:link_url_block).call(url)
           else
@@ -200,8 +200,8 @@ module Twitter
     end
 
     def target_tag(options)
-      target_option = options[:target]
-      if target_option.blank?
+      target_option = options[:target].to_s
+      if target_option.empty?
         ""
       else
         "target=\"#{html_escape(target_option)}\""

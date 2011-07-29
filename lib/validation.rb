@@ -35,7 +35,7 @@ module Twitter
     #   <tt>:empty</tt>:: if the <tt>text</tt> is nil or empty
     #   <tt>:invalid_characters</tt>:: if the <tt>text</tt> contains non-Unicode or any of the disallowed Unicode characters
     def tweet_invalid?(text)
-      return :empty if text.blank?
+      return :empty if !text || text.empty?
       begin
         return :too_long if tweet_length(text) > MAX_LENGTH
         return :invalid_characters if INVALID_CHARACTERS.any?{|invalid_char| text.include?(invalid_char) }
@@ -52,7 +52,7 @@ module Twitter
     end
 
     def valid_username?(username)
-      return false if username.blank?
+      return false if !username || username.empty?
 
       extracted = Twitter::Extractor.extract_mentioned_screen_names(username)
       # Should extract the username minus the @ sign, hence the [1..-1]
@@ -63,11 +63,11 @@ module Twitter
     def valid_list?(username_list)
       match = username_list.match(VALID_LIST_RE)
       # Must have matched and had nothing before or after
-      !!(match && match[1] == "" && !match[4].blank?)
+      !!(match && match[1] == "" && !match[4].empty?)
     end
 
     def valid_hashtag?(hashtag)
-      return false if hashtag.blank?
+      return false if !hashtag || hashtag.empty?
 
       extracted = Twitter::Extractor.extract_hashtags(hashtag)
       # Should extract the hashtag minus the # sign, hence the [1..-1]
@@ -75,7 +75,7 @@ module Twitter
     end
 
     def valid_url?(url, unicode_domains=true)
-      return false if url.blank?
+      return false if !url || url.empty?
 
       url_parts = url.match(Twitter::Regex[:validate_url_unencoded])
       return false unless (url_parts && url_parts.to_s == url)
