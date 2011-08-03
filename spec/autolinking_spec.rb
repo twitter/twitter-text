@@ -505,6 +505,25 @@ describe Twitter::Autolink do
         end
       end
 
+      context "regex engine quirks" do
+        context "does not spiral out of control (1)" do
+          def original_text; "10 Quick Tips For Picking Up A Girl In A Supermarket http://t.co/J7r9sRZ"; end
+
+          it "should autolink" do
+            @autolinked_text.should have_autolinked_url('http://t.co/J7r9sRZ')
+          end
+        end
+
+        context "does not spiral out of control (2)" do
+          def original_text; "Panasonic LUMIX DMC-FH7 pricing announced, on shelves next month http://t.co/cBqdzTk"; end
+
+          it "should autolink" do
+            @autolinked_text.should have_autolinked_url('http://t.co/cBqdzTk')
+
+          end
+        end
+      end
+
     end
 
     describe "Autolink all" do
