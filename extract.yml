@@ -459,6 +459,10 @@ tests:
       text: "#云々"
       expected: ["云々"]
 
+    - description: "Hashtags with ş (U+015F)"
+      text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
+      expected: ["Ateş", "qrşt", "ştu", "ş"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
