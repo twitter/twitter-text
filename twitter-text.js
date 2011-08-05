@@ -95,21 +95,25 @@ if (!window.twttr) {
   // Cyrillic
   addCharsToCharClass(nonLatinHashtagChars, 0x0400, 0x04ff); // Cyrillic
   addCharsToCharClass(nonLatinHashtagChars, 0x0500, 0x0527); // Cyrillic Supplement
+  addCharsToCharClass(nonLatinHashtagChars, 0x2de0, 0x2dff); // Cyrillic Extended A
+  addCharsToCharClass(nonLatinHashtagChars, 0xa640, 0xa69f); // Cyrillic Extended B
   // Hangul (Korean)
   addCharsToCharClass(nonLatinHashtagChars, 0x1100, 0x11ff); // Hangul Jamo
   addCharsToCharClass(nonLatinHashtagChars, 0x3130, 0x3185); // Hangul Compatibility Jamo
   addCharsToCharClass(nonLatinHashtagChars, 0xA960, 0xA97F); // Hangul Jamo Extended-A
   addCharsToCharClass(nonLatinHashtagChars, 0xAC00, 0xD7AF); // Hangul Syllables
   addCharsToCharClass(nonLatinHashtagChars, 0xD7B0, 0xD7FF); // Hangul Jamo Extended-B
+  addCharsToCharClass(nonLatinHashtagChars, 0xFFA1, 0xFFDC); // half-width Hangul
   // Japanese and Chinese
   addCharsToCharClass(nonLatinHashtagChars, 0x30A1, 0x30FA); // Katakana (full-width)
-  addCharsToCharClass(nonLatinHashtagChars, 0x30FC, 0x30FC); // Katakana Chouon (full-width)
+  addCharsToCharClass(nonLatinHashtagChars, 0x30FC, 0x30FE); // Katakana Chouon and iteration marks (full-width)
   addCharsToCharClass(nonLatinHashtagChars, 0xFF66, 0xFF9F); // Katakana (half-width)
   addCharsToCharClass(nonLatinHashtagChars, 0xFF70, 0xFF70); // Katakana Chouon (half-width)
   addCharsToCharClass(nonLatinHashtagChars, 0xFF10, 0xFF19); // \
   addCharsToCharClass(nonLatinHashtagChars, 0xFF21, 0xFF3A); //  - Latin (full-width)
   addCharsToCharClass(nonLatinHashtagChars, 0xFF41, 0xFF5A); // /
   addCharsToCharClass(nonLatinHashtagChars, 0x3041, 0x3096); // Hiragana
+  addCharsToCharClass(nonLatinHashtagChars, 0x3099, 0x309E); // Hiragana voicing and iteration mark
   addCharsToCharClass(nonLatinHashtagChars, 0x3400, 0x4DBF); // Kanji (CJK Extension A)
   addCharsToCharClass(nonLatinHashtagChars, 0x4E00, 0x9FFF); // Kanji (Unified)
   // -- Disabled as it breaks the Regex.
@@ -117,7 +121,8 @@ if (!window.twttr) {
   addCharsToCharClass(nonLatinHashtagChars, 0x2A700, 0x2B73F); // Kanji (CJK Extension C)
   addCharsToCharClass(nonLatinHashtagChars, 0x2B740, 0x2B81F); // Kanji (CJK Extension D)
   addCharsToCharClass(nonLatinHashtagChars, 0x2F800, 0x2FA1F); // Kanji (CJK supplement)
-  addCharsToCharClass(nonLatinHashtagChars, 0x3005, 0x3005); // Kanji (CJK iteration mark)
+  addCharsToCharClass(nonLatinHashtagChars, 0x3005, 0x3005); // Kanji iteration mark
+  addCharsToCharClass(nonLatinHashtagChars, 0x303B, 0x303B); // Han iteration mark
 
   twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
