@@ -1,9 +1,9 @@
+require 'set'
+
 module Twitter
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
   # usernames, lists, hashtags and URLs.
   module Autolink extend self
-    include ActionView::Helpers::TagHelper #tag_options needed by auto_link
-
     # Default CSS class for auto-linked URLs
     DEFAULT_URL_CLASS = "tweet-url"
     # Default CSS class for auto-linked lists (along with the url class)
@@ -31,7 +31,7 @@ module Twitter
     }
 
     def html_escape(text)
-      text && text.gsub(/[&"'><]/) do |character|
+      text && text.to_s.gsub(/[&"'><]/) do |character|
         HTML_ENTITIES[character]
       end
     end
@@ -139,7 +139,7 @@ module Twitter
       options = href_options.dup
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
       options[:class] = options.delete(:url_class)
-      html_attrs = tag_options(options.reject{|k,v| OPTIONS_NOT_ATTRIBUTES.include?(k)}.stringify_keys) || ""
+      html_attrs = html_attrs_for_options(options)
 
       Twitter::Rewriter.rewrite_urls(text) do |url|
         href = if options[:link_url_block]
@@ -153,9 +153,27 @@ module Twitter
 
     private
 
+    BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
+
+    def html_attrs_for_options(options)
+      html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
+    end
+
+    def html_attrs(options)
+      options.inject("") do |attrs, (key, value)|
+        if BOOLEAN_ATTRIBUTES.include?(key)
+          value = value ? key : nil
+        end
+        if !value.nil?
+          attrs << %( #{html_escape(key)}="#{html_escape(value)}")
+        end
+        attrs
+      end
+    end
+
     def target_tag(options)
-      target_option = options[:target]
-      if target_option.blank?
+      target_option = options[:target].to_s
+      if target_option.empty?
         ""
       else
         "target=\"#{html_escape(target_option)}\""

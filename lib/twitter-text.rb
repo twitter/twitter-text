@@ -5,9 +5,8 @@ if major.to_i == 1 && minor.to_i < 9
   raise("twitter-text requires the $KCODE variable be set to 'UTF8' or 'u'") unless $KCODE[0].chr =~ /u/i
 end
 
-# External libraries required. (for gems, use: ruby -rubygems ...)
-require 'action_pack'
-require 'action_view'
+require 'active_support'
+require 'active_support/core_ext/string/multibyte.rb'
 
 require File.join(File.dirname(__FILE__), 'regex')
 require File.join(File.dirname(__FILE__), 'rewriter')

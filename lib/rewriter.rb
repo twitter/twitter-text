@@ -52,7 +52,7 @@ module Twitter
     def rewrite_urls(text)
       text.to_s.gsub(Twitter::Regex[:valid_url]) do
         all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
-        if !protocol.blank?
+        if protocol && !protocol.empty?
           "#{before}#{yield(url)}"
         else
           all
