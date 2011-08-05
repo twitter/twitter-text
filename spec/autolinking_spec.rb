@@ -36,7 +36,7 @@ describe Twitter::Autolink do
         def original_text; "meet@the beach"; end
 
         it "should not be linked" do
-          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_empty
         end
       end
 
@@ -133,7 +133,7 @@ describe Twitter::Autolink do
         def original_text; "hello @/my-list"; end
 
         it "should NOT be linked" do
-          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_empty
         end
       end
 
@@ -149,7 +149,7 @@ describe Twitter::Autolink do
         def original_text; "meet@the/beach"; end
 
         it "should not be linked" do
-          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_empty
         end
       end
 

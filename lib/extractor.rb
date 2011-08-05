@@ -157,7 +157,7 @@ module Twitter
       position = 0
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, path, query|
         valid_url_match_data = $~
-        if !protocol.blank?
+        if protocol && !protocol.empty?
           start_position = valid_url_match_data.char_begin(3)
           end_position = valid_url_match_data.char_end(3)
           urls << {

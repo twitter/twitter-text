@@ -1,5 +1,11 @@
 $TESTING=true
-$KCODE='u'
+
+# Ruby 1.8 encoding check
+major, minor, patch = RUBY_VERSION.split('.')
+if major.to_i == 1 && minor.to_i < 9
+  $KCODE='u'
+end
+
 $:.push File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'nokogiri'

@@ -7,6 +7,22 @@ module Twitter
   class Regex
     REGEXEN = {} # :nodoc:
 
+    def self.regex_range(from, to = nil) # :nodoc:
+      if $RUBY_1_9
+        if to
+          "\\u{#{from.to_s(16).rjust(4, '0')}}-\\u{#{to.to_s(16).rjust(4, '0')}}"
+        else
+          "\\u{#{from.to_s(16).rjust(4, '0')}}"
+        end
+      else
+        if to
+          [from].pack('U') + '-' + [to].pack('U')
+        else
+          [from].pack('U')
+        end
+      end
+   end
+
     # Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
     # to access both the list of characters and a pattern suitible for use with String#split
     #  Taken from: ActiveSupport::Multibyte::Handlers::UTF8Handler::UNICODE_WHITESPACE
@@ -43,35 +59,43 @@ module Twitter
     # Latin accented characters
     # Excludes 0xd7 from the range (the multiplication sign, confusable with "x").
     # Also excludes 0xf7, the division sign
-    LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
+    LATIN_ACCENTS = [
+          regex_range(0xc0, 0xd6),
+          regex_range(0xd8, 0xf6),
+          regex_range(0xf8, 0xff),
+          regex_range(0x015f)
+    ].join('').freeze
+
     NON_LATIN_HASHTAG_CHARS = [
       # Cyrillic (Russian, Ukrainian, etc.)
-      (0x0400..0x04ff).to_a, # Cyrillic
-      (0x0500..0x0527).to_a, # Cyrillic Supplement
+      regex_range(0x0400, 0x04ff), # Cyrillic
+      regex_range(0x0500, 0x0527), # Cyrillic Supplement
+      regex_range(0x2de0, 0x2dff), # Cyrillic Extended A
+      regex_range(0xa640, 0xa69f), # Cyrillic Extended B
       # Hangul (Korean)
-      (0x1100..0x11ff).to_a, # Hangul Jamo
-      (0x3130..0x3185).to_a, # Hangul Compatibility Jamo
-      (0xA960..0xA97F).to_a, # Hangul Jamo Extended-A
-      (0xAC00..0xD7AF).to_a, # Hangul Syllables
-      (0xD7B0..0xD7FF).to_a # Hangul Jamo Extended-B
-    ].flatten.pack('U*').freeze
+      regex_range(0x1100, 0x11ff), # Hangul Jamo
+      regex_range(0x3130, 0x3185), # Hangul Compatibility Jamo
+      regex_range(0xA960, 0xA97F), # Hangul Jamo Extended-A
+      regex_range(0xAC00, 0xD7AF), # Hangul Syllables
+      regex_range(0xD7B0, 0xD7FF), # Hangul Jamo Extended-B
+      regex_range(0xFFA1, 0xFFDC) # Half-width Hangul
+    ].join('').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
     REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     CJ_HASHTAG_CHARACTERS = [
-      (0x30A1..0x30FA).to_a, 0x30FC, # Katakana (full-width)
-      (0xFF66..0xFF9F).to_a, # Katakana (half-width)
-      (0xFF10..0xFF19).to_a, (0xFF21..0xFF3A).to_a, (0xFF41..0xFF5A).to_a, # Latin (full-width)
-      (0x3041..0x3096).to_a, # Hiragana
-      (0x3400..0x4DBF).to_a, # Kanji (CJK Extension A)
-      (0x4E00..0x9FFF).to_a, # Kanji (Unified)
-      (0x20000..0x2A6DF).to_a, # Kanji (CJK Extension B)
-      (0x2A700..0x2B73F).to_a, # Kanji (CJK Extension C)
-      (0x2B740..0x2B81F).to_a, # Kanji (CJK Extension D)
-      (0x2F800..0x2FA1F).to_a, # Kanji (CJK supplement)
-      0x3005                   # Kanji (iteration mark)
-    ].flatten.pack('U*').freeze
+      regex_range(0x30A1, 0x30FA), regex_range(0x30FC, 0x30FE), # Katakana (full-width)
+      regex_range(0xFF66, 0xFF9F), # Katakana (half-width)
+      regex_range(0xFF10, 0xFF19), regex_range(0xFF21, 0xFF3A), regex_range(0xFF41, 0xFF5A), # Latin (full-width)
+      regex_range(0x3041, 0x3096), regex_range(0x3099, 0x309E), # Hiragana
+      regex_range(0x3400, 0x4DBF), # Kanji (CJK Extension A)
+      regex_range(0x4E00, 0x9FFF), # Kanji (Unified)
+      regex_range(0x20000, 0x2A6DF), # Kanji (CJK Extension B)
+      regex_range(0x2A700, 0x2B73F), # Kanji (CJK Extension C)
+      regex_range(0x2B740, 0x2B81F), # Kanji (CJK Extension D)
+      regex_range(0x2F800, 0x2FA1F), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
+    ].join('').freeze
 
     HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|、|\.|!|\?|！|？|,)/
 
@@ -94,7 +118,7 @@ module Twitter
     REGEXEN[:valid_domain_name] = /(?:[^#{DOMAIN_EXCLUDE_PART}](?:[-]|[^#{DOMAIN_EXCLUDE_PART}])*)?[^#{DOMAIN_EXCLUDE_PART}]/
     REGEXEN[:valid_domain] = /#{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}\.(?:xn--[a-z0-9]{2,}|[a-z]{2,})(?::[0-9]+)?/i
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|\.]/i
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|\.#{LATIN_ACCENTS}]/i
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
@@ -108,7 +132,7 @@ module Twitter
     )/ix
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow =&# for empty URL parameters and other URL-join artifacts
-    REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=_#\/\+\-]|#{REGEXEN[:wikipedia_disambiguation]}/io
+    REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=_#\/\+\-#{LATIN_ACCENTS}]|#{REGEXEN[:wikipedia_disambiguation]}/io
     REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/]/i
     REGEXEN[:valid_url] = %r{

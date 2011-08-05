@@ -1,6 +1,12 @@
 require 'test/unit'
 require 'yaml'
-$KCODE = 'UTF8'
+
+# Ruby 1.8 encoding check
+major, minor, patch = RUBY_VERSION.split('.')
+if major.to_i == 1 && minor.to_i < 9
+  $KCODE='u'
+end
+
 require File.expand_path(File.dirname(__FILE__) + '/../lib/twitter-text')
 
 class ConformanceTest < Test::Unit::TestCase
@@ -28,14 +34,14 @@ class ConformanceTest < Test::Unit::TestCase
 
     def test_mentions_with_indices_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_mentioned_screen_names_with_indices(input), description
       end
     end
 
     def test_mentions_or_lists_with_indices_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_or_lists_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_mentions_or_lists_with_indices(input), description
       end
     end
@@ -51,7 +57,7 @@ class ConformanceTest < Test::Unit::TestCase
 
     def test_urls_with_indices_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_urls_with_indices(input), description
       end
     end
@@ -64,7 +70,7 @@ class ConformanceTest < Test::Unit::TestCase
 
     def test_hashtags_with_indices_extractor_conformance
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :hashtags_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.symbolize_keys }
+        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
         assert_equal expected, extract_hashtags_with_indices(input), description
       end
     end
