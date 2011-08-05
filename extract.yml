@@ -355,6 +355,10 @@ tests:
       text: "On the #16 bus"
       expected: []
 
+    - description: "DO NOT Extract a single numeric hashtag"
+      text: "#0"
+      expected: []
+
     - description: "Extract a hashtag containing ñ"
       text: "I'll write more tests #mañana"
       expected: ["mañana"]
@@ -374,6 +378,10 @@ tests:
     - description: "Extract a hashtag in Korean"
       text: "What is #트위터 anyway?"
       expected: ["트위터"]
+
+    - description: "Extract a half-width Hangul hashtag"
+      text: "Just random half-width Hangul #ﾣﾦﾰ"
+      expected: ["ﾣﾦﾰ"]
 
     - description: "Extract a hashtag in Russian"
       text: "What is #ашок anyway?"
@@ -456,8 +464,8 @@ tests:
       expected: ["日本語ハッシュタグ"]
 
     - description: "Hashtag with ideographic iteration mark"
-      text: "#云々"
-      expected: ["云々"]
+      text: "#云々 #学問のすゝめ #いすゞ #各〻"
+      expected: ["云々", "学問のすゝめ", "いすゞ", "各〻"]
 
     - description: "Hashtags with ş (U+015F)"
       text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
