@@ -10,7 +10,7 @@ public class Regex {
   "with_friend","with_friends","statuses","status","activity","favourites",
   "favourite","favorite","favorites"};
 
-  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff";
+  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff\\u015f";
   private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff\\u0500-\\u0527" + // Cyrillic
                                                    "\\u1100-\\u11ff\\u3130-\\u3185\\uA960-\\uA97F\\uAC00-\\uD7AF\\uD7B0-\\uD7FF" + // Hangul (Korean)
@@ -32,7 +32,7 @@ public class Regex {
   private static final String URL_VALID_DOMAIN_NAME = "(?:" + URL_VALID_CHARS + "(?:[-]|" + URL_VALID_CHARS + ")*)?" + URL_VALID_CHARS;
   private static final String URL_VALID_DOMAIN = URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME + "\\.(?:" + URL_PUNYCODE + "|[a-z]{2,})(?::[0-9]+)?";
 
-  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~\\.\\|]";
+  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~\\.\\|" + LATIN_ACCENTS_CHARS + "]";
   private static final String URL_VALID_PATH_CHARS_WITHOUT_SLASH = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^/]]";
   private static final String URL_VALID_PATH_CHARS_WITHOUT_COMMA = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^,]]";
 
@@ -50,7 +50,7 @@ public class Regex {
   /** Valid end-of-path chracters (so /foo. does not gobble the period).
    *   2. Allow =&# for empty URL parameters and other URL-join artifacts
   **/
-  private static final String URL_VALID_URL_PATH_ENDING_CHARS = "(?:[a-z0-9=_#/\\-\\+]+|"+URL_BALANCE_PARENS+")";
+  private static final String URL_VALID_URL_PATH_ENDING_CHARS = "(?:[a-z0-9=_#/\\-\\+]+|"+ URL_BALANCE_PARENS + LATIN_ACCENTS_CHARS +")";
   private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~\\|]";
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
