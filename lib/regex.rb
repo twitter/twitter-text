@@ -118,7 +118,7 @@ module Twitter
     REGEXEN[:valid_domain_name] = /(?:[^#{DOMAIN_EXCLUDE_PART}](?:[-]|[^#{DOMAIN_EXCLUDE_PART}])*)?[^#{DOMAIN_EXCLUDE_PART}]/
     REGEXEN[:valid_domain] = /#{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}\.(?:xn--[a-z0-9]{2,}|[a-z]{2,})(?::[0-9]+)?/i
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|\.#{LATIN_ACCENTS}]/i
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|#{LATIN_ACCENTS}]/i
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
@@ -127,7 +127,7 @@ module Twitter
     REGEXEN[:valid_url_path_chars] = /(?:
       #{REGEXEN[:wikipedia_disambiguation]}|
       @#{REGEXEN[:valid_general_url_path_chars]}+\/|
-      [\.,]#{REGEXEN[:valid_general_url_path_chars]}+|
+      [\.,]#{REGEXEN[:valid_general_url_path_chars]}?|
       #{REGEXEN[:valid_general_url_path_chars]}+
     )/ix
     # Valid end-of-path chracters (so /foo. does not gobble the period).

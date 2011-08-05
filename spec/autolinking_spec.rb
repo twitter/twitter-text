@@ -505,6 +505,24 @@ describe Twitter::Autolink do
         end
       end
 
+      context "regex engine quirks" do
+        context "does not spiral out of control on repeated periods" do
+          def original_text; "Test a ton of periods http://example.com/path.........................................."; end
+
+          it "should autolink" do
+            @autolinked_text.should have_autolinked_url('http://example.com/path')
+          end
+        end
+
+        context "does not spiral out of control on repeated dashes" do
+          def original_text; "Single char file ext http://www.bestbuy.com/site/Currie+Technologies+-+Ezip+400+Scooter/9885188.p?id=1218189013070&skuId=9885188"; end
+
+          it "should autolink" do
+            @autolinked_text.should have_autolinked_url('http://www.bestbuy.com/site/Currie+Technologies+-+Ezip+400+Scooter/9885188.p?id=1218189013070&skuId=9885188')
+          end
+        end
+      end
+
     end
 
     describe "Autolink all" do
