@@ -1,6 +1,12 @@
 require 'test/unit'
 require 'yaml'
-$KCODE = 'UTF8'
+
+# Ruby 1.8 encoding check
+major, minor, patch = RUBY_VERSION.split('.')
+if major.to_i == 1 && minor.to_i < 9
+  $KCODE='u'
+end
+
 require File.expand_path(File.dirname(__FILE__) + '/../lib/twitter-text')
 
 class ConformanceTest < Test::Unit::TestCase
