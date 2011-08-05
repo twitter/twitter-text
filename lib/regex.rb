@@ -43,7 +43,7 @@ module Twitter
     # Latin accented characters
     # Excludes 0xd7 from the range (the multiplication sign, confusable with "x").
     # Also excludes 0xf7, the division sign
-    LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a].flatten.pack('U*').freeze
+    LATIN_ACCENTS = [(0xc0..0xd6).to_a, (0xd8..0xf6).to_a, (0xf8..0xff).to_a, 0x015f].flatten.pack('U*').freeze
     NON_LATIN_HASHTAG_CHARS = [
       # Cyrillic (Russian, Ukrainian, etc.)
       (0x0400..0x04ff).to_a, # Cyrillic
@@ -94,7 +94,7 @@ module Twitter
     REGEXEN[:valid_domain_name] = /(?:[^#{DOMAIN_EXCLUDE_PART}](?:[-]|[^#{DOMAIN_EXCLUDE_PART}])*)?[^#{DOMAIN_EXCLUDE_PART}]/
     REGEXEN[:valid_domain] = /#{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}\.(?:xn--[a-z0-9]{2,}|[a-z]{2,})(?::[0-9]+)?/i
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|\.]/i
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|\.#{LATIN_ACCENTS}]/i
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
@@ -108,7 +108,7 @@ module Twitter
     )/ix
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow =&# for empty URL parameters and other URL-join artifacts
-    REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=_#\/\+\-]|#{REGEXEN[:wikipedia_disambiguation]}/io
+    REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=_#\/\+\-#{LATIN_ACCENTS}]|#{REGEXEN[:wikipedia_disambiguation]}/io
     REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/]/i
     REGEXEN[:valid_url] = %r{
