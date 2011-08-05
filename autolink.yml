@@ -355,6 +355,10 @@ tests:
       text: "Hashtags in #中文, #日本語, #한국말, and #русский! Try it out!"
       expected: "Hashtags in <a href=\"http://twitter.com/search?q=%23中文\" title=\"#中文\" class=\"tweet-url hashtag\">#中文</a>, <a href=\"http://twitter.com/search?q=%23日本語\" title=\"#日本語\" class=\"tweet-url hashtag\">#日本語</a>, <a href=\"http://twitter.com/search?q=%23한국말\" title=\"#한국말\" class=\"tweet-url hashtag\">#한국말</a>, and <a href=\"http://twitter.com/search?q=%23русский\" title=\"#русский\" class=\"tweet-url hashtag\">#русский</a>! Try it out!"
 
+    - description: "Autolink should allow for ş (U+015F) in a hashtag"
+      text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
+      expected: "Here’s a test tweet for you: <a href=\"http://twitter.com/search?q=%23Ateş\" title=\"#Ateş\" class=\"tweet-url hashtag\">#Ateş</a> <a href=\"http://twitter.com/search?q=%23qrşt\" title=\"#qrşt\" class=\"tweet-url hashtag\">#qrşt</a> <a href=\"http://twitter.com/search?q=%23ştu\" title=\"#ştu\" class=\"tweet-url hashtag\">#ştu</a> <a href=\"http://twitter.com/search?q=%23ş\" title=\"#ş\" class=\"tweet-url hashtag\">#ş</a>"
+
   urls:
     - description: "Autolink URL with pipe character"
       text: "text http://example.com/pipe|character?yes|pipe|character"
@@ -611,6 +615,10 @@ tests:
     - description: "Autolink URL should NOT link URLs with domains beginning in a non-breaking space (U+00A0)"
       text: "@user Try http:// example.com/path"
       expected: "@user Try http:// example.com/path"
+
+    - decription: "Autolink URL should link paths containing accented characters"
+      text: "See: http://example.com/café"
+      expected: "See: <a href=\"http://example.com/café\">http://example.com/café</a>"
 
   all:
     - description: "Autolink all does not break on URL with @"
