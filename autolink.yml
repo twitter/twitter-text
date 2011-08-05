@@ -616,6 +616,10 @@ tests:
       text: "@user Try http:// example.com/path"
       expected: "@user Try http:// example.com/path"
 
+    - decription: "Autolink URL should link paths containing accented characters"
+      text: "See: http://example.com/café"
+      expected: "See: <a href=\"http://examples.com/café\">http://examples.com/café</a>"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
