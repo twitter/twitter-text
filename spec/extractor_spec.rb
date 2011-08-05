@@ -228,11 +228,11 @@ describe Twitter::Extractor do
         end
 
         it "should not allow the multiplication character" do
-          @extractor.extract_hashtags("#pre#{[0xd7].pack('U')}post").should == []
+          @extractor.extract_hashtags("#pre#{Twitter::Unicode::U00D7}post").should == []
         end
 
         it "should not allow the division character" do
-          @extractor.extract_hashtags("#pre#{[0xf7].pack('U')}post").should == []
+          @extractor.extract_hashtags("#pre#{Twitter::Unicode::U00F7}post").should == []
         end
       end
 

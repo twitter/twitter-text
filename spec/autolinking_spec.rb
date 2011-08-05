@@ -36,7 +36,7 @@ describe Twitter::Autolink do
         def original_text; "meet@the beach"; end
 
         it "should not be linked" do
-          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_empty
         end
       end
 
@@ -133,7 +133,7 @@ describe Twitter::Autolink do
         def original_text; "hello @/my-list"; end
 
         it "should NOT be linked" do
-          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_empty
         end
       end
 
@@ -149,7 +149,7 @@ describe Twitter::Autolink do
         def original_text; "meet@the/beach"; end
 
         it "should not be linked" do
-          Nokogiri::HTML(@autolinked_text).search('a').should be_blank
+          Nokogiri::HTML(@autolinked_text).search('a').should be_empty
         end
       end
 
@@ -501,6 +501,24 @@ describe Twitter::Autolink do
           it "should not link the username but link full url" do
             @autolinked_text.should have_autolinked_url('http://example.com/@foobar/')
             @autolinked_text.should_not link_to_screen_name('foobar')
+          end
+        end
+      end
+
+      context "regex engine quirks" do
+        context "does not spiral out of control on repeated periods" do
+          def original_text; "Test a ton of periods http://example.com/path.........................................."; end
+
+          it "should autolink" do
+            @autolinked_text.should have_autolinked_url('http://example.com/path')
+          end
+        end
+
+        context "does not spiral out of control on repeated dashes" do
+          def original_text; "Single char file ext http://www.bestbuy.com/site/Currie+Technologies+-+Ezip+400+Scooter/9885188.p?id=1218189013070&skuId=9885188"; end
+
+          it "should autolink" do
+            @autolinked_text.should have_autolinked_url('http://www.bestbuy.com/site/Currie+Technologies+-+Ezip+400+Scooter/9885188.p?id=1218189013070&skuId=9885188')
           end
         end
       end
