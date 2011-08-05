@@ -70,29 +70,31 @@ module Twitter
       # Cyrillic (Russian, Ukrainian, etc.)
       regex_range(0x0400, 0x04ff), # Cyrillic
       regex_range(0x0500, 0x0527), # Cyrillic Supplement
+      regex_range(0x2de0, 0x2dff), # Cyrillic Extended A
+      regex_range(0xa640, 0xa69f), # Cyrillic Extended B
       # Hangul (Korean)
       regex_range(0x1100, 0x11ff), # Hangul Jamo
       regex_range(0x3130, 0x3185), # Hangul Compatibility Jamo
       regex_range(0xA960, 0xA97F), # Hangul Jamo Extended-A
       regex_range(0xAC00, 0xD7AF), # Hangul Syllables
-      regex_range(0xD7B0, 0xD7FF) # Hangul Jamo Extended-B
+      regex_range(0xD7B0, 0xD7FF), # Hangul Jamo Extended-B
+      regex_range(0xFFA1, 0xFFDC) # Half-width Hangul
     ].join('').freeze
-
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
     REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     CJ_HASHTAG_CHARACTERS = [
-      regex_range(0x30A1, 0x30FA), regex_range(0x30FC), # Katakana (full-width)
+      regex_range(0x30A1, 0x30FA), regex_range(0x30FC, 0x30FE), # Katakana (full-width)
       regex_range(0xFF66, 0xFF9F), # Katakana (half-width)
       regex_range(0xFF10, 0xFF19), regex_range(0xFF21, 0xFF3A), regex_range(0xFF41, 0xFF5A), # Latin (full-width)
-      regex_range(0x3041, 0x3096), # Hiragana
+      regex_range(0x3041, 0x3096), regex_range(0x3099, 0x309E), # Hiragana
       regex_range(0x3400, 0x4DBF), # Kanji (CJK Extension A)
       regex_range(0x4E00, 0x9FFF), # Kanji (Unified)
       regex_range(0x20000, 0x2A6DF), # Kanji (CJK Extension B)
       regex_range(0x2A700, 0x2B73F), # Kanji (CJK Extension C)
       regex_range(0x2B740, 0x2B81F), # Kanji (CJK Extension D)
-      regex_range(0x2F800, 0x2FA1F), regex_range(0x3005) # Kanji (CJK supplement)
+      regex_range(0x2F800, 0x2FA1F), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
     ].join('').freeze
 
     HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|「|」|。|、|\.|!|\?|！|？|,)/
