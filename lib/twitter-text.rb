@@ -10,6 +10,7 @@ require 'action_pack'
 require 'action_view'
 
 require File.join(File.dirname(__FILE__), 'regex')
+require File.join(File.dirname(__FILE__), 'rewriter')
 require File.join(File.dirname(__FILE__), 'autolink')
 require File.join(File.dirname(__FILE__), 'extractor')
 require File.join(File.dirname(__FILE__), 'unicode')
