@@ -618,7 +618,7 @@ tests:
 
     - decription: "Autolink URL should link paths containing accented characters"
       text: "See: http://example.com/café"
-      expected: "See: <a href=\"http://examples.com/café\">http://examples.com/café</a>"
+      expected: "See: <a href=\"http://example.com/café\">http://examples.com/café</a>"
 
   all:
     - description: "Autolink all does not break on URL with @"
