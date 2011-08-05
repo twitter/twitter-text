@@ -325,6 +325,11 @@ tests:
       text: "test http://twitter.c_o_m"
       expected: []
 
+   # A common cause of runaway regex engines.
+    - description: "Extract a URL with a ton of trailing periods"
+      text: "Test a ton of periods http://example.com/path.........................................."
+      expected: ["http://example.com/path"]
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"

@@ -44,6 +44,7 @@ If you are creating a new twitter-text library in a different programming langua
   * v1.4.4 - 2011-08-05 [ Get tag v1.4.4 ]
     * [FIX] Support ş (U+015F) in hashtags
     * [FIX] Support latin accents in URL paths
+    * [FIX] Add a test for a common cause for runaway regex engines
 
   * v1.4.3 - 2011-07-13 [ Git tag v1.4.3 ]
     * [FIX] Japanese autolink including long vowel mark (chouon)
