@@ -76,19 +76,23 @@ task :package, [:version] => [:pkg] do |t, args|
   pkg_name = "twitter-text-#{args.version}.js"
   puts "Building #{pkg_name}..."
 
-  lib_name = "twitter-text-js #{args.version}"
-
   pkg_file = File.open(File.join(File.dirname(__FILE__), "pkg", pkg_name), "w")
-  pkg_file.write("/*!\n * #{lib_name}\n *\n")
 
-  puts "Writing license..."
-  license_file = File.open(File.join(File.dirname(__FILE__), "LICENSE"), "r")
-  license_file.each_line do |line|
-    pkg_file.write(" * #{line}")
-  end
-  license_file.close
-
-  pkg_file.write(" */\n\n")
+  puts "Writing header..."
+  header_comment = <<-COMMENT
+/*!
+ * twitter-text-js #{args.version}
+ *
+ * Copyright 2011 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this work except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ */
+  COMMENT
+  pkg_file.write(header_comment)
 
   puts "Writing library..."
   js_file = File.open(File.join(File.dirname(__FILE__), "twitter-text.js"), "r")
