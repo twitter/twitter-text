@@ -408,6 +408,15 @@ if (!window.twttr) {
       delete options.urlClass;
     }
 
+    // remap url entities to hash
+    var urlEntities, i, len;
+    if(options.urlEntities) {
+      urlEntities = {};
+      for(i = 0, len = options.urlEntities.length; i < len; i++) {
+        urlEntities[options.urlEntities[i].url] = options.urlEntities[i];
+      }
+    }
+
     delete options.suppressNoFollow;
     delete options.suppressDataScreenName;
     delete options.listClass;
@@ -427,7 +436,7 @@ if (!window.twttr) {
         var d = {
           before: before,
           htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(url)
+          url: twttr.txt.htmlEscape((urlEntities && (url in urlEntities)) ? urlEntities[url].display_url : url )
         };
 
         return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{url}</a>", d);
