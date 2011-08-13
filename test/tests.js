@@ -58,6 +58,6 @@ test("twttr.txt.autolink", function() {
         103
       ]
     }]
-  }).match(/<a[^>]+>blog.twitter.com\/2011\/05\/twitte…<\/a>/), 'Use display url from url entities');
+  }).match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>blog.twitter.com\/2011\/05\/twitte…<\/a>/), 'Use display url from url entities');
 
 });
