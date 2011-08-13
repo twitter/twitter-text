@@ -436,11 +436,16 @@ if (!window.twttr) {
         var d = {
           before: before,
           htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(url),
-          display_url: twttr.txt.htmlEscape((urlEntities && (url in urlEntities)) ? urlEntities[url].display_url : url )
+          url: twttr.txt.htmlEscape(url)
         };
+        if(urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+          d.displayUrl = twttr.txt.htmlEscape(urlEntities[url].display_url);
+        }
+        else {
+          d.displayUrl = d.url;
+        }
 
-        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{display_url}</a>", d);
+        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>", d);
       } else {
         return all;
       }
