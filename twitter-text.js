@@ -408,6 +408,15 @@ if (!window.twttr) {
       delete options.urlClass;
     }
 
+    // remap url entities to hash
+    var urlEntities, i, len;
+    if(options.urlEntities) {
+      urlEntities = {};
+      for(i = 0, len = options.urlEntities.length; i < len; i++) {
+        urlEntities[options.urlEntities[i].url] = options.urlEntities[i];
+      }
+    }
+
     delete options.suppressNoFollow;
     delete options.suppressDataScreenName;
     delete options.listClass;
@@ -429,8 +438,14 @@ if (!window.twttr) {
           htmlAttrs: htmlAttrs,
           url: twttr.txt.htmlEscape(url)
         };
+        if(urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+          d.displayUrl = twttr.txt.htmlEscape(urlEntities[url].display_url);
+        }
+        else {
+          d.displayUrl = d.url;
+        }
 
-        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{url}</a>", d);
+        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>", d);
       } else {
         return all;
       }

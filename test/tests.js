@@ -46,4 +46,18 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("#hi", { hash: "!" }).match(/<a[^>]+>!hi<\/a>/), "Override hash");
   ok(twttr.txt.autoLink("#hi", { preText: "<b>" }).match(/<a[^>]+>#<b>hi<\/a>/), "Override preText");
   ok(twttr.txt.autoLink("#hi", { postText: "</b>" }).match(/<a[^>]+>#hi<\/b><\/a>/), "Override postText");
+
+  // url entities
+  ok(twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+    urlEntities: [{
+      "url": "http://t.co/0JG5Mcq",
+      "display_url": "blog.twitter.com/2011/05/twitte…",
+      "expanded_url": "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
+      "indices": [
+        84,
+        103
+      ]
+    }]
+  }).match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>blog.twitter.com\/2011\/05\/twitte…<\/a>/), 'Use display url from url entities');
+
 });
