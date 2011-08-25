@@ -26,7 +26,7 @@ public class Regex {
   private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS +"]";
 
   /* URL related hash regex collection */
-  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"':!=A-Z0-9_@＠]+|^|\\:)";
+  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"':!=A-Z0-9_@＠]|^|\\:)";
 
   private static final String URL_VALID_CHARS = "[^\\p{Punct}\\s\\u00a0]";
   private static final String URL_PUNYCODE = "xn--[0-9a-z]+";
