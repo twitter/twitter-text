@@ -329,6 +329,22 @@ tests:
       text: "test http://twitter.c_o_m"
       expected: []
 
+    - description: "Extract valid URL http://www.foo.com/foo/path-with-period./"
+      text: "test http://www.foo.com/foo/path-with-period./"
+      expected: ["http://www.foo.com/foo/path-with-period./"]
+
+    - description: "Extract valid URL http://www.foo.org.za/foo/bar/688.1"
+      text: "test http://www.foo.org.za/foo/bar/688.1"
+      expected: ["http://www.foo.org.za/foo/bar/688.1"]
+
+    - description: "Extract valid URL http://www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0"
+      text: "test http://www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0"
+      expected: ["http://www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0"]
+
+    - description: "Extract valid URL http://foo.com/bar/123/foo_&_bar/"
+      text: "test http://foo.com/bar/123/foo_&_bar/"
+      expected: ["http://foo.com/bar/123/foo_&_bar/"]
+
    # A common cause of runaway regex engines.
     - description: "Extract a URL with a ton of trailing periods"
       text: "Test a ton of periods http://example.com/path.........................................."
