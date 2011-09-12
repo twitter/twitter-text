@@ -153,7 +153,7 @@ if (!window.twttr) {
 
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~|#{latinAccentChars}]/i);
+  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~|&#{latinAccentChars}]/i);
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
@@ -194,7 +194,7 @@ if (!window.twttr) {
     '#{validateUrlUnreserved}|' +
     '#{validateUrlPctEncoded}|' +
     '#{validateUrlSubDelims}|' +
-    ':|@' +
+    '[:|@]' +
   ')', 'i');
 
   twttr.txt.regexen.validateUrlScheme = /(?:[a-z][a-z0-9+\-.]*)/i;
