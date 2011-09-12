@@ -1,9 +1,7 @@
 
 package com.twitter;
 
-import java.util.regex.*;
 import junit.framework.TestCase;
-import com.twitter.*;
 
 public class AutolinkTest extends TestCase {
   private Autolink linker;
@@ -38,6 +36,13 @@ public class AutolinkTest extends TestCase {
     linker.setNoFollow(false);
     String tweet = "Url: http://example.com/$ABC";
     String expected = "Url: <a href=\"http://example.com/$ABC\">http://example.com/$ABC</a>";
+    assertAutolink(expected, linker.autoLinkURLs(tweet));
+  }
+
+  public void testURLWithoutProtocol() {
+    linker.setNoFollow(false);
+    String tweet = "Url: www.twitter.com http://www.twitter.com";
+    String expected = "Url: www.twitter.com <a href=\"http://www.twitter.com\">http://www.twitter.com</a>";
     assertAutolink(expected, linker.autoLinkURLs(tweet));
   }
 

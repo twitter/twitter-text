@@ -161,10 +161,7 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
-      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
-      if (!protocol.isEmpty()) {
-        urls.add(matcher.group(Regex.VALID_URL_GROUP_URL));
-      }
+      urls.add(matcher.group(Regex.VALID_URL_GROUP_URL));
     }
 
     return urls;
@@ -185,10 +182,7 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
-      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
-      if (!protocol.isEmpty()) {
-        urls.add(new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0));
-      }
+      urls.add(new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0));
     }
 
     return urls;

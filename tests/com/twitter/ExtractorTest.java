@@ -5,13 +5,12 @@ import java.util.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
-import com.twitter.*;
 
 public class ExtractorTest extends TestCase {
   protected Extractor extractor;
 
   public static Test suite() {
-    Class[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, URLTest.class };
+    Class<?>[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, URLTest.class };
     return new TestSuite(testClasses);
   }
 
@@ -116,6 +115,20 @@ public class ExtractorTest extends TestCase {
       assertEquals(extracted.get(0).getEnd().intValue(), 11);
       assertEquals(extracted.get(1).getStart().intValue(), 16);
       assertEquals(extracted.get(1).getEnd().intValue(), 39);
+   }
+
+   public void testUrlWithoutProtocol() {
+     String text = "www.twitter.com, www.yahoo.co.jp, t.co/blahblah";
+     assertList("Failed to extract URLs without protocol",
+         new String[]{"www.twitter.com", "www.yahoo.co.jp", "t.co/blahblah"}, extractor.extractURLs(text));
+
+     List<Extractor.Entity> extracted = extractor.extractURLsWithIndices(text);
+     assertEquals(extracted.get(0).getStart().intValue(), 0);
+     assertEquals(extracted.get(0).getEnd().intValue(), 15);
+     assertEquals(extracted.get(1).getStart().intValue(), 17);
+     assertEquals(extracted.get(1).getEnd().intValue(), 32);
+     assertEquals(extracted.get(2).getStart().intValue(), 34);
+     assertEquals(extracted.get(2).getEnd().intValue(), 47);
    }
   }
   /**
