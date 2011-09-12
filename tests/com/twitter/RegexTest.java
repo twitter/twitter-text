@@ -54,6 +54,9 @@ public class RegexTest extends TestCase {
     assertTrue("Matching a URL with ccTLD without protocol.",
         Regex.VALID_URL.matcher("www.foo.co.jp").matches());
 
+    assertTrue("Matching a URL with gTLD followed by ccTLD without protocol.",
+        Regex.VALID_URL.matcher("www.foo.org.za").matches());
+
     assertTrue("Should not match a short URL with ccTLD without protocol.",
         Regex.VALID_URL.matcher("http://t.co").matches());
 

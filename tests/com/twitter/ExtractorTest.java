@@ -130,7 +130,21 @@ public class ExtractorTest extends TestCase {
      assertEquals(extracted.get(2).getStart().intValue(), 34);
      assertEquals(extracted.get(2).getEnd().intValue(), 47);
    }
+
+   public void testUrlWithPunctuation() {
+     String[] urls = new String[] {
+       "http://www.foo.com/foo/path-with-period./",
+       "http://www.foo.org.za/foo/bar/688.1",
+       "http://www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0",
+       "http://foo.com/bar/123/foo_&_bar/"
+     };
+
+     for (String url : urls) {
+       assertEquals(url, extractor.extractURLs(url).get(0));
+     }
+   }
   }
+
   /**
    * Helper method for asserting that the List of extracted Strings match the expected values.
    *
