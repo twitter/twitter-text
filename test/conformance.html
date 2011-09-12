@@ -109,6 +109,10 @@
               return function(test) {
                 return twttr.txt.isValidUrl(test.text);
               };
+            case "urls_without_protocol":
+              return function(test) {
+                return twttr.txt.isValidUrl(test.text, true, false);
+              };
           }
       }
 
