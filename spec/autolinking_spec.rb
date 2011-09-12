@@ -391,18 +391,18 @@ describe Twitter::Autolink do
         end
 
         context "balanced parens with a double quote inside" do
-          def url; "http://foo.bar/foo_(\")_bar" end
+          def url; "http://foo.com/foo_(\")_bar" end
 
           it "should be linked" do
-            @autolinked_text.should have_autolinked_url("http://foo.bar/foo_")
+            @autolinked_text.should have_autolinked_url("http://foo.com/foo_")
           end
         end
 
         context "balanced parens hiding XSS" do
-          def url; 'http://x.xx/("style="color:red"onmouseover="alert(1)' end
+          def url; 'http://x.xx.com/("style="color:red"onmouseover="alert(1)' end
 
           it "should be linked" do
-            @autolinked_text.should have_autolinked_url("http://x.xx/")
+            @autolinked_text.should have_autolinked_url("http://x.xx.com/")
           end
         end
       end
@@ -479,10 +479,10 @@ describe Twitter::Autolink do
 
       context "with a @ in a URL" do
         context "with XSS attack" do
-          def original_text; 'http://x.xx/@"style="color:pink"onmouseover=alert(1)//'; end
+          def original_text; 'http://x.xx.com/@"style="color:pink"onmouseover=alert(1)//'; end
 
           it "should not allow XSS follwing @" do
-            @autolinked_text.should have_autolinked_url('http://x.xx/')
+            @autolinked_text.should have_autolinked_url('http://x.xx.com/')
           end
         end
 

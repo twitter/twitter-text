@@ -111,12 +111,33 @@ module Twitter
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
-    REGEXEN[:valid_preceding_chars] = /(?:[^-\/"':!=A-Z0-9_@＠]|^|\:)/i
+    REGEXEN[:valid_preceding_chars] = /(?:[^-\/"'!=A-Z0-9_@＠\.]|^)/i
 
-    DOMAIN_EXCLUDE_PART = "[:punct:][:space:][:blank:]#{[0x00A0].pack('U')}"
-    REGEXEN[:valid_subdomain] = /(?:[^#{DOMAIN_EXCLUDE_PART}](?:[_-]|[^#{DOMAIN_EXCLUDE_PART}])*)?[^#{DOMAIN_EXCLUDE_PART}]\./
-    REGEXEN[:valid_domain_name] = /(?:[^#{DOMAIN_EXCLUDE_PART}](?:[-]|[^#{DOMAIN_EXCLUDE_PART}])*)?[^#{DOMAIN_EXCLUDE_PART}]/
-    REGEXEN[:valid_domain] = /#{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}\.(?:xn--[a-z0-9]{2,}|[a-z]{2,})(?::[0-9]+)?/i
+    DOMAIN_VALID_CHARS = "[^[:punct:][:space:][:blank:]#{[0x00A0].pack('U')}]"
+    REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/i
+    REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/i
+
+    REGEXEN[:valid_gTLD] = /(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel)(?=[^[:alpha:]]|$))/i
+    REGEXEN[:valid_ccTLD] = %r{
+      (?:
+        (?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|
+        ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|
+        gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|
+        lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|
+        pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sy|sz|tc|td|tf|tg|th|
+        tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)
+        (?=[^[:alpha:]]|$)
+      )
+    }ix
+    REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/
+
+    REGEXEN[:valid_domain] = /(?:
+      #{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}
+      (?:#{REGEXEN[:valid_gTLD]}|#{REGEXEN[:valid_ccTLD]}|#{REGEXEN[:valid_punycode]})
+    )/ix
+    REGEXEN[:valid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/
+
+    REGEXEN[:valid_port_number] = /[0-9]+/
 
     REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~|#{LATIN_ACCENTS}]/i
     # Allow URL paths to contain balanced parens
@@ -139,16 +160,17 @@ module Twitter
       (                                                                                     #   $1 total match
         (#{REGEXEN[:valid_preceding_chars]})                                                #   $2 Preceeding chracter
         (                                                                                   #   $3 URL
-          (https?:\/\/)                                                                     #   $4 Protocol
-          (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s) and optional post number
+          (https?:\/\/)?                                                                    #   $4 Protocol (optional)
+          (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s)
+          (?::(#{REGEXEN[:valid_port_number]}))?                                            #   $6 Port number (optional)
           (/
             (?:
               #{REGEXEN[:valid_url_path_chars]}+#{REGEXEN[:valid_url_path_ending_chars]}|   # 1+ path chars and a valid last char
               #{REGEXEN[:valid_url_path_chars]}+#{REGEXEN[:valid_url_path_ending_chars]}?|  # Optional last char to handle /@foo/ case
               #{REGEXEN[:valid_url_path_ending_chars]}                                      # Just a # case
             )?
-          )?                                                                                #   $6 URL Path and anchor
-          (\?#{REGEXEN[:valid_url_query_chars]}*#{REGEXEN[:valid_url_query_ending_chars]})? #   $7 Query String
+          )?                                                                                #   $7 URL Path and anchor
+          (\?#{REGEXEN[:valid_url_query_chars]}*#{REGEXEN[:valid_url_query_ending_chars]})? #   $8 Query String
         )
       )
     }iox;
@@ -236,11 +258,9 @@ module Twitter
     REGEXEN[:validate_url_unencoded] = %r{
       \A                                #  Full URL
       (?:
-        ([^:/?#]+):                    #  $1 Scheme
-      )
-      (?://
-        ([^/?#]*)                      #  $2 Authority
-      )
+        ([^:/?#]+)://                  #  $1 Scheme
+      )?
+      ([^/?#]*)                        #  $2 Authority
       ([^?#]*)                         #  $3 Path
       (?:
         \?([^#]*)                      #  $4 Query

@@ -50,7 +50,7 @@ class ConformanceTest < Test::Unit::TestCase
       run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls) do |description, expected, input|
         assert_equal expected, extract_urls(input), description
         expected.each do |expected_url|
-          assert_equal true, valid_url?(expected_url), "expected url [#{expected_url}] not valid"
+          assert_equal true, valid_url?(expected_url, true, false), "expected url [#{expected_url}] not valid"
         end
       end
     end
@@ -148,6 +148,12 @@ class ConformanceTest < Test::Unit::TestCase
     def test_urls_validation_conformance
       run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :urls) do |description, expected, input|
         assert_equal expected, valid_url?(input), description
+      end
+    end
+
+    def test_urls_without_protocol_validation_conformance
+      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :urls_without_protocol) do |description, expected, input|
+        assert_equal expected, valid_url?(input, true, false), description
       end
     end
 

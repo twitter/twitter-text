@@ -26,14 +26,16 @@ module TestUrls
     "http://a_b.c-d.com",
     "http://a-b.b.com",
     "http://twitter-dash.com",
-    # "t.co/nwcLTFF"
+    "www.foobar.com",
+    "WWW.FOOBAR.COM",
+    "www.foobar.co.jp",
+    "http://t.co",
+    "t.co/nwcLTFF"
   ] unless defined?(TestUrls::VALID)
 
   INVALID = [
     "http://no-tld",
     "http://tld-too-short.x",
-    "www.foobar.com",
-    "WWW.FOOBAR.COM",
     "http://-doman_dash.com",
     "http://_leadingunderscore.twitter.com",
     "http://trailingunderscore_.twitter.com",

@@ -74,7 +74,7 @@ module Twitter
       extracted.size == 1 && extracted.first == hashtag[1..-1]
     end
 
-    def valid_url?(url, unicode_domains=true)
+    def valid_url?(url, unicode_domains=true, require_protocol=true)
       return false if !url || url.empty?
 
       url_parts = url.match(Twitter::Regex[:validate_url_unencoded])
@@ -82,7 +82,8 @@ module Twitter
 
       scheme, authority, path, query, fragment = url_parts.captures
 
-      return false unless (valid_match?(scheme, Twitter::Regex[:validate_url_scheme]) && scheme.match(/\Ahttps?\Z/i) &&
+      return false unless ((!require_protocol ||
+                           (valid_match?(scheme, Twitter::Regex[:validate_url_scheme]) && scheme.match(/\Ahttps?\Z/i))) &&
                            valid_match?(path, Twitter::Regex[:validate_url_path]) &&
                            valid_match?(query, Twitter::Regex[:validate_url_query], true) &&
                            valid_match?(fragment, Twitter::Regex[:validate_url_fragment], true))
