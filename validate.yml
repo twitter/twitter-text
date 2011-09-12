@@ -176,3 +176,24 @@ tests:
     - description: "Invalid url: trailing space"
       text: "http://example.com/#anchor "
       expected: false
+
+  urls_without_protocol:
+    - description: "Valid url without protocol: domain + gTLD"
+      text: "example.com"
+      expected: true
+
+    - description: "Valid url without protocol: subdomain + domain + gTLD"
+      text: "www.example.com"
+      expected: true
+
+    - description: "Valid url without protocol: domain + ccTLD"
+      text: "t.co"
+      expected: true
+
+    - description: "Valid url without protocol: subdomain + domain + ccTLD"
+      text: "foo.co.jp"
+      expected: true
+
+    - description: "Valid url without protocol: domain + path + query"
+      text: "example.com/path/to/resource?search=foo&lang=en"
+      expected: true

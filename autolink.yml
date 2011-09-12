@@ -389,8 +389,8 @@ tests:
       expected: "text <a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
 
     - description: "Autolink url with balanced parens hiding XSS"
-      text: 'text http://foo.bar/("onclick="alert(1)")'
-      expected: 'text <a href="http://foo.bar/">http://foo.bar/</a>("onclick="alert(1)")'
+      text: 'text http://foo.com/("onclick="alert(1)")'
+      expected: 'text <a href="http://foo.com/">http://foo.com/</a>("onclick="alert(1)")'
 
     - description: "Autolink url should NOT capture unbalanced parens"
       text: "Parenthetically bad http://example.com/i_has_a_) thing"
@@ -549,8 +549,8 @@ tests:
       expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/foobar\">http://www.flickr.com/photos/29674651@N00/foobar</a>"
 
     - description: "Autolink URL with only a domain followed by a period doesn't swallow the period."
-      text: "I think it's proper to end sentences with a period http://tell.me. Even when they contain a URL."
-      expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me\">http://tell.me</a>. Even when they contain a URL."
+      text: "I think it's proper to end sentences with a period http://tell.me.com. Even when they contain a URL."
+      expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me.com\">http://tell.me.com</a>. Even when they contain a URL."
 
     - description: "Autolink URL with a path followed by a period doesn't swallow the period."
       text: "I think it's proper to end sentences with a period http://tell.me/why. Even when they contain a URL."
@@ -616,9 +616,13 @@ tests:
       text: "@user Try http:// example.com/path"
       expected: "@user Try http:// example.com/path"
 
-    - decription: "Autolink URL should link paths containing accented characters"
+    - description: "Autolink URL should link paths containing accented characters"
       text: "See: http://example.com/café"
       expected: "See: <a href=\"http://example.com/café\">http://example.com/café</a>"
+
+    - description: "Autolink URL should not link URL without protocol"
+      text: "See: www.twitter.com or twitter.com/twitter"
+      expected: "See: www.twitter.com or twitter.com/twitter"
 
   all:
     - description: "Autolink all does not break on URL with @"
@@ -638,5 +642,5 @@ tests:
       expected: "See: <a href=\"http://example.com/@user/\">http://example.com/@user/</a>"
 
     - description: "Does not allow an XSS after an @"
-      text: "See: http://x.xx/@\"style=\"color:pink\"onmouseover=alert(1)//"
-      expected: "See: <a href=\"http://x.xx/\">http://x.xx/</a>@\"style=\"color:pink\"onmouseover=alert(1)//"
+      text: "See: http://x.xx.com/@\"style=\"color:pink\"onmouseover=alert(1)//"
+      expected: "See: <a href=\"http://x.xx.com/\">http://x.xx.com/</a>@\"style=\"color:pink\"onmouseover=alert(1)//"

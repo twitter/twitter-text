@@ -234,24 +234,28 @@ tests:
       expected: []
 
     - description: "Extract a very long hyphenated sub-domain URL (single letter hyphens)"
-      text: "text http://word-and-a-number-8-ftw.domain.tld/"
-      expected: ["http://word-and-a-number-8-ftw.domain.tld/"]
+      text: "text http://word-and-a-number-8-ftw.domain.com/"
+      expected: ["http://word-and-a-number-8-ftw.domain.com/"]
 
     - description: "Extract a hyphenated TLD (usually a typo)"
-      text: "text http://domain.tld-that-you-should-have-put-a-space-after"
-      expected: ["http://domain.tld"]
+      text: "text http://domain.com-that-you-should-have-put-a-space-after"
+      expected: ["http://domain.com"]
 
     - description: "Extract URL ending with # value"
       text: "text http://foo.com?#foo text"
       expected: ["http://foo.com?#foo"]
 
-    - description: "SHOULD NOT Extract URLs without protocol on (com|org|edu|gov|net) domains"
+    - description: "Extract URLs without protocol on (com|org|edu|gov|net) domains"
       text: "foo.com foo.net foo.org foo.edu foo.gov"
-      expected: []
+      expected: ["foo.com", "foo.net", "foo.org", "foo.edu", "foo.gov"]
 
-    - description: "DO NOT extract URLs withour protocol not on (com|org|edu|gov|net) domains, even when preceded by www."
-      text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu"
-      expected: []
+    - description: "Extract URLs withour protocol not on (com|org|edu|gov|net) domains"
+      text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp"
+      expected: ["foo.co.jp", "www.foo.co.uk"]
+
+    - description: "Extract URLs with protocol on ccTLD domains"
+      text: "http://foo.jp http://fooooo.jp"
+      expected: ["http://foo.jp", "http://fooooo.jp"]
 
     - description: "Extract URLs with a - or + at the end of the path"
       text: "Go to http://example.com/a+ or http://example.com/a-"
@@ -261,13 +265,13 @@ tests:
       text: "Go to http://example.com/view/slug-url-?foo=bar"
       expected: ["http://example.com/view/slug-url-?foo=bar"]
 
-    - description: "DO NOT extract URLs beginning with a space"
+    - description: "Extract URLs beginning with a space"
       text: "@user Try http:// example.com/path"
-      expected: []
+      expected: ["example.com/path"]
 
-    - description: "DO NOT extract URLs beginning with a non-breaking space (U+00A0)"
+    - description: "Extract URLs beginning with a non-breaking space (U+00A0)"
       text: "@user Try http:// example.com/path"
-      expected: []
+      expected: ["example.com/path"]
 
     - description: "Extract URLs with underscores and dashes in the subdomain"
       text: "test http://sub_domain-dash.twitter.com"
