@@ -47,7 +47,11 @@ public class Autolink {
   }
 
   public String escapeBrackets(String text) {
-    StringBuffer sb = new StringBuffer(text.length());
+    int len = text.length();
+    if (len == 0)
+      return text;
+
+    StringBuffer sb = new StringBuffer(len + 16);
     for (int i = 0; i < text.length(); ++i) {
       char c = text.charAt(i);
       if (c == '>')
