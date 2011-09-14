@@ -53,8 +53,8 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLink(String text) {
-      String escapedText = StringEscapeUtils.escapeXml(text);
-      return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags(escapedText) ) );
+    String escapedText = StringEscapeUtils.escapeXml(text);
+    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags(escapedText) ) );
   }
 
   /**
