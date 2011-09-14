@@ -67,7 +67,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLink(String text) {
-    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags( escapeBrackets(text)) ) );
+    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags( escapeBrackets(text) ) ) );
   }
 
   /**
