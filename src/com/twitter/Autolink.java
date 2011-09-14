@@ -51,7 +51,7 @@ public class Autolink {
     if (len == 0)
       return text;
 
-    StringBuffer sb = new StringBuffer(len + 16);
+    StringBuilder sb = new StringBuilder(len + 16);
     for (int i = 0; i < len; ++i) {
       char c = text.charAt(i);
       if (c == '>')
