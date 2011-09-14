@@ -52,7 +52,7 @@ public class Autolink {
       return text;
 
     StringBuffer sb = new StringBuffer(len + 16);
-    for (int i = 0; i < text.length(); ++i) {
+    for (int i = 0; i < len; ++i) {
       char c = text.charAt(i);
       if (c == '>')
         sb.append("&gt;");
