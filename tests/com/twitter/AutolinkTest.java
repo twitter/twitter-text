@@ -44,7 +44,7 @@ public class AutolinkTest extends TestCase {
   public void testWithAngleBrackets() {
     linker.setNoFollow(false);
     String tweet = "(Debugging) <3 #idol2011";
-    String expected = "(Debugging) &lt3; <a href=\"http://twitter.com/search?q=%23idol2011\" title=\"#idol2011\" class=\"tweet-url hashtag\">#idol2011</a>";
+    String expected = "(Debugging) &lt;3 <a href=\"http://twitter.com/search?q=%23idol2011\" title=\"#idol2011\" class=\"tweet-url hashtag\">#idol2011</a>";
     assertAutolink(expected, linker.autoLink(tweet));
   }
 
