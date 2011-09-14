@@ -349,7 +349,7 @@ if (!window.twttr) {
             // the link is a list
             var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
             d.list = twttr.txt.htmlEscape(list.toLowerCase());
-            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{chunk}</a>", d);
+            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{chunk}#{postChunk}</a>", d);
           } else {
             if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
               // Followed by something that means we don't autolink
