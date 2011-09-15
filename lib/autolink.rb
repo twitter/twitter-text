@@ -20,7 +20,7 @@ module Twitter
     OPTIONS_NOT_ATTRIBUTES = [:url_class, :list_class, :username_class, :hashtag_class,
                               :username_url_base, :list_url_base, :hashtag_url_base,
                               :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
-                              :suppress_lists, :suppress_no_follow]
+                              :suppress_lists, :suppress_no_follow, :url_entities]
 
     HTML_ENTITIES = {
       '&' => '&amp;',
@@ -139,6 +139,16 @@ module Twitter
       options = href_options.dup
       options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
       options[:class] = options.delete(:url_class)
+
+      url_entities = {}
+      if options[:url_entities]
+        options[:url_entities].each do |entity|
+          entity = entity.with_indifferent_access
+          url_entities[entity[:url]] = entity
+        end
+        options.delete(:url_entities)
+      end
+
       html_attrs = html_attrs_for_options(options)
 
       Twitter::Rewriter.rewrite_urls(text) do |url|
@@ -147,7 +157,13 @@ module Twitter
         else
           html_escape(url)
         end
-        %(<a href="#{href}"#{html_attrs}>#{html_escape(url)}</a>)
+
+        display_url = url
+        if url_entities[url] && url_entities[url][:display_url]
+          display_url = url_entities[url][:display_url]
+        end
+
+        %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>)
       end
     end
 
