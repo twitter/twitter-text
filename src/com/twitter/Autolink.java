@@ -1,7 +1,6 @@
 
 package com.twitter;
 
-import java.util.*;
 import java.util.regex.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -158,6 +157,8 @@ public class Autolink {
   /**
    * Auto-link URLs in the Tweet text provided.
    *
+   * This only auto-links URLs with protocol.
+   *
    * @param text of the Tweet to auto-link
    * @return text with auto-link HTML added
    */
@@ -167,7 +168,7 @@ public class Autolink {
 
     while (matcher.find()) {
       String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
-      if (!protocol.isEmpty()) {
+      if (protocol != null) {
         // query string needs to be html escaped
         String url = matcher.group(Regex.VALID_URL_GROUP_URL);
         String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);

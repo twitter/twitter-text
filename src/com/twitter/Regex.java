@@ -1,15 +1,9 @@
 
 package com.twitter;
 
-import java.util.*;
 import java.util.regex.*;
 
 public class Regex {
-  private static final String[] RESERVED_ACTION_WORDS = {"twitter","lists",
-  "retweet","retweets","following","followings","follower","followers",
-  "with_friend","with_friends","statuses","status","activity","favourites",
-  "favourite","favorite","favorites"};
-
   private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff\\u015f";
   private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff\\u0500-\\u0527" +  // Cyrillic
@@ -26,17 +20,47 @@ public class Regex {
   private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS +"]";
 
   /* URL related hash regex collection */
-  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"':!=A-Z0-9_@＠]|^|\\:)";
+  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"'!=A-Z0-9_@＠.]|^)";
 
   private static final String URL_VALID_CHARS = "[^\\p{Punct}\\s\\u00a0]";
-  private static final String URL_PUNYCODE = "xn--[0-9a-z]+";
-  private static final String URL_VALID_SUBDOMAIN = "(?:(?:" + URL_VALID_CHARS + "(?:[_-]|" + URL_VALID_CHARS + ")*)?" + URL_VALID_CHARS + "\\.)";
-  private static final String URL_VALID_DOMAIN_NAME = "(?:" + URL_VALID_CHARS + "(?:[-]|" + URL_VALID_CHARS + ")*)?" + URL_VALID_CHARS;
-  private static final String URL_VALID_DOMAIN = URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME + "\\.(?:" + URL_PUNYCODE + "|[a-z]{2,})(?::[0-9]+)?";
+  private static final String URL_VALID_SUBDOMAIN = "(?:(?:" + URL_VALID_CHARS + "[_-" + URL_VALID_CHARS + "]*)?" + URL_VALID_CHARS + "\\.)";
+  private static final String URL_VALID_DOMAIN_NAME = "(?:(?:" + URL_VALID_CHARS + "[-" + URL_VALID_CHARS + "]*)?" + URL_VALID_CHARS + "\\.)";
 
-  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~\\.\\|" + LATIN_ACCENTS_CHARS + "]";
+  private static final String URL_VALID_GTLD =
+      "(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel)(?=\\P{Alpha}|$))";
+  private static final String URL_VALID_CCTLD =
+      "(?:(?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|" +
+      "bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|" +
+      "er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|" +
+      "hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|" +
+      "lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|" +
+      "nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|" +
+      "sl|sm|sn|so|sr|ss|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|" +
+      "va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)(?=\\P{Alpha}|$))";
+  private static final String URL_PUNYCODE = "(?:xn--[0-9a-z]+)";
+
+  private static final String URL_VALID_DOMAIN =
+    "(?:" +                                                   // subdomains + domain + ccTLD
+        URL_VALID_SUBDOMAIN + "+" + URL_VALID_DOMAIN_NAME +   // e.g. foo.co.jp, bar.co.uk
+        URL_VALID_CCTLD +
+      ")" +
+    "|(?:" +                                                  // optional subdomains + domain + gTLD
+      URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME +     // e.g. twitter.com, www.twitter.com
+      "(?:" + URL_VALID_GTLD + "|" + URL_PUNYCODE + ")" +
+    ")" +
+    "|(?:" + "(?<=https?://)" +                               // protocol + domain + ccTLD
+      URL_VALID_DOMAIN_NAME + URL_VALID_CCTLD +               // e.g. http://t.co
+    ")" +
+    "|(?:" +                                                  // domain + ccTLD + '/'
+      URL_VALID_DOMAIN_NAME + URL_VALID_CCTLD + "(?=/)" +     // e.g. t.co/
+    ")";
+
+  private static final String URL_VALID_PORT_NUMBER = "[0-9]++";
+
+  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~\\.\\|&" + LATIN_ACCENTS_CHARS + "]";
+  private static final String URL_VALID_URL_PATH_ENDING_CHARS = "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS +"]";
   private static final String URL_VALID_PATH_CHARS_WITHOUT_SLASH = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^/]]";
-  private static final String URL_VALID_PATH_CHARS_WITHOUT_COMMA = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^,]]";
+  private static final String URL_VALID_PATH_CHARS_WITHOUT_COMMA = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^,.]]";
 
   /** Allow URL paths to contain balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
@@ -46,28 +70,28 @@ public class Regex {
   private static final String URL_VALID_URL_PATH_CHARS = "(?:" +
     URL_BALANCE_PARENS +
     "|@" + URL_VALID_PATH_CHARS_WITHOUT_SLASH + "++/" +
-    "|(?:[.,]*+" + URL_VALID_PATH_CHARS_WITHOUT_COMMA + ")++" +
+    "|(?:[.,]*+" + URL_VALID_PATH_CHARS_WITHOUT_COMMA + "*" + URL_VALID_URL_PATH_ENDING_CHARS + ")++" +
   ")";
 
   /** Valid end-of-path chracters (so /foo. does not gobble the period).
    *   2. Allow =&# for empty URL parameters and other URL-join artifacts
   **/
-  private static final String URL_VALID_URL_PATH_ENDING_CHARS = "(?:[a-z0-9=_#/\\-\\+]+|"+ URL_BALANCE_PARENS + LATIN_ACCENTS_CHARS +")";
   private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~\\|]";
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
   "(" +                                                            //  $1 total match
     "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceeding chracter
     "(" +                                                          //  $3 URL
-      "(https?://)" +                                              //  $4 Protocol
-      "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s) and optional port number
+      "(https?://)?" +                                             //  $4 Protocol (optional)
+      "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
+      "(?::(" + URL_VALID_PORT_NUMBER +"))?" +                     //  $6 Port number (optional)
       "(/" +
         "(?:" +
           URL_VALID_URL_PATH_CHARS + "+|" +                        //     1+ path chars and a valid last char
           URL_VALID_URL_PATH_ENDING_CHARS +                        //     Just a # case
         ")?" +
-      ")?" +                                                       //  $6 URL Path and anchor
-      "(\\?" + URL_VALID_URL_QUERY_CHARS + "*" +                   //  $7 Query String
+      ")?" +                                                       //  $7 URL Path and anchor
+      "(\\?" + URL_VALID_URL_QUERY_CHARS + "*" +                   //  $8 Query String
               URL_VALID_URL_QUERY_ENDING_CHARS + ")?" +
     ")" +
   ")";
@@ -97,8 +121,9 @@ public class Regex {
   public static final int VALID_URL_GROUP_URL          = 3;
   public static final int VALID_URL_GROUP_PROTOCOL     = 4;
   public static final int VALID_URL_GROUP_DOMAIN       = 5;
-  public static final int VALID_URL_GROUP_PATH         = 6;
-  public static final int VALID_URL_GROUP_QUERY_STRING = 7;
+  public static final int VALID_URL_GROUP_PORT         = 6;
+  public static final int VALID_URL_GROUP_PATH         = 7;
+  public static final int VALID_URL_GROUP_QUERY_STRING = 8;
 
   public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})(?=(.|$))", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;

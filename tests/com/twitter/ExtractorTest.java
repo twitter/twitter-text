@@ -5,13 +5,12 @@ import java.util.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
-import com.twitter.*;
 
 public class ExtractorTest extends TestCase {
   protected Extractor extractor;
 
   public static Test suite() {
-    Class[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, URLTest.class };
+    Class<?>[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, URLTest.class };
     return new TestSuite(testClasses);
   }
 
@@ -117,7 +116,39 @@ public class ExtractorTest extends TestCase {
       assertEquals(extracted.get(1).getStart().intValue(), 16);
       assertEquals(extracted.get(1).getEnd().intValue(), 39);
    }
+
+   public void testUrlWithoutProtocol() {
+     String text = "www.twitter.com, www.yahoo.co.jp, t.co/blahblah";
+     assertList("Failed to extract URLs without protocol",
+         new String[]{"www.twitter.com", "www.yahoo.co.jp", "t.co/blahblah"}, extractor.extractURLs(text));
+
+     List<Extractor.Entity> extracted = extractor.extractURLsWithIndices(text);
+     assertEquals(extracted.get(0).getStart().intValue(), 0);
+     assertEquals(extracted.get(0).getEnd().intValue(), 15);
+     assertEquals(extracted.get(1).getStart().intValue(), 17);
+     assertEquals(extracted.get(1).getEnd().intValue(), 32);
+     assertEquals(extracted.get(2).getStart().intValue(), 34);
+     assertEquals(extracted.get(2).getEnd().intValue(), 47);
+   }
+
+   public void testUrlWithPunctuation() {
+     String[] urls = new String[] {
+       "http://www.foo.com/foo/path-with-period./",
+       "http://www.foo.org.za/foo/bar/688.1",
+       "http://www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0",
+       "http://foo.com/bar/123/foo_&_bar/",
+       "www.foo.com/foo/path-with-period./",
+       "www.foo.org.za/foo/bar/688.1",
+       "www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0",
+       "foo.com/bar/123/foo_&_bar/"
+     };
+
+     for (String url : urls) {
+       assertEquals(url, extractor.extractURLs(url).get(0));
+     }
+   }
   }
+
   /**
    * Helper method for asserting that the List of extracted Strings match the expected values.
    *

@@ -3,7 +3,6 @@ package com.twitter;
 
 import java.util.regex.*;
 import junit.framework.TestCase;
-import com.twitter.*;
 
 public class RegexTest extends TestCase {
   public void testAutoLinkHashtags() {
@@ -26,7 +25,7 @@ public class RegexTest extends TestCase {
   }
 
   public void testValidURL() {
-    assertCaptureCount(7, Regex.VALID_URL, "http://example.com");
+    assertCaptureCount(8, Regex.VALID_URL, "http://example.com");
   }
 
   public void testValidURLDoesNotCrashOnLongPaths() {
@@ -46,6 +45,29 @@ public class RegexTest extends TestCase {
 
     long duration = (end - start);
     assertTrue("Matching a repeated path end should take less than 10ms (took " + duration + "ms)", (duration < 10) );
+  }
+
+  public void testVAlidURLWithoutProtocol() {
+    assertTrue("Matching a URL with gTLD without protocol.",
+        Regex.VALID_URL.matcher("twitter.com").matches());
+
+    assertTrue("Matching a URL with ccTLD without protocol.",
+        Regex.VALID_URL.matcher("www.foo.co.jp").matches());
+
+    assertTrue("Matching a URL with gTLD followed by ccTLD without protocol.",
+        Regex.VALID_URL.matcher("www.foo.org.za").matches());
+
+    assertTrue("Should not match a short URL with ccTLD without protocol.",
+        Regex.VALID_URL.matcher("http://t.co").matches());
+
+    assertFalse("Should not match a short URL with ccTLD without protocol.",
+        Regex.VALID_URL.matcher("t.co").matches());
+
+    assertFalse("Should not match a URL with invalid gTLD.",
+        Regex.VALID_URL.matcher("www.foo.bar").find());
+
+    assertTrue("Match a short URL with ccTLD and '/' but without protocol.",
+        Regex.VALID_URL.matcher("t.co/blahblah").matches());
   }
 
   public void testExtractMentions() {
