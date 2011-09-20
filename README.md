@@ -41,6 +41,10 @@ If you are creating a new twitter-text library in a different programming langua
 
 ## Changelog
 
+  * v1.4.5 - 2011-09-20 [ Git tag v1.4.5 ]
+    * [FIX] Extract URLs without protocol
+    * [FIX] Extract URLs with '.', '|' and '&'
+
   * v1.4.4 - 2011-08-05 [ Get tag v1.4.4 ]
     * [FIX] Support ş (U+015F) in hashtags
     * [FIX] Support latin accents in URL paths
