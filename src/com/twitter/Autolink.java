@@ -45,6 +45,24 @@ public class Autolink {
     hashtagUrlBase = DEFAULT_HASHTAG_URL_BASE;
   }
 
+  public String escapeBrackets(String text) {
+    int len = text.length();
+    if (len == 0)
+      return text;
+
+    StringBuilder sb = new StringBuilder(len + 16);
+    for (int i = 0; i < len; ++i) {
+      char c = text.charAt(i);
+      if (c == '>')
+        sb.append("&gt;");
+      else if (c == '<')
+        sb.append("&lt;");
+      else
+        sb.append(c);
+    }
+    return sb.toString();
+  }
+
   /**
    * Auto-link hashtags, URLs, usernames and lists.
    *
@@ -52,7 +70,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLink(String text) {
-    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags(text) ) );
+    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags( escapeBrackets(text) ) ) );
   }
 
   /**
