@@ -131,7 +131,7 @@ if (!window.twttr) {
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
-  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|#{spaces}|「|」|。|、|\.|!|！|\?|？|,)/);
+  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|#{spaces}|[「」。、.,!！?？:;"'])/);
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
