@@ -844,5 +844,8 @@ if (!window.twttr) {
     return (!string || (string.match(regex) && RegExp["$&"] === string));
   }
 
+  if (typeof module != 'undefined' && module.exports) {
+    module.exports = twttr.txt;
+  }
 
 }());
