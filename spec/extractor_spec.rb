@@ -228,11 +228,11 @@ describe Twitter::Extractor do
         end
 
         it "should not allow the multiplication character" do
-          @extractor.extract_hashtags("#pre#{Twitter::Unicode::U00D7}post").should == []
+          @extractor.extract_hashtags("#pre#{Twitter::Unicode::U00D7}post").should == ["pre"]
         end
 
         it "should not allow the division character" do
-          @extractor.extract_hashtags("#pre#{Twitter::Unicode::U00F7}post").should == []
+          @extractor.extract_hashtags("#pre#{Twitter::Unicode::U00F7}post").should == ["pre"]
         end
       end
 
@@ -240,6 +240,10 @@ describe Twitter::Extractor do
 
     it "should not extract numeric hashtags" do
       @extractor.extract_hashtags("#1234").should == []
+    end
+
+    it "should extract hashtag followed by punctuations" do
+      @extractor.extract_hashtags("#test1: #test2; #test3\"").should == ["test1", "test2" ,"test3"]
     end
   end
 
@@ -283,11 +287,11 @@ describe Twitter::Extractor do
         end
 
         it "should not allow the multiplication character" do
-          not_match_hashtag_in_text("#pre#{[0xd7].pack('U')}post")
+          match_hashtag_in_text("pre", "#pre#{[0xd7].pack('U')}post", 0)
         end
 
         it "should not allow the division character" do
-          not_match_hashtag_in_text("#pre#{[0xf7].pack('U')}post")
+          match_hashtag_in_text("pre", "#pre#{[0xf7].pack('U')}post", 0)
         end
       end
     end
