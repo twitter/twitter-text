@@ -496,6 +496,14 @@ tests:
       text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
       expected: ["Ateş", "qrşt", "ştu", "ş"]
 
+    - description: "Hashtag before punctuations"
+      text: "#hashtag: #hashtag; #hashtag, #hashtag. #hashtag! #hashtag?"
+      expected: ["hashtag", "hashtag", "hashtag", "hashtag", "hashtag", "hashtag"]
+
+    - description: "Hashtag after punctuations"
+      text: ":#hashtag ;#hashtag ,#hashtag .#hashtag !#hashtag ?#hashtag"
+      expected: ["hashtag", "hashtag", "hashtag", "hashtag", "hashtag", "hashtag"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
