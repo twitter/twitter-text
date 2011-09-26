@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "1.4.10"
+  s.version = "1.4.11"
   s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle",
                "Raffi Krikorian", "J.P. Cummins", "Yoshimasa Niwa", "Keita Fujii"]
   s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com",
