@@ -1,4 +1,6 @@
-spec = Gem::Specification.new do |s|
+# encoding: utf-8
+
+Gem::Specification.new do |s|
   s.name = "twitter-text"
   s.version = "1.4.11"
   s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle",
