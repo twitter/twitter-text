@@ -49,9 +49,9 @@ namespace :test do
   end
 end
 
-require 'rake/rdoctask'
+require 'rdoc/task'
 namespace :doc do
-  Rake::RDocTask.new do |rd|
+  RDoc::Task.new do |rd|
     rd.main = "README.rdoc"
     rd.rdoc_dir = 'doc'
     rd.rdoc_files.include("README.rdoc", "lib/**/*.rb")
