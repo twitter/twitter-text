@@ -68,4 +68,9 @@ test("twttr.txt.autolink", function() {
     }]
   }).match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>blog.twitter.com\/2011\/05\/twitte…<\/a>/), 'Use display url from url entities');
 
+  // urls with invalid character
+  var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
+  for (i = 0; i < invalidChars.length; i++) {
+    equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid cahracter');
+  }
 });

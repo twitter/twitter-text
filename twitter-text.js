@@ -82,8 +82,16 @@ if (!window.twttr) {
   addCharsToCharClass(UNICODE_SPACES, 0x009, 0x00D); // White_Space # Cc   [5] <control-0009>..<control-000D>
   addCharsToCharClass(UNICODE_SPACES, 0x2000, 0x200A); // White_Space # Zs  [11] EN QUAD..HAIR SPACE
 
+  var INVALID_CHARS = [
+    fromCode(0xFFFE),
+    fromCode(0xFEFF), // BOM
+    fromCode(0xFFFF), // Special
+  ];
+  addCharsToCharClass(INVALID_CHARS, 0x202A, 0x202E); // Directional change
+
   twttr.txt.regexen.spaces_group = regexSupplant(UNICODE_SPACES.join(""));
   twttr.txt.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
+  twttr.txt.regexen.invalid_chars_group = regexSupplant(INVALID_CHARS.join(""));
   twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~/;
   twttr.txt.regexen.atSigns = /[@＠]/;
   twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_])(#{atSigns})([a-zA-Z0-9_]{1,20})(?=(.|$))/g);
@@ -139,9 +147,9 @@ if (!window.twttr) {
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
-  twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠\.]|^)/);
+  twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠\.#{invalid_chars_group}]|^)/);
 
-  twttr.txt.regexen.invalidDomainChars = stringSupplant("\u00A0#{punct}#{spaces_group}", twttr.txt.regexen);
+  twttr.txt.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", twttr.txt.regexen);
   twttr.txt.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
   twttr.txt.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
   twttr.txt.regexen.validDomainName = regexSupplant(/(?:(?:#{validDomainChars}(?:-|#{validDomainChars})*)?#{validDomainChars}\.)/);
