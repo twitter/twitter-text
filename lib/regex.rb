@@ -39,9 +39,16 @@ module Twitter
           0x202F,          # White_Space # Zs       NARROW NO-BREAK SPACE
           0x205F,          # White_Space # Zs       MEDIUM MATHEMATICAL SPACE
           0x3000,          # White_Space # Zs       IDEOGRAPHIC SPACE
-        ].flatten.freeze
-    SPACE_CHAR_CLASS_VALUE = Regexp.new(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join(''))
-    REGEXEN[:spaces] = Regexp.new(UNICODE_SPACES.collect{ |e| [e].pack 'U*' }.join('|'))
+    ].flatten.map{|c| [c].pack('U*')}.freeze
+    REGEXEN[:spaces] = /[#{UNICODE_SPACES.join('')}]/o
+
+    # Character not allowed in Tweets
+    INVALID_CHARACTERS = [
+      0xFFFE, 0xFEFF, # BOM
+      0xFFFF,         # Special
+      0x202A, 0x202B, 0x202C, 0x202D, 0x202E # Directional change
+    ].map{|cp| [cp].pack('U') }.freeze
+    REGEXEN[:invalid_control_characters] = /[#{INVALID_CHARACTERS.join('')}]/o
 
     REGEXEN[:at_signs] = /[@＠]/
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(?=(.|$))/o
@@ -97,7 +104,7 @@ module Twitter
       regex_range(0x2F800, 0x2FA1F), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
     ].join('').freeze
 
-    HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|[「」。、.,!?！？:;"'])/
+    HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|[「」。、.,!?！？:;"'])/o
 
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
     HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
@@ -111,11 +118,11 @@ module Twitter
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
-    REGEXEN[:valid_preceding_chars] = /(?:[^-\/"'!=A-Z0-9_@＠\.]|^)/i
+    REGEXEN[:valid_preceding_chars] = /(?:[^-\/"'!=A-Z0-9_@＠\.#{INVALID_CHARACTERS.join('')}]|^)/io
 
-    DOMAIN_VALID_CHARS = "[^[:punct:][:space:][:blank:]#{[0x00A0].pack('U')}]"
-    REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/i
-    REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/i
+    DOMAIN_VALID_CHARS = "[^[:punct:][:space:][:blank:][:cntrl:]#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
+    REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
+    REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
 
     REGEXEN[:valid_gTLD] = /(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel)(?=[^[:alpha:]]|$))/i
     REGEXEN[:valid_ccTLD] = %r{
@@ -134,23 +141,23 @@ module Twitter
     REGEXEN[:valid_domain] = /(?:
       #{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}
       (?:#{REGEXEN[:valid_gTLD]}|#{REGEXEN[:valid_ccTLD]}|#{REGEXEN[:valid_punycode]})
-    )/ix
-    REGEXEN[:valid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/
+    )/iox
+    REGEXEN[:valid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/io
 
     REGEXEN[:valid_port_number] = /[0-9]+/
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~&|#{LATIN_ACCENTS}]/i
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~&|#{LATIN_ACCENTS}]/io
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
-    REGEXEN[:wikipedia_disambiguation] = /(?:\(#{REGEXEN[:valid_general_url_path_chars]}+\))/i
+    REGEXEN[:wikipedia_disambiguation] = /(?:\(#{REGEXEN[:valid_general_url_path_chars]}+\))/io
     # Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
     REGEXEN[:valid_url_path_chars] = /(?:
       #{REGEXEN[:wikipedia_disambiguation]}|
       @#{REGEXEN[:valid_general_url_path_chars]}+\/|
       [\.,]#{REGEXEN[:valid_general_url_path_chars]}?|
       #{REGEXEN[:valid_general_url_path_chars]}+
-    )/ix
+    )/iox
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow =&# for empty URL parameters and other URL-join artifacts
     REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=_#\/\+\-#{LATIN_ACCENTS}]|#{REGEXEN[:wikipedia_disambiguation]}/io
