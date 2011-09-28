@@ -47,7 +47,7 @@ public class RegexTest extends TestCase {
     assertTrue("Matching a repeated path end should take less than 10ms (took " + duration + "ms)", (duration < 10) );
   }
 
-  public void testVAlidURLWithoutProtocol() {
+  public void testValidURLWithoutProtocol() {
     assertTrue("Matching a URL with gTLD without protocol.",
         Regex.VALID_URL.matcher("twitter.com").matches());
 
@@ -68,6 +68,14 @@ public class RegexTest extends TestCase {
 
     assertTrue("Match a short URL with ccTLD and '/' but without protocol.",
         Regex.VALID_URL.matcher("t.co/blahblah").matches());
+  }
+
+  public void testInvalidUrlWithInvalidCharacter() {
+    char[] invalid_chars = new char[]{'\u202A', '\u202B', '\u202C', '\u202D', '\u202E'};
+    for (char c : invalid_chars) {
+      assertFalse("Should not extract URLs with invalid character",
+          Regex.VALID_URL.matcher("http://twitt" + c + "er").matches());
+    }
   }
 
   public void testExtractMentions() {
