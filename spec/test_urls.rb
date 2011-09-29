@@ -26,6 +26,7 @@ module TestUrls
     "http://a_b.c-d.com",
     "http://a-b.b.com",
     "http://twitter-dash.com",
+    "http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx",
     "www.foobar.com",
     "WWW.FOOBAR.COM",
     "www.foobar.co.jp",

@@ -150,7 +150,7 @@ module Twitter
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
-    REGEXEN[:wikipedia_disambiguation] = /(?:\(#{REGEXEN[:valid_general_url_path_chars]}+\))/io
+    REGEXEN[:wikipedia_disambiguation] = /(?:\((?:#{REGEXEN[:valid_general_url_path_chars]}|\.)+\))/io
     # Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
     REGEXEN[:valid_url_path_chars] = /(?:
       #{REGEXEN[:wikipedia_disambiguation]}|
