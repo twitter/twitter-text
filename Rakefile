@@ -1,7 +1,9 @@
+#!/usr/bin/env rake
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-task :default => ["spec", "test:conformance"]
+task :default => ['spec', 'test:conformance']
+task :test => :spec
 
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
@@ -48,9 +50,9 @@ namespace :test do
   end
 end
 
-require 'rake/rdoctask'
+require 'rdoc/task'
 namespace :doc do
-  Rake::RDocTask.new do |rd|
+  RDoc::Task.new do |rd|
     rd.main = "README.rdoc"
     rd.rdoc_dir = 'doc'
     rd.rdoc_files.include("README.rdoc", "lib/**/*.rb")
