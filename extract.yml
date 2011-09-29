@@ -221,10 +221,6 @@ tests:
       text: "text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
       expected: ["http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"]
 
-    - description: "Extract valid URL: http://fe3.gamepot-testdb/"
-      text: "text http://fe3.gamepot-testdb/"
-      expected: ["http://fe3.gamepot-testdb/"]
-
     - description: "DO NOT extract invalid URL: http://domain-begin_dash_2314352345_dfasd.foo-cow_4352.com"
       text: "text http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
       expected: []
