@@ -43,6 +43,7 @@ public class Regex {
     "(?:" +                                                   // subdomains + domain + ccTLD
         URL_VALID_SUBDOMAIN + "+" + URL_VALID_DOMAIN_NAME +   // e.g. foo.co.jp, bar.co.uk
         URL_VALID_CCTLD +
+        "(?:\\." + URL_VALID_GTLD + ")?" +
       ")" +
     "|(?:" +                                                  // optional subdomains + domain + gTLD
       URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME +     // e.g. twitter.com, www.twitter.com
@@ -57,25 +58,25 @@ public class Regex {
 
   private static final String URL_VALID_PORT_NUMBER = "[0-9]++";
 
-  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+\\$/%#\\[\\]\\-_,~\\.\\|&" + LATIN_ACCENTS_CHARS + "]";
-  private static final String URL_VALID_URL_PATH_ENDING_CHARS = "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS +"]";
-  private static final String URL_VALID_PATH_CHARS_WITHOUT_SLASH = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^/]]";
-  private static final String URL_VALID_PATH_CHARS_WITHOUT_COMMA = "[" + URL_VALID_GENERAL_PATH_CHARS + "&&[^,.]]";
-
+  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&" + LATIN_ACCENTS_CHARS + "]";
   /** Allow URL paths to contain balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
    *  2. Used in IIS sessions like /S(dfd346)/
   **/
-  private static final String URL_BALANCE_PARENS = "(?:\\(" + URL_VALID_GENERAL_PATH_CHARS + "+\\))";
-  private static final String URL_VALID_URL_PATH_CHARS = "(?:" +
-    URL_BALANCE_PARENS +
-    "|@" + URL_VALID_PATH_CHARS_WITHOUT_SLASH + "++/" +
-    "|(?:[.,]*+" + URL_VALID_PATH_CHARS_WITHOUT_COMMA + "*" + URL_VALID_URL_PATH_ENDING_CHARS + ")++" +
-  ")";
-
+  private static final String URL_BALANCED_PARENS = "\\(" + URL_VALID_GENERAL_PATH_CHARS + "+\\)";
   /** Valid end-of-path chracters (so /foo. does not gobble the period).
    *   2. Allow =&# for empty URL parameters and other URL-join artifacts
   **/
+  private static final String URL_VALID_PATH_ENDING_CHARS = "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + "]|(?:" + URL_BALANCED_PARENS +")";
+
+  private static final String URL_VALID_PATH = "(?:" +
+    "(?:" +
+      URL_VALID_GENERAL_PATH_CHARS + "*" +
+      "(?:" + URL_BALANCED_PARENS + URL_VALID_GENERAL_PATH_CHARS + "*)*" +
+      URL_VALID_PATH_ENDING_CHARS +
+    ")|(?:@" + URL_VALID_GENERAL_PATH_CHARS + "+/)" +
+  ")";
+
   private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~\\|]";
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
@@ -86,10 +87,7 @@ public class Regex {
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
       "(?::(" + URL_VALID_PORT_NUMBER +"))?" +                     //  $6 Port number (optional)
       "(/" +
-        "(?:" +
-          URL_VALID_URL_PATH_CHARS + "+|" +                        //     1+ path chars and a valid last char
-          URL_VALID_URL_PATH_ENDING_CHARS +                        //     Just a # case
-        ")?" +
+        URL_VALID_PATH + "*" +
       ")?" +                                                       //  $7 URL Path and anchor
       "(\\?" + URL_VALID_URL_QUERY_CHARS + "*" +                   //  $8 Query String
               URL_VALID_URL_QUERY_ENDING_CHARS + ")?" +

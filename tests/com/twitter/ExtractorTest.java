@@ -118,9 +118,10 @@ public class ExtractorTest extends TestCase {
    }
 
    public void testUrlWithoutProtocol() {
-     String text = "www.twitter.com, www.yahoo.co.jp, t.co/blahblah";
+     String text = "www.twitter.com, www.yahoo.co.jp, t.co/blahblah, www.poloshirts.uk.com";
      assertList("Failed to extract URLs without protocol",
-         new String[]{"www.twitter.com", "www.yahoo.co.jp", "t.co/blahblah"}, extractor.extractURLs(text));
+         new String[]{"www.twitter.com", "www.yahoo.co.jp", "t.co/blahblah", "www.poloshirts.uk.com"},
+         extractor.extractURLs(text));
 
      List<Extractor.Entity> extracted = extractor.extractURLsWithIndices(text);
      assertEquals(extracted.get(0).getStart().intValue(), 0);
