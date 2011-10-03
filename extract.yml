@@ -345,10 +345,26 @@ tests:
       text: "test http://foo.com/bar/123/foo_&_bar/"
       expected: ["http://foo.com/bar/123/foo_&_bar/"]
 
+    - description: "Extract valid URL http://www.cp.sc.edu/events/65"
+      text: "test http://www.cp.sc.edu/events/65"
+      expected: ["http://www.cp.sc.edu/events/65"]
+
+    - description: "DO NOT include period at the end of URL"
+      text: "test http://twitter.com/."
+      expected: ["http://twitter.com/"]
+
    # A common cause of runaway regex engines.
     - description: "Extract a URL with a ton of trailing periods"
       text: "Test a ton of periods http://example.com/path.........................................."
       expected: ["http://example.com/path"]
+
+    - description: "Extract a URL with a ton of trailing commas"
+      text: "Test a ton of periods http://example.com/,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
+      expected: ["http://example.com/"]
+
+    - description: "Extract a URL with a ton of trailing '!'"
+      text: "Test a ton of periods http://example.com/path/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      expected: ["http://example.com/path/"]
 
   urls_with_indices:
     - description: "Extract a URL"
