@@ -161,17 +161,23 @@ if (!window.twttr) {
 
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+\$\/%#\[\]\-_,~|&#{latinAccentChars}]/i);
+  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~|&#{latinAccentChars}]/i);
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
-  twttr.txt.regexen.wikipediaDisambiguation = regexSupplant(/(?:\((?:#{validGeneralUrlPathChars}|\.)+\))/i);
-  // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user
-  twttr.txt.regexen.validUrlPathChars = regexSupplant(/(?:#{wikipediaDisambiguation}|@#{validGeneralUrlPathChars}+\/|[\.,]?#{validGeneralUrlPathChars}?)/i);
-
+  twttr.txt.regexen.validUrlBalancedParens = regexSupplant(/\(#{validGeneralUrlPathChars}+\)/i);
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
-  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/(?:[\+\-a-z0-9=_#\/#{latinAccentChars}]|#{wikipediaDisambiguation})/i);
+  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/[\+\-a-z0-9=_#\/#{latinAccentChars}]|(?:#{validUrlBalancedParens})/i);
+  // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user/
+  twttr.txt.regexen.validUrlPath = regexSupplant('(?:' +
+    '(?:' +
+      '#{validGeneralUrlPathChars}*' +
+        '(?:#{validUrlBalancedParens}#{validGeneralUrlPathChars}*)*' +
+        '#{validUrlPathEndingChars}'+
+      ')|(?:@#{validGeneralUrlPathChars}+\/)'+
+    ')', 'i');
+
   twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.extractUrl = regexSupplant(
@@ -181,18 +187,11 @@ if (!window.twttr) {
         '(https?:\\/\\/)?'                                         + // $4 Protocol (optional)
         '(#{validDomain})'                                         + // $5 Domain(s)
         '(?::(#{validPortNumber}))?'                               + // $6 Port number (optional)
-        '(\\/'                                                     + // $7 URL Path
-           '(?:'                                                   +
-             '#{validUrlPathChars}+#{validUrlPathEndingChars}|'    +
-             '#{validUrlPathChars}+#{validUrlPathEndingChars}?|'   +
-             '#{validUrlPathEndingChars}'                          +
-           ')?'                                                    +
-        ')?'                                                       +
+        '(\\/#{validUrlPath}*)?'                                   + // $7 URL Path
         '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $8 Query String
       ')'                                                          +
     ')'
-  , "gi");
-
+  , 'gi');
 
   // These URL validation pattern strings are based on the ABNF from RFC 3986
   twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
