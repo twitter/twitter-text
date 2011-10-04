@@ -142,6 +142,14 @@ module Twitter
       #{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}
       (?:#{REGEXEN[:valid_gTLD]}|#{REGEXEN[:valid_ccTLD]}|#{REGEXEN[:valid_punycode]})
     )/iox
+
+    # This is used in Extractor
+    REGEXEN[:valid_ascii_domain] = /
+      (?:(?:[[:alnum:]\-_]|#{REGEXEN[:latin_accents]})+\.)+
+      (?:#{REGEXEN[:valid_gTLD]}|#{REGEXEN[:valid_ccTLD]}|#{REGEXEN[:valid_punycode]})
+    /iox
+
+    # This is used in Extractor to filter out unwanted URLs.
     REGEXEN[:valid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/io
 
     REGEXEN[:valid_port_number] = /[0-9]+/
