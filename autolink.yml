@@ -390,7 +390,7 @@ tests:
 
     - description: "Extract valid URL: http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
       text: "text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
-      expected: "text <a href=\"http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx\">text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx</a>"
+      expected: "text <a href=\"http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx\">http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx</a>"
 
     - description: "Autolink url with balanced parens hiding XSS"
       text: 'text http://foo.com/("onclick="alert(1)")'
