@@ -27,6 +27,7 @@ module TestUrls
     "http://a_b.c-d.com",
     "http://a-b.b.com",
     "http://twitter-dash.com",
+    "http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx",
     "www.foobar.com",
     "WWW.FOOBAR.COM",
     "www.foobar.co.jp",
@@ -46,7 +47,11 @@ module TestUrls
     "http://trailingdash-.com",
     "http://no_underscores.com",
     "http://test.c_o_m",
-    "http://test.c-o-m"
+    "http://test.c-o-m",
+    "http://twitt#{[0x202A].pack('U')}er.com",
+    "http://twitt#{[0x202B].pack('U')}er.com",
+    "http://twitt#{[0x202C].pack('U')}er.com",
+    "http://twitt#{[0x202D].pack('U')}er.com",
+    "http://twitt#{[0x202E].pack('U')}er.com",
   ] unless defined?(TestUrls::INVALID)
-
 end

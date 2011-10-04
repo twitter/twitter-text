@@ -158,11 +158,21 @@ module Twitter
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, port, path, query|
         valid_url_match_data = $~
 
+        start_position = valid_url_match_data.char_begin(3)
+        end_position = valid_url_match_data.char_end(3)
+
+        # If protocol is missing, check against valid_ascii_domain
+        if !protocol
+          next unless domain =~ Twitter::Regex[:valid_ascii_domain]
+          if $~.char_begin(0)
+            start_position += $~.char_begin(0)
+            url.sub!(domain, $~.to_s())
+          end
+        end
+
         # Regex in Ruby 1.8 doesn't support lookbehind, so we need to manually filter out
         # the short URLs without protocol and path, i.e., [domain].[ccTLD]
         unless !protocol && !path && domain =~ Twitter::Regex[:valid_short_domain]
-          start_position = valid_url_match_data.char_begin(3)
-          end_position = valid_url_match_data.char_end(3)
           urls << {
             :url => url,
             :indices => [start_position, end_position]
