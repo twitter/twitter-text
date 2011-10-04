@@ -269,9 +269,9 @@ tests:
       text: "@user Try http:// example.com/path"
       expected: ["example.com/path"]
 
-    - description: "DO NOT extract URL without protocol followed by CJK"
-      text: "これは日本語です。example.com/path 中国語example.com/path"
-      expected: ["example.com/path", "example.com/path"]
+    - description: "Extract URL without protocol surrounded by CJK characters"
+      text: "これは日本語です。example.com/path/index.html中国語example.com/path한국"
+      expected: ["example.com/path/index.html", "example.com/path"]
 
     - description: "Extract URLs beginning with a non-breaking space (U+00A0)"
       text: "@user Try http:// example.com/path"
@@ -350,11 +350,11 @@ tests:
       expected: ["http://foo.com/bar/123/foo_&_bar/"]
 
     - description: "Extract valid URL http://www.cp.sc.edu/events/65"
-      text: "test http://www.cp.sc.edu/events/65"
+      text: "test http://www.cp.sc.edu/events/65 test"
       expected: ["http://www.cp.sc.edu/events/65"]
 
     - description: "Extract valid URL http://www.andersondaradio.no.comunidades.net/"
-      text: "test http://www.andersondaradio.no.comunidades.net/"
+      text: "http://www.andersondaradio.no.comunidades.net/ test test"
       expected: ["http://www.andersondaradio.no.comunidades.net/"]
 
     - description: "Extract valid URL ELPAÍS.com"
