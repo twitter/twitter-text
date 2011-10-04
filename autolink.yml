@@ -1,4 +1,4 @@
-﻿
+
 tests:
   usernames:
     - description: "Autolink trailing username"

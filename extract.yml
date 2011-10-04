@@ -1,4 +1,4 @@
-﻿
+
 tests:
   mentions:
     - description: "Extract mention at the begining of a tweet"

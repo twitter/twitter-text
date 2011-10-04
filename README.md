@@ -41,6 +41,11 @@ If you are creating a new twitter-text library in a different programming langua
 
 ## Changelog
 
+  * v1.4.7 - 2011-10-04 [ Git tag v1.4.7 ]
+    * [FIX] Extract URLs followed by punctuations
+    * [FIX] Extract URLs without protocol in CJK text
+    * [FIX] Extract URLs with '.'
+
   * v1.4.5 - 2011-09-20 [ Git tag v1.4.5 ]
     * [FIX] Extract URLs without protocol
     * [FIX] Extract URLs with '.', '|' and '&'
