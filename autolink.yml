@@ -1,4 +1,4 @@
-
+﻿
 tests:
   usernames:
     - description: "Autolink trailing username"
@@ -387,6 +387,10 @@ tests:
     - description: "Autolink url with embedded parentheses"
       text: "text http://msdn.com/S(deadbeef)/page.htm"
       expected: "text <a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
+
+    - description: "Extract valid URL: http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
+      text: "text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
+      expected: "text <a href=\"http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx\">text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx</a>"
 
     - description: "Autolink url with balanced parens hiding XSS"
       text: 'text http://foo.com/("onclick="alert(1)")'

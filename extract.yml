@@ -1,4 +1,4 @@
-
+﻿
 tests:
   mentions:
     - description: "Extract mention at the begining of a tweet"
@@ -216,6 +216,10 @@ tests:
     - description: "Extract valid URL: http://x.com/oneletterdomain"
       text: "text http://x.com/oneletterdomain"
       expected: ["http://x.com/oneletterdomain"]
+
+    - description: "Extract valid URL: http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
+      text: "text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
+      expected: ["http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"]
 
     - description: "DO NOT extract invalid URL: http://domain-begin_dash_2314352345_dfasd.foo-cow_4352.com"
       text: "text http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
