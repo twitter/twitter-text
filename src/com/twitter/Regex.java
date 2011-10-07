@@ -20,12 +20,13 @@ public class Regex {
   private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS +"]";
 
   /* URL related hash regex collection */
-  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"'!=A-Z0-9_@＠.]|^)";
+  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"'!=A-Z0-9_@＠.\\p{InGeneralPunctuation}]|^)";
 
   private static final String URL_VALID_CHARS = "[\\p{Alnum}" + LATIN_ACCENTS_CHARS + "]";
   private static final String URL_VALID_SUBDOMAIN = "(?:(?:" + URL_VALID_CHARS + "[" + URL_VALID_CHARS + "\\-_]*)?" + URL_VALID_CHARS + "\\.)";
   private static final String URL_VALID_DOMAIN_NAME = "(?:(?:" + URL_VALID_CHARS + "[" + URL_VALID_CHARS + "\\-]*)?" + URL_VALID_CHARS + "\\.)";
-  private static final String URL_VALID_UNICODE_CHARS = "[.[^\\p{Punct}\\s\\p{Zs}\\p{InGeneralPunctuation}]]";
+  /* Any non-space, non-punctuation characters. \p{Z} = any kind of whitespace or invisible separator. */
+  private static final String URL_VALID_UNICODE_CHARS = "[.[^\\p{Punct}\\s\\p{Z}\\p{InGeneralPunctuation}]]";
 
   private static final String URL_VALID_GTLD =
       "(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel)(?=\\P{Alpha}|$))";
@@ -49,9 +50,14 @@ public class Regex {
       URL_VALID_DOMAIN_NAME +                                 // e.g. twitter.com
       "(?:" + URL_VALID_GTLD + "|" + URL_PUNYCODE + ")" +
     ")" +
-    "|(?:" + "(?<=https?://)" +                               // protocol + domain + ccTLD
-      "(?:(?:" + URL_VALID_DOMAIN_NAME + URL_VALID_CCTLD + ")" + // e.g. http://t.co
-      "|(?:" + URL_VALID_UNICODE_CHARS + "+\\.(?:" + URL_VALID_GTLD + "|" + URL_VALID_CCTLD + ")))" +
+    "|(?:" + "(?<=https?://)" +
+      "(?:" +
+        "(?:" + URL_VALID_DOMAIN_NAME + URL_VALID_CCTLD + ")" +  // protocol + domain + ccTLD
+        "|(?:" +
+          URL_VALID_UNICODE_CHARS + "+\\." +                     // protocol + unicode domain + TLD
+          "(?:" + URL_VALID_GTLD + "|" + URL_VALID_CCTLD + ")" +
+        ")" +
+      ")" +
     ")" +
     "|(?:" +                                                  // domain + ccTLD + '/'
       URL_VALID_DOMAIN_NAME + URL_VALID_CCTLD + "(?=/)" +     // e.g. t.co/

@@ -74,7 +74,7 @@ public class RegexTest extends TestCase {
     char[] invalid_chars = new char[]{'\u202A', '\u202B', '\u202C', '\u202D', '\u202E'};
     for (char c : invalid_chars) {
       assertFalse("Should not extract URLs with invalid character",
-          Regex.VALID_URL.matcher("http://twitt" + c + "er").find());
+          Regex.VALID_URL.matcher("http://twitt" + c + "er.com").find());
     }
   }
 
