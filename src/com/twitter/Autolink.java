@@ -11,37 +11,23 @@ import org.apache.commons.lang.StringEscapeUtils;
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
  */
 public class Autolink {
-  /**
-   * Default CSS class for auto-linked URLs
-   */
+  /** Default CSS class for auto-linked URLs */
   public static final String DEFAULT_URL_CLASS = "tweet-url";
-  /**
-   * Default CSS class for auto-linked list URLs
-   */
+  /** Default CSS class for auto-linked list URLs */
   public static final String DEFAULT_LIST_CLASS = "list-slug";
-  /**
-   * Default CSS class for auto-linked username URLs
-   */
+  /** Default CSS class for auto-linked username URLs */
   public static final String DEFAULT_USERNAME_CLASS = "username";
-  /**
-   * Default CSS class for auto-linked hashtag URLs
-   */
+  /** Default CSS class for auto-linked hashtag URLs */
   public static final String DEFAULT_HASHTAG_CLASS = "hashtag";
-  /**
-   * Default href for username links (the username without the @ will be appended)
-   */
-  public static final String DEFAULT_USERNAME_URL_BASE = "http://twitter.com/";
   /**
    * Default href for list links (the username/list without the @ will be appended)
    */
   public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
-  /**
-   * Default href for hashtag links (the hashtag without the # will be appended)
-   */
+  /** Default href for username links (the username without the @ will be appended) */
+  public static final String DEFAULT_USERNAME_URL_BASE = "http://twitter.com/";
+  /** Default href for hashtag links (the hashtag without the # will be appended) */
   public static final String DEFAULT_HASHTAG_URL_BASE = "http://twitter.com/search?q=%23";
-  /**
-   * HTML attribute to add when noFollow is true (default)
-   */
+  /** HTML attribute to add when noFollow is true (default) */
   public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
 
   protected String urlClass;
@@ -88,7 +74,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLink(String text) {
-    return autoLinkUsernamesAndLists(autoLinkURLs(autoLinkHashtags(escapeBrackets(text))));
+    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags( escapeBrackets(text) ) ) );
   }
 
   /**
