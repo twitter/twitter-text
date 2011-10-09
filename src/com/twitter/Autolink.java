@@ -17,12 +17,10 @@ public class Autolink {
   public static final String DEFAULT_LIST_CLASS = "list-slug";
   /** Default CSS class for auto-linked username URLs */
   public static final String DEFAULT_USERNAME_CLASS = "username";
+  /** Default href for list links (the username/list without the @ will be appended) */
+  public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
   /** Default CSS class for auto-linked hashtag URLs */
   public static final String DEFAULT_HASHTAG_CLASS = "hashtag";
-  /**
-   * Default href for list links (the username/list without the @ will be appended)
-   */
-  public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
   /** Default href for username links (the username without the @ will be appended) */
   public static final String DEFAULT_USERNAME_URL_BASE = "http://twitter.com/";
   /** Default href for hashtag links (the hashtag without the # will be appended) */
