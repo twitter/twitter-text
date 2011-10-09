@@ -1,7 +1,9 @@
-
 package com.twitter;
 
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -9,21 +11,37 @@ import org.apache.commons.lang.StringEscapeUtils;
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
  */
 public class Autolink {
-  /** Default CSS class for auto-linked URLs */
+  /**
+   * Default CSS class for auto-linked URLs
+   */
   public static final String DEFAULT_URL_CLASS = "tweet-url";
-  /** Default CSS class for auto-linked list URLs */
+  /**
+   * Default CSS class for auto-linked list URLs
+   */
   public static final String DEFAULT_LIST_CLASS = "list-slug";
-  /** Default CSS class for auto-linked username URLs */
+  /**
+   * Default CSS class for auto-linked username URLs
+   */
   public static final String DEFAULT_USERNAME_CLASS = "username";
-  /** Default CSS class for auto-linked hashtag URLs */
+  /**
+   * Default CSS class for auto-linked hashtag URLs
+   */
   public static final String DEFAULT_HASHTAG_CLASS = "hashtag";
-  /** Default href for username links (the username without the @ will be appended) */
+  /**
+   * Default href for username links (the username without the @ will be appended)
+   */
   public static final String DEFAULT_USERNAME_URL_BASE = "http://twitter.com/";
-  /** Default href for list links (the username/list without the @ will be appended) */
+  /**
+   * Default href for list links (the username/list without the @ will be appended)
+   */
   public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
-  /** Default href for hashtag links (the hashtag without the # will be appended) */
+  /**
+   * Default href for hashtag links (the hashtag without the # will be appended)
+   */
   public static final String DEFAULT_HASHTAG_URL_BASE = "http://twitter.com/search?q=%23";
-  /** HTML attribute to add when noFollow is true (default) */
+  /**
+   * HTML attribute to add when noFollow is true (default)
+   */
   public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
 
   protected String urlClass;
@@ -70,7 +88,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLink(String text) {
-    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags( escapeBrackets(text) ) ) );
+    return autoLinkUsernamesAndLists(autoLinkURLs(autoLinkHashtags(escapeBrackets(text))));
   }
 
   /**
@@ -83,68 +101,68 @@ public class Autolink {
    */
   public String autoLinkUsernamesAndLists(String text) {
     Matcher matcher;
-    StringBuffer sb = new StringBuffer(text.length());
-    String[] chunks = text.split("[<>]", -1);
-
-    for (int i = 0; i < chunks.length; i++) {
+    int capacity = text.length() * 2;
+    StringBuffer sb = new StringBuffer(capacity);
+    Iterable<String> chunks = split(text, "<>");
+    int i = 0;
+    for (String chunk : chunks) {
       if (0 != i) {
-        if (i%2 == 0) {
+        if (i % 2 == 0) {
           sb.append(">");
         } else {
           sb.append("<");
         }
       }
 
-      if (i%4 != 0) {
+      if (i % 4 != 0) {
         // Inside of a tag, just copy over the chunk.
-        sb.append(chunks[i]);
+        sb.append(chunk);
       } else {
         // Outside of a tag, do real work with this chunk
-        matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(chunks[i]);
+        matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(chunk);
         while (matcher.find()) {
           if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
-              matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
+                  matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
 
             // Username only
-            if (! Regex.SCREEN_NAME_MATCH_END.matcher(text.substring(matcher.end())).find()) {
-              matcher.appendReplacement(sb,
-                String.format("$%s$%s<a class=\"%s %s\" href=\"%s$%s\"%s>$%s</a>",
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE,
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT,
-                urlClass,
-                usernameClass,
-                usernameUrlBase,
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME,
-                noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME
-                ));
-              continue;
+            if (!Regex.SCREEN_NAME_MATCH_END.matcher(text.substring(matcher.end())).find()) {
+              StringBuilder rb = new StringBuilder(capacity);
+              rb.append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE))
+                      .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT))
+                      .append("<a class=\"").append(urlClass).append(" ").append(usernameClass)
+                      .append("\" href=\"").append(usernameUrlBase)
+                      .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
+                      .append("\"");
+              if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
+              rb.append(">")
+                      .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
+                      .append("</a>");
+              matcher.appendReplacement(sb, rb.toString());
             } else {
               // Not a screen name valid for linking
-              matcher.appendReplacement(sb, "$0");
-              continue;
+              matcher.appendReplacement(sb, matcher.group(0));
             }
           } else {
             // Username and list
-            matcher.appendReplacement(sb,
-              String.format("$%s$%s<a class=\"%s %s\" href=\"%s$%s$%s\"%s>$%s$%s</a>",
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE,
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT,
-                urlClass,
-                listClass,
-                listUrlBase,
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME,
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST,
-                noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME,
-                Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST
-              ));
-            continue;
+            StringBuilder rb = new StringBuilder(capacity);
+            rb.append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE))
+                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT))
+                    .append("<a class=\"").append(urlClass).append(" ").append(listClass)
+                    .append("\" href=\"").append(listUrlBase)
+                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
+                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST))
+                    .append("\"");
+            if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
+            rb.append(">").append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
+                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST))
+                    .append("</a>");
+            matcher.appendReplacement(sb, rb.toString());
           }
         }
 
         matcher.appendTail(sb);
       }
+      i++;
     }
 
     return sb.toString();
@@ -158,23 +176,30 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLinkHashtags(String text) {
-    StringBuffer replacement = new StringBuffer(text.length());
-    replacement.append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE)
-               .append("<a")
-               .append(" href=\"").append(hashtagUrlBase).append("$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
-               .append(" title=\"#$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("\"")
-               .append(" class=\"").append(urlClass).append(" ").append(hashtagClass).append("\"");
-    if (noFollow) {
-      replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+    StringBuffer sb = new StringBuffer();
+    Matcher matcher = Regex.AUTO_LINK_HASHTAGS.matcher(text);
+    while (matcher.find()) {
+      StringBuilder replacement = new StringBuilder(text.length() * 2);
+      replacement.append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE))
+              .append("<a href=\"").append(hashtagUrlBase)
+              .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("\"")
+              .append(" title=\"#").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG))
+              .append("\" class=\"").append(urlClass).append(" ")
+              .append(hashtagClass).append("\"");
+      if (noFollow) {
+        replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+      }
+      replacement.append(">").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH))
+              .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("</a>");
+      matcher.appendReplacement(sb, replacement.toString());
     }
-    replacement.append(">$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH).append("$")
-               .append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("</a>");
-    return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll(replacement.toString());
+    matcher.appendTail(sb);
+    return sb.toString();
   }
 
   /**
    * Auto-link URLs in the Tweet text provided.
-   *
+   * <p/>
    * This only auto-links URLs with protocol.
    *
    * @param text of the Tweet to auto-link
@@ -182,7 +207,8 @@ public class Autolink {
    */
   public String autoLinkURLs(String text) {
     Matcher matcher = Regex.VALID_URL.matcher(text);
-    StringBuffer sb = new StringBuffer(text.length());
+    int capacity = text.length() * 2;
+    StringBuffer sb = new StringBuffer(capacity);
 
     while (matcher.find()) {
       String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
@@ -191,19 +217,18 @@ public class Autolink {
         String url = matcher.group(Regex.VALID_URL_GROUP_URL);
         String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
         if (query_string != null)
-            url = url.replace(query_string, StringEscapeUtils.escapeHtml(query_string));
-
-        matcher.appendReplacement(sb,
-          String.format("$%s<a href=\"%s\"%s>%s</a>",
-            Regex.VALID_URL_GROUP_BEFORE,
-            url.replaceAll("\\$", "\\\\\\$"),
-            noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
-            url.replaceAll("\\$", "\\\\\\$")
-          ));
+          url = url.replace(query_string, StringEscapeUtils.escapeHtml(query_string));
+        url = url.replace("$", "\\$");
+        StringBuilder rb = new StringBuilder(capacity);
+        rb.append(matcher.group(Regex.VALID_URL_GROUP_BEFORE))
+                .append("<a href=\"").append(url).append("\"");
+        if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        rb.append(">").append(url).append("</a>");
+        matcher.appendReplacement(sb, rb.toString());
         continue;
       }
 
-      matcher.appendReplacement(sb, String.format("$%s", Regex.VALID_URL_GROUP_ALL));
+      matcher.appendReplacement(sb, matcher.group(Regex.VALID_URL_GROUP_ALL));
 
     }
     matcher.appendTail(sb);
@@ -336,5 +361,39 @@ public class Autolink {
    */
   public void setNoFollow(boolean noFollow) {
     this.noFollow = noFollow;
+  }
+
+  // The default String split is horribly inefficient
+  private static Iterable<String> split(final String s, final String d) {
+    List<String> strings = new ArrayList<String>();
+    int length = s.length();
+    int current = 0;
+    boolean onemore = false;
+    while (current < length || onemore) {
+      int start = current;
+      int i = -1;
+      for (int j = 0; j < d.length(); j++) {
+        int index = s.indexOf(d.charAt(j), start);
+        if (i == -1) {
+          i = index;
+        } else {
+          if (index != -1 && index < i) {
+            i = index;
+          }
+        }
+      }
+      if (i == -1) {
+        current = length;
+        onemore = false;
+        strings.add(s.substring(start));
+      } else {
+        current = i + 1;
+        if (current == length) {
+          onemore = true;
+        }
+        strings.add(s.substring(start, i));
+      }
+    }
+    return strings;
   }
 }
