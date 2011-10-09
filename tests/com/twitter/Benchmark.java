@@ -8,9 +8,10 @@ import java.util.List;
  */
 public class Benchmark extends ConformanceBase {
 
-  private static final int AUTO_LINK_TESTS = 100000;
+  private static final int AUTO_LINK_TESTS = 10000;
+  private static final int ITERATIONS = 10;
 
-  public void testBenchmarkAutolinking() throws Exception {
+  public double testBenchmarkAutolinking() throws Exception {
     File yamlFile = new File(conformanceDir, "autolink.yml");
     List testCases = loadConformanceData(yamlFile, "all");
     autolink(testCases);
@@ -19,13 +20,26 @@ public class Benchmark extends ConformanceBase {
       autolink(testCases);
     }
     long diff = System.currentTimeMillis() - start;
-    System.out.println(((double) AUTO_LINK_TESTS) / diff + " autolinks per ms");
+    double autolinksPerMS = ((double) AUTO_LINK_TESTS) / diff;
+    System.out.println(autolinksPerMS + " autolinks per ms");
+    return autolinksPerMS;
   }
 
   public static void main(String[] args) throws Exception {
     Benchmark benchmark = new Benchmark();
     benchmark.setUp();
-    benchmark.testBenchmarkAutolinking();
+    double total = 0;
+    double best = Double.MAX_VALUE;
+    double worst = 0;
+    for (int i = 0; i < ITERATIONS; i++) {
+      double result = benchmark.testBenchmarkAutolinking();
+      if (best > result) best = result;
+      if (worst < result) worst = result;
+      total += result;
+    }
+    // Drop worst and best
+    total -= best + worst;
+    System.out.println("Average: " + (total/(ITERATIONS - 2)));
     benchmark.tearDown();
   }
 }
