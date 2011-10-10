@@ -1,4 +1,3 @@
-
 tests:
   usernames:
     - description: "Autolink trailing username"
@@ -33,7 +32,7 @@ tests:
       text: "あ@usernameの"
       expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>の"
 
-    - description: "Autolink usernamt in compressed RT"
+    - description: "Autolink username in compressed RT"
       text: "RT@username: long Tweet is loooong"
       expected: "RT@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>: long Tweet is loooong"
 
