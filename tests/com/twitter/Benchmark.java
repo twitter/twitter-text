@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Micro benchmark for discovering hotspots in our autolinker.
  */
-public class Benchmark extends ConformanceBase {
+public class Benchmark extends ConformanceTest {
 
   private static final int AUTO_LINK_TESTS = 10000;
   private static final int ITERATIONS = 10;
