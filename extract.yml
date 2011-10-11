@@ -382,6 +382,10 @@ tests:
       text: "Test a ton of periods http://example.com/path/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       expected: ["http://example.com/path/"]
 
+    - description: "DO NOT extract URLs in hashtag or @mention"
+      text: "#test.com @test.com #http://test.com @http://test.com #t.co/abcde @t.co/abcde"
+      expected: []
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
