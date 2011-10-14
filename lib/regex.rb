@@ -50,11 +50,6 @@ module Twitter
     ].map{|cp| [cp].pack('U') }.freeze
     REGEXEN[:invalid_control_characters] = /[#{INVALID_CHARACTERS.join('')}]/o
 
-    REGEXEN[:at_signs] = /[@＠]/
-    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(?=(.|$))/o
-    REGEXEN[:extract_mentions_or_lists] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?(?=(.|$))/o
-    REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
-
     major, minor, patch = RUBY_VERSION.split('.')
     if major.to_i >= 2 || major.to_i == 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && ["jruby", "rbx"].include?(RUBY_ENGINE))
       REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
@@ -89,8 +84,6 @@ module Twitter
     ].join('').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
-    REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
-
     CJ_HASHTAG_CHARACTERS = [
       regex_range(0x30A1, 0x30FA), regex_range(0x30FC, 0x30FE), # Katakana (full-width)
       regex_range(0xFF66, 0xFF9F), # Katakana (half-width)
@@ -113,6 +106,15 @@ module Twitter
     HASHTAG = /(#{HASHTAG_BOUNDARY})(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
 
     REGEXEN[:auto_link_hashtags] = /#{HASHTAG}/io
+    # Used in Extractor and Rewriter for final filtering
+    REGEXEN[:end_hashtag_match] = /^(?:[#＃]|:\/\/)/o
+
+    REGEXEN[:at_signs] = /[@＠]/
+    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
+    REGEXEN[:extract_mentions_or_lists] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
+    REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
+    # Used in Extractor and Rewriter for final filtering
+    REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
