@@ -97,7 +97,8 @@ public class Extractor {
     List<String> extracted = new ArrayList<String>();
     Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
     while (matcher.find()) {
-      if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_AFTER)).matches()) {
+      String after = text.substring(matcher.end());
+      if (! Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
         extracted.add(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
       }
     }
@@ -118,7 +119,8 @@ public class Extractor {
     List<Entity> extracted = new ArrayList<Entity>();
     Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
     while (matcher.find()) {
-      if (! Regex.SCREEN_NAME_MATCH_END.matcher(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_AFTER)).matches()) {
+      String after = text.substring(matcher.end());
+      if (! Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
         extracted.add(new Entity(matcher, "mention", Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
       }
     }
@@ -139,8 +141,13 @@ public class Extractor {
     }
 
     Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
-    if (matcher.matches()) {
-      return matcher.group(Regex.EXTRACT_REPLY_GROUP_USERNAME);
+    if (matcher.find()) {
+      String after = text.substring(matcher.end());
+      if (Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
+        return null;
+      } else {
+        return matcher.group(Regex.EXTRACT_REPLY_GROUP_USERNAME);
+      }
     } else {
       return null;
     }
@@ -229,7 +236,10 @@ public class Extractor {
     List<String> extracted = new ArrayList<String>();
     Matcher matcher = pattern.matcher(text);
     while (matcher.find()) {
-      extracted.add(matcher.group(groupNumber));
+      String after = text.substring(matcher.end());
+      if (!Regex.HASHTAG_MATCH_END.matcher(after).find()) {
+        extracted.add(matcher.group(groupNumber));
+      }
     }
     return extracted;
   }

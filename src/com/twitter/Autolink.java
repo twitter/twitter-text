@@ -106,7 +106,7 @@ public class Autolink {
               matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
 
             // Username only
-            if (! Regex.SCREEN_NAME_MATCH_END.matcher(text.substring(matcher.end())).find()) {
+            if (! Regex.SCREEN_NAME_MATCH_END.matcher(chunks[i].substring(matcher.end())).find()) {
               matcher.appendReplacement(sb,
                 String.format("$%s$%s<a class=\"%s %s\" href=\"%s$%s\"%s>$%s</a>",
                 Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE,
@@ -169,7 +169,21 @@ public class Autolink {
     }
     replacement.append(">$").append(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH).append("$")
                .append(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG).append("</a>");
-    return Regex.AUTO_LINK_HASHTAGS.matcher(text).replaceAll(replacement.toString());
+
+    StringBuffer sb = new StringBuffer(text.length());
+    Matcher matcher = Regex.AUTO_LINK_HASHTAGS.matcher(text);
+    while (matcher.find()) {
+      String after = text.substring(matcher.end());
+      if (!Regex.HASHTAG_MATCH_END.matcher(after).find()) {
+        matcher.appendReplacement(sb, replacement.toString());
+      } else {
+        // not a valid hashtag
+        matcher.appendReplacement(sb, "$0");
+      }
+    }
+    matcher.appendTail(sb);
+
+    return sb.toString();
   }
 
   /**
