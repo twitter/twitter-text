@@ -85,7 +85,7 @@ if (!window.twttr) {
   var INVALID_CHARS = [
     fromCode(0xFFFE),
     fromCode(0xFEFF), // BOM
-    fromCode(0xFFFF), // Special
+    fromCode(0xFFFF) // Special
   ];
   addCharsToCharClass(INVALID_CHARS, 0x202A, 0x202E); // Directional change
 
