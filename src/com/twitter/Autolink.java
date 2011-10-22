@@ -105,7 +105,7 @@ public class Autolink {
         matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(chunk);
         while (matcher.find()) {
           if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
-                  matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).equals("")) {
+              matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).isEmpty()) {
 
             // Username only
             if (!Regex.SCREEN_NAME_MATCH_END.matcher(text.substring(matcher.end())).find()) {
@@ -355,34 +355,29 @@ public class Autolink {
   }
 
   // The default String split is horribly inefficient
-  private static Iterable<String> split(final String s, final String d) {
+  protected static Iterable<String> split(final String s, final String d) {
     List<String> strings = new ArrayList<String>();
     int length = s.length();
     int current = 0;
-    boolean onemore = false;
-    while (current < length || onemore) {
-      int start = current;
-      int i = -1;
-      for (int j = 0; j < d.length(); j++) {
-        int index = s.indexOf(d.charAt(j), start);
-        if (i == -1) {
-          i = index;
-        } else {
-          if (index != -1 && index < i) {
-            i = index;
-          }
+    while (current < length) {
+      int minIndex = Integer.MAX_VALUE;
+      for (char c : d.toCharArray()) {
+        int index = s.indexOf(c, current);
+        if (index != -1 && index < minIndex) {
+          minIndex = index;
         }
       }
-      if (i == -1) {
+      if (minIndex == Integer.MAX_VALUE) {
+        // s doesn't contain any char in d
+        strings.add(s.substring(current));
         current = length;
-        onemore = false;
-        strings.add(s.substring(start));
       } else {
-        current = i + 1;
+        strings.add(s.substring(current, minIndex));
+        current = minIndex + 1;
         if (current == length) {
-          onemore = true;
+          // last char in s is in d.
+          strings.add("");
         }
-        strings.add(s.substring(start, i));
       }
     }
     return strings;
