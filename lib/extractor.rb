@@ -161,12 +161,34 @@ module Twitter
         start_position = valid_url_match_data.char_begin(3)
         end_position = valid_url_match_data.char_end(3)
 
-        # If protocol is missing, check against valid_ascii_domain
+        # If protocol is missing and domain contains non-ASCII characters,
+        # extract ASCII-only domains.
         if !protocol
-          next unless domain =~ Twitter::Regex[:valid_ascii_domain]
-          if $~.char_begin(0)
-            start_position += $~.char_begin(0)
-            url.sub!(domain, $~.to_s())
+          ascii_domains = []
+          domain.scan(Twitter::Regex[:valid_ascii_domain]) do |ascii_domain|
+            ascii_domain_match_data = $~
+            ascii_domains << {
+              :domain => ascii_domain,
+              :start_position => ascii_domain_match_data.char_begin(0),
+              :end_position => ascii_domain_match_data.char_end(0)
+            }
+          end
+
+          # if domain doesn't contain any ASCII domain, skip the entire url.
+          next if ascii_domains.empty?
+
+          last = ascii_domains[-1]
+          ascii_domains[0..-2].each do |ascii_domain|
+            urls << {
+              :url => ascii_domain[:domain],
+              :indices => [start_position + ascii_domain[:start_position],
+                           start_position + ascii_domain[:end_position]]
+            }
+          end
+          if last[:start_position] > 0
+            start_position += last[:start_position]
+            url.sub!(domain, last[:domain])
+            domain = last[:domain]
           end
         end
 
