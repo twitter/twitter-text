@@ -158,7 +158,7 @@ if (!window.twttr) {
   twttr.txt.regexen.validPunycode = regexSupplant(/(?:xn--[0-9a-z]+)/);
   twttr.txt.regexen.validDomain = regexSupplant(/(?:#{validSubdomain}*#{validDomainName}(?:#{validGTLD}|#{validCCTLD}|#{validPunycode}))/);
   twttr.txt.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
-  twttr.txt.regexen.validShortDomain = regexSupplant(/^#{validDomainName}#{validCCTLD}$/);
+  twttr.txt.regexen.invalidShortDomain = regexSupplant(/^#{validDomainName}#{validCCTLD}$/);
 
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
@@ -562,51 +562,44 @@ if (!window.twttr) {
 
     text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, port, path, query) {
       var startPosition = text.indexOf(url, position),
-          position = startPosition + url.length;
+          endPosition = startPosition + url.length;
 
-      // f protocol is missing and domain contains non-ASCII characters,
+      // if protocol is missing and domain contains non-ASCII characters,
       // extract ASCII-only domains.
       if (!protocol) {
-        var asciiDomains = [],
-            asciiDomainPosition = 0;
+        var lastUrl,
+            lastUrlInvalidMatch = false,
+            asciiEndPosition = 0;
         domain.replace(twttr.txt.regexen.validAsciiDomain, function(asciiDomain) {
-          var startPosition = domain.indexOf(asciiDomain, asciiDomainPosition);
-          asciiDomainPosition = startPosition + asciiDomain.length
-          asciiDomains.push({
-            domain: asciiDomain,
-            startPosition: startPosition,
-            endPosition: asciiDomainPosition
-          });
+          var asciiStartPosition = domain.indexOf(asciiDomain, asciiEndPosition);
+          asciiEndPosition = asciiStartPosition + asciiDomain.length
+          lastUrl = {
+            url: asciiDomain,
+            indices: [startPosition + asciiStartPosition, startPosition + asciiEndPosition]
+          }
+          lastUrlInvalidMatch = asciiDomain.match(twttr.txt.regexen.invalidShortDomain);
+          if (!lastUrlInvalidMatch) {
+            urls.push(lastUrl);
+          }
         });
 
-        // if domain doesn't contain any ASCII domain, skip the entire url.
-        if(asciiDomains.length == 0) {
+        if (urls.length == 0) {
           return;
         }
-        for (i = 0; i < asciiDomains.length - 1; i++) {
-          urls.push({
-            url: asciiDomains[i].domain,
-            indices: [startPosition + asciiDomains[i].startPosition,
-                      startPosition + asciiDomains[i].endPosition]
-          });
-        }
-        var last = asciiDomains[asciiDomains.length - 1];
-        if (last.startPosition > 0) {
-          startPosition += last.startPosition;
-          url = url.replace(domain, last.domain);
-          domain = last.domain;
-        }
-      }
-      // Regex in JavaScript doesn't support lookbehind, so we need to manually filter out
-      // the short URLs without protocol and slash, i.e., [domain].[ccTLD]
-      if (!protocol && !path && domain.match(twttr.txt.regexen.validShortDomain)) {
-        return;
-      }
 
-      urls.push({
-        url: url,
-        indices: [startPosition, position]
-      });
+        if (path) {
+          if (lastUrlInvalidMatch) {
+            urls.push(lastUrl);
+          }
+          lastUrl.url = url.replace(domain, lastUrl.url);
+          lastUrl.indices[1] = endPosition;
+        }
+      } else {
+        urls.push({
+          url: url,
+          indices: [startPosition, endPosition]
+        });
+      }
     });
 
     return urls;
