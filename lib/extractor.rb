@@ -161,18 +161,32 @@ module Twitter
         start_position = valid_url_match_data.char_begin(3)
         end_position = valid_url_match_data.char_end(3)
 
-        # If protocol is missing, check against valid_ascii_domain
+        # If protocol is missing and domain contains non-ASCII characters,
+        # extract ASCII-only domains.
         if !protocol
-          next unless domain =~ Twitter::Regex[:valid_ascii_domain]
-          if $~.char_begin(0)
-            start_position += $~.char_begin(0)
-            url.sub!(domain, $~.to_s())
+          last_url = nil
+          last_url_invalid_match = nil
+          domain.scan(Twitter::Regex[:valid_ascii_domain]) do |ascii_domain|
+            last_url = {
+              :url => ascii_domain,
+              :indices => [start_position + $~.char_begin(0),
+                           start_position + $~.char_end(0)]
+            }
+            last_url_invalid_match = ascii_domain =~ Twitter::Regex[:invalid_short_domain]
+            urls << last_url unless last_url_invalid_match
           end
-        end
 
-        # Regex in Ruby 1.8 doesn't support lookbehind, so we need to manually filter out
-        # the short URLs without protocol and path, i.e., [domain].[ccTLD]
-        unless !protocol && !path && domain =~ Twitter::Regex[:valid_short_domain]
+          # no ASCII-only domain found. Skip the entire URL
+          next unless last_url
+
+          # last_url only contains domain. Need to add path and query if they exist.
+          if path
+            # last_url was not added. Add it to urls here.
+            urls << last_url if last_url_invalid_match
+            last_url[:url] = url.sub(domain, last_url[:url])
+            last_url[:indices][1] = end_position
+          end
+        else
           urls << {
             :url => url,
             :indices => [start_position, end_position]

@@ -150,7 +150,7 @@ module Twitter
     /iox
 
     # This is used in Extractor to filter out unwanted URLs.
-    REGEXEN[:valid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/io
+    REGEXEN[:invalid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/io
 
     REGEXEN[:valid_port_number] = /[0-9]+/
 
