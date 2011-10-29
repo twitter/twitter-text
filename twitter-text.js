@@ -139,9 +139,9 @@ if (!window.twttr) {
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
-  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|#{spaces}|[「」。、.,!！?？:;"'])/);
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
   twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
   twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
@@ -162,7 +162,7 @@ if (!window.twttr) {
 
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~|&#{latinAccentChars}]/i);
+  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!?\*';:=\+,\.\$\/%#\[\]\-_~|&#{latinAccentChars}]/i);
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
