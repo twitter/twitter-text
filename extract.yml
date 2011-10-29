@@ -281,6 +281,14 @@ tests:
       text: "twitter.comこれは日本語です。example.com中国語t.co/abcde한국twitter.com example2.comテストtwitter.com/abcde"
       expected: ["twitter.com", "example.com", "t.co/abcde", "twitter.com", "example2.com", "twitter.com/abcde"]
 
+    - description: "Extract URLs with and without protocol surrounded by CJK characters"
+      text: "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde"
+      expected: ["http://twitter.com/", "example.com", "http://t.co/abcde", "twitter.com", "example2.com", "http://twitter.com/abcde"]
+
+    - description: "DO NOT extract short URLs without protocol on ccTLD domains without path"
+      text: "twitter.jp日本語t.co中国語foo.jp t.co foo.jp"
+      expected: []
+
     - description: "Extract URLs beginning with a non-breaking space (U+00A0)"
       text: "@user Try http:// example.com/path"
       expected: ["example.com/path"]
@@ -399,7 +407,7 @@ tests:
         - url: "http://google.com"
           indices: [11, 28]
 
-    - description: "Extract short URL without protocol surrounded by CJK characters"
+    - description: "Extract URLs without protocol surrounded by CJK characters"
       text: "twitter.comこれは日本語です。example.com中国語t.co/abcde한국twitter.com example2.comテストtwitter.com/abcde"
       expected:
         - url: "twitter.com"
@@ -414,6 +422,22 @@ tests:
           indices: [58, 70]
         - url: "twitter.com/abcde"
           indices: [73, 90]
+
+    - description: "Extract URLs with and without protocol surrounded by CJK characters"
+      text: "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde"
+      expected:
+        - url: "http://twitter.com/"
+          indices: [0, 19]
+        - url: "example.com"
+          indices: [28, 39]
+        - url: "http://t.co/abcde"
+          indices: [42, 59]
+        - url: "twitter.com"
+          indices: [61, 72]
+        - url: "example2.com"
+          indices: [75, 87]
+        - url: "http://twitter.com/abcde"
+          indices: [90, 114]
 
   hashtags:
     - description: "Extract an all-alpha hashtag"
