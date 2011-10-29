@@ -104,11 +104,10 @@ module Twitter
       regex_range(0x2F800, 0x2FA1F), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
     ].join('').freeze
 
-    HASHTAG_BOUNDARY = /(?:\A|\z|#{REGEXEN[:spaces]}|[「」。、.,!?！？:;"'])/o
-
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
     HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
     HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
+    HASHTAG_BOUNDARY = /\A|\z|[^&\/a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/o
 
     HASHTAG = /(#{HASHTAG_BOUNDARY})(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
 
@@ -154,7 +153,7 @@ module Twitter
 
     REGEXEN[:valid_port_number] = /[0-9]+/
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\.\$\/%#\[\]\-_~&|#{LATIN_ACCENTS}]/io
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!?\*';:=\+\,\.\$\/%#\[\]\-_~&|#{LATIN_ACCENTS}]/io
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
