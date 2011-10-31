@@ -153,7 +153,7 @@ module Twitter
 
     REGEXEN[:valid_port_number] = /[0-9]+/
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!?\*';:=\+\,\.\$\/%#\[\]\-_~&|#{LATIN_ACCENTS}]/io
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\.\$\/%#\[\]\-_~&|#{LATIN_ACCENTS}]/io
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
@@ -170,7 +170,7 @@ module Twitter
       )|(?:@#{REGEXEN[:valid_general_url_path_chars]}+\/)
     )/iox
 
-    REGEXEN[:valid_url_query_chars] = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i
+    REGEXEN[:valid_url_query_chars] = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/]/i
     REGEXEN[:valid_url] = %r{
       (                                                                                     #   $1 total match
