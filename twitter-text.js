@@ -139,9 +139,9 @@ if (!window.twttr) {
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
-  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|#{spaces}|[「」。、.,!！?？:;"'])/);
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
   twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
   twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
   twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
@@ -179,7 +179,7 @@ if (!window.twttr) {
       ')|(?:@#{validGeneralUrlPathChars}+\/)'+
     ')', 'i');
 
-  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
+  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
