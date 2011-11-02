@@ -42,10 +42,12 @@ module Twitter
 
     def rewrite_hashtags(text)
       text.to_s.gsub(Twitter::Regex[:auto_link_hashtags]) do
-        before = $1
-        hash = $2
-        hashtag = $3
-        "#{before}#{yield(hash, hashtag)}"
+        before, hash, hashtag, after = $1, $2, $3, $'
+        if after =~ Twitter::Regex[:end_hashtag_match]
+          "#{before}#{hash}#{hashtag}"
+        else
+          "#{before}#{yield(hash, hashtag)}"
+        end
       end
     end
 

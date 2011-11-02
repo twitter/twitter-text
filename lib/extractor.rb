@@ -68,8 +68,9 @@ module Twitter
       return [] unless text
 
       possible_screen_names = []
-      text.to_s.scan(Twitter::Regex[:extract_mentions]) do |before, sn, after|
+      text.to_s.scan(Twitter::Regex[:extract_mentions]) do |before, sn|
         extract_mentions_match_data = $~
+        after = $'
         unless after =~ Twitter::Regex[:end_screen_name_match]
           start_position = extract_mentions_match_data.char_begin(2) - 1
           end_position = extract_mentions_match_data.char_end(2)
@@ -99,8 +100,9 @@ module Twitter
       return [] unless text
 
       possible_entries = []
-      text.to_s.scan(Twitter::Regex[:extract_mentions_or_lists]) do |before, sn, list_slug, after|
+      text.to_s.scan(Twitter::Regex[:extract_mentions_or_lists]) do |before, sn, list_slug|
         extract_mentions_match_data = $~
+        after = $'
         unless after =~ Twitter::Regex[:end_screen_name_match]
           start_position = extract_mentions_match_data.char_begin(2) - 1
           end_position = extract_mentions_match_data.char_end(list_slug.nil? ? 2 : 3)
@@ -130,6 +132,7 @@ module Twitter
 
       possible_screen_name = text.match(Twitter::Regex[:extract_reply])
       return unless possible_screen_name.respond_to?(:captures)
+      return if $' =~ Twitter::Regex[:end_screen_name_match]
       screen_name = possible_screen_name.captures.first
       yield screen_name if block_given?
       screen_name
@@ -222,10 +225,13 @@ module Twitter
       text.scan(Twitter::Regex[:auto_link_hashtags]) do |before, hash, hash_text|
         start_position = $~.char_begin(2)
         end_position = $~.char_end(3)
-        tags << {
-          :hashtag => hash_text,
-          :indices => [start_position, end_position]
-        }
+        after = $'
+        unless after =~ Twitter::Regex[:end_hashtag_match]
+          tags << {
+            :hashtag => hash_text,
+            :indices => [start_position, end_position]
+          }
+        end
       end
       tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last } if block_given?
       tags
