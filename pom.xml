@@ -3,7 +3,7 @@
 
   <groupId>com.twitter</groupId>
   <artifactId>twitter-text</artifactId>
-  <version>1.4.4</version>
+  <version>1.4.5</version>
 
   <build>
     <directory>out</directory>
