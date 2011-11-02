@@ -369,6 +369,14 @@ tests:
       text: "test http://twitter.com/."
       expected: ["http://twitter.com/"]
 
+    - description: "Extract a URL with '?' in fragment"
+      text: "http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata"
+      expected: ["http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata"]
+
+    - description: "Extract a URL with '?' in fragment in a text"
+      text: "text http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata text"
+      expected: ["http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata"]
+
    # A common cause of runaway regex engines.
     - description: "Extract a URL with a ton of trailing periods"
       text: "Test a ton of periods http://example.com/path.........................................."
@@ -415,6 +423,10 @@ tests:
     - description: "DO NOT Extract a single numeric hashtag"
       text: "#0"
       expected: []
+
+    - description: "Extract hashtag after bracket"
+      text: "(#hashtag1 )#hashtag2 [#hashtag3 ]#hashtag4 ’#hashtag5’#hashtag6"
+      expected: ["hashtag1", "hashtag2", "hashtag3", "hashtag4", "hashtag5", "hashtag6"]
 
     - description: "Extract a hashtag containing ñ"
       text: "I'll write more tests #mañana"
