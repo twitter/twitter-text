@@ -20,7 +20,7 @@ public class Regex {
   private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS +"]";
 
   /* URL related hash regex collection */
-  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"'!=A-Z0-9_@＠.\u202A-\u202E]|^)";
+  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^\\-/\"'!=A-Z0-9_@＠#＃.\u202A-\u202E]|^)";
 
   private static final String URL_VALID_CHARS = "[\\p{Alnum}" + LATIN_ACCENTS_CHARS + "]";
   private static final String URL_VALID_SUBDOMAIN = "(?:(?:" + URL_VALID_CHARS + "[" + URL_VALID_CHARS + "\\-_]*)?" + URL_VALID_CHARS + "\\.)";
@@ -107,12 +107,11 @@ public class Regex {
   /* Begin public constants */
   public static final Pattern AT_SIGNS = Pattern.compile("[" + AT_SIGNS_CHARS + "]");
 
-  public static final Pattern SCREEN_NAME_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
-
-  public static final Pattern AUTO_LINK_HASHTAGS = Pattern.compile("(^|[^&/" + HASHTAG_ALPHA_NUMERIC_CHARS + "])(#|\uFF03)(" + HASHTAG_ALPHA_NUMERIC + "*" + HASHTAG_ALPHA + HASHTAG_ALPHA_NUMERIC + "*)", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+  public static final Pattern AUTO_LINK_HASHTAGS = Pattern.compile("(^|[^&/" + HASHTAG_ALPHA_NUMERIC_CHARS + "])(#|\uFF03)(" + HASHTAG_ALPHA_NUMERIC + "*" + HASHTAG_ALPHA + HASHTAG_ALPHA_NUMERIC + "*)", Pattern.CASE_INSENSITIVE);
   public static final int AUTO_LINK_HASHTAGS_GROUP_BEFORE = 1;
   public static final int AUTO_LINK_HASHTAGS_GROUP_HASH = 2;
   public static final int AUTO_LINK_HASHTAGS_GROUP_TAG = 3;
+  public static final Pattern HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
 
   public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE = 1;
@@ -130,11 +129,12 @@ public class Regex {
   public static final int VALID_URL_GROUP_PATH         = 7;
   public static final int VALID_URL_GROUP_QUERY_STRING = 8;
 
-  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})(?=(.|$))", Pattern.CASE_INSENSITIVE);
+  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;
   public static final int EXTRACT_MENTIONS_GROUP_USERNAME = 2;
-  public static final int EXTRACT_MENTIONS_GROUP_AFTER = 3;
 
-  public static final Pattern EXTRACT_REPLY = Pattern.compile("^(?:[" + com.twitter.regex.Spaces.getCharacterClass() + "])*" + AT_SIGNS + "([a-z0-9_]{1,20}).*", Pattern.CASE_INSENSITIVE);
+  public static final Pattern EXTRACT_REPLY = Pattern.compile("^(?:[" + com.twitter.regex.Spaces.getCharacterClass() + "])*" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_REPLY_GROUP_USERNAME = 1;
+
+  public static final Pattern SCREEN_NAME_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
 }

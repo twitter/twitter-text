@@ -108,7 +108,7 @@ public class Autolink {
               matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).isEmpty()) {
 
             // Username only
-            if (!Regex.SCREEN_NAME_MATCH_END.matcher(text.substring(matcher.end())).find()) {
+            if (!Regex.SCREEN_NAME_MATCH_END.matcher(chunk.substring(matcher.end())).find()) {
               StringBuilder rb = new StringBuilder(capacity);
               rb.append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE))
                       .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT))
@@ -162,19 +162,25 @@ public class Autolink {
     StringBuffer sb = new StringBuffer();
     Matcher matcher = Regex.AUTO_LINK_HASHTAGS.matcher(text);
     while (matcher.find()) {
-      StringBuilder replacement = new StringBuilder(text.length() * 2);
-      replacement.append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE))
-              .append("<a href=\"").append(hashtagUrlBase)
-              .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("\"")
-              .append(" title=\"#").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG))
-              .append("\" class=\"").append(urlClass).append(" ")
-              .append(hashtagClass).append("\"");
-      if (noFollow) {
-        replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+      String after = text.substring(matcher.end());
+      if (!Regex.HASHTAG_MATCH_END.matcher(after).find()) {
+        StringBuilder replacement = new StringBuilder(text.length() * 2);
+        replacement.append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE))
+                .append("<a href=\"").append(hashtagUrlBase)
+                .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("\"")
+                .append(" title=\"#").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG))
+                .append("\" class=\"").append(urlClass).append(" ")
+                .append(hashtagClass).append("\"");
+        if (noFollow) {
+          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
+        }
+        replacement.append(">").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH))
+                .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("</a>");
+        matcher.appendReplacement(sb, replacement.toString());
+      } else {
+        // not a valid hashtag
+        matcher.appendReplacement(sb, "$0");
       }
-      replacement.append(">").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH))
-              .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("</a>");
-      matcher.appendReplacement(sb, replacement.toString());
     }
     matcher.appendTail(sb);
     return sb.toString();
