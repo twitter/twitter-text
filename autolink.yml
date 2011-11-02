@@ -647,3 +647,15 @@ tests:
     - description: "Does not allow an XSS after an @"
       text: "See: http://x.xx.com/@\"style=\"color:pink\"onmouseover=alert(1)//"
       expected: "See: <a href=\"http://x.xx.com/\">http://x.xx.com/</a>@\"style=\"color:pink\"onmouseover=alert(1)//"
+
+    - description: "DO NOT autolink URLs if preceded by # or @"
+      text: "#http://twitter.com @http://twitter.com"
+      expected: "#http://twitter.com @http://twitter.com"
+
+    - description: "Autolink hashtag if followed by . and TLD"
+      text: "#twitter.com #twitter.co.jp"
+      expected: "<a href=\"http://twitter.com/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.com <a href=\"http://twitter.com/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.co.jp"
+
+    - description: "Autolink @mention if followed by . and TLD"
+      text: "@twitter.com @twitter.co.jp"
+      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/twitter\">twitter</a>.com @<a class=\"tweet-url username\" href=\"http://twitter.com/twitter\">twitter</a>.co.jp"

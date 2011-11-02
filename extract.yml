@@ -41,6 +41,10 @@ tests:
       text: "@username email me @test@example.com"
       expected: ["username"]
 
+    - description: "DO NOT extract 'http' in '@http://' as username"
+      text: "@http://twitter.com"
+      expected: []
+
   mentions_with_indices:
     - description: "Extract a mention at the start"
       text: "@username yo!"
@@ -146,6 +150,10 @@ tests:
 
     - description: "DO NOT Extract reply when preceded by @"
       text: "@@username mention, not a reply"
+      expected:
+
+    - description: "DO NOT Extract reply when followed by URL"
+      text: "@http://twitter.com"
       expected:
 
   urls:
@@ -390,6 +398,10 @@ tests:
       text: "Test a ton of periods http://example.com/path/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       expected: ["http://example.com/path/"]
 
+    - description: "DO NOT extract URLs in hashtag or @mention"
+      text: "#test.com @test.com #http://test.com @http://test.com #t.co/abcde @t.co/abcde"
+      expected: []
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
@@ -547,6 +559,10 @@ tests:
     - description: "Hashtag after punctuations"
       text: ":#hashtag ;#hashtag ,#hashtag .#hashtag !#hashtag ?#hashtag"
       expected: ["hashtag", "hashtag", "hashtag", "hashtag", "hashtag", "hashtag"]
+
+    - description: "DO NOT extract hashtag when # is followed by URL"
+      text: "#http://twitter.com #https://twitter.com"
+      expected: []
 
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
