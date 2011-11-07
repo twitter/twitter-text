@@ -132,12 +132,20 @@ public class ExtractorTest extends TestCase {
      assertEquals(extracted.get(2).getEnd().intValue(), 47);
    }
 
+   public void testURLFollowedByPunctuations() {
+     String text ="http://games.aarp.org/games/mahjongg-dimensions.aspx!!!!!!";
+     assertList("Failed to extract URLs followed by punctuations",
+         new String[]{"http://games.aarp.org/games/mahjongg-dimensions.aspx"},
+         extractor.extractURLs(text));
+   }
+
    public void testUrlWithPunctuation() {
      String[] urls = new String[] {
        "http://www.foo.com/foo/path-with-period./",
        "http://www.foo.org.za/foo/bar/688.1",
        "http://www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0",
        "http://foo.com/bar/123/foo_&_bar/",
+       "http://foo.com/bar(test)bar(test)bar(test)",
        "www.foo.com/foo/path-with-period./",
        "www.foo.org.za/foo/bar/688.1",
        "www.foo.com/bar-path/some.stm?param1=foo;param2=P1|0||P2|0",
