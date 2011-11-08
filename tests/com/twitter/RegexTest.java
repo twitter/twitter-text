@@ -34,17 +34,22 @@ public class RegexTest extends TestCase {
   }
 
   public void testValidUrlDoesNotTakeForeverOnRepeatedPuctuationAtEnd() {
-    String repeatedPath = "Try http://example.com/path**********************";
+    String[] repeatedPaths = {
+        "Try http://example.com/path**********************",
+        "http://foo.org/bar/foo-bar-foo-bar.aspx!!!!!! Test"
+    };
 
-    long start = System.currentTimeMillis();
-    Matcher matcher = Regex.VALID_URL.matcher(repeatedPath);
-    boolean isValid = matcher.find();
-    long end = System.currentTimeMillis();
+    for (String text : repeatedPaths) {
+      long start = System.currentTimeMillis();
+      boolean isValid = Regex.VALID_URL.matcher(text).find();
+      Regex.VALID_URL.matcher(text).matches();
+      long end = System.currentTimeMillis();
 
-    assertTrue("Repeated puctuation should still produce a valid URL", isValid);
+      assertTrue("Should be able to extract a valid URL even followed by punctuations", isValid);
 
-    long duration = (end - start);
-    assertTrue("Matching a repeated path end should take less than 10ms (took " + duration + "ms)", (duration < 10) );
+      long duration = (end - start);
+      assertTrue("Matching a repeated path end should take less than 10ms (took " + duration + "ms)", (duration < 10) );
+    }
   }
 
   public void testValidURLWithoutProtocol() {

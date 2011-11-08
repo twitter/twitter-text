@@ -94,7 +94,7 @@ public class Regex {
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
       "(?::(" + URL_VALID_PORT_NUMBER +"))?" +                     //  $6 Port number (optional)
       "(/" +
-        URL_VALID_PATH + "*" +
+        URL_VALID_PATH + "*+" +
       ")?" +                                                       //  $7 URL Path and anchor
       "(\\?" + URL_VALID_URL_QUERY_CHARS + "*" +                   //  $8 Query String
               URL_VALID_URL_QUERY_ENDING_CHARS + ")?" +
