@@ -190,6 +190,11 @@ module Twitter
             last_url[:indices][1] = end_position
           end
         else
+          # In the case of t.co URLs, don't allow additional path characters
+          if url =~ Twitter::Regex[:valid_tco_url]
+            url = $&
+            end_position -= $'.size
+          end
           urls << {
             :url => url,
             :indices => [start_position, end_position]

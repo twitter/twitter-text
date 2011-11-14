@@ -169,6 +169,27 @@ describe Twitter::Extractor do
         @extractor.extract_urls("http://tld-too-short.x").should == []
       end
     end
+
+    describe "t.co URLS" do
+      TestUrls::TCO.each do |url|
+        it "should only extract the t.co URL from the URL #{url}" do
+          extracted_urls = @extractor.extract_urls(url)
+          extracted_urls.size.should == 1
+          extracted_url = extracted_urls.first
+          extracted_url.should_not == url
+          extracted_url.should == url[0...20]
+        end
+
+        it "should match the t.co URL from the URL #{url} when it's embedded in other text" do
+          text = "Sweet url: #{url} I found. #awesome"
+          extracted_urls = @extractor.extract_urls(text)
+          extracted_urls.size.should == 1
+          extracted_url = extracted_urls.first
+          extracted_url.should_not == url
+          extracted_url.should == url[0...20]
+        end
+      end
+    end
   end
 
   describe "urls with indices" do
@@ -198,6 +219,31 @@ describe Twitter::Extractor do
     describe "invalid URLS" do
       it "does not link urls with invalid domains" do
         @extractor.extract_urls_with_indices("http://tld-too-short.x").should == []
+      end
+    end
+
+    describe "t.co URLS" do
+      TestUrls::TCO.each do |url|
+        it "should only extract the t.co URL from the URL #{url} and adjust indices correctly" do
+          extracted_urls = @extractor.extract_urls_with_indices(url)
+          extracted_urls.size.should == 1
+          extracted_url = extracted_urls.first
+          extracted_url[:url].should_not include(url)
+          extracted_url[:url].should include(url[0...20])
+          extracted_url[:indices].first.should == 0
+          extracted_url[:indices].last.should == 20
+        end
+
+        it "should match the t.co URL from the URL #{url} when it's embedded in other text" do
+          text = "Sweet url: #{url} I found. #awesome"
+          extracted_urls = @extractor.extract_urls_with_indices(text)
+          extracted_urls.size.should == 1
+          extracted_url = extracted_urls.first
+          extracted_url[:url].should_not include(url)
+          extracted_url[:url].should include(url[0...20])
+          extracted_url[:indices].first.should == 11
+          extracted_url[:indices].last.should == 31
+        end
       end
     end
   end

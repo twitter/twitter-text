@@ -52,6 +52,29 @@ module TestUrls
     "http://twitt#{[0x202B].pack('U')}er.com",
     "http://twitt#{[0x202C].pack('U')}er.com",
     "http://twitt#{[0x202D].pack('U')}er.com",
-    "http://twitt#{[0x202E].pack('U')}er.com",
+    "http://twitt#{[0x202E].pack('U')}er.com"
   ] unless defined?(TestUrls::INVALID)
+
+  TCO = [
+    "http://t.co/P53cv5yO!",
+    "http://t.co/fQJmiPGg***",
+    "http://t.co/pbY2NfTZ's",
+    "http://t.co/2vYHpAc5;",
+    "http://t.co/ulYGBYSo:",
+    "http://t.co/GeT4bSiw=win",
+    "http://t.co/8MkmHU0k+fun",
+    "http://t.co/TKLp64dY.yes,",
+    "http://t.co/8vuO27cI$$",
+    "http://t.co/rPYTvdA8/",
+    "http://t.co/WvtMw5ku%",
+    "http://t.co/8t7G3ddS#",
+    "http://t.co/nfHNJDV2/#!",
+    "http://t.co/gK6NOXHs[good]",
+    "http://t.co/dMrT0o1Y]bad",
+    "http://t.co/FNkPfmii-",
+    "http://t.co/sMgS3pjI_oh",
+    "http://t.co/F8Dq3Plb~",
+    "http://t.co/ivvH58vC&help",
+    "http://t.co/iUBL15zD|NZ5KYLQ8"
+  ] unless defined?(TestUrls::TCO)
 end
