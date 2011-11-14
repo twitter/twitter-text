@@ -414,6 +414,18 @@ tests:
       text: "#test.com @test.com #http://test.com @http://test.com #t.co/abcde @t.co/abcde"
       expected: []
 
+    - description: "Extract a t.co URL with a trailing apostrophe"
+      text: "I really like http://t.co/pbY2NfTZ's website"
+      expected: ["http://t.co/pbY2NfTZ"]
+
+    - description: "Extract a t.co URL with a trailing hyphen"
+      text: "Check this site out http://t.co/FNkPfmii- it's great"
+      expected: ["http://t.co/FNkPfmii"]
+
+    - description: "Extract a t.co URL with a trailing colon"
+      text: "According to http://t.co/ulYGBYSo: the internet is cool"
+      expected: ["http://t.co/ulYGBYSo"]
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
@@ -458,6 +470,24 @@ tests:
           indices: [75, 87]
         - url: "http://twitter.com/abcde"
           indices: [90, 114]
+
+    - description: "Extract t.co URLs skipping trailing characters and adjusting indices correctly"
+      text: "http://t.co/pbY2NfTZ's http://t.co/2vYHpAc5; http://t.co/ulYGBYSo: http://t.co/8MkmHU0k+c http://t.co/TKLp64dY.x http://t.co/8t7G3ddS#a http://t.co/FNkPfmii-"
+      expected:
+        - url: "http://t.co/pbY2NfTZ"
+          indices: [0, 20]
+        - url: "http://t.co/2vYHpAc5"
+          indices: [23, 43]
+        - url: "http://t.co/ulYGBYSo"
+          indices: [45, 65]
+        - url: "http://t.co/8MkmHU0k"
+          indices: [67, 87]
+        - url: "http://t.co/TKLp64dY"
+          indices: [90, 110]
+        - url: "http://t.co/8t7G3ddS"
+          indices: [113, 133]
+        - url: "http://t.co/FNkPfmii"
+          indices: [136, 156]
 
   hashtags:
     - description: "Extract an all-alpha hashtag"
