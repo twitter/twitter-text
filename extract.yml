@@ -45,6 +45,10 @@ tests:
       text: "@http://twitter.com"
       expected: []
 
+    - description: "Extract mentions before newline"
+      text: "@username\n@mention"
+      expected: ["username", "mention"]
+
   mentions_with_indices:
     - description: "Extract a mention at the start"
       text: "@username yo!"
@@ -603,6 +607,10 @@ tests:
     - description: "Hashtag after punctuations"
       text: ":#hashtag ;#hashtag ,#hashtag .#hashtag !#hashtag ?#hashtag"
       expected: ["hashtag", "hashtag", "hashtag", "hashtag", "hashtag", "hashtag"]
+
+    - description: "Hashtag before newline"
+      text: "#hashtag\ntest\n#hashtag2\ntest\n#hashtag3\n"
+      expected: ["hashtag", "hashtag2", "hashtag3"]
 
     - description: "DO NOT extract hashtag when # is followed by URL"
       text: "#http://twitter.com #https://twitter.com"
