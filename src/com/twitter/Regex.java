@@ -129,6 +129,8 @@ public class Regex {
   public static final int VALID_URL_GROUP_PATH         = 7;
   public static final int VALID_URL_GROUP_QUERY_STRING = 8;
 
+  public static final Pattern VALID_TCO_URL = Pattern.compile("^https?:\\/\\/t\\.co\\/[a-z0-9]+", Pattern.CASE_INSENSITIVE);
+
   public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;
   public static final int EXTRACT_MENTIONS_GROUP_USERNAME = 2;
