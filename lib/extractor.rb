@@ -193,7 +193,7 @@ module Twitter
           # In the case of t.co URLs, don't allow additional path characters
           if url =~ Twitter::Regex[:valid_tco_url]
             url = $&
-            end_position -= $'.size
+            end_position = start_position + url.char_length
           end
           urls << {
             :url => url,
