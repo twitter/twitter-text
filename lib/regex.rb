@@ -150,6 +150,9 @@ module Twitter
       (?:#{REGEXEN[:valid_gTLD]}|#{REGEXEN[:valid_ccTLD]}|#{REGEXEN[:valid_punycode]})
     /iox
 
+    # This is used in Extractor for stricter t.co URL extraction
+    REGEXEN[:valid_tco_url] = /^https?:\/\/t\.co\/[a-z0-9]+/i
+
     # This is used in Extractor to filter out unwanted URLs.
     REGEXEN[:invalid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/io
 
