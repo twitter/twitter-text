@@ -168,7 +168,13 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
-      urls.add(matcher.group(Regex.VALID_URL_GROUP_URL));
+      String url = matcher.group(Regex.VALID_URL_GROUP_URL);
+      Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
+      if (tco_matcher.find()) {
+        // In the case of t.co URLs, don't allow additional path characters.
+        url = tco_matcher.group();
+      }
+      urls.add(url);
     }
 
     return urls;
@@ -189,7 +195,16 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
-      urls.add(new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0));
+      Entity entity = new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0);
+      String url = matcher.group(Regex.VALID_URL_GROUP_URL);
+      Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
+      if (tco_matcher.find()) {
+        // In the case of t.co URLs, don't allow additional path characters.
+        entity.value = tco_matcher.group();
+        entity.end = entity.start + entity.value.length();
+      }
+
+      urls.add(entity);
     }
 
     return urls;
