@@ -195,6 +195,8 @@ if (!window.twttr) {
     ')'
   , 'gi');
 
+  twttr.txt.regexen.validTcoUrl = /^https?:\/\/t\.co\/[a-z0-9]+/i;
+
   // These URL validation pattern strings are based on the ABNF from RFC 3986
   twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
   twttr.txt.regexen.validateUrlPctEncoded = /(?:%[0-9a-f]{2})/i;
@@ -603,6 +605,11 @@ if (!window.twttr) {
           lastUrl.indices[1] = endPosition;
         }
       } else {
+        // In the case of t.co URLs, don't allow additional path characters.
+        if (url.match(twttr.txt.regexen.validTcoUrl)) {
+          url = RegExp.lastMatch;
+          endPosition = startPosition + url.length;
+        }
         urls.push({
           url: url,
           indices: [startPosition, endPosition]
