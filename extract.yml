@@ -418,6 +418,10 @@ tests:
       text: "#test.com @test.com #http://test.com @http://test.com #t.co/abcde @t.co/abcde"
       expected: []
 
+    - description: "Extract URL before newline"
+      text: "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nt.co\nt.co/abcde"
+      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co/abcde"]
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
