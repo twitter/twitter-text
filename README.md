@@ -40,6 +40,11 @@ If you are creating a new twitter-text library in a different programming langua
    * Please be sure to provide example input and output as well as a brief description of the problem.
 
 ## Changelog
+  * v1.4.9 - 2011-12-01 [ Git tag v1.4.9 ]
+    * [FIX] Apply stricter parsing of t.co URLs
+    * [FIX] Extract @mention and hashtag before newline
+    * [FIX] Extract URLs without protocol on ccTLD domain with slash
+
   * v1.4.8 - 2011-11-02 [ Git tag v1.4.8 ]
     * [FIX] Extract URLs without protocol in CJK text
     * [FIX] Do not extract URL in hashtag
