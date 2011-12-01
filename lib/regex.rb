@@ -106,14 +106,14 @@ module Twitter
 
     REGEXEN[:auto_link_hashtags] = /#{HASHTAG}/io
     # Used in Extractor and Rewriter for final filtering
-    REGEXEN[:end_hashtag_match] = /^(?:[#＃]|:\/\/)/o
+    REGEXEN[:end_hashtag_match] = /\A(?:[#＃]|:\/\/)/o
 
     REGEXEN[:at_signs] = /[@＠]/
     REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
     REGEXEN[:extract_mentions_or_lists] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
     # Used in Extractor and Rewriter for final filtering
-    REGEXEN[:end_screen_name_match] = /^(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
+    REGEXEN[:end_screen_name_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
@@ -154,7 +154,7 @@ module Twitter
     REGEXEN[:valid_tco_url] = /^https?:\/\/t\.co\/[a-z0-9]+/i
 
     # This is used in Extractor to filter out unwanted URLs.
-    REGEXEN[:invalid_short_domain] = /^#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}$/io
+    REGEXEN[:invalid_short_domain] = /\A#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}\Z/io
 
     REGEXEN[:valid_port_number] = /[0-9]+/
 
