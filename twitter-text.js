@@ -577,7 +577,7 @@ if (!window.twttr) {
       // if protocol is missing and domain contains non-ASCII characters,
       // extract ASCII-only domains.
       if (!protocol) {
-        var lastUrl,
+        var lastUrl = null,
             lastUrlInvalidMatch = false,
             asciiEndPosition = 0;
         domain.replace(twttr.txt.regexen.validAsciiDomain, function(asciiDomain) {
@@ -593,10 +593,12 @@ if (!window.twttr) {
           }
         });
 
-        if (urls.length == 0) {
+        // no ASCII-only domain found. Skip the entire URL.
+        if (lastUrl == null) {
           return;
         }
 
+        // lastUrl only contains domain. Need to add path and query if they exist.
         if (path) {
           if (lastUrlInvalidMatch) {
             urls.push(lastUrl);
