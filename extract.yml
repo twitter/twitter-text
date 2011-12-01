@@ -261,9 +261,13 @@ tests:
       text: "foo.com foo.net foo.org foo.edu foo.gov"
       expected: ["foo.com", "foo.net", "foo.org", "foo.edu", "foo.gov"]
 
-    - description: "Extract URLs withour protocol not on (com|org|edu|gov|net) domains"
+    - description: "Extract URLs without protocol not on (com|org|edu|gov|net) domains"
       text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp"
       expected: ["foo.co.jp", "www.foo.co.uk"]
+
+    - description: "Extract URLs without protocol on ccTLD with slash"
+      text: "t.co/abcde bit.ly/abcde"
+      expected: ["t.co/abcde", "bit.ly/abcde"]
 
     - description: "Extract URLs with protocol on ccTLD domains"
       text: "http://foo.jp http://fooooo.jp"
@@ -438,6 +442,14 @@ tests:
       expected:
         - url: "http://google.com"
           indices: [11, 28]
+
+    - description: "Extract URLs without protocol on ccTLD with slash"
+      text: "t.co/abcde bit.ly/abcde"
+      expected:
+        - url: "t.co/abcde"
+          indices: [0, 10]
+        - url: "bit.ly/abcde"
+          indices: [11, 23]
 
     - description: "Extract URLs without protocol surrounded by CJK characters"
       text: "twitter.comこれは日本語です。example.com中国語t.co/abcde한국twitter.com example2.comテストtwitter.com/abcde"
