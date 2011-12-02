@@ -627,6 +627,10 @@ tests:
       text: "See: www.twitter.com or twitter.com/twitter"
       expected: "See: www.twitter.com or twitter.com/twitter"
 
+    - description: "Autolink t.co URL followed by punctuation"
+      text: "See: http://t.co/abcde's page"
+      expected: "See: <a href=\"http://t.co/abcde\">http://t.co/abcde</a>'s page"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
