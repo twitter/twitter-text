@@ -450,14 +450,22 @@ if (!window.twttr) {
 
       if (protocol) {
         var htmlAttrs = "";
+        var after = "";
         for (var k in options) {
           htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+        }
+
+        // In the case of t.co URLs, don't allow additional path characters.
+        if (url.match(twttr.txt.regexen.validTcoUrl)) {
+          url = RegExp.lastMatch;
+          after = RegExp.rightContext;
         }
 
         var d = {
           before: before,
           htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(url)
+          url: twttr.txt.htmlEscape(url),
+          after: after
         };
         if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
           d.displayUrl = twttr.txt.htmlEscape(urlEntities[url].display_url);
@@ -465,7 +473,7 @@ if (!window.twttr) {
           d.displayUrl = d.url;
         }
 
-        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>", d);
+        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
       } else {
         return all;
       }
