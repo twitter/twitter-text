@@ -204,23 +204,33 @@ public class Autolink {
       if (protocol != null) {
         // query string needs to be html escaped
         String url = matcher.group(Regex.VALID_URL_GROUP_URL);
-        String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
-        if (query_string != null) {
-          // Doing a replace isn't safe as the query string might match something else in the URL
-          int us = matcher.start(Regex.VALID_URL_GROUP_URL);
-          int qs = matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING);
-          int qe = matcher.end(Regex.VALID_URL_GROUP_QUERY_STRING);
-          String replacement = StringEscapeUtils.escapeHtml(query_string);
-          url = url.substring(0, qs - us) + replacement + url.substring(qe - us);
+        String after = "";
+
+        Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
+        if (tco_matcher.find()) {
+          // In the case of t.co URLs, don't allow additional path characters.
+          after = url.substring(tco_matcher.end());
+          url = tco_matcher.group();
+        } else {
+          String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
+          if (query_string != null) {
+            // Doing a replace isn't safe as the query string might match something else in the URL
+            int us = matcher.start(Regex.VALID_URL_GROUP_URL);
+            int qs = matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING);
+            int qe = matcher.end(Regex.VALID_URL_GROUP_QUERY_STRING);
+            String replacement = StringEscapeUtils.escapeHtml(query_string);
+            url = url.substring(0, qs - us) + replacement + url.substring(qe - us);
+          }
+          if (url.indexOf('$') != -1) {
+            url = url.replace("$", "\\$");
+          }
         }
-        if (url.indexOf('$') != -1) {
-          url = url.replace("$", "\\$");
-        }
+
         StringBuilder rb = new StringBuilder(capacity);
         rb.append(matcher.group(Regex.VALID_URL_GROUP_BEFORE))
                 .append("<a href=\"").append(url).append("\"");
         if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
-        rb.append(">").append(url).append("</a>");
+        rb.append(">").append(url).append("</a>").append(after);
         matcher.appendReplacement(sb, rb.toString());
         continue;
       }
