@@ -152,6 +152,13 @@ module Twitter
       html_attrs = html_attrs_for_options(options)
 
       Twitter::Rewriter.rewrite_urls(text) do |url|
+        # In the case of t.co URLs, don't allow additional path characters
+        after = ""
+        if url =~ Twitter::Regex[:valid_tco_url]
+          url = $&
+          after = $'
+        end
+
         href = if options[:link_url_block]
           options.delete(:link_url_block).call(url)
         else
@@ -163,7 +170,7 @@ module Twitter
           display_url = url_entities[url][:display_url]
         end
 
-        %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>)
+        %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>#{after})
       end
     end
 
