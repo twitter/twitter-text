@@ -439,7 +439,7 @@ tests:
       expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co/abcde"]
 
     - description: "DO NOT extract URL if preceded by $"
-      text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co"
+      text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
       expected: []
 
   urls_with_indices:
