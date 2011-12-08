@@ -179,10 +179,10 @@ module Twitter
     BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
 
     def html_attrs_for_options(options)
-      html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
+      autolink_html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
     end
 
-    def html_attrs(options)
+    def autolink_html_attrs(options)
       options.inject("") do |attrs, (key, value)|
         if BOOLEAN_ATTRIBUTES.include?(key)
           value = value ? key : nil
