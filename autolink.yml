@@ -631,6 +631,10 @@ tests:
       text: "See: http://t.co/abcde's page"
       expected: "See: <a href=\"http://t.co/abcde\">http://t.co/abcde</a>'s page"
 
+    - description: "DO NOT autolink URL if preceded by $"
+      text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
+      expected: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
