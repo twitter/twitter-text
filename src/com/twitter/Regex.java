@@ -4,7 +4,22 @@ package com.twitter;
 import java.util.regex.*;
 
 public class Regex {
-  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff\\u015f";
+  private static final String UNICODE_SPACES = "[" +
+    "\\u0009-\\u000d" +     //  # White_Space # Cc   [5] <control-0009>..<control-000D>
+    "\\u0020" +             // White_Space # Zs       SPACE
+    "\\u0085" +             // White_Space # Cc       <control-0085>
+    "\\u00a0" +             // White_Space # Zs       NO-BREAK SPACE
+    "\\u1680" +             // White_Space # Zs       OGHAM SPACE MARK
+    "\\u180E" +             // White_Space # Zs       MONGOLIAN VOWEL SEPARATOR
+    "\\u2000-\\u200a" +     // # White_Space # Zs  [11] EN QUAD..HAIR SPACE
+    "\\u2028" +             // White_Space # Zl       LINE SEPARATOR
+    "\\u2029" +             // White_Space # Zp       PARAGRAPH SEPARATOR
+    "\\u202F" +             // White_Space # Zs       NARROW NO-BREAK SPACE
+    "\\u205F" +             // White_Space # Zs       MEDIUM MATHEMATICAL SPACE
+    "\\u3000" +              // White_Space # Zs       IDEOGRAPHIC SPACE
+  "]";
+
+  private static final String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff\\u015f";
   private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff\\u0500-\\u0527" +  // Cyrillic
                                                    "\\u2de0–\\u2dff\\ua640–\\ua69f" +  // Cyrillic Extended A/B
@@ -105,19 +120,24 @@ public class Regex {
 
 
   /* Begin public constants */
+
+  public static final Pattern VALID_HASHTAG = Pattern.compile("(^|[^&/" + HASHTAG_ALPHA_NUMERIC_CHARS + "])(#|\uFF03)(" + HASHTAG_ALPHA_NUMERIC + "*" + HASHTAG_ALPHA + HASHTAG_ALPHA_NUMERIC + "*)", Pattern.CASE_INSENSITIVE);
+  public static final int VALID_HASHTAG_GROUP_BEFORE = 1;
+  public static final int VALID_HASHTAG_GROUP_HASH = 2;
+  public static final int VALID_HASHTAG_GROUP_TAG = 3;
+  public static final Pattern INVALID_HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
+
   public static final Pattern AT_SIGNS = Pattern.compile("[" + AT_SIGNS_CHARS + "]");
+  public static final Pattern VALID_MENTION_OR_LIST = Pattern.compile("([^a-zA-Z0-9_]|^|RT:?)(" + AT_SIGNS + "+)([a-zA-Z0-9_]{1,20})(/[a-zA-Z][a-zA-Z0-9_\\-]{0,24})?");
+  public static final int VALID_MENTION_OR_LIST_GROUP_BEFORE = 1;
+  public static final int VALID_MENTION_OR_LIST_GROUP_AT = 2;
+  public static final int VALID_MENTION_OR_LIST_GROUP_USERNAME = 3;
+  public static final int VALID_MENTION_OR_LIST_GROUP_LIST = 4;
 
-  public static final Pattern AUTO_LINK_HASHTAGS = Pattern.compile("(^|[^&/" + HASHTAG_ALPHA_NUMERIC_CHARS + "])(#|\uFF03)(" + HASHTAG_ALPHA_NUMERIC + "*" + HASHTAG_ALPHA + HASHTAG_ALPHA_NUMERIC + "*)", Pattern.CASE_INSENSITIVE);
-  public static final int AUTO_LINK_HASHTAGS_GROUP_BEFORE = 1;
-  public static final int AUTO_LINK_HASHTAGS_GROUP_HASH = 2;
-  public static final int AUTO_LINK_HASHTAGS_GROUP_TAG = 3;
-  public static final Pattern HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
+  public static final Pattern VALID_REPLY = Pattern.compile("^(?:" + UNICODE_SPACES + ")*" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
+  public static final int VALID_REPLY_GROUP_USERNAME = 1;
 
-  public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
-  public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE = 1;
-  public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT = 2;
-  public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME = 3;
-  public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST = 4;
+  public static final Pattern INVALID_MENTION_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
 
   public static final Pattern VALID_URL = Pattern.compile(VALID_URL_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
   public static final int VALID_URL_GROUP_ALL          = 1;
@@ -130,13 +150,4 @@ public class Regex {
   public static final int VALID_URL_GROUP_QUERY_STRING = 8;
 
   public static final Pattern VALID_TCO_URL = Pattern.compile("^https?:\\/\\/t\\.co\\/[a-z0-9]+", Pattern.CASE_INSENSITIVE);
-
-  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
-  public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;
-  public static final int EXTRACT_MENTIONS_GROUP_USERNAME = 2;
-
-  public static final Pattern EXTRACT_REPLY = Pattern.compile("^(?:[" + com.twitter.regex.Spaces.getCharacterClass() + "])*" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
-  public static final int EXTRACT_REPLY_GROUP_USERNAME = 1;
-
-  public static final Pattern SCREEN_NAME_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
 }

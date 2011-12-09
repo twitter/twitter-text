@@ -90,17 +90,13 @@ public class Extractor {
    * @return List of usernames referenced (without the leading @ sign)
    */
   public List<String> extractMentionedScreennames(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
     List<String> extracted = new ArrayList<String>();
-    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
-    while (matcher.find()) {
-      String after = text.substring(matcher.end());
-      if (! Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
-        extracted.add(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
-      }
+    for (Entity entity : extractMentionedScreennamesWithIndices(text)) {
+      extracted.add(entity.value);
     }
     return extracted;
   }
@@ -112,21 +108,20 @@ public class Extractor {
    * @return List of usernames referenced (without the leading @ sign)
    */
   public List<Entity> extractMentionedScreennamesWithIndices(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
     List<Entity> extracted = new ArrayList<Entity>();
-    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
+    Matcher matcher = Regex.VALID_MENTION_OR_LIST.matcher(text);
     while (matcher.find()) {
       String after = text.substring(matcher.end());
-      if (! Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
-        extracted.add(new Entity(matcher, "mention", Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
+      if (! Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
+        extracted.add(new Entity(matcher, "mention", Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME));
       }
     }
     return extracted;
   }
-
 
   /**
    * Extract a @username reference from the beginning of Tweet text. A reply is an occurance of @username at the
@@ -140,13 +135,13 @@ public class Extractor {
       return null;
     }
 
-    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
+    Matcher matcher = Regex.VALID_REPLY.matcher(text);
     if (matcher.find()) {
       String after = text.substring(matcher.end());
-      if (Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
+      if (Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
         return null;
       } else {
-        return matcher.group(Regex.EXTRACT_REPLY_GROUP_USERNAME);
+        return matcher.group(Regex.VALID_REPLY_GROUP_USERNAME);
       }
     } else {
       return null;
@@ -160,23 +155,14 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<String> extractURLs(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
     List<String> urls = new ArrayList<String>();
-
-    Matcher matcher = Regex.VALID_URL.matcher(text);
-    while (matcher.find()) {
-      String url = matcher.group(Regex.VALID_URL_GROUP_URL);
-      Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
-      if (tco_matcher.find()) {
-        // In the case of t.co URLs, don't allow additional path characters.
-        url = tco_matcher.group();
-      }
-      urls.add(url);
+    for (Entity entity : extractURLsWithIndices(text)) {
+      urls.add(entity.value);
     }
-
     return urls;
   }
 
@@ -187,8 +173,8 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<Entity> extractURLsWithIndices(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
     List<Entity> urls = new ArrayList<Entity>();
@@ -218,11 +204,16 @@ public class Extractor {
    * @return List of hashtags referenced (without the leading # sign)
    */
   public List<String> extractHashtags(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
-    return extractList(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG);
+    List<String> extracted = new ArrayList<String>();
+    for (Entity entity : extractHashtagsWithIndices(text)) {
+      extracted.add(entity.value);
+    }
+
+    return extracted;
   }
 
   /**
@@ -232,41 +223,20 @@ public class Extractor {
    * @return List of hashtags referenced (without the leading # sign)
    */
   public List<Entity> extractHashtagsWithIndices(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
-    return extractListWithIndices(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG, "hashtag");
-  }
+    List<Entity> extracted = new ArrayList<Entity>();
+    Matcher matcher = Regex.VALID_HASHTAG.matcher(text);
 
-  /**
-   * Helper method for extracting multiple matches from Tweet text.
-   *
-   * @param pattern to match and use for extraction
-   * @param text of the Tweet to extract from
-   * @param groupNumber the capturing group of the pattern that should be added to the list.
-   * @return list of extracted values, or an empty list if there were none.
-   */
-  private List<String> extractList(Pattern pattern, String text, int groupNumber) {
-    List<String> extracted = new ArrayList<String>();
-    Matcher matcher = pattern.matcher(text);
     while (matcher.find()) {
       String after = text.substring(matcher.end());
-      if (!Regex.HASHTAG_MATCH_END.matcher(after).find()) {
-        extracted.add(matcher.group(groupNumber));
+      if (!Regex.INVALID_HASHTAG_MATCH_END.matcher(after).find()) {
+        extracted.add(new Entity(matcher, "hashtag", Regex.VALID_HASHTAG_GROUP_TAG));
       }
     }
-    return extracted;
-  }
 
-  // TODO: Make this a real object, not a Map
-  private List<Entity> extractListWithIndices(Pattern pattern, String text, int groupNumber, String valueType) {
-    List<Entity> extracted = new ArrayList<Entity>();
-    Matcher matcher = pattern.matcher(text);
-
-    while (matcher.find()) {
-      extracted.add(new Entity(matcher, valueType, groupNumber));
-    }
     return extracted;
   }
 }
