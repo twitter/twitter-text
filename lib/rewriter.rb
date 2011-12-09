@@ -19,13 +19,13 @@ module Twitter
         if index % 4 != 0
           new_text << chunk
         else
-          new_text << chunk.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
+          new_text << chunk.gsub(Twitter::Regex[:valid_mention_or_list]) do
             before, at, user, slash_listname, after = $1, $2, $3, $4, $'
             if slash_listname
               # the link is a list
               "#{before}#{yield(at, user, slash_listname)}"
             else
-              if after =~ Twitter::Regex[:end_screen_name_match]
+              if after =~ Twitter::Regex[:end_mention_match]
                 # Followed by something that means we don't autolink
                 "#{before}#{at}#{user}#{slash_listname}"
               else
@@ -41,7 +41,7 @@ module Twitter
     end
 
     def rewrite_hashtags(text)
-      text.to_s.gsub(Twitter::Regex[:auto_link_hashtags]) do
+      text.to_s.gsub(Twitter::Regex[:valid_hashtag]) do
         before, hash, hashtag, after = $1, $2, $3, $'
         if after =~ Twitter::Regex[:end_hashtag_match]
           "#{before}#{hash}#{hashtag}"
