@@ -389,7 +389,7 @@ if (!window.twttr) {
     options = clone(options || {});
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "http://twitter.com/search?q=%23";
+    options.hashtagUrlBase = options.hashtagUrlBase || "http://twitter.com/#!/search?q=%23";
     if (!options.suppressNoFollow) {
       var extraHtml = HTML_ATTR_NO_FOLLOW;
     }
