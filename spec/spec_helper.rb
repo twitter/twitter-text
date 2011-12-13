@@ -51,24 +51,26 @@ RSpec::Matchers.define :have_autolinked_url do |url, inner_text|
   end
 end
 
-RSpec::Matchers.define :link_to_screen_name do |screen_name|
+RSpec::Matchers.define :link_to_screen_name do |screen_name, inner_text|
+  expected = inner_text ? inner_text : screen_name
+
   match do |text|
     @link = Nokogiri::HTML(text).search("a.username")
     @link &&
-    @link.inner_text == screen_name &&
+    @link.inner_text == expected &&
     "http://twitter.com/#{screen_name}".downcase.should == @link.first['href']
   end
 
   failure_message_for_should do |text|
     if @link.first
-      "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' to match screen_name '#{screen_name}', but it does not."
+      "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' to match screen_name '#{expected}', but it does not."
     else
       "Expected screen name '#{screen_name}' to be autolinked in '#{text}', but no link was found."
     end
   end
 
   failure_message_for_should_not do |text|
-    "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' not to match screen_name '#{screen_name}', but it does."
+    "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' not to match screen_name '#{expected}', but it does."
   end
 
   description do
@@ -76,24 +78,26 @@ RSpec::Matchers.define :link_to_screen_name do |screen_name|
   end
 end
 
-RSpec::Matchers.define :link_to_list_path do |list_path|
+RSpec::Matchers.define :link_to_list_path do |list_path, inner_text|
+  expected = inner_text ? inner_text : list_path
+
   match do |text|
     @link = Nokogiri::HTML(text).search("a.list-slug")
     @link &&
-    @link.inner_text == list_path &&
+    @link.inner_text == expected &&
     "http://twitter.com/#{list_path}".downcase.should == @link.first['href']
   end
 
   failure_message_for_should do |text|
     if @link.first
-      "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' to match the list path '#{list_path}', but it does not."
+      "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' to match the list path '#{expected}', but it does not."
     else
       "Expected list path '#{list_path}' to be autolinked in '#{text}', but no link was found."
     end
   end
 
   failure_message_for_should_not do |text|
-    "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' not to match the list path '#{list_path}', but it does."
+    "Expected link '#{@link.inner_text}' with href '#{@link.first['href']}' not to match the list path '#{expected}', but it does."
   end
 
   description do
