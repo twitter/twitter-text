@@ -558,13 +558,13 @@ describe Twitter::Autolink do
       linked.should match(/nofollow/)
     end
 
-    it "should include the '@' symbol in a username when passed :include_symbol" do
-      linked = TestAutolink.new.auto_link("@user", :include_symbol => true)
+    it "should include the '@' symbol in a username when passed :username_include_symbol" do
+      linked = TestAutolink.new.auto_link("@user", :username_include_symbol => true)
       linked.should link_to_screen_name('user', '@user')
     end
 
-    it "should include the '@' symbol in a list when passed :include_symbol" do
-      linked = TestAutolink.new.auto_link("@user/list", :include_symbol => true)
+    it "should include the '@' symbol in a list when passed :username_include_symbol" do
+      linked = TestAutolink.new.auto_link("@user/list", :username_include_symbol => true)
       linked.should link_to_list_path('user/list', '@user/list')
     end
 
