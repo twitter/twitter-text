@@ -361,6 +361,10 @@ if (!window.twttr) {
               d[k] = options[k];
             }
           }
+          if (options.usernameIncludeSymbol) {
+            d.user = d.at + d.user;
+            d.at = "";
+          }
 
           if (slashListname && !options.suppressLists) {
             // the link is a list
@@ -373,7 +377,7 @@ if (!window.twttr) {
               return match;
             } else {
               // this is a screen name
-              d.chunk = twttr.txt.htmlEscape(user);
+              d.chunk = d.user;
               d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
               return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{chunk}#{postChunk}</a>", d);
             }
