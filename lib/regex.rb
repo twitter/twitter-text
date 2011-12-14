@@ -65,6 +65,7 @@ module Twitter
           regex_range(0xc0, 0xd6),
           regex_range(0xd8, 0xf6),
           regex_range(0xf8, 0xff),
+          regex_range(0x0130, 0x0131),
           regex_range(0x015f)
     ].join('').freeze
 
@@ -94,7 +95,7 @@ module Twitter
       regex_range(0x20000, 0x2A6DF), # Kanji (CJK Extension B)
       regex_range(0x2A700, 0x2B73F), # Kanji (CJK Extension C)
       regex_range(0x2B740, 0x2B81F), # Kanji (CJK Extension D)
-      regex_range(0x2F800, 0x2FA1F), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
+      regex_range(0x2F800, 0x2FA1F), regex_range(0x3003), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
     ].join('').freeze
 
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
