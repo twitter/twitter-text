@@ -14,14 +14,14 @@ public class AutolinkTest extends TestCase {
 
   public void testNoFollowByDefault() {
     String tweet = "This has a #hashtag";
-    String expected = "This has a <a href=\"http://twitter.com/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a>";
+    String expected = "This has a <a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a>";
     assertAutolink(expected, linker.autoLinkHashtags(tweet));
   }
 
   public void testNoFollowDisabled() {
     linker.setNoFollow(false);
     String tweet = "This has a #hashtag";
-    String expected = "This has a <a href=\"http://twitter.com/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>";
+    String expected = "This has a <a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>";
     assertAutolink(expected, linker.autoLinkHashtags(tweet));
   }
 
@@ -51,7 +51,7 @@ public class AutolinkTest extends TestCase {
   public void testWithAngleBrackets() {
     linker.setNoFollow(false);
     String tweet = "(Debugging) <3 #idol2011";
-    String expected = "(Debugging) &lt;3 <a href=\"http://twitter.com/search?q=%23idol2011\" title=\"#idol2011\" class=\"tweet-url hashtag\">#idol2011</a>";
+    String expected = "(Debugging) &lt;3 <a href=\"http://twitter.com/#!/search?q=%23idol2011\" title=\"#idol2011\" class=\"tweet-url hashtag\">#idol2011</a>";
     assertAutolink(expected, linker.autoLink(tweet));
   }
 
