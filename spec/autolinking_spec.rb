@@ -298,7 +298,7 @@ describe Twitter::Autolink do
         it "should be linked" do
           link = Nokogiri::HTML(@autolinked_text).search('a')
           (link.inner_text.respond_to?(:force_encoding) ? link.inner_text.force_encoding("utf-8") : link.inner_text).should == "#{[0xFF03].pack('U')}twj_dev"
-          link.first['href'].should == 'http://twitter.com/search?q=%23twj_dev'
+          link.first['href'].should == 'http://twitter.com/#!/search?q=%23twj_dev'
         end
       end
 
@@ -309,7 +309,7 @@ describe Twitter::Autolink do
         end
 
         it "should be linked" do
-          @autolinked_text.should == "<a href=\"http://twitter.com/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
+          @autolinked_text.should == "<a href=\"http://twitter.com/#!/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
         end
       end
 
