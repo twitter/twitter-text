@@ -23,7 +23,7 @@ public class Autolink {
   /** Default href for list links (the username/list without the @ will be appended) */
   public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
   /** Default href for hashtag links (the hashtag without the # will be appended) */
-  public static final String DEFAULT_HASHTAG_URL_BASE = "http://twitter.com/search?q=%23";
+  public static final String DEFAULT_HASHTAG_URL_BASE = "http://twitter.com/#!/search?q=%23";
   /** HTML attribute to add when noFollow is true (default) */
   public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
 
