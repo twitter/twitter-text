@@ -84,6 +84,9 @@ module Twitter
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
       Twitter::Rewriter.rewrite_usernames_or_lists(text) do |at, username, slash_listname|
+        if options[:username_include_symbol]
+          username, at = "#{at}#{username}", nil
+        end
         name = "#{username}#{slash_listname}"
         chunk = block_given? ? yield(name) : name
 
@@ -93,23 +96,14 @@ module Twitter
           else
             "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
           end
-          if !options[:username_include_symbol]
-            %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
-          else
-            %(<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{at}#{html_escape(chunk)}</a>)
-          end
+          %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
         else
           href = if options[:username_url_block]
             options[:username_url_block].call(chunk)
           else
             "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
           end
-
-          if !options[:username_include_symbol]
-            %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
-          else
-            %(<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{at}#{html_escape(chunk)}</a>)
-          end
+          %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
         end
       end
     end
