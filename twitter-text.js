@@ -348,12 +348,12 @@ if (!window.twttr) {
 
           var d = {
             before: before,
-            at: at,
+            at: options.usernameIncludeSymbol ? "" : at,
+            at_before_user: options.usernameIncludeSymbol ? at : "",
             user: twttr.txt.htmlEscape(user),
             slashListname: twttr.txt.htmlEscape(slashListname),
             extraHtml: extraHtml,
             preChunk: "",
-            chunk: twttr.txt.htmlEscape(chunk),
             postChunk: ""
           };
           for (var k in options) {
@@ -361,16 +361,12 @@ if (!window.twttr) {
               d[k] = options[k];
             }
           }
-          if (options.usernameIncludeSymbol) {
-            d.user = d.at + d.user;
-            d.at = "";
-          }
 
           if (slashListname && !options.suppressLists) {
             // the link is a list
             var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
             d.list = twttr.txt.htmlEscape(list.toLowerCase());
-            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{chunk}#{postChunk}</a>", d);
+            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
           } else {
             if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
               // Followed by something that means we don't autolink
@@ -379,7 +375,7 @@ if (!window.twttr) {
               // this is a screen name
               d.chunk = d.user;
               d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{chunk}#{postChunk}</a>", d);
+              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
             }
           }
         });
