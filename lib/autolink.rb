@@ -116,7 +116,7 @@ module Twitter
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
-      options[:hashtag_url_base] ||= "http://twitter.com/search?q=%23"
+      options[:hashtag_url_base] ||= "http://twitter.com/#!/search?q=%23"
       options[:target] ||= DEFAULT_TARGET
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
