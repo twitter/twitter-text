@@ -560,12 +560,12 @@ describe Twitter::Autolink do
 
     it "should include the '@' symbol in a username when passed :username_include_symbol" do
       linked = TestAutolink.new.auto_link("@user", :username_include_symbol => true)
-      linked.should link_to_screen_name('@user')
+      linked.should link_to_screen_name('user', '@user')
     end
 
     it "should include the '@' symbol in a list when passed :username_include_symbol" do
       linked = TestAutolink.new.auto_link("@user/list", :username_include_symbol => true)
-      linked.should link_to_list_path('@user/list')
+      linked.should link_to_list_path('user/list', '@user/list')
     end
 
     it "should not add rel=nofollow when passed :suppress_no_follow" do
