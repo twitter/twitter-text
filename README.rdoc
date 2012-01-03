@@ -55,9 +55,16 @@ numbers but cannot be solely numbers and cannot contain punctuation.
 
 === URLs
 
-Auto-linking and extraction of URLs differs from the Rails default so that it
-will work correctly in Tweets written in languages that do not include spaces
-between words.
+Asian languages like Chinese, Japanese or Korean may not use a delimiter such as
+a space to separate normal text from URLs making it difficult to identify where
+the URL ends and the text starts.
+
+For this reason twitter-text currently does not support extracting or auto-linking
+of URLs immediately followed by non-Latin characters.
+
+Example: "http://twitter.com/は素晴らしい" .
+The normal text is "は素晴らしい" and is not part of the URL even though
+it isn't space separated.
 
 === International
 
