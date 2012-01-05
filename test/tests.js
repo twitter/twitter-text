@@ -39,6 +39,8 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("@tw", { at: "!" }).match(/!<a[^>]+>tw<\/a>/), "Override at");
   ok(twttr.txt.autoLink("@tw", { preChunk: "<b>" }).match(/@<a[^>]+><b>tw<\/a>/), "Override preChunk");
   ok(twttr.txt.autoLink("@tw", { postChunk: "</b>" }).match(/@<a[^>]+>tw<\/b><\/a>/), "Override postChunk");
+  ok(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }) == "<a class=\"tweet-url username\" data-screen-name=\"tw\" href=\"http://twitter.com/tw\" rel=\"nofollow\">@tw</a>",
+      "Include @ in the autolinked username");
   ok(!twttr.txt.autoLink("foo http://example.com", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to URL");
 
   // List Overrides
@@ -46,6 +48,8 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("@tw/somelist", { at: "!" }).match(/!<a[^>]+>tw\/somelist<\/a>/), "Override list at");
   ok(twttr.txt.autoLink("@tw/somelist", { preChunk: "<b>" }).match(/@<a[^>]+><b>tw\/somelist<\/a>/), "Override list preChunk");
   ok(twttr.txt.autoLink("@tw/somelist", { postChunk: "</b>" }).match(/@<a[^>]+>tw\/somelist<\/b><\/a>/), "Override list postChunk");
+  ok(twttr.txt.autoLink("@tw/somelist", { usernameIncludeSymbol: true }) == "<a class=\"tweet-url list-slug\" href=\"http://twitter.com/tw/somelist\" rel=\"nofollow\">@tw/somelist</a>",
+      "Include @ in the autolinked list");
   ok(twttr.txt.autoLink("foo @tw/somelist", { listClass: 'custom-list' }).match(/custom-list/), "Override listClass");
   ok(!twttr.txt.autoLink("foo @tw/somelist", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to a List");
 
