@@ -35,6 +35,7 @@ public class Autolink {
   protected String listUrlBase;
   protected String hashtagUrlBase;
   protected boolean noFollow = true;
+  protected boolean usernameIncludeSymbol = false;
 
   public Autolink() {
     urlClass = DEFAULT_URL_CLASS;
@@ -104,6 +105,13 @@ public class Autolink {
         // Outside of a tag, do real work with this chunk
         matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(chunk);
         while (matcher.find()) {
+          String at = matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT);
+          String username = matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME);
+          if (usernameIncludeSymbol) {
+            username = at + username;
+            at = "";
+          }
+
           if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
               matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).isEmpty()) {
 
@@ -111,14 +119,14 @@ public class Autolink {
             if (!Regex.SCREEN_NAME_MATCH_END.matcher(chunk.substring(matcher.end())).find()) {
               StringBuilder rb = new StringBuilder(capacity);
               rb.append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE))
-                      .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT))
+                      .append(at)
                       .append("<a class=\"").append(urlClass).append(" ").append(usernameClass)
                       .append("\" href=\"").append(usernameUrlBase)
                       .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
                       .append("\"");
               if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
               rb.append(">")
-                      .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
+                      .append(username)
                       .append("</a>");
               matcher.appendReplacement(sb, rb.toString());
             } else {
@@ -129,14 +137,14 @@ public class Autolink {
             // Username and list
             StringBuilder rb = new StringBuilder(capacity);
             rb.append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE))
-                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT))
+                    .append(at)
                     .append("<a class=\"").append(urlClass).append(" ").append(listClass)
                     .append("\" href=\"").append(listUrlBase)
                     .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
                     .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST))
                     .append("\"");
             if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
-            rb.append(">").append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
+            rb.append(">").append(username)
                     .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST))
                     .append("</a>");
             matcher.appendReplacement(sb, rb.toString());
@@ -368,6 +376,15 @@ public class Autolink {
    */
   public void setNoFollow(boolean noFollow) {
     this.noFollow = noFollow;
+  }
+
+  /**
+   * Set if the at mark '@' should be included in the link (false by default)
+   *
+   * @param noFollow new noFollow value
+   */
+  public void setUsernameIncludeSymbol(boolean usernameIncludeSymbol) {
+    this.usernameIncludeSymbol = usernameIncludeSymbol;
   }
 
   // The default String split is horribly inefficient

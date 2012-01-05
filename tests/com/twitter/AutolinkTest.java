@@ -55,6 +55,13 @@ public class AutolinkTest extends TestCase {
     assertAutolink(expected, linker.autoLink(tweet));
   }
 
+  public void testUsernameIncludeSymbol() {
+    linker.setUsernameIncludeSymbol(true);
+    String tweet = "Testing @mention and @mention/list";
+    String expected = "Testing <a class=\"tweet-url username\" href=\"http://twitter.com/mention\" rel=\"nofollow\">@mention</a> and <a class=\"tweet-url list-slug\" href=\"http://twitter.com/mention/list\" rel=\"nofollow\">@mention/list</a>";
+    assertAutolink(expected, linker.autoLink(tweet));
+  }
+
   protected void assertAutolink(String expected, String linked) {
     assertEquals("Autolinked text should equal the input", expected, linked);
   }
