@@ -53,6 +53,10 @@ public class AutolinkTest extends TestCase {
     String tweet = "(Debugging) <3 #idol2011";
     String expected = "(Debugging) &lt;3 <a href=\"http://twitter.com/#!/search?q=%23idol2011\" title=\"#idol2011\" class=\"tweet-url hashtag\">#idol2011</a>";
     assertAutolink(expected, linker.autoLink(tweet));
+
+    tweet = "<link rel='true'>http://example.com</link>";
+    expected = "<link rel='true'><a href=\"http://example.com\">http://example.com</a></link>";
+    assertAutolink(expected, linker.autoLinkURLs(tweet));
   }
 
   protected void assertAutolink(String expected, String linked) {

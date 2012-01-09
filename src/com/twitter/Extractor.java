@@ -8,30 +8,30 @@ import java.util.regex.*;
  * A class to extract usernames, lists, hashtags and URLs from Tweet text.
  */
 public class Extractor {
+  public enum EntityType {
+    URL, HASHTAG, MENTION, LIST
+  };
+
   public static class Entity {
-    protected Integer start = null;
-    protected Integer end = null;
-    protected String  value = null;
-    protected String  type = null;
+    protected int start;
+    protected int end;
+    protected String value = null;
+    protected EntityType type = null;
 
-    public Entity(Matcher matcher, String valueType, Integer groupNumber) {
+    public Entity(int start, int end, String value, EntityType type) {
+      this.start = start;
+      this.end = end;
+      this.value = value;
+      this.type = type;
+    }
+
+    public Entity(Matcher matcher, EntityType type, Integer groupNumber) {
       // Offset -1 on start index to include @, # symbols for mentions and hashtags
-      this(matcher, valueType, groupNumber, -1);
+      this(matcher, type, groupNumber, -1);
     }
 
-    public Entity(Matcher matcher, String valueType, Integer groupNumber, int startOffset) {
-      this.start = matcher.start(groupNumber) + startOffset; // 0-indexed.
-      this.end = matcher.end(groupNumber);
-      this.value = matcher.group(groupNumber);
-      this.type = valueType;
-    }
-    /** Constructor used from conformance data */
-    public Entity(Map<String, Object> config, String valueType) {
-      this.type = valueType;
-      this.value = (String)config.get(valueType);
-      List<Integer> indices = (List<Integer>)config.get("indices");
-      this.start = indices.get(0);
-      this.end = indices.get(1);
+    public Entity(Matcher matcher, EntityType type, Integer groupNumber, int startOffset) {
+      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type);
     }
 
     public boolean equals(Object obj) {
@@ -47,8 +47,8 @@ public class Extractor {
       Entity other = (Entity)obj;
 
       if (this.type.equals(other.type) &&
-          this.start.equals(other.start) &&
-          this.end.equals(other.end) &&
+          this.start == other.start &&
+          this.end == other.end &&
           this.value.equals(other.value)) {
         return true;
       } else {
@@ -72,7 +72,7 @@ public class Extractor {
       return value;
     }
 
-    public String getType() {
+    public EntityType getType() {
       return type;
     }
   }
@@ -81,6 +81,33 @@ public class Extractor {
    * Create a new extractor.
    */
   public Extractor() {
+  }
+
+  public List<Entity> extractEntities(String text) {
+    List<Entity> entities = extractURLsWithIndices(text);
+    entities.addAll(extractHashtagsWithIndices(text));
+    entities.addAll(extractMentionedScreennamesWithIndices(text));
+
+    // sort by index
+    Collections.<Entity>sort(entities, new Comparator<Entity>() {
+      public int compare(Entity e1, Entity e2) {
+        return e1.start - e2.start;
+      }
+    });
+
+    // remove overlap
+    if (!entities.isEmpty()) {
+      Iterator<Entity> it = entities.iterator();
+      Entity prev = it.next();
+      while (it.hasNext()) {
+        Entity cur = it.next();
+        if (prev.getEnd() > cur.getStart()) {
+          it.remove();
+        }
+      }
+    }
+
+    return entities;
   }
 
   /**
@@ -121,7 +148,7 @@ public class Extractor {
     while (matcher.find()) {
       String after = text.substring(matcher.end());
       if (! Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
-        extracted.add(new Entity(matcher, "mention", Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
+        extracted.add(new Entity(matcher, EntityType.MENTION, Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
       }
     }
     return extracted;
@@ -195,7 +222,7 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
-      Entity entity = new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0);
+      Entity entity = new Entity(matcher, EntityType.URL, Regex.VALID_URL_GROUP_URL, 0);
       String url = matcher.group(Regex.VALID_URL_GROUP_URL);
       Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
       if (tco_matcher.find()) {
@@ -222,7 +249,12 @@ public class Extractor {
       return null;
     }
 
-    return extractList(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG);
+    List<Entity> entities = extractHashtagsWithIndices(text);
+    List<String> hashtags = new ArrayList<String>(entities.size());
+    for (Entity entity : entities) {
+      hashtags.add(entity.getValue());
+    }
+    return hashtags;
   }
 
   /**
@@ -236,36 +268,14 @@ public class Extractor {
       return null;
     }
 
-    return extractListWithIndices(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG, "hashtag");
-  }
+    List<Entity> extracted = new ArrayList<Entity>();
+    Matcher matcher = Regex.AUTO_LINK_HASHTAGS.matcher(text);
 
-  /**
-   * Helper method for extracting multiple matches from Tweet text.
-   *
-   * @param pattern to match and use for extraction
-   * @param text of the Tweet to extract from
-   * @param groupNumber the capturing group of the pattern that should be added to the list.
-   * @return list of extracted values, or an empty list if there were none.
-   */
-  private List<String> extractList(Pattern pattern, String text, int groupNumber) {
-    List<String> extracted = new ArrayList<String>();
-    Matcher matcher = pattern.matcher(text);
     while (matcher.find()) {
       String after = text.substring(matcher.end());
       if (!Regex.HASHTAG_MATCH_END.matcher(after).find()) {
-        extracted.add(matcher.group(groupNumber));
+        extracted.add(new Entity(matcher, EntityType.HASHTAG, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG));
       }
-    }
-    return extracted;
-  }
-
-  // TODO: Make this a real object, not a Map
-  private List<Entity> extractListWithIndices(Pattern pattern, String text, int groupNumber, String valueType) {
-    List<Entity> extracted = new ArrayList<Entity>();
-    Matcher matcher = pattern.matcher(text);
-
-    while (matcher.find()) {
-      extracted.add(new Entity(matcher, valueType, groupNumber));
     }
     return extracted;
   }
