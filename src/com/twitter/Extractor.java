@@ -77,6 +77,8 @@ public class Extractor {
     }
   }
 
+  protected boolean extractURLWithoutProtocol = true;
+
   /**
    * Create a new extractor.
    */
@@ -195,6 +197,9 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
+      if (!extractURLWithoutProtocol && matcher.group(Regex.VALID_URL_GROUP_PROTOCOL) == null) {
+        continue;
+      }
       String url = matcher.group(Regex.VALID_URL_GROUP_URL);
       Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
       if (tco_matcher.find()) {
@@ -222,6 +227,9 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
+      if (!extractURLWithoutProtocol && matcher.group(Regex.VALID_URL_GROUP_PROTOCOL) == null) {
+        continue;
+      }
       Entity entity = new Entity(matcher, EntityType.URL, Regex.VALID_URL_GROUP_URL, 0);
       String url = matcher.group(Regex.VALID_URL_GROUP_URL);
       Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
@@ -278,5 +286,13 @@ public class Extractor {
       }
     }
     return extracted;
+  }
+
+  public void setExtractURLWithoutProtocol(boolean extractURLWithoutProtocol) {
+    this.extractURLWithoutProtocol = extractURLWithoutProtocol;
+  }
+
+  public boolean isExtractURLWithoutProtocol() {
+    return extractURLWithoutProtocol;
   }
 }

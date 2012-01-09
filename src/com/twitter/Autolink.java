@@ -45,6 +45,8 @@ public class Autolink {
     usernameUrlBase = DEFAULT_USERNAME_URL_BASE;
     listUrlBase = DEFAULT_LIST_URL_BASE;
     hashtagUrlBase = DEFAULT_HASHTAG_URL_BASE;
+
+    extractor.setExtractURLWithoutProtocol(false);
   }
 
   public String escapeBrackets(String text) {
