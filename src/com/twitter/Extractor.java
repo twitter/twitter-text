@@ -230,8 +230,14 @@ public class Extractor {
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
-      if (!extractURLWithoutProtocol && matcher.group(Regex.VALID_URL_GROUP_PROTOCOL) == null) {
-        continue;
+      if (matcher.group(Regex.VALID_URL_GROUP_PROTOCOL) == null) {
+        // skip if protocol is not present and 'extractURLWithoutProtocol' is false
+        // or URL is preceded by invalid character.
+        if (!extractURLWithoutProtocol
+            || Regex.INVALID_URL_WITHOUT_PROTOCOL_BEGIN
+                    .matcher(matcher.group(Regex.VALID_URL_GROUP_BEFORE)).matches()) {
+          continue;
+        }
       }
       Entity entity = new Entity(matcher, EntityType.URL, Regex.VALID_URL_GROUP_URL, 0);
       String url = matcher.group(Regex.VALID_URL_GROUP_URL);
