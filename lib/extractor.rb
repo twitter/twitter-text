@@ -68,18 +68,14 @@ module Twitter
       return [] unless text
 
       possible_screen_names = []
-      text.to_s.scan(Twitter::Regex[:extract_mentions]) do |before, sn|
-        extract_mentions_match_data = $~
-        after = $'
-        unless after =~ Twitter::Regex[:end_screen_name_match]
-          start_position = extract_mentions_match_data.char_begin(2) - 1
-          end_position = extract_mentions_match_data.char_end(2)
-          possible_screen_names << {
-            :screen_name => sn,
-            :indices => [start_position, end_position]
-          }
-        end
+      extract_mentions_or_lists_with_indices(text) do |screen_name, list_slug, start_position, end_position|
+        next unless list_slug.empty?
+        possible_screen_names << {
+          :screen_name => screen_name,
+          :indices => [start_position, end_position]
+        }
       end
+
       if block_given?
         possible_screen_names.each do |mention|
           yield mention[:screen_name], mention[:indices].first, mention[:indices].last
@@ -100,14 +96,14 @@ module Twitter
       return [] unless text
 
       possible_entries = []
-      text.to_s.scan(Twitter::Regex[:extract_mentions_or_lists]) do |before, sn, list_slug|
-        extract_mentions_match_data = $~
+      text.to_s.scan(Twitter::Regex[:valid_mention_or_list]) do |before, at, screen_name, list_slug|
+        match_data = $~
         after = $'
-        unless after =~ Twitter::Regex[:end_screen_name_match]
-          start_position = extract_mentions_match_data.char_begin(2) - 1
-          end_position = extract_mentions_match_data.char_end(list_slug.nil? ? 2 : 3)
+        unless after =~ Twitter::Regex[:end_mention_match]
+          start_position = match_data.char_begin(3) - 1
+          end_position = match_data.char_end(list_slug.nil? ? 3 : 4)
           possible_entries << {
-            :screen_name => sn,
+            :screen_name => screen_name,
             :list_slug => list_slug || "",
             :indices => [start_position, end_position]
           }
@@ -130,9 +126,9 @@ module Twitter
     def extract_reply_screen_name(text) # :yields: username
       return nil unless text
 
-      possible_screen_name = text.match(Twitter::Regex[:extract_reply])
+      possible_screen_name = text.match(Twitter::Regex[:valid_reply])
       return unless possible_screen_name.respond_to?(:captures)
-      return if $' =~ Twitter::Regex[:end_screen_name_match]
+      return if $' =~ Twitter::Regex[:end_mention_match]
       screen_name = possible_screen_name.captures.first
       yield screen_name if block_given?
       screen_name
@@ -227,7 +223,7 @@ module Twitter
       return [] unless text
 
       tags = []
-      text.scan(Twitter::Regex[:auto_link_hashtags]) do |before, hash, hash_text|
+      text.scan(Twitter::Regex[:valid_hashtag]) do |before, hash, hash_text|
         start_position = $~.char_begin(2)
         end_position = $~.char_end(3)
         after = $'
