@@ -17,21 +17,23 @@ public class Extractor {
     protected int end;
     protected String value = null;
     protected EntityType type = null;
+    protected MatchResult matchResult = null;
 
-    public Entity(int start, int end, String value, EntityType type) {
+    public Entity(int start, int end, String value, EntityType type, MatchResult matchResult) {
       this.start = start;
       this.end = end;
       this.value = value;
       this.type = type;
+      this.matchResult = matchResult;
     }
 
-    public Entity(Matcher matcher, EntityType type, Integer groupNumber) {
+    public Entity(Matcher matcher, EntityType type, int groupNumber) {
       // Offset -1 on start index to include @, # symbols for mentions and hashtags
       this(matcher, type, groupNumber, -1);
     }
 
-    public Entity(Matcher matcher, EntityType type, Integer groupNumber, int startOffset) {
-      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type);
+    public Entity(Matcher matcher, EntityType type, int groupNumber, int startOffset) {
+      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type, matcher.toMatchResult());
     }
 
     public boolean equals(Object obj) {
@@ -74,6 +76,10 @@ public class Extractor {
 
     public EntityType getType() {
       return type;
+    }
+
+    public MatchResult getMatchResult() {
+      return matchResult;
     }
   }
 

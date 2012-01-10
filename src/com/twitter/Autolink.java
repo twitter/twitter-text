@@ -4,6 +4,9 @@ import com.twitter.Extractor.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.MatchResult;
+
+import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
@@ -76,6 +79,16 @@ public class Autolink {
       switch(entity.type) {
         case URL:
           String url = entity.getValue();
+          MatchResult matcher = entity.getMatchResult();
+          String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
+          if (query_string != null) {
+            // Doing a replace isn't safe as the query string might match something else in the URL
+            int us = matcher.start(Regex.VALID_URL_GROUP_URL);
+            int qs = matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING);
+            int qe = matcher.end(Regex.VALID_URL_GROUP_QUERY_STRING);
+            String replacement = StringEscapeUtils.escapeHtml(query_string);
+            url = url.substring(0, qs - us) + replacement + url.substring(qe - us);
+          }
           if (url.indexOf('$') != -1) {
             url = url.replace("$", "\\$");
           }
