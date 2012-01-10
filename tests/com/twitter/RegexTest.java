@@ -6,22 +6,22 @@ import junit.framework.TestCase;
 
 public class RegexTest extends TestCase {
   public void testAutoLinkHashtags() {
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#hashtag");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#caf\u00E9");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#日本語ハッシュタグ");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "＃日本語ハッシュタグ");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#hashtag");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#caf\u00E9");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#日本語ハッシュタグ");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "＃日本語ハッシュタグ");
 
-    assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これはOK #ハッシュタグ").find());
-    assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これもOK。#ハッシュタグ").find());
-    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("これはダメ#ハッシュタグ").find());
+    assertTrue(Regex.VALID_HASHTAG.matcher("これはOK #ハッシュタグ").find());
+    assertTrue(Regex.VALID_HASHTAG.matcher("これもOK。#ハッシュタグ").find());
+    assertFalse(Regex.VALID_HASHTAG.matcher("これはダメ#ハッシュタグ").find());
 
-    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("#1").find());
-    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("#0").find());
+    assertFalse(Regex.VALID_HASHTAG.matcher("#1").find());
+    assertFalse(Regex.VALID_HASHTAG.matcher("#0").find());
   }
 
   public void testAutoLinkUsernamesOrLists() {
-    assertCaptureCount(4, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username");
-    assertCaptureCount(4, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username/list");
+    assertCaptureCount(4, Regex.VALID_MENTION_OR_LIST, "@username");
+    assertCaptureCount(4, Regex.VALID_MENTION_OR_LIST, "@username/list");
   }
 
   public void testValidURL() {
@@ -84,13 +84,13 @@ public class RegexTest extends TestCase {
   }
 
   public void testExtractMentions() {
-    assertCaptureCount(2, Regex.EXTRACT_MENTIONS, "sample @user mention");
+    assertCaptureCount(4, Regex.VALID_MENTION_OR_LIST, "sample @user mention");
   }
 
   public void testExtractReply() {
-    assertCaptureCount(1, Regex.EXTRACT_REPLY, "@user reply");
-    assertCaptureCount(1, Regex.EXTRACT_REPLY, " @user reply");
-    assertCaptureCount(1, Regex.EXTRACT_REPLY, "\u3000@user reply");
+    assertCaptureCount(1, Regex.VALID_REPLY, "@user reply");
+    assertCaptureCount(1, Regex.VALID_REPLY, " @user reply");
+    assertCaptureCount(1, Regex.VALID_REPLY, "\u3000@user reply");
   }
 
   private void assertCaptureCount(int expectedCount, Pattern pattern, String sample) {
