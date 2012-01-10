@@ -89,9 +89,6 @@ public class Autolink {
             String replacement = StringEscapeUtils.escapeHtml(query_string);
             url = url.substring(0, qs - us) + replacement + url.substring(qe - us);
           }
-          if (url.indexOf('$') != -1) {
-            url = url.replace("$", "\\$");
-          }
 
           replaceStr.append("<a href=\"").append(url).append("\"");
           if (noFollow){
