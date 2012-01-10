@@ -92,7 +92,8 @@ public class Extractor {
   }
 
   public List<Entity> extractEntities(String text) {
-    List<Entity> entities = extractURLsWithIndices(text);
+    List<Entity> entities = new ArrayList<Entity>();
+    entities.addAll(extractURLsWithIndices(text));
     entities.addAll(extractHashtagsWithIndices(text));
     entities.addAll(extractMentionedScreennamesWithIndices(text));
 
@@ -111,6 +112,8 @@ public class Extractor {
         Entity cur = it.next();
         if (prev.getEnd() > cur.getStart()) {
           it.remove();
+        } else {
+          prev = cur;
         }
       }
     }
@@ -144,6 +147,17 @@ public class Extractor {
    */
   public List<Entity> extractMentionedScreennamesWithIndices(String text) {
     if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    boolean found = false;
+    for (char c : text.toCharArray()) {
+      if (c == '@' || c == '＠') {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
       return Collections.emptyList();
     }
 
@@ -208,7 +222,7 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<Entity> extractURLsWithIndices(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.isEmpty() || text.indexOf('.') == -1) {
       return Collections.emptyList();
     }
 
@@ -262,6 +276,17 @@ public class Extractor {
    */
   public List<Entity> extractHashtagsWithIndices(String text) {
     if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    boolean found = false;
+    for (char c : text.toCharArray()) {
+      if (c == '#' || c == '＃') {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
       return Collections.emptyList();
     }
 

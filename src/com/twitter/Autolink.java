@@ -75,13 +75,14 @@ public class Autolink {
     int beginIndex = 0;
     for (Entity entity : entities) {
       builder.append(text.subSequence(beginIndex, entity.start));
+      int nextIndex = entity.end;
       StringBuilder replaceStr = new StringBuilder(text.length());
       switch(entity.type) {
         case URL:
           String url = entity.getValue();
           MatchResult matcher = entity.getMatchResult();
           String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
-          if (query_string != null) {
+          if (query_string != null && matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING) < entity.end) {
             // Doing a replace isn't safe as the query string might match something else in the URL
             int us = matcher.start(Regex.VALID_URL_GROUP_URL);
             int qs = matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING);
@@ -94,42 +95,47 @@ public class Autolink {
           if (noFollow){
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
           }
-          replaceStr.append(">").append(entity.getValue()).append("</a>");
+          replaceStr.append(">").append(url).append("</a>");
           break;
         case HASHTAG:
           replaceStr.append("<a href=\"").append(hashtagUrlBase)
           .append(entity.getValue()).append("\"")
-          .append(" title=\"#").append(entity.getValue())
+          .append(" title=\"#")
+          .append(entity.getValue())
           .append("\" class=\"").append(urlClass).append(" ")
           .append(hashtagClass).append("\"");
           if (noFollow) {
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
           }
-          replaceStr.append(">#").append(entity.getValue()).append("</a>");
+          replaceStr.append(">")
+          .append(entity.getMatchResult().group(Regex.VALID_HASHTAG_GROUP_HASH))
+          .append(entity.getValue()).append("</a>");
           break;
         case MENTION:
-          replaceStr.append('@')
+          replaceStr
+          .append(entity.getMatchResult().group(Regex.VALID_MENTION_OR_LIST_GROUP_AT))
           .append("<a class=\"").append(urlClass).append(" ");
-          if (entity.getValue().contains("/")) {
+          String mention = entity.getValue();
+          String list = entity.getMatchResult().group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST);
+          if (list != null) {
             // this is list
-            replaceStr.append(listClass)
-            .append("\" href=\"").append(listUrlBase);
+            replaceStr.append(listClass).append("\" href=\"").append(listUrlBase);
+            mention += list;
+            nextIndex += list.length();
           } else {
             // this is @mention
-            replaceStr.append(usernameClass)
-            .append("\" href=\"").append(usernameUrlBase);
+            replaceStr.append(usernameClass).append("\" href=\"").append(usernameUrlBase);
           }
-          replaceStr.append(entity.getValue())
-          .append("\"");
+          replaceStr.append(mention).append("\"");
           if (noFollow){
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
           }
           replaceStr.append(">")
-          .append(entity.getValue())
+          .append(mention)
           .append("</a>");
      }
       builder.append(replaceStr);
-      beginIndex = entity.end;
+      beginIndex = nextIndex;
     }
     builder.append(text.subSequence(beginIndex, text.length()));
 
