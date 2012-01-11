@@ -46,6 +46,30 @@ module Twitter
   # of usernames, lists, URLs and hashtags.
   module Extractor extend self
 
+    def extract_entities_with_indices(text, options = {})
+      # extract all entities
+      entities = extract_urls_with_indices(text, options)
+      entities += extract_hashtags_with_indices(text)
+      entities += extract_mentions_or_lists_with_indices(text)
+      
+      # sort by start index
+      entities.sort! {|a,b| a[:indices].first <=> b[:indices].first}
+      
+      return [] if entities.empty?
+      
+      # remove duplicates
+      prev = nil
+      entities.each{|entity|
+        if prev != nil && prev[:indices].last > entity[:indices].first
+          entities.delete entity
+        else
+          prev = entity
+        end
+      }
+      
+      entities
+    end
+    
     # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>. If the
     # <tt>text</tt> is <tt>nil</tt> or contains no username mentions an empty array
     # will be returned.
@@ -150,10 +174,13 @@ module Twitter
     # URLs an empty array will be returned.
     #
     # If a block is given then it will be called for each URL.
-    def extract_urls_with_indices(text) # :yields: url, start, end
+    def extract_urls_with_indices(text, options = {}) # :yields: url, start, end
       return [] unless text
       urls = []
       position = 0
+      extract_url_without_protocol = options[:extract_url_without_protocol]
+      extract_url_without_protocol = true if extract_url_without_protocol == nil
+
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, port, path, query|
         valid_url_match_data = $~
 
@@ -163,6 +190,7 @@ module Twitter
         # If protocol is missing and domain contains non-ASCII characters,
         # extract ASCII-only domains.
         if !protocol
+          next if !extract_url_without_protocol
           last_url = nil
           last_url_invalid_match = nil
           domain.scan(Twitter::Regex[:valid_ascii_domain]) do |ascii_domain|
@@ -224,8 +252,9 @@ module Twitter
 
       tags = []
       text.scan(Twitter::Regex[:valid_hashtag]) do |before, hash, hash_text|
-        start_position = $~.char_begin(2)
-        end_position = $~.char_end(3)
+        match_data = $~
+        start_position = match_data.char_begin(2)
+        end_position = match_data.char_end(3)
         after = $'
         unless after =~ Twitter::Regex[:end_hashtag_match]
           tags << {

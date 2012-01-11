@@ -36,6 +36,89 @@ module Twitter
       end
     end
 
+    def auto_link_entities(text, entities, options)
+      options = options.dup
+      options[:class] = options[:url_class]
+      options[:rel] = "nofollow" unless options[:suppress_no_follow]
+      options[:url_class] ||= DEFAULT_URL_CLASS
+      options[:list_class] ||= DEFAULT_LIST_CLASS
+      options[:username_class] ||= DEFAULT_USERNAME_CLASS
+      options[:username_url_base] ||= "http://twitter.com/"
+      options[:list_url_base] ||= "http://twitter.com/"
+      options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
+      options[:hashtag_url_base] ||= "http://twitter.com/#!/search?q=%23"
+      options[:target] ||= DEFAULT_TARGET
+      extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
+      
+      url_entities = {}
+      if options[:url_entities]
+        options[:url_entities].each do |entity|
+          entity = entity.with_indifferent_access
+          url_entities[entity[:url]] = entity
+        end
+        options.delete(:url_entities)
+      end
+      
+      html_attrs = html_attrs_for_options(options)
+
+      begin_index = 0
+      result = ""
+      chars = text.chars.to_a
+      
+      entities.each{|entity|
+        result += chars[begin_index...entity[:indices].first].to_s
+        if entity[:url]
+          url = entity[:url]
+          href = if options[:link_url_block]
+            options.delete(:link_url_block).call(url)
+          else
+            html_escape(url)
+          end
+  
+          display_url = url
+          if url_entities[url] && url_entities[url][:display_url]
+            display_url = url_entities[url][:display_url]
+          end
+  
+          result += %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>)
+        elsif entity[:hashtag]
+          hashtag = entity[:hashtag]
+          hash = chars[entity[:indices].first]
+          yield(hashtag) if block_given?
+          href = if options[:hashtag_url_block]
+            options[:hashtag_url_block].call(hashtag)
+          else
+            "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
+          end
+          result += %(<a href="#{href}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{hash}#{html_escape(hashtag)}</a>)
+        elsif entity[:screen_name]
+          name = "#{entity[:screen_name]}#{entity[:list_slug]}"
+          chunk = block_given? ? yield(name) : name
+          at = chars[entity[:indices].first]
+  
+          if !entity[:list_slug].empty? && !options[:suppress_lists]
+            href = if options[:list_url_block]
+              options[:list_url_block].call(name.downcase)
+            else
+              "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
+            end
+            result += %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
+          else
+            href = if options[:username_url_block]
+              options[:username_url_block].call(chunk)
+            else
+              "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
+            end
+            result += %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
+          end
+        end
+        begin_index = entity[:indices].last
+      }
+      result += chars[begin_index..-1].to_s
+      
+      result
+    end
+
     # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>. The
     # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
     # hash:
@@ -51,13 +134,9 @@ module Twitter
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
     def auto_link(text, options = {})
-      auto_link_usernames_or_lists(
-        auto_link_urls_custom(
-          auto_link_hashtags(text, options),
-        options),
-      options)
+      auto_link_entities(text, Extractor.extract_entities_with_indices(text, {:extract_url_without_protocol => false}), options)
     end
-
+    
     # Add <tt><a></a></tt> tags around the usernames and lists in the provided <tt>text</tt>. The
     # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
     # hash:
@@ -71,36 +150,9 @@ module Twitter
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
     def auto_link_usernames_or_lists(text, options = {}) # :yields: list_or_username
-      options = options.dup
-      options[:url_class] ||= DEFAULT_URL_CLASS
-      options[:list_class] ||= DEFAULT_LIST_CLASS
-      options[:username_class] ||= DEFAULT_USERNAME_CLASS
-      options[:username_url_base] ||= "http://twitter.com/"
-      options[:list_url_base] ||= "http://twitter.com/"
-      options[:target] ||= DEFAULT_TARGET
-
-      extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
-
-      Twitter::Rewriter.rewrite_usernames_or_lists(text) do |at, username, slash_listname|
-        name = "#{username}#{slash_listname}"
-        chunk = block_given? ? yield(name) : name
-
-        if slash_listname && !options[:suppress_lists]
-          href = if options[:list_url_block]
-            options[:list_url_block].call(name.downcase)
-          else
-            "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
-          end
-          %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
-        else
-          href = if options[:username_url_block]
-            options[:username_url_block].call(chunk)
-          else
-            "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
-          end
-          %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
-        end
-      end
+      auto_link_entities(text, Extractor.extract_mentions_or_lists_with_indices(text), options) {|name|
+        block_given? ? yield(name) : name
+      }
     end
 
     # Add <tt><a></a></tt> tags around the hashtags in the provided <tt>text</tt>. The
@@ -113,22 +165,9 @@ module Twitter
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
     def auto_link_hashtags(text, options = {})  # :yields: hashtag_text
-      options = options.dup
-      options[:url_class] ||= DEFAULT_URL_CLASS
-      options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
-      options[:hashtag_url_base] ||= "http://twitter.com/#!/search?q=%23"
-      options[:target] ||= DEFAULT_TARGET
-      extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
-
-      Twitter::Rewriter.rewrite_hashtags(text) do |hash, hashtag|
-        hashtag = yield(hashtag) if block_given?
-        href = if options[:hashtag_url_block]
-          options[:hashtag_url_block].call(hashtag)
-        else
-          "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
-        end
-        %(<a href="#{href}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{html_escape(hash)}#{html_escape(hashtag)}</a>)
-      end
+      auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options){|hashtag|
+        block_given? ? yield(hashtag) : hashtag
+      }
     end
 
     # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>. Any
@@ -136,42 +175,7 @@ module Twitter
     # and place in the <tt><a></tt> tag. Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
     # the <tt>rel="nofollow"</tt> attribute will be added.
     def auto_link_urls_custom(text, href_options = {})
-      options = href_options.dup
-      options[:rel] = "nofollow" unless options.delete(:suppress_no_follow)
-      options[:class] = options.delete(:url_class)
-
-      url_entities = {}
-      if options[:url_entities]
-        options[:url_entities].each do |entity|
-          entity = entity.with_indifferent_access
-          url_entities[entity[:url]] = entity
-        end
-        options.delete(:url_entities)
-      end
-
-      html_attrs = html_attrs_for_options(options)
-
-      Twitter::Rewriter.rewrite_urls(text) do |url|
-        # In the case of t.co URLs, don't allow additional path characters
-        after = ""
-        if url =~ Twitter::Regex[:valid_tco_url]
-          url = $&
-          after = $'
-        end
-
-        href = if options[:link_url_block]
-          options.delete(:link_url_block).call(url)
-        else
-          html_escape(url)
-        end
-
-        display_url = url
-        if url_entities[url] && url_entities[url][:display_url]
-          display_url = url_entities[url][:display_url]
-        end
-
-        %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>#{after})
-      end
+      auto_link_entities(text, Extractor.extract_urls_with_indices(text, {:extract_url_without_protocol => false}), href_options)
     end
 
     private
