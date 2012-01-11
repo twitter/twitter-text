@@ -48,24 +48,22 @@ module Twitter
 
     def extract_entities_with_indices(text, options = {})
       # extract all entities
-      entities = extract_urls_with_indices(text, options)
-      entities += extract_hashtags_with_indices(text)
-      entities += extract_mentions_or_lists_with_indices(text)
+      entities = extract_urls_with_indices(text, options) + extract_hashtags_with_indices(text) + extract_mentions_or_lists_with_indices(text)
       
+      return [] if entities.empty?
+
       # sort by start index
       entities.sort! {|a,b| a[:indices].first <=> b[:indices].first}
       
-      return [] if entities.empty?
-      
       # remove duplicates
       prev = nil
-      entities.each{|entity|
+      entities.each do |entity|
         if prev != nil && prev[:indices].last > entity[:indices].first
           entities.delete entity
         else
           prev = entity
         end
-      }
+      end
       
       entities
     end
@@ -117,7 +115,7 @@ module Twitter
     # index, and the end index in the <tt>text</tt>. The list_slug will be an empty stirng
     # if this is a username mention.
     def extract_mentions_or_lists_with_indices(text) # :yields: username, list_slug, start, end
-      return [] unless text
+      return [] unless text && text.index(/[@＠]/)
 
       possible_entries = []
       text.to_s.scan(Twitter::Regex[:valid_mention_or_list]) do |before, at, screen_name, list_slug|
@@ -175,7 +173,7 @@ module Twitter
     #
     # If a block is given then it will be called for each URL.
     def extract_urls_with_indices(text, options = {}) # :yields: url, start, end
-      return [] unless text
+      return [] unless text && text.index(".")
       urls = []
       position = 0
       extract_url_without_protocol = options[:extract_url_without_protocol]
@@ -248,7 +246,7 @@ module Twitter
     #
     # If a block is given then it will be called for each hashtag.
     def extract_hashtags_with_indices(text) # :yields: hashtag_text, start, end
-      return [] unless text
+      return [] unless text && text.index(/[#＃]/)
 
       tags = []
       text.scan(Twitter::Regex[:valid_hashtag]) do |before, hash, hash_text|
