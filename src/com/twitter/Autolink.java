@@ -87,7 +87,6 @@ public class Autolink {
     int beginIndex = 0;
     for (Entity entity : entities) {
       builder.append(text.subSequence(beginIndex, entity.start));
-      int nextIndex = entity.end;
       StringBuilder replaceStr = new StringBuilder(text.length());
       switch(entity.type) {
         case URL:
@@ -122,7 +121,6 @@ public class Autolink {
             // this is list
             replaceStr.append(listClass).append("\" href=\"").append(listUrlBase);
             mention += entity.listSlug;
-            nextIndex += entity.listSlug.length();
           } else {
             // this is @mention
             replaceStr.append(usernameClass).append("\" href=\"").append(usernameUrlBase);
@@ -136,7 +134,7 @@ public class Autolink {
           .append("</a>");
      }
       builder.append(replaceStr);
-      beginIndex = nextIndex;
+      beginIndex = entity.end;
     }
     builder.append(text.subSequence(beginIndex, text.length()));
 
@@ -166,7 +164,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLinkUsernamesAndLists(String text) {
-    return autoLinkEntities(text, extractor.extractMentionedScreennamesWithIndices(text));
+    return autoLinkEntities(text, extractor.extractMentionsOrListsWithIndices(text));
   }
 
   /**

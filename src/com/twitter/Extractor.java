@@ -98,7 +98,7 @@ public class Extractor {
     List<Entity> entities = new ArrayList<Entity>();
     entities.addAll(extractURLsWithIndices(text));
     entities.addAll(extractHashtagsWithIndices(text));
-    entities.addAll(extractMentionedScreennamesWithIndices(text));
+    entities.addAll(extractMentionsOrListsWithIndices(text));
 
     // sort by index
     Collections.<Entity>sort(entities, new Comparator<Entity>() {
@@ -149,6 +149,16 @@ public class Extractor {
    * @return List of usernames referenced (without the leading @ sign)
    */
   public List<Entity> extractMentionedScreennamesWithIndices(String text) {
+    List<Entity> extracted = new ArrayList<Entity>();
+    for (Entity entity : extractMentionsOrListsWithIndices(text)) {
+      if (entity.listSlug == null) {
+        extracted.add(entity);
+      }
+    }
+    return extracted;
+  }
+
+  public List<Entity> extractMentionsOrListsWithIndices(String text) {
     if (text == null || text.isEmpty()) {
       return Collections.emptyList();
     }
@@ -173,7 +183,7 @@ public class Extractor {
           extracted.add(new Entity(matcher, Entity.Type.MENTION, Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME));
         } else {
           extracted.add(new Entity(matcher.start(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME) - 1,
-              matcher.end(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME),
+              matcher.end(Regex.VALID_MENTION_OR_LIST_GROUP_LIST),
               matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME),
               matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST),
               Entity.Type.MENTION));
