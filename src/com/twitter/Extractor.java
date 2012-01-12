@@ -8,32 +8,36 @@ import java.util.regex.*;
  * A class to extract usernames, lists, hashtags and URLs from Tweet text.
  */
 public class Extractor {
-  public enum EntityType {
-    URL, HASHTAG, MENTION, LIST
-  };
-
   public static class Entity {
-    protected int start;
-    protected int end;
-    protected String value = null;
-    protected EntityType type = null;
-    protected MatchResult matchResult = null;
+    public enum Type {
+      URL, HASHTAG, MENTION
+    }
 
-    public Entity(int start, int end, String value, EntityType type, MatchResult matchResult) {
+    protected final int start;
+    protected final int end;
+    protected final String value;
+    protected final String listSlug;
+    protected final Type type;
+
+    public Entity(int start, int end, String value, String listSlug, Type type) {
       this.start = start;
       this.end = end;
       this.value = value;
+      this.listSlug = listSlug;
       this.type = type;
-      this.matchResult = matchResult;
     }
 
-    public Entity(Matcher matcher, EntityType type, int groupNumber) {
+    public Entity(int start, int end, String value, Type type) {
+      this(start, end, value, null, type);
+    }
+
+    public Entity(Matcher matcher, Type type, int groupNumber) {
       // Offset -1 on start index to include @, # symbols for mentions and hashtags
       this(matcher, type, groupNumber, -1);
     }
 
-    public Entity(Matcher matcher, EntityType type, int groupNumber, int startOffset) {
-      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type, matcher.toMatchResult());
+    public Entity(Matcher matcher, Type type, int groupNumber, int startOffset) {
+      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type);
     }
 
     public boolean equals(Object obj) {
@@ -42,7 +46,6 @@ public class Extractor {
       }
 
       if (!(obj instanceof Entity)) {
-        System.out.println("incorrect type");
         return false;
       }
 
@@ -74,12 +77,12 @@ public class Extractor {
       return value;
     }
 
-    public EntityType getType() {
-      return type;
+    public String getListSlug() {
+      return listSlug;
     }
 
-    public MatchResult getMatchResult() {
-      return matchResult;
+    public Type getType() {
+      return type;
     }
   }
 
@@ -166,7 +169,15 @@ public class Extractor {
     while (matcher.find()) {
       String after = text.substring(matcher.end());
       if (! Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
-        extracted.add(new Entity(matcher, EntityType.MENTION, Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME));
+        if (matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST) == null) {
+          extracted.add(new Entity(matcher, Entity.Type.MENTION, Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME));
+        } else {
+          extracted.add(new Entity(matcher.start(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME) - 1,
+              matcher.end(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME),
+              matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME),
+              matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST),
+              Entity.Type.MENTION));
+        }
       }
     }
     return extracted;
@@ -222,7 +233,8 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<Entity> extractURLsWithIndices(String text) {
-    if (text == null || text.isEmpty() || text.indexOf('.') == -1) {
+    if (text == null || text.isEmpty()
+        || (extractURLWithoutProtocol ? text.indexOf('.') : text.indexOf(':')) == -1) {
       return Collections.emptyList();
     }
 
@@ -239,16 +251,17 @@ public class Extractor {
           continue;
         }
       }
-      Entity entity = new Entity(matcher, EntityType.URL, Regex.VALID_URL_GROUP_URL, 0);
       String url = matcher.group(Regex.VALID_URL_GROUP_URL);
+      int start = matcher.start(Regex.VALID_URL_GROUP_URL);
+      int end = matcher.end(Regex.VALID_URL_GROUP_URL);
       Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
       if (tco_matcher.find()) {
         // In the case of t.co URLs, don't allow additional path characters.
-        entity.value = tco_matcher.group();
-        entity.end = entity.start + entity.value.length();
+        url = tco_matcher.group();
+        end = start + url.length();
       }
 
-      urls.add(entity);
+      urls.add(new Entity(start, end, url, Entity.Type.URL));
     }
 
     return urls;
@@ -302,7 +315,7 @@ public class Extractor {
     while (matcher.find()) {
       String after = text.substring(matcher.end());
       if (!Regex.INVALID_HASHTAG_MATCH_END.matcher(after).find()) {
-        extracted.add(new Entity(matcher, EntityType.HASHTAG, Regex.VALID_HASHTAG_GROUP_TAG));
+        extracted.add(new Entity(matcher, Entity.Type.HASHTAG, Regex.VALID_HASHTAG_GROUP_TAG));
       }
     }
     return extracted;

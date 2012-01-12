@@ -4,9 +4,6 @@ import com.twitter.Extractor.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.MatchResult;
-
-import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
@@ -39,6 +36,21 @@ public class Autolink {
   protected boolean noFollow = true;
 
   private Extractor extractor = new Extractor();
+
+  private static CharSequence escapeHTML(String text) {
+    StringBuilder builder = new StringBuilder(text.length() * 2);
+    for (char c : text.toCharArray()) {
+      switch(c) {
+        case '&': builder.append("&amp;"); break;
+        case '>': builder.append("&gt;"); break;
+        case '<': builder.append("&lt;"); break;
+        case '"': builder.append("&quot;"); break;
+        case '\'': builder.append("&#39;"); break;
+        default: builder.append(c); break;
+      }
+    }
+    return builder;
+  }
 
   public Autolink() {
     urlClass = DEFAULT_URL_CLASS;
@@ -79,18 +91,7 @@ public class Autolink {
       StringBuilder replaceStr = new StringBuilder(text.length());
       switch(entity.type) {
         case URL:
-          String url = entity.getValue();
-          MatchResult matcher = entity.getMatchResult();
-          String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
-          if (query_string != null && matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING) < entity.end) {
-            // Doing a replace isn't safe as the query string might match something else in the URL
-            int us = matcher.start(Regex.VALID_URL_GROUP_URL);
-            int qs = matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING);
-            int qe = matcher.end(Regex.VALID_URL_GROUP_QUERY_STRING);
-            String replacement = StringEscapeUtils.escapeHtml(query_string);
-            url = url.substring(0, qs - us) + replacement + url.substring(qe - us);
-          }
-
+          CharSequence url = escapeHTML(entity.getValue());
           replaceStr.append("<a href=\"").append(url).append("\"");
           if (noFollow){
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
@@ -108,20 +109,20 @@ public class Autolink {
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
           }
           replaceStr.append(">")
-          .append(entity.getMatchResult().group(Regex.VALID_HASHTAG_GROUP_HASH))
+          .append(text.subSequence(entity.getStart(), entity.getStart() + 1))
           .append(entity.getValue()).append("</a>");
           break;
         case MENTION:
+          CharSequence at = text.subSequence(entity.getStart(), entity.getStart() + 1);
           replaceStr
-          .append(entity.getMatchResult().group(Regex.VALID_MENTION_OR_LIST_GROUP_AT))
+          .append(at)
           .append("<a class=\"").append(urlClass).append(" ");
           String mention = entity.getValue();
-          String list = entity.getMatchResult().group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST);
-          if (list != null) {
+          if (entity.listSlug != null) {
             // this is list
             replaceStr.append(listClass).append("\" href=\"").append(listUrlBase);
-            mention += list;
-            nextIndex += list.length();
+            mention += entity.listSlug;
+            nextIndex += entity.listSlug.length();
           } else {
             // this is @mention
             replaceStr.append(usernameClass).append("\" href=\"").append(usernameUrlBase);

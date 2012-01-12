@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import junit.framework.TestCase;
 import org.ho.yaml.Yaml;
 
-import com.twitter.Extractor.EntityType;
+import com.twitter.Extractor.Entity;
 import com.twitter.ExtractorTest.HashtagTest;
 
 public class ConformanceTest extends TestCase {
@@ -63,7 +63,7 @@ public class ConformanceTest extends TestCase {
       List<Extractor.Entity> expected = new ArrayList<Extractor.Entity>();
       for (Map<String, Object> configEntry : expectedConfig) {
         List<Integer> indices = (List<Integer>)configEntry.get("indices");
-        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("hashtag").toString(), EntityType.HASHTAG, null));
+        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("hashtag").toString(), Entity.Type.HASHTAG));
       }
 
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
