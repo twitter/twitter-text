@@ -62,12 +62,7 @@ module Twitter
       end
       
       html_attrs = nil
-      begin_index = 0
-      result = ""
-      chars = text.chars.to_a
-      
-      entities.each do |entity|
-        result << chars[begin_index...entity[:indices].first].to_s
+      Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
         if entity[:url]
           url = entity[:url]
           href = if options[:link_url_block]
@@ -82,7 +77,7 @@ module Twitter
           end
   
           html_attrs = html_attrs_for_options(options) unless html_attrs
-          result << %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>)
+          %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>)
         elsif entity[:hashtag]
           hashtag = entity[:hashtag]
           hash = chars[entity[:indices].first]
@@ -92,7 +87,7 @@ module Twitter
           else
             "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
           end
-          result << %(<a href="#{href}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{hash}#{html_escape(hashtag)}</a>)
+          %(<a href="#{href}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{extra_html}>#{hash}#{html_escape(hashtag)}</a>)
         elsif entity[:screen_name]
           name = "#{entity[:screen_name]}#{entity[:list_slug]}"
           chunk = block_given? ? yield(name) : name
@@ -104,21 +99,17 @@ module Twitter
             else
               "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
             end
-            result << %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
+            %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
           else
             href = if options[:username_url_block]
               options[:username_url_block].call(chunk)
             else
               "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
             end
-            result << %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
+            %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
           end
         end
-        begin_index = entity[:indices].last
       end
-      result << chars[begin_index..-1].to_s
-      
-      result
     end
 
     # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>. The
