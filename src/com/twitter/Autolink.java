@@ -86,9 +86,11 @@ public class Autolink {
   private String autoLinkEntities(String text, List<Entity> entities) {
     StringBuilder builder = new StringBuilder(text.length());
     int beginIndex = 0;
+
     for (Entity entity : entities) {
       builder.append(text.subSequence(beginIndex, entity.start));
       StringBuilder replaceStr = new StringBuilder(text.length());
+
       switch(entity.type) {
         case URL:
           CharSequence url = escapeHTML(entity.getValue());
@@ -100,17 +102,17 @@ public class Autolink {
           break;
         case HASHTAG:
           replaceStr.append("<a href=\"").append(hashtagUrlBase)
-          .append(entity.getValue()).append("\"")
-          .append(" title=\"#")
-          .append(entity.getValue())
-          .append("\" class=\"").append(urlClass).append(" ")
-          .append(hashtagClass).append("\"");
+                    .append(entity.getValue()).append("\"")
+                    .append(" title=\"#")
+                    .append(entity.getValue())
+                    .append("\" class=\"").append(urlClass).append(" ")
+                    .append(hashtagClass).append("\"");
           if (noFollow) {
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
           }
           replaceStr.append(">")
-          .append(text.subSequence(entity.getStart(), entity.getStart() + 1))
-          .append(entity.getValue()).append("</a>");
+                    .append(text.subSequence(entity.getStart(), entity.getStart() + 1))
+                    .append(entity.getValue()).append("</a>");
           break;
         case MENTION:
           CharSequence at = text.subSequence(entity.getStart(), entity.getStart() + 1);

@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import org.ho.yaml.Yaml;
 
 import com.twitter.Extractor.Entity;
-import com.twitter.ExtractorTest.HashtagTest;
 
 public class ConformanceTest extends TestCase {
 
