@@ -121,7 +121,8 @@ module Twitter
     REGEXEN[:end_mention_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     # URL related hash regex collection
-    REGEXEN[:valid_url_preceding_chars] = /(?:[^-\/"'!=A-Z0-9_@＠\$#＃\.#{INVALID_CHARACTERS.join('')}]|^)/io
+    REGEXEN[:valid_url_preceding_chars] = /(?:[^A-Z0-9@＠$#＃#{INVALID_CHARACTERS.join('')}]|^)/io
+    REGEXEN[:invalid_url_without_protocol_preceding_chars] = /[-_.\/]$/
     DOMAIN_VALID_CHARS = "[^[:punct:][:space:][:blank:][:cntrl:]#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
     REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
     REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io

@@ -424,10 +424,10 @@ describe Twitter::Autolink do
       end
 
       context "with a URL preceded in forbidden characters" do
-        it "should not be linked" do
+        it "should be linked" do
           matcher = TestAutolink.new
           %w| \ ' / ! = |.each do |char|
-            matcher.auto_link("#{char}#{url}").should_not have_autolinked_url(url)
+            matcher.auto_link("#{char}#{url}").should have_autolinked_url(url)
           end
         end
       end
