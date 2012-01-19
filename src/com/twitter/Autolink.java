@@ -34,6 +34,7 @@ public class Autolink {
   protected String listUrlBase;
   protected String hashtagUrlBase;
   protected boolean noFollow = true;
+  protected boolean usernameIncludeSymbol = false;
 
   private Extractor extractor = new Extractor();
 
@@ -113,10 +114,11 @@ public class Autolink {
           break;
         case MENTION:
           CharSequence at = text.subSequence(entity.getStart(), entity.getStart() + 1);
-          replaceStr
-          .append(at)
-          .append("<a class=\"").append(urlClass).append(" ");
           String mention = entity.getValue();
+          if (!usernameIncludeSymbol) {
+            replaceStr.append(at);
+          }
+          replaceStr.append("<a class=\"").append(urlClass).append(" ");
           if (entity.listSlug != null) {
             // this is list
             replaceStr.append(listClass).append("\" href=\"").append(listUrlBase);
@@ -129,9 +131,11 @@ public class Autolink {
           if (noFollow){
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
           }
-          replaceStr.append(">")
-          .append(mention)
-          .append("</a>");
+          replaceStr.append(">");
+          if (usernameIncludeSymbol) {
+            replaceStr.append(at);
+          }
+          replaceStr.append(mention).append("</a>");
      }
       builder.append(replaceStr);
       beginIndex = entity.end;
@@ -316,6 +320,15 @@ public class Autolink {
    */
   public void setNoFollow(boolean noFollow) {
     this.noFollow = noFollow;
+  }
+
+  /**
+   * Set if the at mark '@' should be included in the link (false by default)
+   *
+   * @param noFollow new noFollow value
+   */
+  public void setUsernameIncludeSymbol(boolean usernameIncludeSymbol) {
+    this.usernameIncludeSymbol = usernameIncludeSymbol;
   }
 
   // The default String split is horribly inefficient
