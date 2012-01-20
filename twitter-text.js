@@ -152,7 +152,8 @@ if (!window.twttr) {
   twttr.txt.regexen.endMentionMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // URL related regex collection
-  twttr.txt.regexen.validUrlPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
+  twttr.txt.regexen.validUrlPrecedingChars = regexSupplant(/(?:[^A-Za-z0-9@＠$#＃#{invalid_chars_group}]|^)/);
+  twttr.txt.regexen.invalidUrlWithoutProtocolPrecedingChars = /[-_.\/]$/;
   twttr.txt.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", twttr.txt.regexen);
   twttr.txt.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
   twttr.txt.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
@@ -585,7 +586,8 @@ if (!window.twttr) {
       // if protocol is missing and domain contains non-ASCII characters,
       // extract ASCII-only domains.
       if (!protocol) {
-        if (!options.extractUrlsWithoutProtocol) {
+        if (!options.extractUrlsWithoutProtocol
+            || before.match(twttr.txt.regexen.invalidUrlWithoutProtocolPrecedingChars)) {
           return;
         }
         var lastUrl = null,
