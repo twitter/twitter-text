@@ -517,7 +517,7 @@ if (!window.twttr) {
    * (Presence of listSlug indicates a list)
    */
   twttr.txt.extractMentionsOrListsWithIndices = function(text) {
-    if (!text) {
+    if (!text || !text.match(/[@＠]/)) {
       return [];
     }
 
@@ -568,16 +568,16 @@ if (!window.twttr) {
   };
 
   twttr.txt.extractUrlsWithIndices = function(text, options) {
-    if (!text) {
+    if (!options) {
+      options = {extractUrlsWithoutProtocol: true};
+    }
+
+    if (!text || (options.extractUrlsWithoutProtocol ? !text.match(/\./) : !text.match(/:/))) {
       return [];
     }
 
     var urls = [],
         position = 0;
-
-    if (!options) {
-      options = {extractUrlsWithoutProtocol: true};
-    }
 
     text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, port, path, query) {
       var startPosition = text.indexOf(url, position),
@@ -647,7 +647,7 @@ if (!window.twttr) {
   };
 
   twttr.txt.extractHashtagsWithIndices = function(text) {
-    if (!text) {
+    if (!text || !text.match(/[#＃]/)) {
       return [];
     }
 
