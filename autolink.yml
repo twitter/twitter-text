@@ -2,11 +2,11 @@ tests:
   usernames:
     - description: "Autolink trailing username"
       text: "text @username"
-      expected: "text @<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+      expected: "text @<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>"
 
     - description: "Autolink username at the beginning"
       text: "@username text"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a> text"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a> text"
 
     - description: "DO NOT Autolink username preceded by a letter"
       text: "meet@the beach"
@@ -14,27 +14,27 @@ tests:
 
     - description: "Autolink username preceded by puctuation"
       text: "great.@username"
-      expected: "great.@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+      expected: "great.@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>"
 
     - description: "Autolink username followed by puctuation"
       text: "@username&^$%^"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>&^$%^"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>&^$%^"
 
     - description: "Autolink username followed by Japanese"
       text: "@usernameの"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>の"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>の"
 
     - description: "Autolink username preceded by Japanese"
       text: "あ@username"
-      expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+      expected: "あ@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>"
 
     - description: "Autolink username surrounded by Japanese"
       text: "あ@usernameの"
-      expected: "あ@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>の"
+      expected: "あ@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>の"
 
     - description: "Autolink username in compressed RT"
       text: "RT@username: long Tweet is loooong"
-      expected: "RT@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>: long Tweet is loooong"
+      expected: "RT@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>: long Tweet is loooong"
 
     - description: "DO NOT Autolink username followed by accented latin characters"
       text: "@aliceìnheiro something something"
@@ -46,32 +46,32 @@ tests:
 
     - description: "Autolink username with full-width at sign (U+FF20)"
       text: "＠username"
-      expected: "＠<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>"
+      expected: "＠<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>"
 
     - description: "DO NOT Autolink username over 20 characters"
       text: "@username9012345678901"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username901234567890\">username901234567890</a>1"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/username901234567890\">username901234567890</a>1"
 
     - description: "Autolink two usernames"
       text: "@foo @bar"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/foo\">foo</a> @<a class=\"tweet-url username\" href=\"http://twitter.com/bar\">bar</a>"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/foo\">foo</a> @<a class=\"tweet-url username\" href=\"https://twitter.com/bar\">bar</a>"
 
     - description: "Autolink usernames followed by :"
       text: "@foo: @bar"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/foo\">foo</a>: @<a class=\"tweet-url username\" href=\"http://twitter.com/bar\">bar</a>"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/foo\">foo</a>: @<a class=\"tweet-url username\" href=\"https://twitter.com/bar\">bar</a>"
 
     - description: "Autolink usernames that are followed by international characters"
       text: "@foo îs in the house"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/foo\">foo</a> îs in the house"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/foo\">foo</a> îs in the house"
 
   lists:
     - description: "Autolink list preceded by a space"
       text: "text @username/list"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list\">username/list</a>"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>"
 
     - description: "DO NOT Autolink list when space follows slash"
       text: "text @username/ list"
-      expected: "text @<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>/ list"
+      expected: "text @<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>/ list"
 
     - description: "DO NOT Autolink list with empty username"
       text: "text @/list"
@@ -79,7 +79,7 @@ tests:
 
     - description: "Autolink list at the beginning"
       text: "@username/list"
-      expected: "@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list\">username/list</a>"
+      expected: "@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>"
 
     - description: "DO NOT Autolink list preceded by letter"
       text: "meet@the/beach"
@@ -87,48 +87,48 @@ tests:
 
     - description: "Autolink list preceded by puctuation"
       text: "great.@username/list"
-      expected: "great.@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list\">username/list</a>"
+      expected: "great.@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>"
 
     - description: "Autolink list followed by puctuation"
       text: "@username/list&^$%^"
-      expected: "@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list\">username/list</a>&^$%^"
+      expected: "@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>&^$%^"
 
     - description: "Autolink list name over 25 characters (truncated to 25)"
       text: "@username/list567890123456789012345A"
-      expected: "@<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list567890123456789012345\">username/list567890123456789012345</a>A"
+      expected: "@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list567890123456789012345\">username/list567890123456789012345</a>A"
 
     - description: "Autolink list that contains an _"
       text: "text @username/list_name"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list_name\">username/list_name</a>"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list_name\">username/list_name</a>"
 
     - description: "Autolink list that contains a -"
       text: "text @username/list-name"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list-name\">username/list-name</a>"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list-name\">username/list-name</a>"
 
     - description: "Autolink list that contains a number"
       text: "text @username/list123"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"http://twitter.com/username/list123\">username/list123</a>"
+      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list123\">username/list123</a>"
 
     - description: "DO NOT Autolink list starting with a number"
       text: "@username/1list"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/username\">username</a>/1list"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>/1list"
 
   hashtags:
     - description: "Autolink trailing hashtag"
       text: "text #hashtag"
-      expected: "text <a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
 
     - description: "Autolink alphanumeric hashtag (letter-number-letter)"
       text: "text #hash0tag"
-      expected: "text <a href=\"http://twitter.com/#!/search?q=%23hash0tag\" title=\"#hash0tag\" class=\"tweet-url hashtag\">#hash0tag</a>"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23hash0tag\" title=\"#hash0tag\" class=\"tweet-url hashtag\">#hash0tag</a>"
 
     - description: "Autolink alphanumeric hashtag (number-letter)"
       text: "text #1tag"
-      expected: "text <a href=\"http://twitter.com/#!/search?q=%231tag\" title=\"#1tag\" class=\"tweet-url hashtag\">#1tag</a>"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%231tag\" title=\"#1tag\" class=\"tweet-url hashtag\">#1tag</a>"
 
     - description: "Autolink hashtag with underscore"
       text: "text #hash_tag"
-      expected: "text <a href=\"http://twitter.com/#!/search?q=%23hash_tag\" title=\"#hash_tag\" class=\"tweet-url hashtag\">#hash_tag</a>"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23hash_tag\" title=\"#hash_tag\" class=\"tweet-url hashtag\">#hash_tag</a>"
 
     - description: "DO NOT Autolink all-numeric hashtags"
       text: "text #1234"
@@ -140,11 +140,11 @@ tests:
 
     - description: "Autolink multiple hashtags"
       text: "text #hashtag1 #hashtag2"
-      expected: "text <a href=\"http://twitter.com/#!/search?q=%23hashtag1\" title=\"#hashtag1\" class=\"tweet-url hashtag\">#hashtag1</a> <a href=\"http://twitter.com/#!/search?q=%23hashtag2\" title=\"#hashtag2\" class=\"tweet-url hashtag\">#hashtag2</a>"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtag1\" title=\"#hashtag1\" class=\"tweet-url hashtag\">#hashtag1</a> <a href=\"https://twitter.com/#!/search?q=%23hashtag2\" title=\"#hashtag2\" class=\"tweet-url hashtag\">#hashtag2</a>"
 
     - description: "Autolink hashtag preceded by a period"
       text: "text.#hashtag"
-      expected: "text.<a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
+      expected: "text.<a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
 
     - description: "DO NOT Autolink hashtag preceded by &"
       text: "&#nbsp;"
@@ -152,171 +152,171 @@ tests:
 
     - description: "Autolink hashtag followed by ! (! not included)"
       text: "text #hashtag!"
-      expected: "text <a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>!"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>!"
 
     - description: "Autolink hashtag followed by Japanese"
       text: "text #hashtagの"
-      expected: "text <a href=\"http://twitter.com/#!/search?q=%23hashtagの\" title=\"#hashtagの\" class=\"tweet-url hashtag\">#hashtagの</a>"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtagの\" title=\"#hashtagの\" class=\"tweet-url hashtag\">#hashtagの</a>"
 
     - description: "Autolink hashtag preceded by full-width space (U+3000)"
       text: "text　#hashtag"
-      expected: "text　<a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
+      expected: "text　<a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
 
     - description: "Autolink hashtag followed by full-width space (U+3000)"
       text: "#hashtag　text"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>　text"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>　text"
 
     - description: "Autolink hashtag with full-width hash (U+FF03)"
       text: "＃hashtag"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">＃hashtag</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">＃hashtag</a>"
 
     - description: "Autolink hashtag with accented character at the start"
       text: "#éhashtag"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\">#éhashtag</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\">#éhashtag</a>"
 
     - description: "Autolink hashtag with accented character at the end"
       text: "#hashtagé"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23hashtagé\" title=\"#hashtagé\" class=\"tweet-url hashtag\">#hashtagé</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23hashtagé\" title=\"#hashtagé\" class=\"tweet-url hashtag\">#hashtagé</a>"
 
     - description: "Autolink hashtag with accented character in the middle"
       text: "#hashétag"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23hashétag\" title=\"#hashétag\" class=\"tweet-url hashtag\">#hashétag</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23hashétag\" title=\"#hashétag\" class=\"tweet-url hashtag\">#hashétag</a>"
 
     - description: "Autolink hashtags in Korean"
       text: "What is #트위터 anyway?"
-      expected: "What is <a href=\"http://twitter.com/#!/search?q=%23트위터\" title=\"#트위터\" class=\"tweet-url hashtag\">#트위터</a> anyway?"
+      expected: "What is <a href=\"https://twitter.com/#!/search?q=%23트위터\" title=\"#트위터\" class=\"tweet-url hashtag\">#트위터</a> anyway?"
 
     - description: "Autolink hashtags in Russian"
       text: "What is #ашок anyway?"
-      expected: "What is <a href=\"http://twitter.com/#!/search?q=%23ашок\" title=\"#ашок\" class=\"tweet-url hashtag\">#ашок</a> anyway?"
+      expected: "What is <a href=\"https://twitter.com/#!/search?q=%23ашок\" title=\"#ашок\" class=\"tweet-url hashtag\">#ашок</a> anyway?"
 
     - description: "Autolink a katakana hashtag preceded by a space and followed by a space"
       text: "カタカナ #カタカナ カタカナ"
-      expected: "カタカナ <a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
+      expected: "カタカナ <a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a space and followed by a bracket"
       text: "カタカナ #カタカナ」カタカナ"
-      expected: "カタカナ <a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
+      expected: "カタカナ <a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a space and followed by a edge"
       text: "カタカナ #カタカナ"
-      expected: "カタカナ <a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
+      expected: "カタカナ <a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
 
     - description: "Autolink a katakana hashtag preceded by a bracket and followed by a space"
       text: "カタカナ「#カタカナ カタカナ"
-      expected: "カタカナ「<a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
+      expected: "カタカナ「<a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a bracket and followed by a bracket"
       text: "カタカナ「#カタカナ」カタカナ"
-      expected: "カタカナ「<a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
+      expected: "カタカナ「<a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a bracket and followed by a edge"
       text: "カタカナ「#カタカナ"
-      expected: "カタカナ「<a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
+      expected: "カタカナ「<a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
 
     - description: "Autolink a katakana hashtag preceded by a edge and followed by a space"
       text: "#カタカナ カタカナ"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a> カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a edge and followed by a bracket"
       text: "#カタカナ」カタカナ"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>」カタカナ"
 
     - description: "Autolink a katakana hashtag preceded by a edge and followed by a edge"
       text: "#カタカナ"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23カタカナ\" title=\"#カタカナ\" class=\"tweet-url hashtag\">#カタカナ</a>"
 
     - description: "Autolink a katakana hashtag with a voiced sounds mark followed by a space"
       text: "#ﾊｯｼｭﾀｸﾞ　テスト"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23ﾊｯｼｭﾀｸﾞ\" title=\"#ﾊｯｼｭﾀｸﾞ\" class=\"tweet-url hashtag\">#ﾊｯｼｭﾀｸﾞ</a>　テスト"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23ﾊｯｼｭﾀｸﾞ\" title=\"#ﾊｯｼｭﾀｸﾞ\" class=\"tweet-url hashtag\">#ﾊｯｼｭﾀｸﾞ</a>　テスト"
 
     - description: "Autolink a katakana hashtag with a voiced sounds mark followed by numbers"
       text: "#ﾊｯｼｭﾀｸﾞ123"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23ﾊｯｼｭﾀｸﾞ123\" title=\"#ﾊｯｼｭﾀｸﾞ123\" class=\"tweet-url hashtag\">#ﾊｯｼｭﾀｸﾞ123</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23ﾊｯｼｭﾀｸﾞ123\" title=\"#ﾊｯｼｭﾀｸﾞ123\" class=\"tweet-url hashtag\">#ﾊｯｼｭﾀｸﾞ123</a>"
 
     - description: "Autolink a katakana hashtag with another voiced sounds mark"
       text: "#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ\" title=\"#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ\" class=\"tweet-url hashtag\">#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ\" title=\"#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ\" class=\"tweet-url hashtag\">#ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ</a>"
 
     - description: "Autolink a kanji hashtag preceded by a space and followed by a space"
       text: "漢字 #漢字 漢字"
-      expected: "漢字 <a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
+      expected: "漢字 <a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
 
     - description: "Autolink a kanji hashtag preceded by a space and followed by a bracket"
       text: "漢字 #漢字」漢字"
-      expected: "漢字 <a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
+      expected: "漢字 <a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
 
     - description: "Autolink a kanji hashtag preceded by a space and followed by a edge"
       text: "漢字 #漢字"
-      expected: "漢字 <a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
+      expected: "漢字 <a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
 
     - description: "Autolink a kanji hashtag preceded by a bracket and followed by a space"
       text: "漢字「#漢字 漢字"
-      expected: "漢字「<a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
+      expected: "漢字「<a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
 
     - description: "Autolink a kanji hashtag preceded by a bracket and followed by a bracket"
       text: "漢字「#漢字」漢字"
-      expected: "漢字「<a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
+      expected: "漢字「<a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
 
     - description: "Autolink a kanji hashtag preceded by a bracket and followed by a edge"
       text: "漢字「#漢字"
-      expected: "漢字「<a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
+      expected: "漢字「<a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
 
     - description: "Autolink a kanji hashtag preceded by a edge and followed by a space"
       text: "#漢字 漢字"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a> 漢字"
 
     - description: "Autolink a kanji hashtag preceded by a edge and followed by a bracket"
       text: "#漢字」漢字"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>」漢字"
 
     - description: "Autolink a kanji hashtag preceded by a edge and followed by a edge"
       text: "#漢字"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23漢字\" title=\"#漢字\" class=\"tweet-url hashtag\">#漢字</a>"
 
     - description: "Autolink a kanji hashtag preceded by an ideographic comma, followed by an ideographic period"
       text: "これは、＃大丈夫。"
-      expected: "これは、<a href=\"http://twitter.com/#!/search?q=%23大丈夫\" title=\"#大丈夫\" class=\"tweet-url hashtag\">＃大丈夫</a>。"
+      expected: "これは、<a href=\"https://twitter.com/#!/search?q=%23大丈夫\" title=\"#大丈夫\" class=\"tweet-url hashtag\">＃大丈夫</a>。"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a space"
       text: "ひらがな #ひらがな ひらがな"
-      expected: "ひらがな <a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
+      expected: "ひらがな <a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a bracket"
       text: "ひらがな #ひらがな」ひらがな"
-      expected: "ひらがな <a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
+      expected: "ひらがな <a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a space and followed by a edge"
       text: "ひらがな #ひらがな"
-      expected: "ひらがな <a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
+      expected: "ひらがな <a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
 
     - description: "Autolink a hiragana hashtag preceded by a bracket and followed by a space"
       text: "ひらがな「#ひらがな ひらがな"
-      expected: "ひらがな「<a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
+      expected: "ひらがな「<a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a bracket and followed by a bracket"
       text: "ひらがな「#ひらがな」ひらがな"
-      expected: "ひらがな「<a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
+      expected: "ひらがな「<a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a bracket and followed by a edge"
       text: "ひらがな「#ひらがな"
-      expected: "ひらがな「<a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
+      expected: "ひらがな「<a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
 
     - description: "Autolink a hiragana hashtag preceded by a edge and followed by a space"
       text: "#ひらがな ひらがな"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a> ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a edge and followed by a bracket"
       text: "#ひらがな」ひらがな"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>」ひらがな"
 
     - description: "Autolink a hiragana hashtag preceded by a edge and followed by a edge"
       text: "#ひらがな"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23ひらがな\" title=\"#ひらがな\" class=\"tweet-url hashtag\">#ひらがな</a>"
 
     - description: "Autolink a Kanji/Katakana mix hashtag"
       text: "日本語ハッシュタグ #日本語ハッシュタグ"
-      expected: "日本語ハッシュタグ <a href=\"http://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>"
+      expected: "日本語ハッシュタグ <a href=\"https://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>"
 
     - description: "DO NOT autolink a hashtag without a preceding space"
       text: "日本語ハッシュタグ#日本語ハッシュタグ"
@@ -324,39 +324,39 @@ tests:
 
     - description: "DO NOT include a punctuation in a hashtag"
       text: "#日本語ハッシュタグ。"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>。"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>。"
 
     - description: "Autolink a hashtag after a punctuation"
       text: "日本語ハッシュタグ。#日本語ハッシュタグ"
-      expected: "日本語ハッシュタグ。<a href=\"http://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>"
+      expected: "日本語ハッシュタグ。<a href=\"https://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>"
 
     - description: "Autolink a hashtag with chouon"
       text: "長音ハッシュタグ。#サッカー"
-      expected: "長音ハッシュタグ。<a href=\"http://twitter.com/#!/search?q=%23サッカー\" title=\"#サッカー\" class=\"tweet-url hashtag\">#サッカー</a>"
+      expected: "長音ハッシュタグ。<a href=\"https://twitter.com/#!/search?q=%23サッカー\" title=\"#サッカー\" class=\"tweet-url hashtag\">#サッカー</a>"
 
     - description: "Autolink a hashtag with half-width chouon"
       text: "長音ハッシュタグ。#ｻｯｶｰ"
-      expected: "長音ハッシュタグ。<a href=\"http://twitter.com/#!/search?q=%23ｻｯｶｰ\" title=\"#ｻｯｶｰ\" class=\"tweet-url hashtag\">#ｻｯｶｰ</a>"
+      expected: "長音ハッシュタグ。<a href=\"https://twitter.com/#!/search?q=%23ｻｯｶｰ\" title=\"#ｻｯｶｰ\" class=\"tweet-url hashtag\">#ｻｯｶｰ</a>"
 
     - description: "Autolink a hashtag with half-width # after full-width ！"
       text: "できましたよー！#日本語ハッシュタグ。"
-      expected: "できましたよー！<a href=\"http://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>。"
+      expected: "できましたよー！<a href=\"https://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">#日本語ハッシュタグ</a>。"
 
     - description: "Autolink a hashtag with full-width ＃ after full-width ！"
       text: "できましたよー！＃日本語ハッシュタグ。"
-      expected: "できましたよー！<a href=\"http://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">＃日本語ハッシュタグ</a>。"
+      expected: "できましたよー！<a href=\"https://twitter.com/#!/search?q=%23日本語ハッシュタグ\" title=\"#日本語ハッシュタグ\" class=\"tweet-url hashtag\">＃日本語ハッシュタグ</a>。"
 
     - description: "Autolink a hashtag containing ideographic iteration mark"
       text: "#云々"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23云々\" title=\"#云々\" class=\"tweet-url hashtag\">#云々</a>"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23云々\" title=\"#云々\" class=\"tweet-url hashtag\">#云々</a>"
 
     - description: "Autolink multiple hashtags in multiple languages"
       text: "Hashtags in #中文, #日本語, #한국말, and #русский! Try it out!"
-      expected: "Hashtags in <a href=\"http://twitter.com/#!/search?q=%23中文\" title=\"#中文\" class=\"tweet-url hashtag\">#中文</a>, <a href=\"http://twitter.com/#!/search?q=%23日本語\" title=\"#日本語\" class=\"tweet-url hashtag\">#日本語</a>, <a href=\"http://twitter.com/#!/search?q=%23한국말\" title=\"#한국말\" class=\"tweet-url hashtag\">#한국말</a>, and <a href=\"http://twitter.com/#!/search?q=%23русский\" title=\"#русский\" class=\"tweet-url hashtag\">#русский</a>! Try it out!"
+      expected: "Hashtags in <a href=\"https://twitter.com/#!/search?q=%23中文\" title=\"#中文\" class=\"tweet-url hashtag\">#中文</a>, <a href=\"https://twitter.com/#!/search?q=%23日本語\" title=\"#日本語\" class=\"tweet-url hashtag\">#日本語</a>, <a href=\"https://twitter.com/#!/search?q=%23한국말\" title=\"#한국말\" class=\"tweet-url hashtag\">#한국말</a>, and <a href=\"https://twitter.com/#!/search?q=%23русский\" title=\"#русский\" class=\"tweet-url hashtag\">#русский</a>! Try it out!"
 
     - description: "Autolink should allow for ş (U+015F) in a hashtag"
       text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
-      expected: "Here’s a test tweet for you: <a href=\"http://twitter.com/#!/search?q=%23Ateş\" title=\"#Ateş\" class=\"tweet-url hashtag\">#Ateş</a> <a href=\"http://twitter.com/#!/search?q=%23qrşt\" title=\"#qrşt\" class=\"tweet-url hashtag\">#qrşt</a> <a href=\"http://twitter.com/#!/search?q=%23ştu\" title=\"#ştu\" class=\"tweet-url hashtag\">#ştu</a> <a href=\"http://twitter.com/#!/search?q=%23ş\" title=\"#ş\" class=\"tweet-url hashtag\">#ş</a>"
+      expected: "Here’s a test tweet for you: <a href=\"https://twitter.com/#!/search?q=%23Ateş\" title=\"#Ateş\" class=\"tweet-url hashtag\">#Ateş</a> <a href=\"https://twitter.com/#!/search?q=%23qrşt\" title=\"#qrşt\" class=\"tweet-url hashtag\">#qrşt</a> <a href=\"https://twitter.com/#!/search?q=%23ştu\" title=\"#ştu\" class=\"tweet-url hashtag\">#ştu</a> <a href=\"https://twitter.com/#!/search?q=%23ş\" title=\"#ş\" class=\"tweet-url hashtag\">#ş</a>"
 
   urls:
     - description: "Autolink URL with pipe character"
@@ -596,8 +596,8 @@ tests:
       expected: "Check out <a href=\"http://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\">http://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</a>"
 
     - description: "Autolink URL should HTML escape the URL"
-      text: "example: http://twitter.com/otm_m@\"onmousedown=\"alert('foo')\" style=background-color:yellow;color:yellow;\"/"
-      expected: "example: <a href=\"http://twitter.com/otm_m\">http://twitter.com/otm_m</a>@\"onmousedown=\"alert('foo')\" style=background-color:yellow;color:yellow;\"/"
+      text: "example: https://twitter.com/otm_m@\"onmousedown=\"alert('foo')\" style=background-color:yellow;color:yellow;\"/"
+      expected: "example: <a href=\"https://twitter.com/otm_m\">https://twitter.com/otm_m</a>@\"onmousedown=\"alert('foo')\" style=background-color:yellow;color:yellow;\"/"
 
     - description: "Autolink URL should autolink a URL with a - or + at the end of the path"
       text: "Go to http://example.com/a+ or http://example.com/a-"
@@ -632,8 +632,8 @@ tests:
       expected: "See: <a href=\"http://t.co/abcde\">http://t.co/abcde</a>'s page"
 
     - description: "DO NOT autolink URL if preceded by $"
-      text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
-      expected: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
+      text: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
+      expected: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
 
   all:
     - description: "Autolink all does not break on URL with @"
@@ -642,11 +642,11 @@ tests:
 
     - description: "Autolink all does not allow & without ?"
       text: "Check out: http://example.com/test&@chasesechrist"
-      expected: "Check out: <a href=\"http://example.com/test\">http://example.com/test</a>&@<a class=\"tweet-url username\" href=\"http://twitter.com/chasesechrist\">chasesechrist</a>"
+      expected: "Check out: <a href=\"http://example.com/test\">http://example.com/test</a>&@<a class=\"tweet-url username\" href=\"https://twitter.com/chasesechrist\">chasesechrist</a>"
 
     - description: "Correctly handles URL follower directly by @user"
       text: "See: http://example.com/@user"
-      expected: "See: <a href=\"http://example.com/\">http://example.com/</a>@<a class=\"tweet-url username\" href=\"http://twitter.com/user\">user</a>"
+      expected: "See: <a href=\"http://example.com/\">http://example.com/</a>@<a class=\"tweet-url username\" href=\"https://twitter.com/user\">user</a>"
 
     - description: "Correctly handles URL with an @user followed by trailing /"
       text: "See: http://example.com/@user/"
@@ -657,13 +657,13 @@ tests:
       expected: "See: <a href=\"http://x.xx.com/\">http://x.xx.com/</a>@\"style=\"color:pink\"onmouseover=alert(1)//"
 
     - description: "DO NOT autolink URLs if preceded by # or @"
-      text: "#http://twitter.com @http://twitter.com"
-      expected: "#http://twitter.com @http://twitter.com"
+      text: "#https://twitter.com @https://twitter.com"
+      expected: "#https://twitter.com @https://twitter.com"
 
     - description: "Autolink hashtag if followed by . and TLD"
       text: "#twitter.com #twitter.co.jp"
-      expected: "<a href=\"http://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.com <a href=\"http://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.co.jp"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.com <a href=\"https://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.co.jp"
 
     - description: "Autolink @mention if followed by . and TLD"
       text: "@twitter.com @twitter.co.jp"
-      expected: "@<a class=\"tweet-url username\" href=\"http://twitter.com/twitter\">twitter</a>.com @<a class=\"tweet-url username\" href=\"http://twitter.com/twitter\">twitter</a>.co.jp"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.com @<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.co.jp"

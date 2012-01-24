@@ -42,7 +42,7 @@ tests:
       expected: ["username"]
 
     - description: "DO NOT extract 'http' in '@http://' as username"
-      text: "@http://twitter.com"
+      text: "@https://twitter.com"
       expected: []
 
     - description: "Extract mentions before newline"
@@ -157,7 +157,7 @@ tests:
       expected:
 
     - description: "DO NOT Extract reply when followed by URL"
-      text: "@http://twitter.com"
+      text: "@https://twitter.com"
       expected:
 
   urls:
@@ -181,9 +181,9 @@ tests:
       text: "text http://google.com/#search?q=iphone%20-filter%3Alinks"
       expected: ["http://google.com/#search?q=iphone%20-filter%3Alinks"]
 
-    - description: "Extract valid URL: http://twitter.com/#search?q=iphone%20-filter%3Alinks"
-      text: "text http://twitter.com/#search?q=iphone%20-filter%3Alinks"
-      expected: ["http://twitter.com/#search?q=iphone%20-filter%3Alinks"]
+    - description: "Extract valid URL: https://twitter.com/#search?q=iphone%20-filter%3Alinks"
+      text: "text https://twitter.com/#search?q=iphone%20-filter%3Alinks"
+      expected: ["https://twitter.com/#search?q=iphone%20-filter%3Alinks"]
 
     - description: "Extract valid URL: http://somedomain.com/index.php?path=/abc/def/"
       text: "text http://somedomain.com/index.php?path=/abc/def/"
@@ -298,8 +298,8 @@ tests:
       expected: ["twitter.com", "example.com", "t.co/abcde", "twitter.com", "example2.com", "twitter.com/abcde"]
 
     - description: "Extract URLs with and without protocol surrounded by CJK characters"
-      text: "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde"
-      expected: ["http://twitter.com/", "example.com", "http://t.co/abcde", "twitter.com", "example2.com", "http://twitter.com/abcde"]
+      text: "https://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttps://twitter.com/abcde"
+      expected: ["https://twitter.com/", "example.com", "http://t.co/abcde", "twitter.com", "example2.com", "https://twitter.com/abcde"]
 
     - description: "DO NOT extract short URLs without protocol on ccTLD domains without path"
       text: "twitter.jp日本語t.co中国語foo.jp t.co foo.jp"
@@ -394,8 +394,8 @@ tests:
       expected: ["ELPAÍS.com"]
 
     - description: "DO NOT include period at the end of URL"
-      text: "test http://twitter.com/."
-      expected: ["http://twitter.com/"]
+      text: "test https://twitter.com/."
+      expected: ["https://twitter.com/"]
 
     - description: "Extract a URL with '?' in fragment"
       text: "http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata"
@@ -435,11 +435,11 @@ tests:
       expected: ["http://t.co/ulYGBYSo"]
 
     - description: "Extract URL before newline"
-      text: "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nt.co\nt.co/abcde"
-      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co/abcde"]
+      text: "https://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nt.co\nt.co/abcde"
+      expected: ["https://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co/abcde"]
 
     - description: "DO NOT extract URL if preceded by $"
-      text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
+      text: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
       expected: []
 
   urls_with_indices:
@@ -480,9 +480,9 @@ tests:
           indices: [73, 90]
 
     - description: "Extract URLs with and without protocol surrounded by CJK characters"
-      text: "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde"
+      text: "https://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttps://twitter.com/abcde"
       expected:
-        - url: "http://twitter.com/"
+        - url: "https://twitter.com/"
           indices: [0, 19]
         - url: "example.com"
           indices: [28, 39]
@@ -492,7 +492,7 @@ tests:
           indices: [61, 72]
         - url: "example2.com"
           indices: [75, 87]
-        - url: "http://twitter.com/abcde"
+        - url: "https://twitter.com/abcde"
           indices: [90, 114]
 
     - description: "Extract t.co URLs skipping trailing characters and adjusting indices correctly"
@@ -663,7 +663,7 @@ tests:
       expected: ["hashtag", "hashtag2", "hashtag3"]
 
     - description: "DO NOT extract hashtag when # is followed by URL"
-      text: "#http://twitter.com #https://twitter.com"
+      text: "#https://twitter.com #https://twitter.com"
       expected: []
 
   hashtags_with_indices:
