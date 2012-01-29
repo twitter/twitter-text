@@ -39,6 +39,16 @@ describe Twitter::Extractor do
       it "should be linked in Japanese text" do
         @extractor.extract_mentioned_screen_names("の@aliceに到着を待っている").should == ["alice"]
       end
+
+      it "should ignore masked bad word" do
+        @extractor.extract_mentioned_screen_names("f!@kn").should == []
+        @extractor.extract_mentioned_screen_names("f@@kn").should == []
+        @extractor.extract_mentioned_screen_names("f#@kn").should == []
+        @extractor.extract_mentioned_screen_names("f$@kn").should == []
+        @extractor.extract_mentioned_screen_names("f%@kn").should == []
+        @extractor.extract_mentioned_screen_names("f&@kn").should == []
+        @extractor.extract_mentioned_screen_names("f*@kn").should == []
+      end
     end
 
     it "should accept a block arugment and call it in order" do
