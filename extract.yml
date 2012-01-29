@@ -480,9 +480,9 @@ tests:
           indices: [73, 90]
 
     - description: "Extract URLs with and without protocol surrounded by CJK characters"
-      text: "https://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttps://twitter.com/abcde"
+      text: "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde"
       expected:
-        - url: "https://twitter.com/"
+        - url: "http://twitter.com/"
           indices: [0, 19]
         - url: "example.com"
           indices: [28, 39]
@@ -492,7 +492,7 @@ tests:
           indices: [61, 72]
         - url: "example2.com"
           indices: [75, 87]
-        - url: "https://twitter.com/abcde"
+        - url: "http://twitter.com/abcde"
           indices: [90, 114]
 
     - description: "Extract t.co URLs skipping trailing characters and adjusting indices correctly"
