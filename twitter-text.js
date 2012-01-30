@@ -464,7 +464,7 @@ if (!window.twttr) {
           if (!options.title) {
             options.title = expandedUrl;
           }
-          
+
           // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
           // should contain the full original URL (expanded_url), not the display URL.
           //
@@ -480,7 +480,7 @@ if (!window.twttr) {
           // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
           // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
           // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
-          
+
           var displayUrlSansEllipses = displayUrl.replace(/…/g, ""); // We have to disregard ellipses for matching
           // Note: we currently only support eliding parts of the URL at the beginning or the end.
           // Eventually we may want to elide parts of the URL in the *middle*.  If so, this code will
