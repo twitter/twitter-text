@@ -156,7 +156,7 @@ public class Autolink {
     text = escapeBrackets(text);
 
     // extract entities
-    List<Entity> entities = extractor.extractEntities(text);
+    List<Entity> entities = extractor.extractEntitiesWithIndices(text);
     return autoLinkEntities(text, entities);
   }
 

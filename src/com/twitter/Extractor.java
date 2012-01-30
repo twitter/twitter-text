@@ -94,7 +94,7 @@ public class Extractor {
   public Extractor() {
   }
 
-  public List<Entity> extractEntities(String text) {
+  public List<Entity> extractEntitiesWithIndices(String text) {
     List<Entity> entities = new ArrayList<Entity>();
     entities.addAll(extractURLsWithIndices(text));
     entities.addAll(extractHashtagsWithIndices(text));
