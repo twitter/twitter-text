@@ -176,7 +176,6 @@ module Twitter
       return [] unless text && (options[:extract_url_without_protocol] ? text.index(".") : text.index(":"))
       urls = []
       position = 0
-      extract_url_without_protocol = options[:extract_url_without_protocol]
 
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, port, path, query|
         valid_url_match_data = $~
@@ -187,7 +186,7 @@ module Twitter
         # If protocol is missing and domain contains non-ASCII characters,
         # extract ASCII-only domains.
         if !protocol
-          next if !extract_url_without_protocol || before =~ Twitter::Regex[:invalid_url_without_protocol_preceding_chars]
+          next if !options[:extract_url_without_protocol] || before =~ Twitter::Regex[:invalid_url_without_protocol_preceding_chars]
           last_url = nil
           last_url_invalid_match = nil
           domain.scan(Twitter::Regex[:valid_ascii_domain]) do |ascii_domain|
