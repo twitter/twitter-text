@@ -46,15 +46,23 @@ module Twitter
   # of usernames, lists, URLs and hashtags.
   module Extractor extend self
 
+    # Extracts all usernames, lists, hashtags and URLs  in the Tweet <tt>text</tt>
+    # along with the indices for where the entity ocurred
+    # If the <tt>text</tt> is <tt>nil</tt> or contains no entity an empty array
+    # will be returned.
+    #
+    # If a block is given then it will be called for each entity.
     def extract_entities_with_indices(text, options = {})
       # extract all entities
-      entities = extract_urls_with_indices(text, options) + extract_hashtags_with_indices(text) + extract_mentions_or_lists_with_indices(text)
-      
+      entities = extract_urls_with_indices(text, options) +
+                 extract_hashtags_with_indices(text) +
+                 extract_mentions_or_lists_with_indices(text)
+
       return [] if entities.empty?
 
       # sort by start index
       entities.sort! {|a,b| a[:indices].first <=> b[:indices].first}
-      
+
       # remove duplicates
       prev = nil
       entities.each do |entity|
@@ -64,10 +72,11 @@ module Twitter
           prev = entity
         end
       end
-      
+
+      entities.each{|entity| yield entity} if block_given?
       entities
     end
-    
+
     # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>. If the
     # <tt>text</tt> is <tt>nil</tt> or contains no username mentions an empty array
     # will be returned.

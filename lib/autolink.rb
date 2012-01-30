@@ -38,7 +38,7 @@ module Twitter
 
     def auto_link_entities(text, entities, options)
       return text if entities.empty?
-      
+
       options = options.dup
       options[:class] = options[:url_class]
       options[:rel] = "nofollow" unless options[:suppress_no_follow]
@@ -51,7 +51,7 @@ module Twitter
       options[:hashtag_url_base] ||= "http://twitter.com/#!/search?q=%23"
       options[:target] ||= DEFAULT_TARGET
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
-      
+
       url_entities = {}
       if options[:url_entities]
         options[:url_entities].each do |entity|
@@ -60,7 +60,7 @@ module Twitter
         end
         options.delete(:url_entities)
       end
-      
+
       html_attrs = nil
       Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
         if entity[:url]
@@ -70,12 +70,12 @@ module Twitter
           else
             html_escape(url)
           end
-  
+
           display_url = url
           if url_entities[url] && url_entities[url][:display_url]
             display_url = url_entities[url][:display_url]
           end
-  
+
           html_attrs = html_attrs_for_options(options) unless html_attrs
           %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>)
         elsif entity[:hashtag]
@@ -131,7 +131,7 @@ module Twitter
     def auto_link(text, options = {})
       auto_link_entities(text, Extractor.extract_entities_with_indices(text, {:extract_url_without_protocol => false}), options)
     end
-    
+
     # Add <tt><a></a></tt> tags around the usernames and lists in the provided <tt>text</tt>. The
     # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
     # hash:
