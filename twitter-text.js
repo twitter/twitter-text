@@ -132,11 +132,12 @@ if (!window.twttr) {
   twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþş\\303\\277");
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
+  twttr.txt.regexen.hashSigns = /[#＃]/;
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
-  twttr.txt.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
+  twttr.txt.regexen.endHashtagMatch = regexSupplant(/^(?:#{hashSigns}|:\/\/)/);
   twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
-  twttr.txt.regexen.validHashtag = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
+  twttr.txt.regexen.validHashtag = regexSupplant(/(#{hashtagBoundary})(#{hashSigns})(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
 
   // Mention related regex collection
   twttr.txt.regexen.validMentionPrecedingChars = /(?:^|[^a-zA-Z0-9_]|RT:?)/;
@@ -147,7 +148,6 @@ if (!window.twttr) {
     '([a-zA-Z0-9_]{1,20})' +             // $3: Screen name
     '(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?'  // $4: List (optional)
   , 'g');
-    /(^|[^a-zA-Z0-9_]|RT:?)([@＠])([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
   twttr.txt.regexen.validReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
   twttr.txt.regexen.endMentionMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
@@ -517,7 +517,7 @@ if (!window.twttr) {
    * (Presence of listSlug indicates a list)
    */
   twttr.txt.extractMentionsOrListsWithIndices = function(text) {
-    if (!text || !text.match(/[@＠]/)) {
+    if (!text || !text.match(twttr.txt.regexen.atSign)) {
       return [];
     }
 
@@ -647,7 +647,7 @@ if (!window.twttr) {
   };
 
   twttr.txt.extractHashtagsWithIndices = function(text) {
-    if (!text || !text.match(/[#＃]/)) {
+    if (!text || !text.match(twttr.txt.regexen.hashSigns)) {
       return [];
     }
 
