@@ -69,18 +69,4 @@ public class AutolinkTest extends TestCase {
   protected void assertAutolink(String expected, String linked) {
     assertEquals("Autolinked text should equal the input", expected, linked);
   }
-
-  public void testSplit() {
-    String text = "Url: <a href=\"http://example.com/$ABC\">http://example.com/$ABC</a>";
-    assertEquals(Arrays.asList(text.split("[<>]", -1)), Autolink.split(text, "<>"));
-
-    text = "";
-    assertFalse(Autolink.split(text, "<>").iterator().hasNext());
-
-    text = "there is no bracket in this text.";
-    assertEquals(Arrays.asList(text.split("[<>]", -1)), Autolink.split(text, "<>"));
-
-    text = "><><><><";
-    assertEquals(Arrays.asList(text.split("[<>]", -1)), Autolink.split(text, "<>"));
-  }
 }

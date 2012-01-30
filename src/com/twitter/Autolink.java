@@ -2,7 +2,6 @@ package com.twitter;
 
 import com.twitter.Extractor.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -331,34 +330,5 @@ public class Autolink {
    */
   public void setUsernameIncludeSymbol(boolean usernameIncludeSymbol) {
     this.usernameIncludeSymbol = usernameIncludeSymbol;
-  }
-
-  // The default String split is horribly inefficient
-  protected static Iterable<String> split(final String s, final String d) {
-    List<String> strings = new ArrayList<String>();
-    int length = s.length();
-    int current = 0;
-    while (current < length) {
-      int minIndex = Integer.MAX_VALUE;
-      for (char c : d.toCharArray()) {
-        int index = s.indexOf(c, current);
-        if (index != -1 && index < minIndex) {
-          minIndex = index;
-        }
-      }
-      if (minIndex == Integer.MAX_VALUE) {
-        // s doesn't contain any char in d
-        strings.add(s.substring(current));
-        current = length;
-      } else {
-        strings.add(s.substring(current, minIndex));
-        current = minIndex + 1;
-        if (current == length) {
-          // last char in s is in d.
-          strings.add("");
-        }
-      }
-    }
-    return strings;
   }
 }
