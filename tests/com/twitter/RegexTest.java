@@ -85,13 +85,13 @@ public class RegexTest extends TestCase {
 
   public void testExtractMentions() {
     assertCaptureCount(2, Regex.EXTRACT_MENTIONS, "sample @user mention");
-    assertFalse("Failed to ignore unintended mention precedented by !", Regex.EXTRACT_MENTIONS.matcher("f!@kn").find());
-    assertFalse("Failed to ignore unintended mention precedented by @", Regex.EXTRACT_MENTIONS.matcher("f@@kn").find());
-    assertFalse("Failed to ignore unintended mention precedented by #", Regex.EXTRACT_MENTIONS.matcher("f#@kn").find());
-    assertFalse("Failed to ignore unintended mention precedented by $", Regex.EXTRACT_MENTIONS.matcher("f$@kn").find());
-    assertFalse("Failed to ignore unintended mention precedented by %", Regex.EXTRACT_MENTIONS.matcher("f%@kn").find());
-    assertFalse("Failed to ignore unintended mention precedented by &", Regex.EXTRACT_MENTIONS.matcher("f&@kn").find());
-    assertFalse("Failed to ignore unintended mention precedented by *", Regex.EXTRACT_MENTIONS.matcher("f*@kn").find());
+  }
+
+  public void testInvalidMentions() {
+    char[] invalid_chars = new char[]{'!', '@', '#', '$', '%', '&', '*'};
+    for (char c : invalid_chars) {
+      assertFalse("Failed to ignore unintended mention precedented by " + c, Regex.EXTRACT_MENTIONS.matcher("f" + c + "@kn").find());
+    }
   }
 
   public void testExtractReply() {
