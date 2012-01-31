@@ -41,13 +41,10 @@ describe Twitter::Extractor do
       end
 
       it "should ignore masked bad word" do
-        @extractor.extract_mentioned_screen_names("f!@kn").should == []
-        @extractor.extract_mentioned_screen_names("f@@kn").should == []
-        @extractor.extract_mentioned_screen_names("f#@kn").should == []
-        @extractor.extract_mentioned_screen_names("f$@kn").should == []
-        @extractor.extract_mentioned_screen_names("f%@kn").should == []
-        @extractor.extract_mentioned_screen_names("f&@kn").should == []
-        @extractor.extract_mentioned_screen_names("f*@kn").should == []
+        invalid_chars = ['!', '@', '#', '$', '%', '&', '*']
+        invalid_chars.each do |c|
+          @extractor.extract_mentioned_screen_names("f#{c}@kn").should == []
+        end
       end
     end
 
