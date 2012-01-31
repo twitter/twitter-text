@@ -90,7 +90,7 @@ public class RegexTest extends TestCase {
   public void testInvalidMentions() {
     char[] invalid_chars = new char[]{'!', '@', '#', '$', '%', '&', '*'};
     for (char c : invalid_chars) {
-      assertFalse("Failed to ignore unintended mention precedented by " + c, Regex.EXTRACT_MENTIONS.matcher("f" + c + "@kn").find());
+      assertFalse("Failed to ignore a mention preceded by " + c, Regex.EXTRACT_MENTIONS.matcher("f" + c + "@kn").find());
     }
   }
 
