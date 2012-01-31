@@ -79,7 +79,6 @@ test("twttr.txt.autolink", function() {
   }
 });
 
-
 test("twttr.txt.extractMentionsOrListsWithIndices", function() {
   var invalid_chars = ['!', '@', '#', '$', '%', '&', '*']
 
