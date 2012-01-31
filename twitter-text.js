@@ -440,7 +440,7 @@ if (!window.twttr) {
   };
 
   twttr.txt.autoLink = function(text, options) {
-    var entities = twttr.txt.extractEntitiesWithIndices(text, {extractUrlWithoutProtocol: false});
+    var entities = twttr.txt.extractEntitiesWithIndices(text, {extractUrlWithoutProtocol: false, countSupplementaryCharacterAsOne: false});
     return twttr.txt.autoLinkEntities(text, entities, options);
   };
 
@@ -461,8 +461,8 @@ if (!window.twttr) {
 
   twttr.txt.extractEntitiesWithIndices = function(text, options) {
     var entities = twttr.txt.extractUrlsWithIndices(text, options)
-                   .concat(twttr.txt.extractMentionsOrListsWithIndices(text))
-                   .concat(twttr.txt.extractHashtagsWithIndices(text));
+                   .concat(twttr.txt.extractMentionsOrListsWithIndices(text, options))
+                   .concat(twttr.txt.extractHashtagsWithIndices(text, options));
 
     if (entities.length == 0) {
       return [];
@@ -495,7 +495,11 @@ if (!window.twttr) {
     return screenNamesOnly;
   };
 
-  twttr.txt.extractMentionsWithIndices = function(text) {
+  twttr.txt.extractMentionsWithIndices = function(text, options) {
+    if (!options) {
+      options = {countSupplementaryCharacterAsOne: true};
+    }
+
     var mentions = [];
     var mentionsOrLists = twttr.txt.extractMentionsOrListsWithIndices(text);
 
@@ -509,6 +513,9 @@ if (!window.twttr) {
       }
     }
 
+    if (options.countSupplementaryCharacterAsOne) {
+      twttr.txt.adjustIndices(text, mentions, -1);
+    }
     return mentions;
   };
 
@@ -516,9 +523,13 @@ if (!window.twttr) {
    * Extract list or user mentions.
    * (Presence of listSlug indicates a list)
    */
-  twttr.txt.extractMentionsOrListsWithIndices = function(text) {
+  twttr.txt.extractMentionsOrListsWithIndices = function(text, options) {
     if (!text || !text.match(twttr.txt.regexen.atSign)) {
       return [];
+    }
+
+    if (!options) {
+      options = {countSupplementaryCharacterAsOne: true};
     }
 
     var possibleNames = [],
@@ -538,6 +549,9 @@ if (!window.twttr) {
       }
     });
 
+    if (options.countSupplementaryCharacterAsOne) {
+      twttr.txt.adjustIndices(text, possibleNames, -1);
+    }
     return possibleNames;
   };
 
@@ -569,7 +583,7 @@ if (!window.twttr) {
 
   twttr.txt.extractUrlsWithIndices = function(text, options) {
     if (!options) {
-      options = {extractUrlsWithoutProtocol: true};
+      options = {extractUrlsWithoutProtocol: true, countSupplementaryCharacterAsOne: true};
     }
 
     if (!text || (options.extractUrlsWithoutProtocol ? !text.match(/\./) : !text.match(/:/))) {
@@ -632,6 +646,10 @@ if (!window.twttr) {
       }
     });
 
+    if (options.countSupplementaryCharacterAsOne) {
+      twttr.txt.adjustIndices(text, urls, -1);
+    }
+
     return urls;
   };
 
@@ -646,9 +664,13 @@ if (!window.twttr) {
     return hashtagsOnly;
   };
 
-  twttr.txt.extractHashtagsWithIndices = function(text) {
+  twttr.txt.extractHashtagsWithIndices = function(text, options) {
     if (!text || !text.match(twttr.txt.regexen.hashSigns)) {
       return [];
+    }
+
+    if (!options) {
+      options = {countSupplementaryCharacterAsOne: true};
     }
 
     var tags = [],
@@ -666,8 +688,28 @@ if (!window.twttr) {
       });
     });
 
+    if (options.countSupplementaryCharacterAsOne) {
+      twttr.txt.adjustIndices(text, tags, -1);
+    }
+
     return tags;
   };
+
+  twttr.txt.adjustIndices = function(text, entities, diff) {
+    for (var i = 0; i < text.length - 1; i++) {
+      var c1 = text.charCodeAt(i);
+      var c2 = text.charCodeAt(i + 1);
+      if (0xD800 <= c1 && c1 <= 0xDBFF && 0xDC00 <= c2 && c2 <= 0xDFFF) {
+        // supplementary character
+        for (var j = 0; j < entities.length; j++) {
+          if (entities[j].indices[0] >= i) {
+            entities[j].indices[0] += diff;
+            entities[j].indices[1] += diff;
+          }
+        }
+      }
+    }
+  }
 
   // this essentially does text.split(/<|>/)
   // except that won't work in IE, where empty strings are ommitted
