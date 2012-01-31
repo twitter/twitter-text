@@ -19,11 +19,11 @@ public class Autolink {
   /** Default CSS class for auto-linked hashtag URLs */
   public static final String DEFAULT_HASHTAG_CLASS = "hashtag";
   /** Default href for username links (the username without the @ will be appended) */
-  public static final String DEFAULT_USERNAME_URL_BASE = "http://twitter.com/";
+  public static final String DEFAULT_USERNAME_URL_BASE = "https://twitter.com/";
   /** Default href for list links (the username/list without the @ will be appended) */
-  public static final String DEFAULT_LIST_URL_BASE = "http://twitter.com/";
+  public static final String DEFAULT_LIST_URL_BASE = "https://twitter.com/";
   /** Default href for hashtag links (the hashtag without the # will be appended) */
-  public static final String DEFAULT_HASHTAG_URL_BASE = "http://twitter.com/#!/search?q=%23";
+  public static final String DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23";
   /** HTML attribute to add when noFollow is true (default) */
   public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
 
