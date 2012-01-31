@@ -85,6 +85,6 @@ test("twttr.txt.extractMentionsOrListsWithIndices", function() {
 
   for (var i = 0; i < invalid_chars.length; i++) {
     c = invalid_chars[i];
-    equal(twttr.txt.extractMentionsOrListsWithIndices("f" + c + "@kn").length, 0, "Should not extract mention if precedented by " + c);
+    equal(twttr.txt.extractMentionsOrListsWithIndices("f" + c + "@kn").length, 0, "Should not extract mention if preceded by " + c);
   }
 });
