@@ -325,8 +325,8 @@ if (!window.twttr) {
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.listClass = options.listClass || DEFAULT_LIST_CLASS;
     options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
-    options.usernameUrlBase = options.usernameUrlBase || "http://twitter.com/";
-    options.listUrlBase = options.listUrlBase || "http://twitter.com/";
+    options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
+    options.listUrlBase = options.listUrlBase || "https://twitter.com/";
     if (!options.suppressNoFollow) {
       var extraHtml = HTML_ATTR_NO_FOLLOW;
     }
@@ -390,7 +390,7 @@ if (!window.twttr) {
     options = clone(options || {});
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "http://twitter.com/#!/search?q=%23";
+    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
     if (!options.suppressNoFollow) {
       var extraHtml = HTML_ATTR_NO_FOLLOW;
     }
