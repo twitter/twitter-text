@@ -87,6 +87,13 @@ public class RegexTest extends TestCase {
     assertCaptureCount(2, Regex.EXTRACT_MENTIONS, "sample @user mention");
   }
 
+  public void testInvalidMentions() {
+    char[] invalid_chars = new char[]{'!', '@', '#', '$', '%', '&', '*'};
+    for (char c : invalid_chars) {
+      assertFalse("Failed to ignore a mention preceded by " + c, Regex.EXTRACT_MENTIONS.matcher("f" + c + "@kn").find());
+    }
+  }
+
   public void testExtractReply() {
     assertCaptureCount(1, Regex.EXTRACT_REPLY, "@user reply");
     assertCaptureCount(1, Regex.EXTRACT_REPLY, " @user reply");
