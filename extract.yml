@@ -48,6 +48,34 @@ tests:
       text: "@username\n@mention"
       expected: ["username", "mention"]
 
+    - description: "DO NOT extract username preceded by !"
+      test: "f!@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by @"
+      test: "f@@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by #"
+      test: "f#@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by $"
+      test: "f$@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by %"
+      test: "f%@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by &"
+      test: "f&@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by *"
+      test: "f*@kn"
+      expected: []
+
   mentions_with_indices:
     - description: "Extract a mention at the start"
       text: "@username yo!"
