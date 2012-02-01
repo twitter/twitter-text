@@ -33,19 +33,19 @@ tests:
 
   with_links:
     - description: "Highlight after a link (offset does not include markup)"
-      text: "@<a href=\"https://twitter.com/username\">username</a> this is an example"
+      text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
       hits: [ [10, 14] ]
-      expected: "@<a href=\"https://twitter.com/username\">username</a> <em>this</em> is an example"
+      expected: "@<a href=\"http://twitter.com/username\">username</a> <em>this</em> is an example"
 
     - description: "Highlight anchor text of a link (offset does not include markup)"
-      text: "@<a href=\"https://twitter.com/username\">username</a> this is an example"
+      text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
       hits: [ [1, 9] ]
-      expected: "@<a href=\"https://twitter.com/username\"><em>username</em></a> this is an example"
+      expected: "@<a href=\"http://twitter.com/username\"><em>username</em></a> this is an example"
 
     - description: "Highlight around a link (offset does not include markup)"
-      text: "@<a href=\"https://twitter.com/username\">username</a> this is an example"
+      text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
       hits: [ [0, 14] ]
-      expected: "<em>@<a href=\"https://twitter.com/username\">username</a> this</em> is an example"
+      expected: "<em>@<a href=\"http://twitter.com/username\">username</a> this</em> is an example"
 
     - description: "Highlight touching tags"
       text: "<a>foo</a><a>foo</a>"
@@ -68,6 +68,6 @@ tests:
       expected: "foo <em>bar</em> <a><em>baz</em></a>"
 
     - description: "Highlight mention at end"
-      text: "something via @<a href=\"https://twitter.com/twitter\">twitter</a>"
+      text: "something via @<a href=\"http://twitter.com/twitter\">twitter</a>"
       hits: [ [14, 22] ]
-      expected: "something via <em>@<a href=\"https://twitter.com/twitter\">twitter</a></em>"
+      expected: "something via <em>@<a href=\"http://twitter.com/twitter\">twitter</a></em>"

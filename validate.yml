@@ -106,7 +106,7 @@ tests:
       expected: true
 
     - description: "Valid url: protocol + domain + path + fragment"
-      text: "https://twitter.com/#!/twitter"
+      text: "http://twitter.com/#!/twitter"
       expected: true
 
     - description: "Valid url: cased protocol and domain"
