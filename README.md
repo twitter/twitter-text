@@ -40,9 +40,6 @@ If you are creating a new twitter-text library in a different programming langua
    * Please be sure to provide example input and output as well as a brief description of the problem.
 
 ## Changelog
-  * v1.4.10 - 2012-1-30 [ Git tag v1.4.10]
-    * [FIX] Do not extract mentions preceded by !, @, #, $, %, & or *
-
   * v1.4.9 - 2011-12-01 [ Git tag v1.4.9 ]
     * [FIX] Apply stricter parsing of t.co URLs
     * [FIX] Extract @mention and hashtag before newline
