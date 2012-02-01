@@ -78,3 +78,12 @@ test("twttr.txt.autolink", function() {
     equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid cahracter');
   }
 });
+
+test("twttr.txt.extractMentionsOrListsWithIndices", function() {
+  var invalid_chars = ['!', '@', '#', '$', '%', '&', '*']
+
+  for (var i = 0; i < invalid_chars.length; i++) {
+    c = invalid_chars[i];
+    equal(twttr.txt.extractMentionsOrListsWithIndices("f" + c + "@kn").length, 0, "Should not extract mention if preceded by " + c);
+  }
+});
