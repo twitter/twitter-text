@@ -546,6 +546,18 @@ describe Twitter::Autolink do
   end
 
   describe "autolinking options" do
+    it "should show display_url when :url_entities provided" do
+      linked = TestAutolink.new.auto_link("http://example.com/", :url_entities => [{
+        "url" => "http://t.co/0JG5Mcq",
+        "display_url" => "blog.twitter.com/2011/05/twitte…",
+        "expanded_url" => "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
+        "indices" => [
+          84,
+          103
+        ]
+      }])
+    end
+
     it "should apply :url_class as a CSS class" do
       linked = TestAutolink.new.auto_link("http://example.com/", :url_class => 'myclass')
       linked.should have_autolinked_url('http://example.com/')
