@@ -97,7 +97,7 @@ if (!window.twttr) {
   twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_])(#{atSigns})([a-zA-Z0-9_]{1,20})/g);
   twttr.txt.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
   twttr.txt.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
-  twttr.txt.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
+  twttr.txt.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -129,12 +129,13 @@ if (!window.twttr) {
   addCharsToCharClass(nonLatinHashtagChars, 0x2A700, 0x2B73F); // Kanji (CJK Extension C)
   addCharsToCharClass(nonLatinHashtagChars, 0x2B740, 0x2B81F); // Kanji (CJK Extension D)
   addCharsToCharClass(nonLatinHashtagChars, 0x2F800, 0x2FA1F); // Kanji (CJK supplement)
+  addCharsToCharClass(nonLatinHashtagChars, 0x3003, 0x3003); // Kanji iteration mark
   addCharsToCharClass(nonLatinHashtagChars, 0x3005, 0x3005); // Kanji iteration mark
   addCharsToCharClass(nonLatinHashtagChars, 0x303B, 0x303B); // Han iteration mark
 
   twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
-  twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþş\\303\\277");
+  twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
 
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
@@ -324,8 +325,8 @@ if (!window.twttr) {
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.listClass = options.listClass || DEFAULT_LIST_CLASS;
     options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
-    options.usernameUrlBase = options.usernameUrlBase || "http://twitter.com/";
-    options.listUrlBase = options.listUrlBase || "http://twitter.com/";
+    options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
+    options.listUrlBase = options.listUrlBase || "https://twitter.com/";
     if (!options.suppressNoFollow) {
       var extraHtml = HTML_ATTR_NO_FOLLOW;
     }
@@ -348,12 +349,12 @@ if (!window.twttr) {
 
           var d = {
             before: before,
-            at: at,
+            at: options.usernameIncludeSymbol ? "" : at,
+            at_before_user: options.usernameIncludeSymbol ? at : "",
             user: twttr.txt.htmlEscape(user),
             slashListname: twttr.txt.htmlEscape(slashListname),
             extraHtml: extraHtml,
             preChunk: "",
-            chunk: twttr.txt.htmlEscape(chunk),
             postChunk: ""
           };
           for (var k in options) {
@@ -366,16 +367,16 @@ if (!window.twttr) {
             // the link is a list
             var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
             d.list = twttr.txt.htmlEscape(list.toLowerCase());
-            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{chunk}#{postChunk}</a>", d);
+            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
           } else {
             if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
               // Followed by something that means we don't autolink
               return match;
             } else {
               // this is a screen name
-              d.chunk = twttr.txt.htmlEscape(user);
+              d.chunk = d.user;
               d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{chunk}#{postChunk}</a>", d);
+              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
             }
           }
         });
@@ -389,7 +390,7 @@ if (!window.twttr) {
     options = clone(options || {});
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "http://twitter.com/#!/search?q=%23";
+    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
     if (!options.suppressNoFollow) {
       var extraHtml = HTML_ATTR_NO_FOLLOW;
     }
