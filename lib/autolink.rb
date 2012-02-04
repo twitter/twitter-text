@@ -148,7 +148,7 @@ module Twitter
       url_entities = {}
       if options[:url_entities]
         options[:url_entities].each do |entity|
-          url_entities[entity[:url]] = entity
+          url_entities[entity["url"]] = entity
         end
         options.delete(:url_entities)
       end
@@ -169,9 +169,9 @@ module Twitter
 
         display_url = url
         link_text = html_escape(display_url)
-        if url_entities[url] && url_entities[url][:display_url]
-          display_url = url_entities[url][:display_url]
-          expanded_url = url_entities[url][:expanded_url]
+        if url_entities[url] && url_entities[url]["display_url"]
+          display_url = url_entities[url]["display_url"]
+          expanded_url = url_entities[url]["expanded_url"]
           if !options[:title]
             options[:title] = expanded_url
           end
@@ -193,10 +193,10 @@ module Twitter
           # For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
           display_url_sans_ellipses = display_url.sub("…", "")
           if expanded_url.include?(display_url_sans_ellipses)
-            display_url_index = expanded_url.index(display_url_index)
-            before_display_url = expanded_url.substr(0, display_url_index)
+            display_url_index = expanded_url.index(display_url_sans_ellipses)
+            before_display_url = expanded_url.slice(0, display_url_index)
             # Portion of expanded_url that comes after display_url
-            after_display_url = expanded_url.substr(display_url_index + display_url_sans_ellipses.length)
+            after_display_url = expanded_url.slice(display_url_index + display_url_sans_ellipses.length, 999999)
             preceding_ellipsis = display_url.match(/^…/) ? "…" : ""
             following_ellipsis = display_url.match(/…$/) ? "…" : ""
             # As an example: The user tweets "hi http://longdomainname.com/foo"
@@ -221,8 +221,8 @@ module Twitter
             #   <span style='font-size:0'>&nbsp;</span>
             #   …
             # </span>
-            invisible = "style='font-size:0; line-height:0'";
-            link_text = stringSupplant("<span class='tco-ellipsis'>#{preceding_ellipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{h before_display_url}</span><span class='js-display-url'>#{h display_url_sans_ellipses}</span><span #{invisible}>#{after_display_url}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{following_ellipsis}</span>", v);
+            invisible = "style='font-size:0; line-height:0'"
+            link_text = "<span class='tco-ellipsis'>#{preceding_ellipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{html_escape before_display_url}</span><span class='js-display-url'>#{html_escape display_url_sans_ellipses}</span><span #{invisible}>#{after_display_url}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{following_ellipsis}</span>"
           end
         end
 

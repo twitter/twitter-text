@@ -547,7 +547,7 @@ describe Twitter::Autolink do
 
   describe "autolinking options" do
     it "should show display_url when :url_entities provided" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :url_entities => [{
+      linked = TestAutolink.new.auto_link("http://t.co/0JG5Mcq", :url_entities => [{
         "url" => "http://t.co/0JG5Mcq",
         "display_url" => "blog.twitter.com/2011/05/twitte…",
         "expanded_url" => "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
@@ -556,6 +556,11 @@ describe Twitter::Autolink do
           103
         ]
       }])
+      html = Nokogiri::HTML(linked)
+      html.search('a').should_not be_empty
+      html.search('a[@href="http://t.co/0JG5Mcq"]').should_not be_empty
+      html.search('span[@class=js-display-url]').inner_text.should == "blog.twitter.com/2011/05/twitte"
+      html.inner_text.should == " http://blog.twitter.com/2011/05/twitter-for-mac-update.html …"
     end
 
     it "should apply :url_class as a CSS class" do
