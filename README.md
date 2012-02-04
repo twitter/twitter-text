@@ -30,7 +30,7 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
               "expanded_url": "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
               "indices": [
                 30,
-                47
+                48
               ]
             }
         ]});
