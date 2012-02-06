@@ -576,12 +576,12 @@ if (!window.twttr) {
       return [];
     }
 
-    var urls = [],
-        position = 0;
+    var urls = [];
 
-    text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, domain, port, path, query) {
-      var startPosition = text.indexOf(url, position),
-          endPosition = startPosition + url.length;
+    while (twttr.txt.regexen.extractUrl.exec(text)) {
+      var before = RegExp.$2, url = RegExp.$3, protocol = RegExp.$4, domain = RegExp.$5, path = RegExp.$7;
+      var endPosition = twttr.txt.regexen.extractUrl.lastIndex,
+          startPosition = endPosition - url.length;
 
       // if protocol is missing and domain contains non-ASCII characters,
       // extract ASCII-only domains.
@@ -604,7 +604,7 @@ if (!window.twttr) {
 
         // no ASCII-only domain found. Skip the entire URL.
         if (lastUrl == null) {
-          return;
+          continue;
         }
 
         // lastUrl only contains domain. Need to add path and query if they exist.
@@ -626,7 +626,7 @@ if (!window.twttr) {
           indices: [startPosition, endPosition]
         });
       }
-    });
+    }
 
     return urls;
   };
