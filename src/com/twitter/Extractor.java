@@ -9,8 +9,8 @@ import java.util.regex.*;
  */
 public class Extractor {
   public static class Entity {
-    protected Integer start = null;
-    protected Integer end = null;
+    protected int start;
+    protected int end;
     protected String  value = null;
     protected String  type = null;
 
@@ -47,8 +47,8 @@ public class Extractor {
       Entity other = (Entity)obj;
 
       if (this.type.equals(other.type) &&
-          this.start.equals(other.start) &&
-          this.end.equals(other.end) &&
+          this.start == other.start &&
+          this.end == other.end &&
           this.value.equals(other.value)) {
         return true;
       } else {
@@ -268,5 +268,50 @@ public class Extractor {
       extracted.add(new Entity(matcher, valueType, groupNumber));
     }
     return extracted;
+  }
+
+  /*
+   * Modify Unicode-based indices of the entities to UTF-16 based indices.
+   *
+   * In UTF-16 based indices, Unicode supplementary characters are counted as two characters.
+   *
+   * @param text original text
+   * @param entities entities with Unicode based indices
+   */
+  public void modifyIndicesFromUnicodeToUTF16(String text, List<Entity> entities) {
+    shiftIndices(text, entities, +1);
+  }
+
+  /*
+   * Modify UTF-16-based indices of the entities to Unicode-based indices.
+   *
+   * In Unicode-based indices, Unicode supplementary characters are counted as single characters.
+   *
+   * @param text original text
+   * @param entities entities with UTF-16 based indices
+   */
+  public void modifyIndicesFromUTF16ToToUnicode(String text, List<Entity> entities) {
+    shiftIndices(text, entities, -1);
+  }
+
+  /*
+   * Shift Entity's indices by {@code diff} for every Unicode supplementary character
+   * which appears before the entity.
+   *
+   * @param text original text
+   * @param entities extracted entities
+   * @param the amount to shift the entity's indices.
+   */
+  protected void shiftIndices(String text, List<Entity> entities, int diff) {
+    for (int i = 0; i < text.length() - 1; i++) {
+      if (Character.isSupplementaryCodePoint(text.codePointAt(i))) {
+        for (Entity entity: entities) {
+          if (entity.start > i) {
+            entity.start += diff;
+            entity.end += diff;
+          }
+        }
+      }
+    }
   }
 }
