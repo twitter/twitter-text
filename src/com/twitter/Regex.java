@@ -113,7 +113,7 @@ public class Regex {
   public static final int AUTO_LINK_HASHTAGS_GROUP_TAG = 3;
   public static final Pattern HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
 
-  public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
+  public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_!#$%&*" + AT_SIGNS_CHARS + "]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE = 1;
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT = 2;
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME = 3;
