@@ -670,6 +670,30 @@ if (!window.twttr) {
     return tags;
   };
 
+  twttr.txt.modifyIndicesFromUnicodeToUTF16 = function(text, entities) {
+    twttr.txt.shiftIndices(text, entities, 1);
+  };
+
+  twttr.txt.modifyIndicesFromUTF16ToUnicode = function(text, entities) {
+    twttr.txt.shiftIndices(text, entities, -1);
+  };
+
+  twttr.txt.shiftIndices = function(text, entities, diff) {
+    for (var i = 0; i < text.length - 1; i++) {
+      var c1 = text.charCodeAt(i);
+      var c2 = text.charCodeAt(i + 1);
+      if (0xD800 <= c1 && c1 <= 0xDBFF && 0xDC00 <= c2 && c2 <= 0xDFFF) {
+        // supplementary character
+        for (var j = 0; j < entities.length; j++) {
+          if (entities[j].indices[0] >= i) {
+            entities[j].indices[0] += diff;
+            entities[j].indices[1] += diff;
+          }
+        }
+      }
+    }
+  };
+
   // this essentially does text.split(/<|>/)
   // except that won't work in IE, where empty strings are ommitted
   // so "<>".split(/<|>/) => [] in IE, but is ["", "", ""] in all others

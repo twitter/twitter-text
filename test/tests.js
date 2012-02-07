@@ -33,6 +33,32 @@ test("twttr.txt.splitTags", function() {
   }
 });
 
+test("twttr.txt.extract", function() {
+  var text = "\uD801\uDC00 #hashtag \uD801\uDC00 #hashtag";
+  var extracted = twttr.txt.extractHashtagsWithIndices(text);
+  same(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
+  twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
+  same(extracted, [{hashtag:"hashtag", indices:[2, 10]}, {hashtag:"hashtag", indices:[13, 21]}], "Hashtag w/ Supplementary character, Unicode indices");
+  twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
+  same(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
+
+  text = "\uD801\uDC00 @mention \uD801\uDC00 @mention";
+  extracted = twttr.txt.extractMentionsOrListsWithIndices(text);
+  same(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
+  twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
+  same(extracted, [{screenName:"mention", listSlug:"", indices:[2, 10]}, {screenName:"mention", listSlug:"", indices:[13, 21]}], "Mention w/ Supplementary character");
+  twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
+  same(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
+
+  text = "\uD801\uDC00 http://twitter.com \uD801\uDC00 http://test.com";
+  extracted = twttr.txt.extractUrlsWithIndices(text);
+  same(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
+  twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
+  same(extracted, [{url:"http://twitter.com", indices:[2, 20]}, {url:"http://test.com", indices:[23, 38]}], "URL w/ Supplementary character, Unicode indices");
+  twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
+  same(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
+});
+
 test("twttr.txt.autolink", function() {
   // Username Overrides
   ok(twttr.txt.autoLink("@tw", { before: "!" }).match(/!@<a[^>]+>tw<\/a>/), "Override before");
@@ -77,4 +103,8 @@ test("twttr.txt.autolink", function() {
   for (i = 0; i < invalidChars.length; i++) {
     equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid cahracter');
   }
+
+  same(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
+      "\uD801\uDC00 <a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" data-screen-name=\"mention\" href=\"http://twitter.com/mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\" >http://twitter.com</a>",
+      "Autolink hashtag/mentionURL w/ Supplementary character");
 });
