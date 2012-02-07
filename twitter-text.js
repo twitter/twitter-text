@@ -1,5 +1,11 @@
-if (!window.twttr) {
+if (typeof window === "undefined" || window === null) {
+  window = { twttr: {} };
+}
+if (window.twttr == null) {
   window.twttr = {};
+}
+if (typeof twttr === "undefined" || twttr === null) {
+  twttr = {};
 }
 
 (function() {
