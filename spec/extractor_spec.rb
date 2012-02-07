@@ -100,6 +100,10 @@ describe Twitter::Extractor do
       end
       needed.should == []
     end
+
+    it "should extract screen name in text with supplementary character" do
+      @extractor.extract_mentioned_screen_names_with_indices("#{[0x10400].pack('U')} @alice").should == [{:screen_name => "alice", :indices => [2, 8]}]
+    end
   end
 
   describe "replies" do
@@ -213,6 +217,10 @@ describe Twitter::Extractor do
           extracted_url[:indices].first.should == 11
           extracted_url[:indices].last.should == 11 + url.chars.to_a.size
         end
+      end
+
+      it "should extract URL in text with supplementary character" do
+        @extractor.extract_urls_with_indices("#{[0x10400].pack('U')} http://twitter.com").should == [{:url => "http://twitter.com", :indices => [2, 20]}]
       end
     end
 
@@ -344,6 +352,10 @@ describe Twitter::Extractor do
 
     it "should not extract numeric hashtags" do
       not_match_hashtag_in_text("#1234")
+    end
+
+    it "should extract hashtag in text with supplementary character" do
+      match_hashtag_in_text("hashtag", "#{[0x10400].pack('U')} #hashtag", 2)
     end
   end
 end

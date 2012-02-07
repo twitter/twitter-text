@@ -541,6 +541,12 @@ describe Twitter::Autolink do
         auto_linked.should_not include('hashtag_classname')
       end
 
+      it "should autolink url/hashtag/mention in text with Unicode supplementary characters" do
+        auto_linked = @linker.auto_link("#{[0x10400].pack('U')} #hashtag #{[0x10400].pack('U')} @mention #{[0x10400].pack('U')} http://twitter.com/")
+        auto_linked.should have_autolinked_hashtag('#hashtag')
+        auto_linked.should link_to_screen_name('mention')
+        auto_linked.should have_autolinked_url('http://twitter.com/')
+      end
     end
 
   end
