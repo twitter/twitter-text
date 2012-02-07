@@ -146,9 +146,9 @@ public class Autolink {
               StringBuilder sb = new StringBuilder("<span class='tco-ellipsis'>");
               sb.append(precedingEllipsis);
               sb.append(invisibleSpan).append("&nbsp;</span></span>");
-              sb.append(invisibleSpan).append(beforeDisplayURL).append("</span>");
-              sb.append("<span class='js-display-url'>").append(displayURLSansEllipses).append("</span>");
-              sb.append(invisibleSpan).append(afterDisplayURL).append("</span>");
+              sb.append(invisibleSpan).append(escapeHTML(beforeDisplayURL)).append("</span>");
+              sb.append("<span class='js-display-url'>").append(escapeHTML(displayURLSansEllipses)).append("</span>");
+              sb.append(invisibleSpan).append(escapeHTML(afterDisplayURL)).append("</span>");
               sb.append("<span class='tco-ellipsis'>").append(invisibleSpan).append("&nbsp;</span>").append(followingEllipsis).append("</span>");
 
               linkText = sb;
