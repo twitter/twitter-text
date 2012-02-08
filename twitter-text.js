@@ -528,8 +528,8 @@ if (!window.twttr) {
         }
 
         for (var k in options) {
-          var val = options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;");
-          htmlAttrs += stringSupplant(" #{k}=\"#{val}\" ", {k: k, val: val});
+          var val = options[k].toString();
+          htmlAttrs += stringSupplant(" #{k}=\"#{val}\" ", {k: k, val: twttr.txt.htmlEscape(val)});
         }
 
         // In the case of t.co URLs, don't allow additional path characters.

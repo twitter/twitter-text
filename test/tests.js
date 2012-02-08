@@ -83,6 +83,7 @@ test("twttr.txt.autolink", function() {
   var range = document.createRange();
   range.selectNode(div);
   ok(range.toString().match(/\shttp:\/\/blog.twitter.com\/2011\/05\/twitter-for-mac-update.html\s…/), 'Selection copies expanded_url');
+  document.body.removeChild(div);
 
   // urls with invalid character
   var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
