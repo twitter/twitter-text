@@ -298,7 +298,7 @@ describe Twitter::Autolink do
         it "should be linked" do
           link = Nokogiri::HTML(@autolinked_text).search('a')
           (link.inner_text.respond_to?(:force_encoding) ? link.inner_text.force_encoding("utf-8") : link.inner_text).should == "#{[0xFF03].pack('U')}twj_dev"
-          link.first['href'].should == 'http://twitter.com/#!/search?q=%23twj_dev'
+          link.first['href'].should == 'https://twitter.com/#!/search?q=%23twj_dev'
         end
       end
 
@@ -309,7 +309,7 @@ describe Twitter::Autolink do
         end
 
         it "should be linked" do
-          @autolinked_text.should == "<a href=\"http://twitter.com/#!/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
+          @autolinked_text.should == "<a href=\"https://twitter.com/#!/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
         end
       end
 
@@ -530,13 +530,13 @@ describe Twitter::Autolink do
       end
 
       it "should allow url/hashtag overlap" do
-        auto_linked = @linker.auto_link("http://twitter.com/#search")
-        auto_linked.should have_autolinked_url('http://twitter.com/#search')
+        auto_linked = @linker.auto_link("https://twitter.com/#search")
+        auto_linked.should have_autolinked_url('https://twitter.com/#search')
       end
 
       it "should not add invalid option in HTML tags" do
-        auto_linked = @linker.auto_link("http://twitter.com/ is a URL, not a hashtag", :hashtag_class => 'hashtag_classname')
-        auto_linked.should have_autolinked_url('http://twitter.com/')
+        auto_linked = @linker.auto_link("https://twitter.com/ is a URL, not a hashtag", :hashtag_class => 'hashtag_classname')
+        auto_linked.should have_autolinked_url('https://twitter.com/')
         auto_linked.should_not include('hashtag_class')
         auto_linked.should_not include('hashtag_classname')
       end
@@ -626,7 +626,7 @@ describe Twitter::Autolink do
       @linker.html_escape("&<>\"").should == "&amp;&lt;&gt;&quot;"
       @linker.html_escape("<div>").should == "&lt;div&gt;"
       @linker.html_escape("a&b").should == "a&amp;b"
-      @linker.html_escape("<a href=\"http://twitter.com\" target=\"_blank\">twitter & friends</a>").should == "&lt;a href=&quot;http://twitter.com&quot; target=&quot;_blank&quot;&gt;twitter &amp; friends&lt;/a&gt;"
+      @linker.html_escape("<a href=\"https://twitter.com\" target=\"_blank\">twitter & friends</a>").should == "&lt;a href=&quot;https://twitter.com&quot; target=&quot;_blank&quot;&gt;twitter &amp; friends&lt;/a&gt;"
       @linker.html_escape("&amp;").should == "&amp;amp;"
       @linker.html_escape(nil).should == nil
     end

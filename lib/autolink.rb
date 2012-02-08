@@ -45,10 +45,10 @@ module Twitter
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:list_class] ||= DEFAULT_LIST_CLASS
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
-      options[:username_url_base] ||= "http://twitter.com/"
-      options[:list_url_base] ||= "http://twitter.com/"
+      options[:username_url_base] ||= "https://twitter.com/"
+      options[:list_url_base] ||= "https://twitter.com/"
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
-      options[:hashtag_url_base] ||= "http://twitter.com/#!/search?q=%23"
+      options[:hashtag_url_base] ||= "https://twitter.com/#!/search?q=%23"
       options[:target] ||= DEFAULT_TARGET
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
@@ -187,10 +187,10 @@ module Twitter
     BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
 
     def html_attrs_for_options(options)
-      html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
+      autolink_html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
     end
 
-    def html_attrs(options)
+    def autolink_html_attrs(options)
       options.inject("") do |attrs, (key, value)|
         if BOOLEAN_ATTRIBUTES.include?(key)
           value = value ? key : nil
