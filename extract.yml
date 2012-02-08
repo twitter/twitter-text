@@ -1,4 +1,3 @@
-
 tests:
   mentions:
     - description: "Extract mention at the begining of a tweet"
@@ -48,6 +47,34 @@ tests:
     - description: "Extract mentions before newline"
       text: "@username\n@mention"
       expected: ["username", "mention"]
+
+    - description: "DO NOT extract username preceded by !"
+      text: "f!@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by @"
+      text: "f@@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by #"
+      text: "f#@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by $"
+      text: "f$@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by %"
+      text: "f%@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by &"
+      text: "f&@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by *"
+      text: "f*@kn"
+      expected: []
 
   mentions_with_indices:
     - description: "Extract a mention at the start"
@@ -512,6 +539,14 @@ tests:
           indices: [113, 133]
         - url: "http://t.co/FNkPfmii"
           indices: [136, 156]
+
+    - description: "Extract correct indices for duplicate instances of the same URL"
+      text: "http://t.co http://t.co"
+      expected:
+        - url: "http://t.co"
+          indices: [0, 11]
+        - url: "http://t.co"
+          indices: [12, 23]
 
   hashtags:
     - description: "Extract an all-alpha hashtag"
