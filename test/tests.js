@@ -10,7 +10,7 @@ test("twttr.txt.htmlEscape", function() {
     ["&<>\"", "&amp;&lt;&gt;&quot;"],
     ["<div>", "&lt;div&gt;"],
     ["a&b", "a&amp;b"],
-    ["<a href=\"http://twitter.com\" target=\"_blank\">twitter & friends</a>", "&lt;a href=&quot;http://twitter.com&quot; target=&quot;_blank&quot;&gt;twitter &amp; friends&lt;/a&gt;"],
+    ["<a href=\"https://twitter.com\" target=\"_blank\">twitter & friends</a>", "&lt;a href=&quot;https://twitter.com&quot; target=&quot;_blank&quot;&gt;twitter &amp; friends&lt;/a&gt;"],
     ["&amp;", "&amp;amp;"],
     [undefined, undefined, "calling with undefined will return input"]
   ];
@@ -33,13 +33,39 @@ test("twttr.txt.splitTags", function() {
   }
 });
 
+test("twttr.txt.extract", function() {
+  var text = "\uD801\uDC00 #hashtag \uD801\uDC00 #hashtag";
+  var extracted = twttr.txt.extractHashtagsWithIndices(text);
+  same(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
+  twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
+  same(extracted, [{hashtag:"hashtag", indices:[2, 10]}, {hashtag:"hashtag", indices:[13, 21]}], "Hashtag w/ Supplementary character, Unicode indices");
+  twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
+  same(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
+
+  text = "\uD801\uDC00 @mention \uD801\uDC00 @mention";
+  extracted = twttr.txt.extractMentionsOrListsWithIndices(text);
+  same(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
+  twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
+  same(extracted, [{screenName:"mention", listSlug:"", indices:[2, 10]}, {screenName:"mention", listSlug:"", indices:[13, 21]}], "Mention w/ Supplementary character");
+  twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
+  same(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
+
+  text = "\uD801\uDC00 http://twitter.com \uD801\uDC00 http://test.com";
+  extracted = twttr.txt.extractUrlsWithIndices(text);
+  same(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
+  twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
+  same(extracted, [{url:"http://twitter.com", indices:[2, 20]}, {url:"http://test.com", indices:[23, 38]}], "URL w/ Supplementary character, Unicode indices");
+  twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
+  same(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
+});
+
 test("twttr.txt.autolink", function() {
   // Username Overrides
   ok(twttr.txt.autoLink("@tw", { before: "!" }).match(/!@<a[^>]+>tw<\/a>/), "Override before");
   ok(twttr.txt.autoLink("@tw", { at: "!" }).match(/!<a[^>]+>tw<\/a>/), "Override at");
   ok(twttr.txt.autoLink("@tw", { preChunk: "<b>" }).match(/@<a[^>]+><b>tw<\/a>/), "Override preChunk");
   ok(twttr.txt.autoLink("@tw", { postChunk: "</b>" }).match(/@<a[^>]+>tw<\/b><\/a>/), "Override postChunk");
-  ok(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }) == "<a class=\"tweet-url username\" data-screen-name=\"tw\" href=\"http://twitter.com/tw\" rel=\"nofollow\">@tw</a>",
+  same(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }), "<a class=\"tweet-url username\" data-screen-name=\"tw\" href=\"https://twitter.com/tw\" rel=\"nofollow\">@tw</a>",
       "Include @ in the autolinked username");
   ok(!twttr.txt.autoLink("foo http://example.com", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to URL");
 
@@ -48,7 +74,7 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("@tw/somelist", { at: "!" }).match(/!<a[^>]+>tw\/somelist<\/a>/), "Override list at");
   ok(twttr.txt.autoLink("@tw/somelist", { preChunk: "<b>" }).match(/@<a[^>]+><b>tw\/somelist<\/a>/), "Override list preChunk");
   ok(twttr.txt.autoLink("@tw/somelist", { postChunk: "</b>" }).match(/@<a[^>]+>tw\/somelist<\/b><\/a>/), "Override list postChunk");
-  ok(twttr.txt.autoLink("@tw/somelist", { usernameIncludeSymbol: true }) == "<a class=\"tweet-url list-slug\" href=\"http://twitter.com/tw/somelist\" rel=\"nofollow\">@tw/somelist</a>",
+  same(twttr.txt.autoLink("@tw/somelist", { usernameIncludeSymbol: true }), "<a class=\"tweet-url list-slug\" href=\"https://twitter.com/tw/somelist\" rel=\"nofollow\">@tw/somelist</a>",
       "Include @ in the autolinked list");
   ok(twttr.txt.autoLink("foo @tw/somelist", { listClass: 'custom-list' }).match(/custom-list/), "Override listClass");
   ok(!twttr.txt.autoLink("foo @tw/somelist", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to a List");
@@ -76,5 +102,14 @@ test("twttr.txt.autolink", function() {
   var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
   for (i = 0; i < invalidChars.length; i++) {
     equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid cahracter');
+  }
+});
+
+test("twttr.txt.extractMentionsOrListsWithIndices", function() {
+  var invalid_chars = ['!', '@', '#', '$', '%', '&', '*']
+
+  for (var i = 0; i < invalid_chars.length; i++) {
+    c = invalid_chars[i];
+    equal(twttr.txt.extractMentionsOrListsWithIndices("f" + c + "@kn").length, 0, "Should not extract mention if preceded by " + c);
   }
 });

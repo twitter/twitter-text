@@ -1,3 +1,14 @@
+/*!
+ * twitter-text-js 1.4.15
+ *
+ * Copyright 2011 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this work except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ */
 if (typeof window === "undefined" || window === null) {
   window = { twttr: {} };
 }
@@ -99,6 +110,11 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
   twttr.txt.regexen.invalid_chars_group = regexSupplant(INVALID_CHARS.join(""));
   twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
+  twttr.txt.regexen.atSigns = /[@＠]/;
+  twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})/g);
+  twttr.txt.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
+  twttr.txt.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
+  twttr.txt.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -138,29 +154,20 @@ if (typeof twttr === "undefined" || twttr === null) {
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
   twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
 
+  twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
+
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
-  twttr.txt.regexen.hashSigns = /[#＃]/;
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
-  twttr.txt.regexen.endHashtagMatch = regexSupplant(/^(?:#{hashSigns}|:\/\/)/);
+  twttr.txt.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
   twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
-  twttr.txt.regexen.validHashtag = regexSupplant(/(#{hashtagBoundary})(#{hashSigns})(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
+  twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
+  twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_!#\$%&*@＠]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
+  twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
-  // Mention related regex collection
-  twttr.txt.regexen.validMentionPrecedingChars = /(?:^|[^a-zA-Z0-9_!#$%&*@＠]|RT:?)/;
-  twttr.txt.regexen.atSigns = /[@＠]/;
-  twttr.txt.regexen.validMentionOrList = regexSupplant(
-    '(#{validMentionPrecedingChars})' +  // $1: Preceding character
-    '(#{atSigns})' +                     // $2: At mark
-    '([a-zA-Z0-9_]{1,20})' +             // $3: Screen name
-    '(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?'  // $4: List (optional)
-  , 'g');
-  twttr.txt.regexen.validReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
-  twttr.txt.regexen.endMentionMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
+  // URL related hash regex collection
+  twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
 
-  // URL related regex collection
-  twttr.txt.regexen.validUrlPrecedingChars = regexSupplant(/(?:[^A-Za-z0-9@＠$#＃#{invalid_chars_group}]|^)/);
-  twttr.txt.regexen.invalidUrlWithoutProtocolPrecedingChars = /[-_.\/]$/;
   twttr.txt.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", twttr.txt.regexen);
   twttr.txt.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
   twttr.txt.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
@@ -195,7 +202,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
-      '(#{validUrlPrecedingChars})'                                   + // $2 Preceeding chracter
+      '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
       '('                                                          + // $3 URL
         '(https?:\\/\\/)?'                                         + // $4 Protocol (optional)
         '(#{validDomain})'                                         + // $5 Domain(s)
@@ -306,14 +313,6 @@ if (typeof twttr === "undefined" || twttr === null) {
   var DEFAULT_HASHTAG_CLASS = "hashtag";
   // HTML attribute for robot nofollow behavior (default)
   var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
-  // Options which should not be passed as HTML attributes
-  var OPTIONS_NOT_ATTRIBUTES = {'urlClass':true, 'listClass':true, 'usernameClass':true, 'hashtagClass':true,
-                            'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true,
-                            'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
-                            'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
-                            'suppressDataScreenName':true, 'urlEntities':true, 'before':true
-                            };
-  var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
   // Simple object cloning function for simple objects
   function clone(o) {
@@ -327,25 +326,126 @@ if (typeof twttr === "undefined" || twttr === null) {
     return r;
   }
 
-  twttr.txt.autoLinkEntities = function(text, entities, options) {
+  twttr.txt.autoLink = function(text, options) {
+    options = clone(options || {});
+    return twttr.txt.autoLinkUsernamesOrLists(
+      twttr.txt.autoLinkUrlsCustom(
+        twttr.txt.autoLinkHashtags(text, options),
+      options),
+    options);
+  };
+
+
+  twttr.txt.autoLinkUsernamesOrLists = function(text, options) {
     options = clone(options || {});
 
-    if (!options.suppressNoFollow) {
-      options.rel = "nofollow";
-    }
-    if (options.urlClass) {
-      options["class"] = options.urlClass;
-    }
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
-    options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.listClass = options.listClass || DEFAULT_LIST_CLASS;
     options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
     options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
     options.listUrlBase = options.listUrlBase || "https://twitter.com/";
-    options.before = options.before || "";
-    var extraHtml = options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW;
+    if (!options.suppressNoFollow) {
+      var extraHtml = HTML_ATTR_NO_FOLLOW;
+    }
+
+    var newText = "",
+        splitText = twttr.txt.splitTags(text);
+
+    for (var index = 0; index < splitText.length; index++) {
+      var chunk = splitText[index];
+
+      if (index !== 0) {
+        newText += ((index % 2 === 0) ? ">" : "<");
+      }
+
+      if (index % 4 !== 0) {
+        newText += chunk;
+      } else {
+        newText += chunk.replace(twttr.txt.regexen.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, offset, chunk) {
+          var after = chunk.slice(offset + match.length);
+
+          var d = {
+            before: before,
+            at: options.usernameIncludeSymbol ? "" : at,
+            at_before_user: options.usernameIncludeSymbol ? at : "",
+            user: twttr.txt.htmlEscape(user),
+            slashListname: twttr.txt.htmlEscape(slashListname),
+            extraHtml: extraHtml,
+            preChunk: "",
+            postChunk: ""
+          };
+          for (var k in options) {
+            if (options.hasOwnProperty(k)) {
+              d[k] = options[k];
+            }
+          }
+
+          if (slashListname && !options.suppressLists) {
+            // the link is a list
+            var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
+            d.list = twttr.txt.htmlEscape(list.toLowerCase());
+            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
+          } else {
+            if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
+              // Followed by something that means we don't autolink
+              return match;
+            } else {
+              // this is a screen name
+              d.chunk = d.user;
+              d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
+              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
+            }
+          }
+        });
+      }
+    }
+
+    return newText;
+  };
+
+  twttr.txt.autoLinkHashtags = function(text, options) {
+    options = clone(options || {});
+    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
+    options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
+    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
+    if (!options.suppressNoFollow) {
+      var extraHtml = HTML_ATTR_NO_FOLLOW;
+    }
+
+    return text.replace(twttr.txt.regexen.autoLinkHashtags, function(match, before, hash, text, offset, chunk) {
+      var after = chunk.slice(offset + match.length);
+      if (after.match(twttr.txt.regexen.endHashtagMatch))
+        return match;
+
+      var d = {
+        before: before,
+        hash: twttr.txt.htmlEscape(hash),
+        preText: "",
+        text: twttr.txt.htmlEscape(text),
+        postText: "",
+        extraHtml: extraHtml
+      };
+
+      for (var k in options) {
+        if (options.hasOwnProperty(k)) {
+          d[k] = options[k];
+        }
+      }
+
+      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
+    });
+  };
+
+
+  twttr.txt.autoLinkUrlsCustom = function(text, options) {
+    options = clone(options || {});
+    if (!options.suppressNoFollow) {
+      options.rel = "nofollow";
+    }
+    if (options.urlClass) {
+      options["class"] = options.urlClass;
+      delete options.urlClass;
+    }
 
     // remap url entities to hash
     var urlEntities, i, len;
@@ -356,138 +456,46 @@ if (typeof twttr === "undefined" || twttr === null) {
       }
     }
 
-    var result = "";
-    var beginIndex = 0;
-    var htmlAttrs = null;
+    delete options.suppressNoFollow;
+    delete options.suppressDataScreenName;
+    delete options.listClass;
+    delete options.usernameClass;
+    delete options.usernameUrlBase;
+    delete options.listUrlBase;
 
-    for (var i = 0; i < entities.length; i++) {
-      var entity = entities[i];
-      result += text.substring(beginIndex, entity.indices[0]);
+    return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
+      var tldComponents;
 
-      var replaceStr;
-      if (entity.url) {
-        if (htmlAttrs == null) {
-          htmlAttrs = twttr.txt.htmlAttrForOptions(options);
+      if (protocol) {
+        var htmlAttrs = "";
+        var after = "";
+        for (var k in options) {
+          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+        }
+
+        // In the case of t.co URLs, don't allow additional path characters.
+        if (url.match(twttr.txt.regexen.validTcoUrl)) {
+          url = RegExp.lastMatch;
+          after = RegExp.rightContext;
         }
 
         var d = {
+          before: before,
           htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(entity.url),
+          url: twttr.txt.htmlEscape(url),
+          after: after
         };
-        if (urlEntities && urlEntities[entity.url] && urlEntities[entity.url].display_url) {
-          d.displayUrl = twttr.txt.htmlEscape(urlEntities[entity.url].display_url);
+        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+          d.displayUrl = twttr.txt.htmlEscape(urlEntities[url].display_url);
         } else {
           d.displayUrl = d.url;
         }
 
-        replaceStr =  stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>", d);
-      } else if (entity.hashtag) {
-        var d = {
-            hash: text.substring(entity.indices[0], entity.indices[0] + 1),
-            preText: "",
-            text: twttr.txt.htmlEscape(entity.hashtag),
-            postText: "",
-            extraHtml: extraHtml
-          };
-          for (var k in options) {
-            if (options.hasOwnProperty(k)) {
-              d[k] = options[k];
-            }
-          }
-
-          replaceStr = stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
-      } else if(entity.screenName) {
-        var at = text.substring(entity.indices[0], entity.indices[0] + 1);
-        var d = {
-          at: options.usernameIncludeSymbol ? "" : at,
-          at_before_user: options.usernameIncludeSymbol ? at : "",
-          user: twttr.txt.htmlEscape(entity.screenName),
-          slashListname: twttr.txt.htmlEscape(entity.listSlug),
-          extraHtml: extraHtml,
-          preChunk: "",
-          postChunk: ""
-        };
-        for (var k in options) {
-          if (options.hasOwnProperty(k)) {
-            d[k] = options[k];
-          }
-        }
-
-        if (entity.listSlug && !options.suppressLists) {
-          // the link is a list
-          var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
-          d.list = twttr.txt.htmlEscape(list.toLowerCase());
-          replaceStr = stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-        } else {
-          // this is a screen name
-          d.chunk = d.user;
-          d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-          replaceStr = stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-        }
-      }
-      result += replaceStr;
-      beginIndex = entity.indices[1];
-    }
-    result += text.substring(beginIndex, text.length);
-    return result;
-  };
-
-  twttr.txt.htmlAttrForOptions = function(options) {
-    var htmlAttrs = "";
-    for (var k in options) {
-      var v = options[k];
-      if (OPTIONS_NOT_ATTRIBUTES[k]) continue;
-      if (BOOLEAN_ATTRIBUTES[k]) {
-        v = v ? k : null;
-      }
-      if (v == null) continue;
-      htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: twttr.txt.htmlEscape(k), v: twttr.txt.htmlEscape(v.toString())});
-    }
-    return htmlAttrs;
-  };
-
-  twttr.txt.autoLink = function(text, options) {
-    var entities = twttr.txt.extractEntitiesWithIndices(text, {extractUrlWithoutProtocol: false});
-    return twttr.txt.autoLinkEntities(text, entities, options);
-  };
-
-  twttr.txt.autoLinkUsernamesOrLists = function(text, options) {
-    var entities = twttr.txt.extractMentionsOrListsWithIndices(text);
-    return twttr.txt.autoLinkEntities(text, entities, options);
-  };
-
-  twttr.txt.autoLinkHashtags = function(text, options) {
-    var entities = twttr.txt.extractHashtagsWithIndices(text);
-    return twttr.txt.autoLinkEntities(text, entities, options);
-  };
-
-  twttr.txt.autoLinkUrlsCustom = function(text, options) {
-    var entities = twttr.txt.extractUrlsWithIndices(text, {extractUrlWithoutProtocol: false});
-    return twttr.txt.autoLinkEntities(text, entities, options);
-  };
-
-  twttr.txt.extractEntitiesWithIndices = function(text, options) {
-    var entities = twttr.txt.extractUrlsWithIndices(text, options)
-                    .concat(twttr.txt.extractMentionsOrListsWithIndices(text))
-                    .concat(twttr.txt.extractHashtagsWithIndices(text));
-
-    if (entities.length == 0) {
-      return [];
-    }
-
-    entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
-
-    var prev = entities[0];
-    for (var i = 1; i < entities.length; i++) {
-      if (prev.indices[1] > entities[i].indices[0]) {
-        entities.splice(i, 1);
-        i--;
+        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
       } else {
-        prev = entities[i];
+        return all;
       }
-    }
-
-    return entities;
+    });
   };
 
   twttr.txt.extractMentions = function(text) {
@@ -503,20 +511,26 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.extractMentionsWithIndices = function(text) {
-    var mentions = [];
-    var mentionsOrLists = twttr.txt.extractMentionsOrListsWithIndices(text);
-
-    for (var i = 0 ; i < mentionsOrLists.length; i++) {
-      mentionOrList = mentionsOrLists[i];
-      if (mentionOrList.listSlug == '') {
-        mentions.push({
-          screenName: mentionOrList.screenName,
-          indices: mentionOrList.indices
-        });
-      }
+    if (!text) {
+      return [];
     }
 
-    return mentions;
+    var possibleScreenNames = [],
+        position = 0;
+
+    text.replace(twttr.txt.regexen.extractMentions, function(match, before, atSign, screenName, offset, chunk) {
+      var after = chunk.slice(offset + match.length);
+      if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
+        var startPosition = text.indexOf(atSign + screenName, position);
+        position = startPosition + screenName.length + 1;
+        possibleScreenNames.push({
+          screenName: screenName,
+          indices: [startPosition, position]
+        });
+      }
+    });
+
+    return possibleScreenNames;
   };
 
   /**
@@ -524,16 +538,16 @@ if (typeof twttr === "undefined" || twttr === null) {
    * (Presence of listSlug indicates a list)
    */
   twttr.txt.extractMentionsOrListsWithIndices = function(text) {
-    if (!text || !text.match(twttr.txt.regexen.atSign)) {
+    if (!text) {
       return [];
     }
 
     var possibleNames = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.validMentionOrList, function(match, before, atSign, screenName, slashListname, offset, chunk) {
+    text.replace(twttr.txt.regexen.extractMentionsOrLists, function(match, before, atSign, screenName, slashListname, offset, chunk) {
       var after = chunk.slice(offset + match.length);
-      if (!after.match(twttr.txt.regexen.endMentionMatch)) {
+      if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
         slashListname = slashListname || '';
         var startPosition = text.indexOf(atSign + screenName + slashListname, position);
         position = startPosition + screenName.length + slashListname.length + 1;
@@ -554,18 +568,18 @@ if (typeof twttr === "undefined" || twttr === null) {
       return null;
     }
 
-    var possibleScreenName = text.match(twttr.txt.regexen.validReply);
+    var possibleScreenName = text.match(twttr.txt.regexen.extractReply);
     if (!possibleScreenName ||
-        RegExp.rightContext.match(twttr.txt.regexen.endMentionMatch)) {
+        RegExp.rightContext.match(twttr.txt.regexen.endScreenNameMatch)) {
       return null;
     }
 
     return possibleScreenName[1];
   };
 
-  twttr.txt.extractUrls = function(text, options) {
+  twttr.txt.extractUrls = function(text) {
     var urlsOnly = [],
-        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text, options);
+        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
 
     for (var i = 0; i < urlsWithIndices.length; i++) {
       urlsOnly.push(urlsWithIndices[i].url);
@@ -574,12 +588,8 @@ if (typeof twttr === "undefined" || twttr === null) {
     return urlsOnly;
   };
 
-  twttr.txt.extractUrlsWithIndices = function(text, options) {
-    if (!options) {
-      options = {extractUrlsWithoutProtocol: true};
-    }
-
-    if (!text || (options.extractUrlsWithoutProtocol ? !text.match(/\./) : !text.match(/:/))) {
+  twttr.txt.extractUrlsWithIndices = function(text) {
+    if (!text) {
       return [];
     }
 
@@ -593,20 +603,16 @@ if (typeof twttr === "undefined" || twttr === null) {
       // if protocol is missing and domain contains non-ASCII characters,
       // extract ASCII-only domains.
       if (!protocol) {
-        if (!options.extractUrlsWithoutProtocol
-            || before.match(twttr.txt.regexen.invalidUrlWithoutProtocolPrecedingChars)) {
-          continue;
-        }
         var lastUrl = null,
             lastUrlInvalidMatch = false,
             asciiEndPosition = 0;
         domain.replace(twttr.txt.regexen.validAsciiDomain, function(asciiDomain) {
           var asciiStartPosition = domain.indexOf(asciiDomain, asciiEndPosition);
-          asciiEndPosition = asciiStartPosition + asciiDomain.length;
+          asciiEndPosition = asciiStartPosition + asciiDomain.length
           lastUrl = {
             url: asciiDomain,
             indices: [startPosition + asciiStartPosition, startPosition + asciiEndPosition]
-          };
+          }
           lastUrlInvalidMatch = asciiDomain.match(twttr.txt.regexen.invalidShortDomain);
           if (!lastUrlInvalidMatch) {
             urls.push(lastUrl);
@@ -654,14 +660,14 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.extractHashtagsWithIndices = function(text) {
-    if (!text || !text.match(twttr.txt.regexen.hashSigns)) {
+    if (!text) {
       return [];
     }
 
     var tags = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.validHashtag, function(match, before, hash, hashText, offset, chunk) {
+    text.replace(twttr.txt.regexen.autoLinkHashtags, function(match, before, hash, hashText, offset, chunk) {
       var after = chunk.slice(offset + match.length);
       if (after.match(twttr.txt.regexen.endHashtagMatch))
         return;
@@ -874,7 +880,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return extracted.length === 1 && extracted[0] === username.slice(1);
   };
 
-  var VALID_LIST_RE = regexSupplant(/^#{validMentionOrList}$/);
+  var VALID_LIST_RE = regexSupplant(/^#{autoLinkUsernamesOrLists}$/);
 
   twttr.txt.isValidList = function(usernameList) {
     var match = usernameList.match(VALID_LIST_RE);
