@@ -10,6 +10,8 @@ public class RegexTest extends TestCase {
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Azərbaycanca");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#mûǁae");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Čeština");
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Ċaoiṁín");
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Caoiṁín");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#caf\u00E9");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#日本語ハッシュタグ");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "＃日本語ハッシュタグ");
