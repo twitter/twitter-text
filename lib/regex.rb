@@ -76,6 +76,7 @@ module Twitter
           regex_range(0x0272),
           regex_range(0x0289),
           regex_range(0x028b),
+          regex_range(0x02bb),
           regex_range(0x1e00, 0x1eff)
     ].join('').freeze
 
