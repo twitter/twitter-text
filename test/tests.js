@@ -103,6 +103,10 @@ test("twttr.txt.autolink", function() {
   for (i = 0; i < invalidChars.length; i++) {
     equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid cahracter');
   }
+
+  same(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
+      "\uD801\uDC00 <a href=\"http://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" data-screen-name=\"mention\" href=\"http://twitter.com/mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\" >http://twitter.com</a>",
+      "Autolink hashtag/mentionURL w/ Supplementary character");
 });
 
 test("twttr.txt.extractMentionsOrListsWithIndices", function() {
