@@ -4,7 +4,11 @@ package com.twitter;
 import java.util.regex.*;
 
 public class Regex {
-  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff\\u015f";
+  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff" + // Latin-1
+                                              "\\u0100-\\u024f" + // Latin Extended A and B
+                                              "\\u0253\\u0254\\u0256\\u0257\\u0259\\u025b\\u0263\\u0268\\u026f\\u0272\\u0289\\u028b" + // IPA Extensions
+                                              "\\u02bb" + // Hawaiian
+                                              "\\u1e00-\\u1eff"; // Latin Extended Additional (mostly for Vietnamese)
   private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff\\u0500-\\u0527" +  // Cyrillic
                                                    "\\u2de0–\\u2dff\\ua640–\\ua69f" +  // Cyrillic Extended A/B
