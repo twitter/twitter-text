@@ -65,7 +65,19 @@ module Twitter
           regex_range(0xc0, 0xd6),
           regex_range(0xd8, 0xf6),
           regex_range(0xf8, 0xff),
-          regex_range(0x015f)
+          regex_range(0x0100, 0x024f),
+          regex_range(0x0253, 0x0254),
+          regex_range(0x0256, 0x0257),
+          regex_range(0x0259),
+          regex_range(0x025b),
+          regex_range(0x0263),
+          regex_range(0x0268),
+          regex_range(0x026f),
+          regex_range(0x0272),
+          regex_range(0x0289),
+          regex_range(0x028b),
+          regex_range(0x02bb),
+          regex_range(0x1e00, 0x1eff)
     ].join('').freeze
 
     NON_LATIN_HASHTAG_CHARS = [
