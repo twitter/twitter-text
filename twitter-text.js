@@ -140,8 +140,30 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x303B, 0x303B); // Han iteration mark
 
   twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
+
+  var latinAccentChars = [];
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
-  twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
+  addCharsToCharClass(latinAccentChars, 0x00c0, 0x00d6);
+  addCharsToCharClass(latinAccentChars, 0x00d8, 0x00f6);
+  addCharsToCharClass(latinAccentChars, 0x00f8, 0x00ff);
+  // Latin Extended A and B
+  addCharsToCharClass(latinAccentChars, 0x0100, 0x024f);
+  // assorted IPA Extensions
+  addCharsToCharClass(latinAccentChars, 0x0253, 0x0254);
+  addCharsToCharClass(latinAccentChars, 0x0256, 0x0257);
+  addCharsToCharClass(latinAccentChars, 0x0259, 0x0259);
+  addCharsToCharClass(latinAccentChars, 0x025b, 0x025b);
+  addCharsToCharClass(latinAccentChars, 0x0263, 0x0263);
+  addCharsToCharClass(latinAccentChars, 0x0268, 0x0268);
+  addCharsToCharClass(latinAccentChars, 0x026f, 0x026f);
+  addCharsToCharClass(latinAccentChars, 0x0272, 0x0272);
+  addCharsToCharClass(latinAccentChars, 0x0289, 0x0289);
+  addCharsToCharClass(latinAccentChars, 0x028b, 0x028b);
+  // Okina for Hawaiian (it *is* a letter character)
+  addCharsToCharClass(latinAccentChars, 0x02bb, 0x02bb);
+  // Latin Extended Additional
+  addCharsToCharClass(latinAccentChars, 0x1e00, 0x1eff);
+  twttr.txt.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
 
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
