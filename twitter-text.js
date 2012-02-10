@@ -482,6 +482,12 @@ if (typeof twttr === "undefined" || twttr === null) {
         var htmlAttrs = "";
         var after = "";
 
+        // In the case of t.co URLs, don't allow additional path characters.
+        if (url.match(twttr.txt.regexen.validTcoUrl)) {
+          url = RegExp.lastMatch;
+          after = RegExp.rightContext;
+        }
+
         var displayUrl = url;
         var linkText = twttr.txt.htmlEscape(displayUrl);
         // If the caller passed a urlEntities object (provided by a Twitter API
@@ -559,12 +565,6 @@ if (typeof twttr === "undefined" || twttr === null) {
         for (var k in options) {
           var val = options[k].toString();
           htmlAttrs += stringSupplant(" #{k}=\"#{val}\" ", {k: k, val: twttr.txt.htmlEscape(val)});
-        }
-
-        // In the case of t.co URLs, don't allow additional path characters.
-        if (url.match(twttr.txt.regexen.validTcoUrl)) {
-          url = RegExp.lastMatch;
-          after = RegExp.rightContext;
         }
 
         var d = {
