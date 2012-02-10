@@ -86,7 +86,7 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("#hi", { postText: "</b>" }).match(/<a[^>]+>#hi<\/b><\/a>/), "Override postText");
 
   // url entities
-  ok(twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+  var autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
     urlEntities: [{
       "url": "http://t.co/0JG5Mcq",
       "display_url": "blog.twitter.com/2011/05/twitte…",
@@ -96,12 +96,25 @@ test("twttr.txt.autolink", function() {
         103
       ]
     }]
-  }).match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>blog.twitter.com\/2011\/05\/twitte…<\/a>/), 'Use display url from url entities');
+  });
+  ok(autoLinkResult.match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>/), 'Use t.co URL as link target');
+  ok(autoLinkResult.match(/>blog.twitter.com\/2011\/05\/twitte.*…</), 'Use display url from url entities');
+  ok(autoLinkResult.match(/r-for-mac-update.html</), 'Include the tail of expanded_url');
+  ok(autoLinkResult.match(/>http:\/\//), 'Include the head of expanded_url');
+
+  // Insert the HTML into the document and verify that, if copied and pasted, it would get the expanded_url.
+  var div = document.createElement('div');
+  div.innerHTML = autoLinkResult;
+  document.body.appendChild(div);
+  var range = document.createRange();
+  range.selectNode(div);
+  ok(range.toString().match(/\shttp:\/\/blog.twitter.com\/2011\/05\/twitter-for-mac-update.html\s…/), 'Selection copies expanded_url');
+  document.body.removeChild(div);
 
   // urls with invalid character
   var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
   for (i = 0; i < invalidChars.length; i++) {
-    equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid cahracter');
+    equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid character');
   }
 });
 

@@ -473,6 +473,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     delete options.usernameClass;
     delete options.usernameUrlBase;
     delete options.listUrlBase;
+    delete options.urlEntities;
 
     return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
       var tldComponents;
@@ -480,8 +481,84 @@ if (typeof twttr === "undefined" || twttr === null) {
       if (protocol) {
         var htmlAttrs = "";
         var after = "";
+
+        var displayUrl = url;
+        var linkText = twttr.txt.htmlEscape(displayUrl);
+        // If the caller passed a urlEntities object (provided by a Twitter API
+        // response with include_entities=true), we use that to render the display_url
+        // for each URL instead of it's underlying t.co URL.
+        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+          var displayUrl = urlEntities[url].display_url;
+          var expandedUrl = urlEntities[url].expanded_url;
+          if (!options.title) {
+            options.title = expandedUrl;
+          }
+
+          // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
+          // should contain the full original URL (expanded_url), not the display URL.
+          //
+          // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
+          // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+          // Elements with font-size:0 get copied even though they are not visible.
+          // Note that display:none doesn't work here. Elements with display:none don't get copied.
+          //
+          // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
+          // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
+          // everything with the tco-ellipsis class.
+          // 
+          // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+          // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+          // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
+
+          var displayUrlSansEllipses = displayUrl.replace(/…/g, ""); // We have to disregard ellipses for matching
+          // Note: we currently only support eliding parts of the URL at the beginning or the end.
+          // Eventually we may want to elide parts of the URL in the *middle*.  If so, this code will
+          // become more complicated.  We will probably want to create a regexp out of display URL,
+          // replacing every ellipsis with a ".*".
+          if (expandedUrl.indexOf(displayUrlSansEllipses) != -1) {
+            var displayUrlIndex = expandedUrl.indexOf(displayUrlSansEllipses);
+            var v = {
+              displayUrlSansEllipses: displayUrlSansEllipses,
+              // Portion of expandedUrl that precedes the displayUrl substring
+              beforeDisplayUrl: expandedUrl.substr(0, displayUrlIndex),
+              // Portion of expandedUrl that comes after displayUrl
+              afterDisplayUrl: expandedUrl.substr(displayUrlIndex + displayUrlSansEllipses.length),
+              precedingEllipsis: displayUrl.match(/^…/) ? "…" : "",
+              followingEllipsis: displayUrl.match(/…$/) ? "…" : ""
+            }
+            $.each(v, function(index, value) {
+              v[index] = twttr.txt.htmlEscape(value);
+            });
+            // As an example: The user tweets "hi http://longdomainname.com/foo"
+            // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
+            // This will get rendered as:
+            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            //   …
+            //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
+            //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
+            //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
+            //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
+            //        e.g. "hi  http://longdomainname.com/foo".
+            //   <span style='font-size:0'>&nbsp;</span>
+            // </span>
+            // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
+            //   http://longdomai
+            // </span>
+            // <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
+            //   nname.com/foo
+            // </span>
+            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            //   <span style='font-size:0'>&nbsp;</span>
+            //   …
+            // </span>
+            v['invisible'] = "style='font-size:0; line-height:0'";
+            linkText = stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
+          }
+        }
+
         for (var k in options) {
-          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+          var val = options[k].toString();
+          htmlAttrs += stringSupplant(" #{k}=\"#{val}\" ", {k: k, val: twttr.txt.htmlEscape(val)});
         }
 
         // In the case of t.co URLs, don't allow additional path characters.
@@ -494,15 +571,11 @@ if (typeof twttr === "undefined" || twttr === null) {
           before: before,
           htmlAttrs: htmlAttrs,
           url: twttr.txt.htmlEscape(url),
+          linkText: linkText,
           after: after
         };
-        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
-          d.displayUrl = twttr.txt.htmlEscape(urlEntities[url].display_url);
-        } else {
-          d.displayUrl = d.url;
-        }
 
-        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
+        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>#{after}", d);
       } else {
         return all;
       }
