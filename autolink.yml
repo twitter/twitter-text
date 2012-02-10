@@ -358,6 +358,10 @@ tests:
       text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
       expected: "Here’s a test tweet for you: <a href=\"https://twitter.com/#!/search?q=%23Ateş\" title=\"#Ateş\" class=\"tweet-url hashtag\">#Ateş</a> <a href=\"https://twitter.com/#!/search?q=%23qrşt\" title=\"#qrşt\" class=\"tweet-url hashtag\">#qrşt</a> <a href=\"https://twitter.com/#!/search?q=%23ştu\" title=\"#ştu\" class=\"tweet-url hashtag\">#ştu</a> <a href=\"https://twitter.com/#!/search?q=%23ş\" title=\"#ş\" class=\"tweet-url hashtag\">#ş</a>"
 
+    - description: "Autolink a hashtag with Latin extended character"
+      text: "#mûǁae"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23mûǁae\" title=\"#mûǁae\" class=\"tweet-url hashtag\">#mûǁae</a>"
+
   urls:
     - description: "Autolink URL with pipe character"
       text: "text http://example.com/pipe|character?yes|pipe|character"

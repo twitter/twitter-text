@@ -701,6 +701,10 @@ tests:
       text: "#http://twitter.com #https://twitter.com"
       expected: []
 
+    - description: "Extract hashtags with Latin extended characters"
+      text: "#Azərbaycanca #mûǁae #Čeština #Ċaoiṁín"
+      expected: ["Azərbaycanca", "mûǁae", "Čeština", "Ċaoiṁín"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
