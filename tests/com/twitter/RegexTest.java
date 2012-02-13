@@ -7,6 +7,11 @@ import junit.framework.TestCase;
 public class RegexTest extends TestCase {
   public void testAutoLinkHashtags() {
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#hashtag");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Azərbaycanca");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#mûǁae");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Čeština");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Ċaoiṁín");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Caoiṁín");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#caf\u00E9");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#日本語ハッシュタグ");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "＃日本語ハッシュタグ");
