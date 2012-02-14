@@ -279,7 +279,7 @@ public class Extractor {
    * @param entities entities with Unicode based indices
    */
   public void modifyIndicesFromUnicodeToUTF16(String text, List<Entity> entities) {
-    shiftIndices(text, entities, +1);
+    convertUnicodeIndices(text, entities, false);
   }
 
   /*
@@ -291,26 +291,47 @@ public class Extractor {
    * @param entities entities with UTF-16 based indices
    */
   public void modifyIndicesFromUTF16ToToUnicode(String text, List<Entity> entities) {
-    shiftIndices(text, entities, -1);
+    convertUnicodeIndices(text, entities, true);
   }
 
   /*
-   * Shift Entity's indices by {@code diff} for every Unicode supplementary character
-   * which appears before the entity.
+   * Convert UTF-16 based indices to Unicode code point based indices, and vise versa.
    *
    * @param text original text
    * @param entities extracted entities
-   * @param the amount to shift the entity's indices.
+   * @param indicesInUTF16 if true, convert from UTF-16 based indices to Unicode code point based indices.
+   *  If false, convert from Unicode based indices to UTF-16 code point based indices.
    */
-  protected void shiftIndices(String text, List<Entity> entities, int diff) {
-    for (int i = 0; i < text.length() - 1; i++) {
-      if (Character.isSupplementaryCodePoint(text.codePointAt(i))) {
-        for (Entity entity: entities) {
-          if (entity.start > i) {
-            entity.start += diff;
-            entity.end += diff;
-          }
+  protected void convertUnicodeIndices(String text, List<Entity> entities, boolean indicesInUTF16) {
+    if (entities.isEmpty()) {
+      return;
+    }
+
+    // Traverse text from the back to the front
+    int charIndex = text.length() - 1;
+    int codePointIndex = text.codePointCount(0, text.length()) - 1;
+
+    // Iterate entities in reverse order
+    ListIterator<Entity> entityIt = entities.listIterator(entities.size());
+    Entity entity = entityIt.previous();
+
+    // Loop while there's Unicode supplemental character(s) before the current index
+    while (charIndex != codePointIndex) {
+      if (entity.start == (indicesInUTF16 ? charIndex : codePointIndex)) {
+        int len = entity.end - entity.start;
+        entity.start = indicesInUTF16 ? codePointIndex : charIndex;
+        entity.end = entity.start + len;
+
+        if (!entityIt.hasPrevious()) {
+          // no more entity.
+          break;
         }
+        entity = entityIt.previous();
+      }
+      codePointIndex--;
+      charIndex--;
+      if (Character.isSupplementaryCodePoint(text.codePointAt(charIndex))) {
+        charIndex--;
       }
     }
   }
