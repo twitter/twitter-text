@@ -57,6 +57,44 @@ test("twttr.txt.extract", function() {
   same(extracted, [{url:"http://twitter.com", indices:[2, 20]}, {url:"http://test.com", indices:[23, 38]}], "URL w/ Supplementary character, Unicode indices");
   twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
   same(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
+
+  var testCases = [
+    {text:"abc", indices:[[0,3]], unicode_indices:[[0,3]]},
+    {text:"\uD83D\uDE02abc", indices:[[2,5]], unicode_indices:[[1,4]]},
+    {text:"\uD83D\uDE02abc\uD83D\uDE02", indices:[[2,5]], unicode_indices:[[1,4]]},
+    {text:"\uD83D\uDE02abc\uD838\uDE02abc", indices:[[2,5], [7,10]], unicode_indices:[[1,4], [5,8]]},
+    {text:"\uD83D\uDE02abc\uD838\uDE02abc\uD83D\uDE02", indices:[[2,5], [7,10]], unicode_indices:[[1,4], [5,8]]},
+    {text:"\uD83D\uDE02\uD83D\uDE02abc", indices:[[4,7]], unicode_indices:[[2,5]]},
+    {text:"\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc", indices:[[6,9]], unicode_indices:[[3,6]]},
+    {text:"\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02", indices:[[6,9]], unicode_indices:[[3,6]]},
+    {text:"\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02", indices:[[6,9]], unicode_indices:[[3,6]]},
+    {text:"\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02", indices:[[8,11], [19,22]], unicode_indices:[[4,7], [11,14]]},
+    {text:"\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02", indices:[[7,10], [18,21]], unicode_indices:[[4,7], [11,14]]},
+    {text:"\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uDE02", indices:[[8,11], [19,22]], unicode_indices:[[4,7], [11,14]]},
+    {text:"\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02abc\uD83D\uDE02\uD83D\uDE02\uD83D\uD83D\uDE02\uDE02", indices:[[8,11], [19,22]], unicode_indices:[[4,7], [11,14]]},
+    {text:"\uD83Dabc\uD83D", indices:[[1,4]], unicode_indices:[[1,4]]},
+    {text:"\uDE02abc\uDE02", indices:[[1,4]], unicode_indices:[[1,4]]},
+    {text:"\uDE02\uDE02abc\uDE02\uDE02", indices:[[2,5]], unicode_indices:[[2,5]]},
+    {text:"abcabc", indices:[[0,3], [3,6]], unicode_indices:[[0,3], [3,6]]},
+    {text:"abc\uD83D\uDE02abc", indices:[[0,3], [5,8]], unicode_indices:[[0,3], [4,7]]},
+    {text:"aa", indices:[[0,1], [1,2]], unicode_indices:[[0,1], [1,2]]},
+    {text:"\uD83D\uDE02a\uD83D\uDE02a\uD83D\uDE02", indices:[[2,3], [5,6]], unicode_indices:[[1,2], [3,4]]}
+  ];
+
+  for (var i = 0; i < testCases.length; i++) {
+    entities = [];
+    for (var j = 0; j < testCases[i].indices.length; j++) {
+      entities.push({indices:testCases[i].indices[j]});
+    }
+    twttr.txt.modifyIndicesFromUTF16ToUnicode(testCases[i].text, entities);
+    for (var j = 0; j < testCases[i].indices.length; j++) {
+      same(entities[j].indices, testCases[i].unicode_indices[j], "Convert UTF16 indices to Unicode indices for text '" + testCases[i].text +"'");
+    }
+    twttr.txt.modifyIndicesFromUnicodeToUTF16(testCases[i].text, entities);
+    for (var j = 0; j < testCases[i].indices.length; j++) {
+      same(entities[j].indices, testCases[i].indices[j], "Convert Unicode indices to UTF16 indices for text '" + testCases[i].text +"'");
+    }
+  }
 });
 
 test("twttr.txt.autolink", function() {
