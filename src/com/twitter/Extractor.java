@@ -275,6 +275,8 @@ public class Extractor {
    *
    * In UTF-16 based indices, Unicode supplementary characters are counted as two characters.
    *
+   * This method requires that the list of entities be in ascending order by start index.
+   *
    * @param text original text
    * @param entities entities with Unicode based indices
    */
@@ -287,6 +289,8 @@ public class Extractor {
    *
    * In Unicode-based indices, Unicode supplementary characters are counted as single characters.
    *
+   * This method requires that the list of entities be in ascending order by start index.
+   *
    * @param text original text
    * @param entities entities with UTF-16 based indices
    */
@@ -295,7 +299,9 @@ public class Extractor {
   }
 
   /*
-   * Convert UTF-16 based indices to Unicode code point based indices, and vise versa.
+   * Convert UTF-16 based indices to Unicode code point based indices, and vice versa.
+   *
+   * This method requires that the list of entities be in ascending order by start index.
    *
    * @param text original text
    * @param entities extracted entities
@@ -307,32 +313,30 @@ public class Extractor {
       return;
     }
 
-    // Traverse text from the back to the front
-    int charIndex = text.length() - 1;
-    int codePointIndex = text.codePointCount(0, text.length()) - 1;
+    int charIndex = 0;
+    int codePointIndex = 0;
 
-    // Iterate entities in reverse order
-    ListIterator<Entity> entityIt = entities.listIterator(entities.size());
-    Entity entity = entityIt.previous();
+    Iterator<Entity> entityIt = entities.iterator();
+    Entity entity = entityIt.next();
 
-    // Loop while there's Unicode supplemental character(s) before the current index
-    while (charIndex != codePointIndex) {
+    while (charIndex < text.length()) {
       if (entity.start == (indicesInUTF16 ? charIndex : codePointIndex)) {
-        int len = entity.end - entity.start;
-        entity.start = indicesInUTF16 ? codePointIndex : charIndex;
-        entity.end = entity.start + len;
+        if (charIndex != codePointIndex) {
+          int len = entity.end - entity.start;
+          entity.start = indicesInUTF16 ? codePointIndex : charIndex;
+          entity.end = entity.start + len;
+        }
 
-        if (!entityIt.hasPrevious()) {
+        if (!entityIt.hasNext()) {
           // no more entity.
           break;
         }
-        entity = entityIt.previous();
+        entity = entityIt.next();
       }
-      codePointIndex--;
-      charIndex--;
-      if (Character.isSupplementaryCodePoint(text.codePointAt(charIndex))) {
-        charIndex--;
-      }
+      int codePoint = text.codePointAt(charIndex);
+      int charWidth = Character.isSupplementaryCodePoint(codePoint) ? 2 : 1;
+      charIndex += charWidth;
+      codePointIndex++;
     }
   }
 }
