@@ -779,37 +779,39 @@ if (typeof twttr === "undefined" || twttr === null) {
       return;
     }
 
-    var charIndex = text.length - 1;
-    // replace surrogate pairs with whitespace, and then count length
-    var codePointIndex = text.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, " ").length - 1;
+    var charIndex = 0;
+    var codePointIndex = 0;
 
     // sort entities by start index
     entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
-    var entityIndex = entities.length - 1;
-    var entity = entities[entityIndex];
+    var entityIndex = 0;
+    var entity = entities[0];
 
-    while (charIndex != codePointIndex) {
+    while (charIndex < text.length) {
       if (entity.indices[0] == (indicesInUTF16 ? charIndex : codePointIndex)) {
         var len = entity.indices[1] - entity.indices[0];
         entity.indices[0] = indicesInUTF16 ? codePointIndex : charIndex;
         entity.indices[1] = entity.indices[0] + len;
 
-        if (entityIndex == 0) {
+        entityIndex++;
+        if (entityIndex == entities.length) {
           // no more entity
           break;
         }
-        entity = entities[--entityIndex];
+        entity = entities[entityIndex];
       }
 
-      codePointIndex--;
-      charIndex--;
       var c = text.charCodeAt(charIndex);
       if (0xD800 <= c && c <= 0xDBFF && charIndex < text.length - 1) {
+        // Found high surrogate char
         c = text.charCodeAt(charIndex + 1);
         if (0xDC00 <= c && c <= 0xDFFF) {
-          charIndex--;
+          // Found surrogate pair
+          charIndex++;
         }
       }
+      codePointIndex++;
+      charIndex++;
     }
   };
 
