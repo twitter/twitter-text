@@ -281,7 +281,12 @@ public class Extractor {
    * @param entities entities with Unicode based indices
    */
   public void modifyIndicesFromUnicodeToUTF16(String text, List<Entity> entities) {
-    convertUnicodeIndices(text, entities, false);
+    IndexConverter convert = new IndexConverter(text);
+
+    for (Entity entity : entities) {
+      entity.start = convert.codePointsToCodeUnits(entity.start);
+      entity.end = convert.codePointsToCodeUnits(entity.end);
+    }
   }
 
   /*
@@ -295,48 +300,59 @@ public class Extractor {
    * @param entities entities with UTF-16 based indices
    */
   public void modifyIndicesFromUTF16ToToUnicode(String text, List<Entity> entities) {
-    convertUnicodeIndices(text, entities, true);
+    IndexConverter convert = new IndexConverter(text);
+
+    for (Entity entity : entities) {
+      entity.start = convert.codeUnitsToCodePoints(entity.start);
+      entity.end = convert.codeUnitsToCodePoints(entity.end);
+    }
   }
 
-  /*
-   * Convert UTF-16 based indices to Unicode code point based indices, and vice versa.
-   *
-   * This method requires that the list of entities be in ascending order by start index.
-   *
-   * @param text original text
-   * @param entities extracted entities
-   * @param indicesInUTF16 if true, convert from UTF-16 based indices to Unicode code point based indices.
-   *  If false, convert from Unicode based indices to UTF-16 code point based indices.
+  /**
+   * An efficient converter of indices between code points and code units.
    */
-  protected void convertUnicodeIndices(String text, List<Entity> entities, boolean indicesInUTF16) {
-    if (entities.isEmpty()) {
-      return;
+  private static final class IndexConverter {
+    protected final String text;
+
+    // Keep track of a single corresponding pair of code unit and code point
+    // offsets so that we can re-use counting work if the next requested
+    // entity is near the most recent entity.
+    protected int codePointIndex = 0;
+    protected int charIndex = 0;
+
+    IndexConverter(String text) {
+      this.text = text;
     }
 
-    int charIndex = 0;
-    int codePointIndex = 0;
-
-    Iterator<Entity> entityIt = entities.iterator();
-    Entity entity = entityIt.next();
-
-    while (charIndex < text.length()) {
-      if (entity.start == (indicesInUTF16 ? charIndex : codePointIndex)) {
-        if (charIndex != codePointIndex) {
-          int len = entity.end - entity.start;
-          entity.start = indicesInUTF16 ? codePointIndex : charIndex;
-          entity.end = entity.start + len;
-        }
-
-        if (!entityIt.hasNext()) {
-          // no more entity.
-          break;
-        }
-        entity = entityIt.next();
+    /**
+     * @param charIndex Index into the string measured in code units.
+     * @return The code point index that corresponds to the specified character index.
+     */
+    int codeUnitsToCodePoints(int charIndex) {
+      if (charIndex < this.charIndex) {
+        this.codePointIndex -= text.codePointCount(charIndex, this.charIndex);
+      } else {
+        this.codePointIndex += text.codePointCount(this.charIndex, charIndex);
       }
-      int codePoint = text.codePointAt(charIndex);
-      int charWidth = Character.isSupplementaryCodePoint(codePoint) ? 2 : 1;
-      charIndex += charWidth;
-      codePointIndex++;
+      this.charIndex = charIndex;
+
+      // Make sure that charIndex never points to the second code unit of a
+      // surrogate pair.
+      if (charIndex > 0 && Character.isSupplementaryCodePoint(text.codePointAt(charIndex - 1))) {
+        this.charIndex -= 1;
+      }
+      return this.codePointIndex;
+    }
+
+    /**
+     * @param codePointIndex Index into the string measured in code points.
+     * @return the code unit index that corresponds to the specified code point index.
+     */
+    int codePointsToCodeUnits(int codePointIndex) {
+      // Note that offsetByCodePoints accepts negative indices.
+      this.charIndex = text.offsetByCodePoints(this.charIndex, codePointIndex - this.codePointIndex);
+      this.codePointIndex = codePointIndex;
+      return this.charIndex;
     }
   }
 }
