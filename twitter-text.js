@@ -767,14 +767,14 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.modifyIndicesFromUnicodeToUTF16 = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, false);
+    twttr.txt.convertUnicodeIndices(text, entities, false);
   };
 
   twttr.txt.modifyIndicesFromUTF16ToUnicode = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, true);
+    twttr.txt.convertUnicodeIndices(text, entities, true);
   };
 
-  twttr.txt.shiftIndices = function(text, entities, indicesInUTF16) {
+  twttr.txt.convertUnicodeIndices = function(text, entities, indicesInUTF16) {
     if (entities.length == 0) {
       return;
     }
@@ -782,6 +782,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     var charIndex = text.length - 1;
     // replace surrogate pairs with whitespace, and then count length
     var codePointIndex = text.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, " ").length - 1;
+
+    // sort entities by start index
+    entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
     var entityIndex = entities.length - 1;
     var entity = entities[entityIndex];
 
