@@ -767,27 +767,51 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.modifyIndicesFromUnicodeToUTF16 = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, 1);
+    twttr.txt.convertUnicodeIndices(text, entities, false);
   };
 
   twttr.txt.modifyIndicesFromUTF16ToUnicode = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, -1);
+    twttr.txt.convertUnicodeIndices(text, entities, true);
   };
 
-  twttr.txt.shiftIndices = function(text, entities, diff) {
-    for (var i = 0; i < text.length - 1; i++) {
-      var c1 = text.charCodeAt(i);
-      var c2 = text.charCodeAt(i + 1);
-      if (0xD800 <= c1 && c1 <= 0xDBFF && 0xDC00 <= c2 && c2 <= 0xDFFF) {
-        // supplementary character
-        i++; // skip surrogate pair character
-        for (var j = 0; j < entities.length; j++) {
-          if (entities[j].indices[0] >= i) {
-            entities[j].indices[0] += diff;
-            entities[j].indices[1] += diff;
-          }
+  twttr.txt.convertUnicodeIndices = function(text, entities, indicesInUTF16) {
+    if (entities.length == 0) {
+      return;
+    }
+
+    var charIndex = 0;
+    var codePointIndex = 0;
+
+    // sort entities by start index
+    entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
+    var entityIndex = 0;
+    var entity = entities[0];
+
+    while (charIndex < text.length) {
+      if (entity.indices[0] == (indicesInUTF16 ? charIndex : codePointIndex)) {
+        var len = entity.indices[1] - entity.indices[0];
+        entity.indices[0] = indicesInUTF16 ? codePointIndex : charIndex;
+        entity.indices[1] = entity.indices[0] + len;
+
+        entityIndex++;
+        if (entityIndex == entities.length) {
+          // no more entity
+          break;
+        }
+        entity = entities[entityIndex];
+      }
+
+      var c = text.charCodeAt(charIndex);
+      if (0xD800 <= c && c <= 0xDBFF && charIndex < text.length - 1) {
+        // Found high surrogate char
+        c = text.charCodeAt(charIndex + 1);
+        if (0xDC00 <= c && c <= 0xDFFF) {
+          // Found surrogate pair
+          charIndex++;
         }
       }
+      codePointIndex++;
+      charIndex++;
     }
   };
 
