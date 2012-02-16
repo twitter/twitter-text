@@ -122,7 +122,7 @@ module Twitter
     HASHTAG = /(#{HASHTAG_BOUNDARY})(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
 
     REGEXEN[:valid_hashtag] = /#{HASHTAG}/io
-    # Used in Extractor and Rewriter for final filtering
+    # Used in Extractor for final filtering
     REGEXEN[:end_hashtag_match] = /\A(?:[#＃]|:\/\/)/o
 
     REGEXEN[:valid_mention_preceding_chars] = /(?:[^a-zA-Z0-9_!#\$%&*@＠]|^|RT:?)/o
@@ -134,7 +134,7 @@ module Twitter
       (\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?             # $4: List (optional)
     /ox
     REGEXEN[:valid_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
-    # Used in Extractor and Rewriter for final filtering
+    # Used in Extractor for final filtering
     REGEXEN[:end_mention_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     # URL related hash regex collection
