@@ -21,7 +21,7 @@ module Twitter
 
     def rewrite(text, options = {})
       [:hashtags, :urls, :usernames_or_lists].inject(text) do |key|
-        send("rewrite_#{key}", text, &options[key]) if options[key]
+        options[key] ? send(:"rewrite_#{key}", text, &options[key]) : text
       end
     end
     deprecate :rewrite, :rewrite_entities
