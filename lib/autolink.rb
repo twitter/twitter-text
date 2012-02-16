@@ -24,20 +24,6 @@ module Twitter
                               :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
                               :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities]
 
-    HTML_ENTITIES = {
-      '&' => '&amp;',
-      '>' => '&gt;',
-      '<' => '&lt;',
-      '"' => '&quot;',
-      "'" => '&#39;'
-    }
-
-    def html_escape(text)
-      text && text.to_s.gsub(/[&"'><]/) do |character|
-        HTML_ENTITIES[character]
-      end
-    end
-
     def auto_link_entities(text, entities, options)
       return text if entities.empty?
 
@@ -239,6 +225,23 @@ module Twitter
     end
 
     private
+
+    HTML_ENTITIES = {
+      '&' => '&amp;',
+      '>' => '&gt;',
+      '<' => '&lt;',
+      '"' => '&quot;',
+      "'" => '&#39;'
+    }
+
+    def html_escape(text)
+      text && text.to_s.gsub(/[&"'><]/) do |character|
+        HTML_ENTITIES[character]
+      end
+    end
+
+    # We will make this private in future.
+    public :html_escape
 
     BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
 
