@@ -18,11 +18,6 @@ module Twitter
     DEFAULT_TARGET = nil
     # HTML attribute for robot nofollow behavior (default)
     HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
-    # Options which should not be passed as HTML attributes
-    OPTIONS_NOT_ATTRIBUTES = [:url_class, :list_class, :username_class, :hashtag_class,
-                              :username_url_base, :list_url_base, :hashtag_url_base,
-                              :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
-                              :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities]
 
     def auto_link_entities(text, entities, options)
       return text if entities.empty?
@@ -243,11 +238,19 @@ module Twitter
     # We will make this private in future.
     public :html_escape
 
-    BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
+    # Options which should not be passed as HTML attributes
+    OPTIONS_NOT_ATTRIBUTES = Set.new([
+      :url_class, :list_class, :username_class, :hashtag_class,
+      :username_url_base, :list_url_base, :hashtag_url_base,
+      :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
+      :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities
+    ]).freeze
 
     def html_attrs_for_options(options)
       autolink_html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
     end
+
+    BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
 
     def autolink_html_attrs(options)
       options.inject("") do |attrs, (key, value)|
