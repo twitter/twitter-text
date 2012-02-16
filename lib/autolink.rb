@@ -23,8 +23,6 @@ module Twitter
       return text if entities.empty?
 
       options = options.dup
-      options[:class] = options[:url_class]
-      options[:rel] = "nofollow" unless options[:suppress_no_follow]
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:list_class] ||= DEFAULT_LIST_CLASS
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
@@ -43,7 +41,6 @@ module Twitter
         options.delete(:url_entities)
       end
 
-      html_attrs = nil
       Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
         if entity[:url]
           url = entity[:url]
@@ -112,7 +109,12 @@ module Twitter
             end
           end
 
-          html_attrs = html_attrs_for_options(options) unless html_attrs
+          # FIXME should merge with other options like class specifications.
+          options[:html_attrs] ||= {}
+          options[:html_attrs][:class]  = options[:url_class]
+          options[:html_attrs][:target] = options[:target]
+          options[:html_attrs][:rel]    = "nofollow" unless options[:suppress_no_follow]
+          html_attrs = autolink_html_attrs(options[:html_attrs])
 
           %(<a href="#{href}"#{html_attrs}>#{link_text}</a>)
         elsif entity[:hashtag]
@@ -199,13 +201,24 @@ module Twitter
       auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options, &block)
     end
 
+    def auto_link_urls(text, options = {}, &block)
+      auto_link_entities(text, Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false), options, &block)
+    end
+
+    # These methods are deprecated, will be removed in future.
+    extend Deprecation
+
+    # <b>DEPRECATED</b> Please use <tt>auto_link_urls</tt> instead.
     # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>. Any
     # elements in the <tt>href_options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag. Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
     # the <tt>rel="nofollow"</tt> attribute will be added.
-    def auto_link_urls_custom(text, href_options = {})
-      auto_link_entities(text, Extractor.extract_urls_with_indices(text, {:extract_url_without_protocol => false}), href_options)
+    def auto_link_urls_custom(text, options = {})
+      options = options.dup
+      html_attrs = extract_html_attrs_for_options!(options)
+      auto_link_urls(text, options.merge(:html_attrs => html_attrs))
     end
+    deprecate :auto_link_urls_custom, :auto_link_urls
 
     private
 
@@ -231,11 +244,19 @@ module Twitter
       :url_class, :list_class, :username_class, :hashtag_class,
       :username_url_base, :list_url_base, :hashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
-      :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities
+      :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
+      :html_attrs
     ]).freeze
 
-    def html_attrs_for_options(options)
-      autolink_html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
+    def extract_html_attrs_for_options!(options)
+      html_attrs = {}
+      options.reject! do |key, value|
+        if OPTIONS_NOT_ATTRIBUTES.include?(key)
+          html_attrs[key] = value
+          true
+        end
+      end
+      html_attrs
     end
 
     BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
