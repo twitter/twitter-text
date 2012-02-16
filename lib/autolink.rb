@@ -165,8 +165,8 @@ module Twitter
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
-    def auto_link(text, options = {})
-      auto_link_entities(text, Extractor.extract_entities_with_indices(text, {:extract_url_without_protocol => false}), options)
+    def auto_link(text, options = {}, &block)
+      auto_link_entities(text, Extractor.extract_entities_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
 
     # Add <tt><a></a></tt> tags around the usernames and lists in the provided <tt>text</tt>. The
@@ -182,14 +182,8 @@ module Twitter
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
-    def auto_link_usernames_or_lists(text, options = {}) # :yields: list_or_username
-      if block_given?
-        auto_link_entities(text, Extractor.extract_mentions_or_lists_with_indices(text), options) do |name|
-          yield(name)
-        end
-      else
-        auto_link_entities(text, Extractor.extract_mentions_or_lists_with_indices(text), options)
-      end
+    def auto_link_usernames_or_lists(text, options = {}, &block) # :yields: list_or_username
+      auto_link_entities(text, Extractor.extract_mentions_or_lists_with_indices(text), options, &block)
     end
 
     # Add <tt><a></a></tt> tags around the hashtags in the provided <tt>text</tt>. The
@@ -201,14 +195,8 @@ module Twitter
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
-    def auto_link_hashtags(text, options = {})  # :yields: hashtag_text
-      if block_given?
-        auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options) do |hashtag|
-          yield(hashtag)
-        end
-      else
-        auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options)
-      end
+    def auto_link_hashtags(text, options = {}, &block)  # :yields: hashtag_text
+      auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options, &block)
     end
 
     # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>. Any
