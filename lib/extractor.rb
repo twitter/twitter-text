@@ -62,7 +62,7 @@ module Twitter
       return [] if entities.empty?
 
       # sort by start index
-      entities.sort!{|a,b| a[:indices].first <=> b[:indices].first}
+      entities = entities.sort_by{|entity| entity[:indices].first}
 
       # remove duplicates
       prev = nil
