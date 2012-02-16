@@ -2,18 +2,17 @@ module Twitter
   # A module provides base methods to rewrite usernames, lists, hashtags and URLs.
   module Rewriter extend self
     def rewrite_entities(text, entities)
-      begin_index = 0
-      result = ""
-      chars = text.to_s.chars.to_a
+      chars = text.to_s.to_char_a
 
-      entities.each do |entity|
-        result << chars[begin_index...entity[:indices].first].to_s
+      result = []
+      last_index = entities.inject(0) do |last_index, entity|
+        result << chars[last_index...entity[:indices].first]
         result << yield(entity, chars)
-        begin_index = entity[:indices].last
+        entity[:indices].last
       end
-      result << chars[begin_index..-1].to_s
+      result << chars[last_index..-1]
 
-      result
+      result.flatten.join
     end
 
     # These methods are deprecated, will be removed in future.
