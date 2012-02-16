@@ -27,27 +27,29 @@ module Twitter
     deprecate :rewrite, :rewrite_entities
 
     def rewrite_usernames_or_lists(text)
-      rewrite_entities(text, Extractor.extract_mentions_or_lists_with_indices(text)) do |entity, chars|
+      entities = Extractor.extract_mentions_or_lists_with_indices(text)
+      rewrite_entities(text, entities) do |entity, chars|
         at = chars[entity[:indices].first]
         list_slug = entity[:list_slug]
         list_slug = nil if list_slug.empty?
-        yield(at, entity[:screen_name], list_slug) if block_given?
+        yield(at, entity[:screen_name], list_slug)
       end
     end
     deprecate :rewrite_usernames_or_lists, :rewrite_entties
 
     def rewrite_hashtags(text)
-      rewrite_entities(text, Extractor.extract_hashtags_with_indices(text)) do |entity, chars|
+      entities = Extractor.extract_hashtags_with_indices(text)
+      rewrite_entities(text, entities) do |entity, chars|
         hash = chars[entity[:indices].first]
-        yield(hash, entity[:hashtag]) if block_given?
+        yield(hash, entity[:hashtag])
       end
     end
     deprecate :rewrite_hashtags, :rewrite_entties
 
     def rewrite_urls(text)
-      urls = Extractor.extract_urls_with_indices(text, {:extract_url_without_protocol=>false})
-      rewrite_entities(text, urls) do |entity, chars|
-        yield(entity[:url]) if block_given?
+      entities = Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false)
+      rewrite_entities(text, entities) do |entity, chars|
+        yield(entity[:url])
       end
     end
     deprecate :rewrite_urls, :rewrite_entties
