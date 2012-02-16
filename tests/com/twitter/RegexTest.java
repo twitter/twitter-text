@@ -13,6 +13,9 @@ public class RegexTest extends TestCase {
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Ċaoiṁín");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Caoiṁín");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#caf\u00E9");
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u0627\u0644\u0639\u0631\u0628\u064a\u0629");
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u062d\u0627\u0644\u064a\u0627\u064b"); // with mark
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u064a\u0640\ufbb1\u0640\u064e\u0671"); // with pres. form
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#日本語ハッシュタグ");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "＃日本語ハッシュタグ");
 
