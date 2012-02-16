@@ -31,15 +31,10 @@ module Twitter
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
       options[:hashtag_url_base] ||= "https://twitter.com/#!/search?q=%23"
       options[:target] ||= DEFAULT_TARGET
+
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
-      url_entities = {}
-      if options[:url_entities]
-        options[:url_entities].each do |entity|
-          url_entities[entity["url"]] = entity
-        end
-        options.delete(:url_entities)
-      end
+      url_entities = (options[:url_entities] || {}).inject({}){|h, e| h[e["url"]] = e; h}
 
       Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
         if entity[:url]
