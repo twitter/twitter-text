@@ -92,7 +92,7 @@ module Twitter
             # Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
             # wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
             # everything with the tco-ellipsis class.
-            # 
+            #
             # Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
             # For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
             # For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.

@@ -47,7 +47,6 @@ module Twitter
   # A module for including Tweet parsing in a class. This module provides function for the extraction and processing
   # of usernames, lists, URLs and hashtags.
   module Extractor extend self
-
     # Extracts all usernames, lists, hashtags and URLs  in the Tweet <tt>text</tt>
     # along with the indices for where the entity ocurred
     # If the <tt>text</tt> is <tt>nil</tt> or contains no entity an empty array
@@ -108,6 +107,7 @@ module Twitter
           yield mention[:screen_name], mention[:indices].first, mention[:indices].last
         end
       end
+
       possible_screen_names
     end
 
@@ -226,7 +226,7 @@ module Twitter
           }
         end
       end
-      urls.each{|url| yield url[:url], url[:indices].first, url[:indices].last } if block_given?
+      urls.each{|url| yield url[:url], url[:indices].first, url[:indices].last} if block_given?
       urls
     end
 
@@ -264,7 +264,7 @@ module Twitter
           }
         end
       end
-      tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last } if block_given?
+      tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last} if block_given?
       tags
     end
   end
