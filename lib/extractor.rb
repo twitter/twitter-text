@@ -54,7 +54,7 @@ module Twitter
     # will be returned.
     #
     # If a block is given then it will be called for each entity.
-    def extract_entities_with_indices(text, options = {})
+    def extract_entities_with_indices(text, options = {}, &block)
       # extract all entities
       entities = extract_urls_with_indices(text, options) +
                  extract_hashtags_with_indices(text) +
@@ -63,19 +63,13 @@ module Twitter
       return [] if entities.empty?
 
       # sort by start index
-      entities.sort! {|a,b| a[:indices].first <=> b[:indices].first}
+      entities.sort!{|a,b| a[:indices].first <=> b[:indices].first}
 
       # remove duplicates
       prev = nil
-      entities.each do |entity|
-        if prev != nil && prev[:indices].last > entity[:indices].first
-          entities.delete entity
-        else
-          prev = entity
-        end
-      end
+      entities.reject!{|entity| (prev && prev[:indices].last > entity[:indices].first) || (prev = entity) && false}
 
-      entities.each{|entity| yield entity} if block_given?
+      entities.each(&block) if block_given?
       entities
     end
 
