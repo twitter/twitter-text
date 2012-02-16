@@ -11,10 +11,14 @@ end
 require 'active_support'
 require 'active_support/core_ext/string/multibyte.rb'
 
-require File.join(File.dirname(__FILE__), 'regex')
-require File.join(File.dirname(__FILE__), 'rewriter')
-require File.join(File.dirname(__FILE__), 'autolink')
-require File.join(File.dirname(__FILE__), 'extractor')
-require File.join(File.dirname(__FILE__), 'unicode')
-require File.join(File.dirname(__FILE__), 'validation')
-require File.join(File.dirname(__FILE__), 'hithighlighter')
+%w(
+  regex
+  rewriter
+  autolink
+  extractor
+  unicode
+  validation
+  hithighlighter
+).each do |name|
+  require File.expand_path("../#{name}", __FILE__)
+end
