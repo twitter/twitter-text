@@ -78,10 +78,10 @@ module Twitter
     # will be returned.
     #
     # If a block is given then it will be called for each username.
-    def extract_mentioned_screen_names(text) # :yields: username
-      screen_names_only = extract_mentioned_screen_names_with_indices(text).map{|mention| mention[:screen_name] }
-      screen_names_only.each{|mention| yield mention } if block_given?
-      screen_names_only
+    def extract_mentioned_screen_names(text, &block) # :yields: username
+      screen_names = extract_mentioned_screen_names_with_indices(text).map{|m| m[:screen_name]}
+      screen_names.each(&block) if block_given?
+      screen_names
     end
 
     # Extracts a list of all usernames mentioned in the Tweet <tt>text</tt>
@@ -166,10 +166,10 @@ module Twitter
     # will be returned.
     #
     # If a block is given then it will be called for each URL.
-    def extract_urls(text) # :yields: url
-      urls_only = extract_urls_with_indices(text).map{|url| url[:url] }
-      urls_only.each{|url| yield url } if block_given?
-      urls_only
+    def extract_urls(text, &block) # :yields: url
+      urls = extract_urls_with_indices(text).map{|u| u[:url]}
+      urls.each(&block) if block_given?
+      urls
     end
 
     # Extracts a list of all URLs included in the Tweet <tt>text</tt> along
@@ -236,10 +236,10 @@ module Twitter
     # character.
     #
     # If a block is given then it will be called for each hashtag.
-    def extract_hashtags(text) # :yields: hashtag_text
-      hashtags_only = extract_hashtags_with_indices(text).map{|hash| hash[:hashtag] }
-      hashtags_only.each{|hash| yield hash } if block_given?
-      hashtags_only
+    def extract_hashtags(text, &block) # :yields: hashtag_text
+      hashtags = extract_hashtags_with_indices(text).map{|h| h[:hashtag]}
+      hashtags.each(&block) if block_given?
+      hashtags
     end
 
     # Extracts a list of all hashtags included in the Tweet <tt>text</tt>. If the
