@@ -15,6 +15,7 @@ public class Extractor {
     protected int start;
     protected int end;
     protected final String value;
+    // listSlug is used to store the list portion of @mention/list.
     protected final String listSlug;
     protected final Type type;
 
@@ -106,7 +107,10 @@ public class Extractor {
       }
     });
 
-    // remove overlap
+    // Remove overlapping entities.
+    // Two entities overlap only when one is URL and the other is hashtag/mention
+    // which is a part of the URL. When it happens, we choose URL over hashtag/mention
+    // by selecting the one with smaller start index.
     if (!entities.isEmpty()) {
       Iterator<Entity> it = entities.iterator();
       Entity prev = it.next();
@@ -162,6 +166,9 @@ public class Extractor {
       return Collections.emptyList();
     }
 
+    // Performance optimization.
+    // If text doesn't contain @/＠ at all, the text doesn't
+    // contain @mention. So we can simply return an empty list.
     boolean found = false;
     for (char c : text.toCharArray()) {
       if (c == '@' || c == '＠') {
@@ -244,6 +251,9 @@ public class Extractor {
   public List<Entity> extractURLsWithIndices(String text) {
     if (text == null || text.isEmpty()
         || (extractURLWithoutProtocol ? text.indexOf('.') : text.indexOf(':')) == -1) {
+      // Performance optimization.
+      // If text doesn't contain '.' or ':' at all, text doesn't contain URL,
+      // so we can simply return an empty list.
       return Collections.emptyList();
     }
 
@@ -307,6 +317,9 @@ public class Extractor {
       return Collections.emptyList();
     }
 
+    // Performance optimization.
+    // If text doesn't contain #/＃ at all, text doesn't contain
+    // hashtag, so we can simply return an empty list.
     boolean found = false;
     for (char c : text.toCharArray()) {
       if (c == '#' || c == '＃') {
