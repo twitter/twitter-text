@@ -242,16 +242,18 @@ module Twitter
     end
 
     def link_to_hashtag(entity, chars, options = {})
-      hashtag = entity[:hashtag]
       hash = chars[entity[:indices].first]
-      yield(hashtag) if block_given?
+      hashtag = entity[:hashtag]
+      hashtag = yield(hashtag) if block_given?
+
+      text = hash + hashtag
 
       href = if options[:hashtag_url_block]
         options[:hashtag_url_block].call(hashtag)
       else
         "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
       end
-      text = "#{hash}#{hashtag}"
+
       options[:html_attrs][:class] << options[:hashtag_class]
       options[:html_attrs][:title] = text
 
@@ -259,28 +261,37 @@ module Twitter
     end
 
     def link_to_screen_name(entity, chars, options = {})
-      name = "#{entity[:screen_name]}#{entity[:list_slug]}"
-      chunk = block_given? ? yield(name) : name
-      at = options[:username_include_symbol] ? '' : chars[entity[:indices].first]
-      at_before_user = options[:username_include_symbol] ? chars[entity[:indices].first] : ''
+      name  = "#{entity[:screen_name]}#{entity[:list_slug]}"
+      chunk = name
+      chunk = yield(name) if block_given?
+      name.downcase!
+
+      at = chars[entity[:indices].first]
+      at_before_user = ""
+      if options[:username_include_symbol]
+        at_before_user = at
+        at = ""
+      end
+
+      text = at_before_user + chunk
 
       if !entity[:list_slug].empty? && !options[:suppress_lists]
         href = if options[:list_url_block]
-          options[:list_url_block].call(name.downcase)
+          options[:list_url_block].call(name)
         else
-          "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
+          "#{html_escape(options[:list_url_base])}#{html_escape(name)}"
         end
         options[:html_attrs][:class] << options[:list_class]
       else
         href = if options[:username_url_block]
           options[:username_url_block].call(chunk)
         else
-          "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
+          "#{html_escape(options[:username_url_base])}#{html_escape(name)}"
         end
         options[:html_attrs][:class] << options[:username_class]
       end
 
-      "#{at}#{link_to(html_escape(at_before_user + chunk), href, options[:html_attrs])}"
+      "#{at}#{link_to(html_escape(text), href, options[:html_attrs])}"
     end
 
     # FIXME should place html_escape at a single place.
