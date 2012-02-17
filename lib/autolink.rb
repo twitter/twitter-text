@@ -85,34 +85,39 @@ module Twitter
     # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag"
 
-    def auto_link_entities(text, entities, options)
+    def auto_link_entities(text, entities, options = {}, &block)
       return text if entities.empty?
 
-      options = options.dup
-      options[:url_class] ||= DEFAULT_URL_CLASS
-      options[:list_class] ||= DEFAULT_LIST_CLASS
-      options[:username_class] ||= DEFAULT_USERNAME_CLASS
-      options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
-      options[:username_url_base] ||= "https://twitter.com/"
-      options[:list_url_base] ||= "https://twitter.com/"
-      options[:hashtag_url_base] ||= "https://twitter.com/#!/search?q=%23"
-      options[:url_entities] = url_entities_hash(options[:url_entities])
-
-      # FIXME deprecate this code.
-      options[:html_attrs] ||= {}
-      options[:html_attrs][:target] = options[:target]
-      options[:html_attrs][:rel]    = "nofollow" unless options[:suppress_no_follow]
+      options = options_for_auto_link(options)
 
       Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
-        options[:html_attrs][:class] = [options[:url_class]]
-
         if entity[:url]
-          link_to_url(entity, chars, options)
+          link_to_url(entity, chars, options, &block)
         elsif entity[:hashtag]
-          link_to_hashtag(entity, chars, options)
+          link_to_hashtag(entity, chars, options, &block)
         elsif entity[:screen_name]
-          link_to_screen_name(entity, chars, options)
+          link_to_screen_name(entity, chars, options, &block)
         end
+      end
+    end
+
+    def options_for_auto_link(options)
+      options.dup.tap do |options|
+        options[:url_class]      ||= DEFAULT_URL_CLASS
+        options[:list_class]     ||= DEFAULT_LIST_CLASS
+        options[:username_class] ||= DEFAULT_USERNAME_CLASS
+        options[:hashtag_class]  ||= DEFAULT_HASHTAG_CLASS
+
+        options[:username_url_base] ||= "https://twitter.com/"
+        options[:list_url_base]     ||= "https://twitter.com/"
+        options[:hashtag_url_base]  ||= "https://twitter.com/#!/search?q=%23"
+
+        options[:url_entities] = url_entities_hash(options[:url_entities])
+
+        options[:html_attrs] = {
+          :target => options[:target],
+          :rel    => options[:suppress_no_follow] ? nil : "nofollow"
+        }.merge(options[:html_attrs] || {})
       end
     end
 
@@ -164,21 +169,25 @@ module Twitter
       url = entity[:url]
 
       href = if options[:link_url_block]
-        options.delete(:link_url_block).call(url)
+        options[:link_url_block].call(url)
       else
         html_escape(url)
       end
 
+      html_attrs = {
+        :class => options[:url_class]
+      }.merge(options[:html_attrs])
+
       link_text = if options[:url_entities] &&
                      (url_entity = options[:url_entities][url]) &&
                      url_entity["display_url"]
-        options[:html_attrs][:title] = url_entity["expanded_url"]
+        html_attrs[:title] ||= url_entity["expanded_url"]
         link_text_with_entity(url_entity)
       else
         html_escape(url)
       end
 
-      link_to(link_text, href, options[:html_attrs])
+      link_to(link_text, href, html_attrs)
     end
 
     INVISIBLE_TAG_ATTRS = "style='font-size:0; line-height:0'".freeze
@@ -254,10 +263,12 @@ module Twitter
         "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
       end
 
-      options[:html_attrs][:class] << options[:hashtag_class]
-      options[:html_attrs][:title] = text
+      html_attrs = {
+        :class => "#{options[:url_class]} #{options[:hashtag_class]}",
+        :title => text
+      }.merge(options[:html_attrs])
 
-      link_to(html_escape(text), href, options[:html_attrs])
+      link_to(html_escape(text), href, html_attrs)
     end
 
     def link_to_screen_name(entity, chars, options = {})
@@ -275,23 +286,25 @@ module Twitter
 
       text = at_before_user + chunk
 
+      html_attrs = options[:html_attrs].dup
+
       if !entity[:list_slug].empty? && !options[:suppress_lists]
         href = if options[:list_url_block]
           options[:list_url_block].call(name)
         else
           "#{html_escape(options[:list_url_base])}#{html_escape(name)}"
         end
-        options[:html_attrs][:class] << options[:list_class]
+        html_attrs[:class] ||= "#{options[:url_class]} #{options[:list_class]}"
       else
         href = if options[:username_url_block]
           options[:username_url_block].call(chunk)
         else
           "#{html_escape(options[:username_url_base])}#{html_escape(name)}"
         end
-        options[:html_attrs][:class] << options[:username_class]
+        html_attrs[:class] ||= "#{options[:url_class]} #{options[:username_class]}"
       end
 
-      "#{at}#{link_to(html_escape(text), href, options[:html_attrs])}"
+      "#{at}#{link_to(html_escape(text), href, html_attrs)}"
     end
 
     # FIXME should place html_escape at a single place.
