@@ -82,7 +82,7 @@ public class Autolink {
     return sb.toString();
   }
 
-  private String autoLinkEntities(String text, List<Entity> entities) {
+  public String autoLinkEntities(String text, List<Entity> entities) {
     StringBuilder builder = new StringBuilder(text.length());
     int beginIndex = 0;
 
@@ -93,11 +93,72 @@ public class Autolink {
       switch(entity.type) {
         case URL:
           CharSequence url = escapeHTML(entity.getValue());
+          CharSequence linkText = url;
+
+          if (entity.displayURL != null && entity.expandedURL != null) {
+            // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
+            // should contain the full original URL (expanded_url), not the display URL.
+            //
+            // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
+            // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+            // Elements with font-size:0 get copied even though they are not visible.
+            // Note that display:none doesn't work here. Elements with display:none don't get copied.
+            //
+            // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
+            // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
+            // everything with the tco-ellipsis class.
+            //
+            // As an example: The user tweets "hi http://longdomainname.com/foo"
+            // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
+            // This will get rendered as:
+            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            //   …
+            //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
+            //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
+            //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
+            //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
+            //        e.g. "hi  http://longdomainname.com/foo".
+            //   <span style='font-size:0'>&nbsp;</span>
+            // </span>
+            // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
+            //   http://longdomai
+            // </span>
+            // <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
+            //   nname.com/foo
+            // </span>
+            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            //   <span style='font-size:0'>&nbsp;</span>
+            //   …
+            // </span>
+            //
+            // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+            // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+            // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
+            String displayURLSansEllipses = entity.displayURL.replace("…", "");
+            int diplayURLIndexInExpandedURL = entity.expandedURL.indexOf(displayURLSansEllipses);
+            if (diplayURLIndexInExpandedURL != -1) {
+              String beforeDisplayURL = entity.expandedURL.substring(0, diplayURLIndexInExpandedURL);
+              String afterDisplayURL = entity.expandedURL.substring(diplayURLIndexInExpandedURL + displayURLSansEllipses.length());
+              String precedingEllipsis = entity.displayURL.startsWith("…") ? "…" : "";
+              String followingEllipsis = entity.displayURL.endsWith("…") ? "…" : "";
+              String invisibleSpan = "<span style='font-size:0; line-height:0'>";
+
+              StringBuilder sb = new StringBuilder("<span class='tco-ellipsis'>");
+              sb.append(precedingEllipsis);
+              sb.append(invisibleSpan).append("&nbsp;</span></span>");
+              sb.append(invisibleSpan).append(escapeHTML(beforeDisplayURL)).append("</span>");
+              sb.append("<span class='js-display-url'>").append(escapeHTML(displayURLSansEllipses)).append("</span>");
+              sb.append(invisibleSpan).append(escapeHTML(afterDisplayURL)).append("</span>");
+              sb.append("<span class='tco-ellipsis'>").append(invisibleSpan).append("&nbsp;</span>").append(followingEllipsis).append("</span>");
+
+              linkText = sb;
+            }
+          }
           replaceStr.append("<a href=\"").append(url).append("\"");
           if (noFollow){
             replaceStr.append(NO_FOLLOW_HTML_ATTRIBUTE);
           }
-          replaceStr.append(">").append(url).append("</a>");
+          replaceStr.append(">").append(linkText).append("</a>");
           break;
         case HASHTAG:
           replaceStr.append("<a href=\"").append(hashtagUrlBase)
