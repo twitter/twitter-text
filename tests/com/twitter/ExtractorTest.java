@@ -192,6 +192,9 @@ public class ExtractorTest extends TestCase {
      assertEquals(extracted.get(1).getEnd().intValue(), 32);
      assertEquals(extracted.get(2).getStart().intValue(), 34);
      assertEquals(extracted.get(2).getEnd().intValue(), 47);
+
+     extractor.setExtractURLWithoutProtocol(false);
+     assertTrue("Should not extract URLs w/o protocol", extractor.extractURLs(text).isEmpty());
    }
 
    public void testURLFollowedByPunctuations() {
