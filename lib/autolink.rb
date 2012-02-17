@@ -55,6 +55,10 @@ module Twitter
       auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options, &block)
     end
 
+    # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>. Any
+    # elements in the <tt>href_options</tt> hash will be converted to HTML attributes
+    # and place in the <tt><a></tt> tag. Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
+    # the <tt>rel="nofollow"</tt> attribute will be added.
     def auto_link_urls(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
@@ -62,33 +66,36 @@ module Twitter
     # These methods are deprecated, will be removed in future.
     extend Deprecation
 
-    # <b>DEPRECATED</b> Please use <tt>auto_link_urls</tt> instead.
-    # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>. Any
-    # elements in the <tt>href_options</tt> hash will be converted to HTML attributes
-    # and place in the <tt><a></tt> tag. Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
-    # the <tt>rel="nofollow"</tt> attribute will be added.
-    def auto_link_urls_custom(text, options = {})
-      options = options.dup
-      html_attrs = extract_html_attrs_for_options!(options)
-      auto_link_urls(text, options.merge(:html_attrs => html_attrs))
-    end
+    alias :auto_link_urls_custom :auto_link_urls
     deprecate :auto_link_urls_custom, :auto_link_urls
 
     private
 
-    # Default CSS class for auto-linked URLs
-    DEFAULT_URL_CLASS = "tweet-url"
-    # Default CSS class for auto-linked lists (along with the url class)
-    DEFAULT_LIST_CLASS = "list-slug"
-    # Default CSS class for auto-linked usernames (along with the url class)
-    DEFAULT_USERNAME_CLASS = "username"
-    # Default CSS class for auto-linked hashtags (along with the url class)
-    DEFAULT_HASHTAG_CLASS = "hashtag"
+    DEFAULT_OPTIONS = {
+      # Default CSS class for auto-linked URLs
+      :url_class      => "tweet-url",
+      # Default CSS class for auto-linked lists (along with the url class)
+      :list_class     => "list-slug",
+      # Default CSS class for auto-linked usernames (along with the url class)
+      :username_class => "username",
+      # Default CSS class for auto-linked hashtags (along with the url class)
+      :hashtag_class  => "hashtag",
+
+      # Default URL base for auto-linked usernames
+      :username_url_base => "https://twitter.com/",
+      # Default URL base for auto-linked lists
+      :list_url_base     => "https://twitter.com/",
+      # Default URL base for auto-linked hashtags
+      :hashtag_url_base  => "https://twitter.com/#!/search?q=%23",
+    }.freeze
 
     def auto_link_entities(text, entities, options = {}, &block)
       return text if entities.empty?
 
-      options = options_for_auto_link(options)
+      # NOTE deprecate these attributes not options keys in options hash, then use html_attrs
+      options = DEFAULT_OPTIONS.merge(options)
+      options[:html_attrs] = extract_html_attrs_from_options!(options)
+      options[:html_attrs][:rel] ||= "nofollow" unless options[:suppress_no_follow]
 
       Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
         if entity[:url]
@@ -98,26 +105,6 @@ module Twitter
         elsif entity[:screen_name]
           link_to_screen_name(entity, chars, options, &block)
         end
-      end
-    end
-
-    def options_for_auto_link(options)
-      options.dup.tap do |options|
-        options[:url_class]      ||= DEFAULT_URL_CLASS
-        options[:list_class]     ||= DEFAULT_LIST_CLASS
-        options[:username_class] ||= DEFAULT_USERNAME_CLASS
-        options[:hashtag_class]  ||= DEFAULT_HASHTAG_CLASS
-
-        options[:username_url_base] ||= "https://twitter.com/"
-        options[:list_url_base]     ||= "https://twitter.com/"
-        options[:hashtag_url_base]  ||= "https://twitter.com/#!/search?q=%23"
-
-        options[:url_entities] = url_entities_hash(options[:url_entities])
-
-        options[:html_attrs] = {
-          :target => options[:target],
-          :rel    => options[:suppress_no_follow] ? nil : "nofollow"
-        }.merge(options[:html_attrs] || {})
       end
     end
 
@@ -135,7 +122,7 @@ module Twitter
       end
     end
 
-    # We will make this private in future.
+    # NOTE We will make this private in future.
     public :html_escape
 
     # Options which should not be passed as HTML attributes
@@ -143,14 +130,13 @@ module Twitter
       :url_class, :list_class, :username_class, :hashtag_class,
       :username_url_base, :list_url_base, :hashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
-      :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
-      :html_attrs
+      :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities
     ]).freeze
 
-    def extract_html_attrs_for_options!(options)
+    def extract_html_attrs_from_options!(options)
       html_attrs = {}
       options.reject! do |key, value|
-        if OPTIONS_NOT_ATTRIBUTES.include?(key)
+        unless OPTIONS_NOT_ATTRIBUTES.include?(key)
           html_attrs[key] = value
           true
         end
@@ -178,9 +164,9 @@ module Twitter
         :class => options[:url_class]
       }.merge(options[:html_attrs])
 
-      link_text = if options[:url_entities] &&
-                     (url_entity = options[:url_entities][url]) &&
-                     url_entity["display_url"]
+      url_entities = url_entities_hash(options[:url_entities])
+
+      link_text = if (url_entity = url_entities[url]) && url_entity["display_url"]
         html_attrs[:title] ||= url_entity["expanded_url"]
         link_text_with_entity(url_entity)
       else
