@@ -157,7 +157,7 @@ module Twitter
       href = if options[:link_url_block]
         options[:link_url_block].call(url)
       else
-        html_escape(url)
+        url
       end
 
       html_attrs = {
@@ -173,7 +173,7 @@ module Twitter
         html_escape(url)
       end
 
-      link_to(link_text, href, html_attrs)
+      link_to(link_text, href, html_attrs, :no_escape_text => true)
     end
 
     INVISIBLE_TAG_ATTRS = "style='font-size:0; line-height:0'".freeze
@@ -246,7 +246,7 @@ module Twitter
       href = if options[:hashtag_url_block]
         options[:hashtag_url_block].call(hashtag)
       else
-        "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
+        "#{options[:hashtag_url_base]}#{hashtag}"
       end
 
       html_attrs = {
@@ -254,7 +254,7 @@ module Twitter
         :title => text
       }.merge(options[:html_attrs])
 
-      link_to(html_escape(text), href, html_attrs)
+      link_to(text, href, html_attrs)
     end
 
     def link_to_screen_name(entity, chars, options = {})
@@ -278,24 +278,25 @@ module Twitter
         href = if options[:list_url_block]
           options[:list_url_block].call(name)
         else
-          "#{html_escape(options[:list_url_base])}#{html_escape(name)}"
+          "#{options[:list_url_base]}#{name}"
         end
         html_attrs[:class] ||= "#{options[:url_class]} #{options[:list_class]}"
       else
         href = if options[:username_url_block]
           options[:username_url_block].call(chunk)
         else
-          "#{html_escape(options[:username_url_base])}#{html_escape(name)}"
+          "#{options[:username_url_base]}#{name}"
         end
         html_attrs[:class] ||= "#{options[:url_class]} #{options[:username_class]}"
       end
 
-      "#{at}#{link_to(html_escape(text), href, html_attrs)}"
+      "#{at}#{link_to(text, href, html_attrs)}"
     end
 
-    # FIXME should place html_escape at a single place.
     def link_to(text, href, attributes = {}, options = {})
-      %(<a href="#{href}"#{tag_attrs(attributes)}>#{text}</a>)
+      attributes[:href] = href
+      text = html_escape(text) unless options[:no_escape_text]
+      %(<a#{tag_attrs(attributes)}>#{text}</a>)
     end
 
     BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
