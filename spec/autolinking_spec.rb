@@ -309,7 +309,7 @@ describe Twitter::Autolink do
         end
 
         it "should be linked" do
-          @autolinked_text.should == "<a href=\"https://twitter.com/#!/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
+          @autolinked_text.should == "<a href=\"https://twitter.com/#!/search?q=%23éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\" title=\"#éhashtag\">#éhashtag</a>"
         end
       end
 

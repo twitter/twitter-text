@@ -14,10 +14,6 @@ module Twitter
     DEFAULT_USERNAME_CLASS = "username"
     # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag"
-    # Default target for auto-linked urls (nil will not add a target attribute)
-    DEFAULT_TARGET = nil
-    # HTML attribute for robot nofollow behavior (default)
-    HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\""
 
     def auto_link_entities(text, entities, options)
       return text if entities.empty?
@@ -30,11 +26,16 @@ module Twitter
       options[:username_url_base] ||= "https://twitter.com/"
       options[:list_url_base] ||= "https://twitter.com/"
       options[:hashtag_url_base] ||= "https://twitter.com/#!/search?q=%23"
-      options[:target] ||= DEFAULT_TARGET
-      options[:extra_html] = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
       options[:url_entities] = url_entities_hash(options[:url_entities])
 
+      # FIXME deprecate this code.
+      options[:html_attrs] ||= {}
+      options[:html_attrs][:target] = options[:target]
+      options[:html_attrs][:rel]    = "nofollow" unless options[:suppress_no_follow]
+
       Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
+        options[:html_attrs][:class] = [options[:url_class]]
+
         if entity[:url]
           link_to_url(entity, chars, options)
         elsif entity[:hashtag]
@@ -152,37 +153,6 @@ module Twitter
       html_attrs
     end
 
-    BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
-
-    def autolink_html_attrs(options)
-      options.inject("") do |attrs, (key, value)|
-        if BOOLEAN_ATTRIBUTES.include?(key)
-          value = value ? key : nil
-        end
-
-        unless value.nil?
-          value = case value
-          when Array
-            value.compact.join(" ")
-          else
-            value
-          end
-          attrs << %( #{html_escape(key)}="#{html_escape(value)}")
-        end
-
-        attrs
-      end
-    end
-
-    def target_tag(options)
-      target_option = options[:target].to_s
-      if target_option.empty?
-        ""
-      else
-        "target=\"#{html_escape(target_option)}\""
-      end
-    end
-
     def url_entities_hash(url_entities)
       (url_entities || {}).inject({}) do |entities, entity|
         entities[entity["url"]] = entity
@@ -194,6 +164,7 @@ module Twitter
       url_entities = options[:url_entities] || {}
 
       url = entity[:url]
+
       href = if options[:link_url_block]
         options.delete(:link_url_block).call(url)
       else
@@ -259,26 +230,24 @@ module Twitter
         end
       end
 
-      # FIXME should merge with other options like class specifications.
-      options[:html_attrs] ||= {}
-      options[:html_attrs][:class]  = options[:url_class]
-      options[:html_attrs][:target] = options[:target]
-      options[:html_attrs][:rel]    = "nofollow" unless options[:suppress_no_follow]
-      html_attrs = autolink_html_attrs(options[:html_attrs])
-
-      %(<a href="#{href}"#{html_attrs}>#{link_text}</a>)
+      link_to(link_text, href, options[:html_attrs])
     end
 
     def link_to_hashtag(entity, chars, options = {})
       hashtag = entity[:hashtag]
       hash = chars[entity[:indices].first]
       yield(hashtag) if block_given?
+
       href = if options[:hashtag_url_block]
         options[:hashtag_url_block].call(hashtag)
       else
         "#{options[:hashtag_url_base]}#{html_escape(hashtag)}"
       end
-      %(<a href="#{href}" title="##{html_escape(hashtag)}" #{target_tag(options)}class="#{options[:url_class]} #{options[:hashtag_class]}"#{options[:extra_html]}>#{hash}#{html_escape(hashtag)}</a>)
+      text = "#{hash}#{hashtag}"
+      options[:html_attrs][:class] << options[:hashtag_class]
+      options[:html_attrs][:title] = text
+
+      link_to(html_escape(text), href, options[:html_attrs])
     end
 
     def link_to_screen_name(entity, chars, options = {})
@@ -293,14 +262,45 @@ module Twitter
         else
           "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
         end
-        %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{options[:extra_html]}>#{html_escape(at_before_user + chunk)}</a>)
+        options[:html_attrs][:class] << options[:list_class]
       else
         href = if options[:username_url_block]
           options[:username_url_block].call(chunk)
         else
           "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
         end
-        %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{options[:extra_html]}>#{html_escape(at_before_user + chunk)}</a>)
+        options[:html_attrs][:class] << options[:username_class]
+      end
+
+      "#{at}#{link_to(html_escape(at_before_user + chunk), href, options[:html_attrs])}"
+    end
+
+    # FIXME should place html_escape at a single place.
+    def link_to(text, href, attributes = {}, options = {})
+      %(<a href="#{href}"#{tag_attrs(attributes)}>#{text}</a>)
+    end
+
+    BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
+
+    def tag_attrs(attributes)
+      attributes.keys.sort_by{|k| k.to_s}.inject("") do |attrs, key|
+        value = attributes[key]
+
+        if BOOLEAN_ATTRIBUTES.include?(key)
+          value = value ? key : nil
+        end
+
+        unless value.nil?
+          value = case value
+          when Array
+            value.compact.join(" ")
+          else
+            value
+          end
+          attrs << %( #{html_escape(key)}="#{html_escape(value)}")
+        end
+
+        attrs
       end
     end
   end
