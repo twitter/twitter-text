@@ -161,8 +161,6 @@ module Twitter
     end
 
     def link_to_url(entity, chars, options = {})
-      url_entities = options[:url_entities] || {}
-
       url = entity[:url]
 
       href = if options[:link_url_block]
@@ -171,66 +169,76 @@ module Twitter
         html_escape(url)
       end
 
-      display_url = url
-      link_text = html_escape(display_url)
-      if url_entities[url] && url_entities[url]["display_url"]
-        display_url = url_entities[url]["display_url"]
-        expanded_url = url_entities[url]["expanded_url"]
-        if !options[:title]
-          options[:title] = expanded_url
-        end
-
-        # Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
-        # should contain the full original URL (expanded_url), not the display URL.
-        #
-        # Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
-        # font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
-        # Elements with font-size:0 get copied even though they are not visible.
-        # Note that display:none doesn't work here. Elements with display:none don't get copied.
-        #
-        # Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
-        # wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
-        # everything with the tco-ellipsis class.
-        #
-        # Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
-        # For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
-        # For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
-        display_url_sans_ellipses = display_url.sub("…", "")
-        if expanded_url.include?(display_url_sans_ellipses)
-          display_url_index = expanded_url.index(display_url_sans_ellipses)
-          before_display_url = expanded_url.slice(0, display_url_index)
-          # Portion of expanded_url that comes after display_url
-          after_display_url = expanded_url.slice(display_url_index + display_url_sans_ellipses.length, 999999)
-          preceding_ellipsis = display_url.match(/^…/) ? "…" : ""
-          following_ellipsis = display_url.match(/…$/) ? "…" : ""
-          # As an example: The user tweets "hi http://longdomainname.com/foo"
-          # This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
-          # This will get rendered as:
-          # <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
-          #   …
-          #   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
-          #        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
-          #        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
-          #        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
-          #        e.g. "hi  http://longdomainname.com/foo".
-          #   <span style='font-size:0'>&nbsp;</span>
-          # </span>
-          # <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
-          #   http://longdomai
-          # </span>
-          # <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
-          #   nname.com/foo
-          # </span>
-          # <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
-          #   <span style='font-size:0'>&nbsp;</span>
-          #   …
-          # </span>
-          invisible = "style='font-size:0; line-height:0'"
-          link_text = "<span class='tco-ellipsis'>#{preceding_ellipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{html_escape before_display_url}</span><span class='js-display-url'>#{html_escape display_url_sans_ellipses}</span><span #{invisible}>#{after_display_url}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{following_ellipsis}</span>"
-        end
+      link_text = if options[:url_entities] &&
+                     (url_entity = options[:url_entities][url]) &&
+                     url_entity["display_url"]
+        options[:html_attrs][:title] = url_entity["expanded_url"]
+        link_text_with_entity(url_entity)
+      else
+        html_escape(url)
       end
 
       link_to(link_text, href, options[:html_attrs])
+    end
+
+    INVISIBLE_TAG_ATTRS = "style='font-size:0; line-height:0'".freeze
+
+    def link_text_with_entity(url_entity)
+      display_url  = url_entity["display_url"]
+      expanded_url = url_entity["expanded_url"]
+
+      # Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
+      # should contain the full original URL (expanded_url), not the display URL.
+      #
+      # Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
+      # font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+      # Elements with font-size:0 get copied even though they are not visible.
+      # Note that display:none doesn't work here. Elements with display:none don't get copied.
+      #
+      # Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
+      # wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
+      # everything with the tco-ellipsis class.
+      #
+      # Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+      # For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+      # For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
+      display_url_sans_ellipses = display_url.gsub("…", "")
+
+      if expanded_url.include?(display_url_sans_ellipses)
+        before_display_url, after_display_url = expanded_url.split(display_url_sans_ellipses, 2)
+        preceding_ellipsis = /\A…/.match(display_url).to_s
+        following_ellipsis = /…\z/.match(display_url).to_s
+
+        # As an example: The user tweets "hi http://longdomainname.com/foo"
+        # This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
+        # This will get rendered as:
+        # <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+        #   …
+        #   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
+        #        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
+        #        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
+        #        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
+        #        e.g. "hi  http://longdomainname.com/foo".
+        #   <span style='font-size:0'>&nbsp;</span>
+        # </span>
+        # <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
+        #   http://longdomai
+        # </span>
+        # <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
+        #   nname.com/foo
+        # </span>
+        # <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+        #   <span style='font-size:0'>&nbsp;</span>
+        #   …
+        # </span>
+        %(<span class="tco-ellipsis">#{preceding_ellipsis}<span #{INVISIBLE_TAG_ATTRS}>&nbsp;</span></span>) <<
+        %(<span #{INVISIBLE_TAG_ATTRS}>#{html_escape(before_display_url)}</span>) <<
+        %(<span class="js-display-url">#{html_escape(display_url_sans_ellipses)}</span>) <<
+        %(<span #{INVISIBLE_TAG_ATTRS}>#{html_escape(after_display_url)}</span>) <<
+        %(<span class="tco-ellipsis"><span #{INVISIBLE_TAG_ATTRS}>&nbsp;</span>#{following_ellipsis}</span>)
+      else
+        html_escape(display_url)
+      end
     end
 
     def link_to_hashtag(entity, chars, options = {})
