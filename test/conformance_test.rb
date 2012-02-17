@@ -7,7 +7,7 @@ if major.to_i == 1 && minor.to_i < 9
   $KCODE='u'
 end
 
-require File.expand_path(File.dirname(__FILE__) + '/../lib/twitter-text')
+require File.expand_path('../../lib/twitter-text', __FILE__)
 
 class ConformanceTest < Test::Unit::TestCase
   include Twitter::Extractor
@@ -15,168 +15,123 @@ class ConformanceTest < Test::Unit::TestCase
   include Twitter::HitHighlighter
   include Twitter::Validation
 
-  def setup
-    @conformance_dir = ENV['CONFORMANCE_DIR'] || File.join(File.dirname(__FILE__), 'twitter-text-conformance')
-  end
-
-  module ExtractorConformance
-    def test_replies_extractor_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :replies) do |description, expected, input|
-        assert_equal expected, extract_reply_screen_name(input), description
-      end
-    end
-
-    def test_mentions_extractor_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions) do |description, expected, input|
-        assert_equal expected, extract_mentioned_screen_names(input), description
-      end
-    end
-
-    def test_mentions_with_indices_extractor_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
-        assert_equal expected, extract_mentioned_screen_names_with_indices(input), description
-      end
-    end
-
-    def test_mentions_or_lists_with_indices_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :mentions_or_lists_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
-        assert_equal expected, extract_mentions_or_lists_with_indices(input), description
-      end
-    end
-
-    def test_url_extractor_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls) do |description, expected, input|
-        assert_equal expected, extract_urls(input), description
-        expected.each do |expected_url|
-          assert_equal true, valid_url?(expected_url, true, false), "expected url [#{expected_url}] not valid"
-        end
-      end
-    end
-
-    def test_urls_with_indices_extractor_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :urls_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
-        assert_equal expected, extract_urls_with_indices(input), description
-      end
-    end
-
-    def test_hashtag_extractor_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :hashtags) do |description, expected, input|
-        assert_equal expected, extract_hashtags(input), description
-      end
-    end
-
-    def test_hashtags_with_indices_extractor_conformance
-      run_conformance_test(File.join(@conformance_dir, 'extract.yml'), :hashtags_with_indices) do |description, expected, input|
-        expected = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
-        assert_equal expected, extract_hashtags_with_indices(input), description
-      end
-    end
-  end
-  include ExtractorConformance
-
-  module AutolinkConformance
-    def test_users_autolink_conformance
-      run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :usernames) do |description, expected, input|
-        assert_equal expected, auto_link_usernames_or_lists(input, :suppress_no_follow => true), description
-      end
-    end
-
-    def test_lists_autolink_conformance
-      run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :lists) do |description, expected, input|
-        assert_equal expected, auto_link_usernames_or_lists(input, :suppress_no_follow => true), description
-      end
-    end
-
-    def test_urls_autolink_conformance
-      run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :urls) do |description, expected, input|
-        assert_equal expected, auto_link_urls_custom(input, :suppress_no_follow => true), description
-      end
-    end
-
-    def test_hashtags_autolink_conformance
-      run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :hashtags) do |description, expected, input|
-        assert_equal expected, auto_link_hashtags(input, :suppress_no_follow => true), description
-      end
-    end
-
-    def test_all_autolink_conformance
-      run_conformance_test(File.join(@conformance_dir, 'autolink.yml'), :all) do |description, expected, input|
-        assert_equal expected, auto_link(input, :suppress_no_follow => true), description
-      end
-    end
-  end
-  include AutolinkConformance
-
-  module HitHighlighterConformance
-
-    def test_plain_text_conformance
-      run_conformance_test(File.join(@conformance_dir, 'hit_highlighting.yml'), :plain_text, true) do |config|
-        assert_equal config['expected'], hit_highlight(config['text'], config['hits']), config['description']
-      end
-    end
-
-    def test_with_links_conformance
-      run_conformance_test(File.join(@conformance_dir, 'hit_highlighting.yml'), :with_links, true) do |config|
-        assert_equal config['expected'], hit_highlight(config['text'], config['hits']), config['description']
-      end
-    end
-  end
-  include HitHighlighterConformance
-
-  module ValidationConformance
-    def test_tweet_validation_conformance
-      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :tweets) do |description, expected, input|
-        assert_equal expected, valid_tweet_text?(input), description
-      end
-    end
-
-    def test_users_validation_conformance
-      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :usernames) do |description, expected, input|
-        assert_equal expected, valid_username?(input), description
-      end
-    end
-
-    def test_lists_validation_conformance
-      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :lists) do |description, expected, input|
-        assert_equal expected, valid_list?(input), description
-      end
-    end
-
-    def test_urls_validation_conformance
-      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :urls) do |description, expected, input|
-        assert_equal expected, valid_url?(input), description
-      end
-    end
-
-    def test_urls_without_protocol_validation_conformance
-      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :urls_without_protocol) do |description, expected, input|
-        assert_equal expected, valid_url?(input, true, false), description
-      end
-    end
-
-    def test_hashtags_validation_conformance
-      run_conformance_test(File.join(@conformance_dir, 'validate.yml'), :hashtags) do |description, expected, input|
-        assert_equal expected, valid_hashtag?(input), description
-      end
-    end
-  end
-  include ValidationConformance
-
   private
 
-  def run_conformance_test(file, test_type, hash_config = false, &block)
-    yaml = YAML.load_file(file)
-    assert yaml["tests"][test_type.to_s], "No such test suite: #{test_type.to_s}"
+  %w(description expected text hits).each do |key|
+    define_method key.to_sym do
+      @test_info[key]
+    end
+  end
+
+  CONFORMANCE_DIR = ENV['CONFORMANCE_DIR'] || File.expand_path("../twitter-text-conformance", __FILE__)
+
+  def self.def_conformance_test(file, test_type, &block)
+    yaml = YAML.load_file(File.join(CONFORMANCE_DIR, file))
+    raise  "No such test suite: #{test_type.to_s}" unless yaml["tests"][test_type.to_s]
 
     yaml["tests"][test_type.to_s].each do |test_info|
-      if hash_config
-        yield test_info
-      else
-        yield test_info['description'], test_info['expected'], test_info['text']
+      name = :"test_#{test_type}_#{test_info['description']}"
+      define_method name do
+        @test_info = test_info
+        instance_eval(&block)
       end
     end
+  end
+
+  public
+
+  # Extractor Conformance
+  def_conformance_test("extract.yml", :replies) do
+    assert_equal expected, extract_reply_screen_name(text), description
+  end
+
+  def_conformance_test("extract.yml", :mentions) do
+    assert_equal expected, extract_mentioned_screen_names(text), description
+  end
+
+  def_conformance_test("extract.yml", :mentions_with_indices) do
+    e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
+    assert_equal e, extract_mentioned_screen_names_with_indices(text), description
+  end
+
+  def_conformance_test("extract.yml", :mentions_or_lists_with_indices) do
+    e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
+    assert_equal e, extract_mentions_or_lists_with_indices(text), description
+  end
+
+  def_conformance_test("extract.yml", :urls) do
+    assert_equal expected, extract_urls(text), description
+    expected.each do |expected_url|
+      assert_equal true, valid_url?(expected_url, true, false), "expected url [#{expected_url}] not valid"
+    end
+  end
+
+  def_conformance_test("extract.yml", :urls_with_indices) do
+    e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
+    assert_equal e, extract_urls_with_indices(text), description
+  end
+
+  def_conformance_test("extract.yml", :hashtags) do
+    assert_equal expected, extract_hashtags(text), description
+  end
+
+  def_conformance_test("extract.yml", :hashtags_with_indices) do
+    e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
+    assert_equal e, extract_hashtags_with_indices(text), description
+  end
+
+  # Autolink Conformance
+  def_conformance_test("autolink.yml", :usernames) do
+    assert_equal expected, auto_link_usernames_or_lists(text, :suppress_no_follow => true), description
+  end
+
+  def_conformance_test("autolink.yml", :lists) do
+    assert_equal expected, auto_link_usernames_or_lists(text, :suppress_no_follow => true), description
+  end
+
+  def_conformance_test("autolink.yml", :urls) do
+    assert_equal expected, auto_link_urls_custom(text, :suppress_no_follow => true), description
+  end
+
+  def_conformance_test("autolink.yml", :hashtags) do
+    assert_equal expected, auto_link_hashtags(text, :suppress_no_follow => true), description
+  end
+
+  def_conformance_test("autolink.yml", :all) do
+    assert_equal expected, auto_link(text, :suppress_no_follow => true), description
+  end
+
+  # HitHighlighter Conformance
+  def_conformance_test("hit_highlighting.yml", :plain_text) do
+    assert_equal expected, hit_highlight(text, hits), description
+  end
+
+  def_conformance_test("hit_highlighting.yml", :with_links) do
+    assert_equal expected, hit_highlight(text, hits), description
+  end
+
+  # Validation Conformance
+  def_conformance_test("validate.yml", :tweets) do
+    assert_equal expected, valid_tweet_text?(text), description
+  end
+
+  def_conformance_test("validate.yml", :usernames) do
+    assert_equal expected, valid_username?(text), description
+  end
+
+  def_conformance_test("validate.yml", :lists) do
+    assert_equal expected, valid_list?(text), description
+  end
+
+  def_conformance_test("validate.yml", :urls) do
+    assert_equal expected, valid_url?(text), description
+  end
+
+  def_conformance_test("validate.yml", :urls_without_protocol) do
+    assert_equal expected, valid_url?(text, true, false), description
+  end
+
+  def_conformance_test("validate.yml", :hashtags) do
+    assert_equal expected, valid_hashtag?(text), description
   end
 end
