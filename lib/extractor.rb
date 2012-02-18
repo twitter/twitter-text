@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class String
   # Helper function to count the character length by first converting to an
   # array.  This is needed because with unicode strings, the return value
