@@ -109,6 +109,10 @@ module Twitter
       regex_range(0x2F800, 0x2FA1F), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
     ].join('').freeze
 
+    PUNCTUATION_CHARS = '!"#$%&\'()*+,-./:;<=>?@\[\]^_\`{|}~'
+    SPACE_CHARS = " \t\n\x0B\f\r"
+    CTRL_CHARS = "\x00-\x1F\x7F"
+
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
     HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
     HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
@@ -133,7 +137,7 @@ module Twitter
     # URL related hash regex collection
     REGEXEN[:valid_preceding_chars] = /(?:[^-\/"'!=A-Z0-9_@＠\$#＃\.#{INVALID_CHARACTERS.join('')}]|^)/io
 
-    DOMAIN_VALID_CHARS = "[^[:punct:][:space:][:blank:][:cntrl:]#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
+    DOMAIN_VALID_CHARS = "[^#{PUNCTUATION_CHARS}#{SPACE_CHARS}#{CTRL_CHARS}#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
     REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
     REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
 
