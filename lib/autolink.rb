@@ -251,7 +251,9 @@ module Twitter
 
       html_attrs = {
         :class => "#{options[:url_class]} #{options[:hashtag_class]}",
-        :title => text
+        # FIXME As our conformance test, hash in title should be half-width,
+        # this should be bug of conformance data.
+        :title => "##{hashtag}"
       }.merge(options[:html_attrs])
 
       link_to(text, href, html_attrs)
