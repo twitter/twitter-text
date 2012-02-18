@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'yaml'
+require 'nokogiri'
 
 # Ruby 1.8 encoding check
 major, minor, patch = RUBY_VERSION.split('.')
@@ -21,6 +22,27 @@ class ConformanceTest < Test::Unit::TestCase
     define_method key.to_sym do
       @test_info[key]
     end
+  end
+
+  def assert_equal_without_attribute_order(expected, actual, failure_message = nil)
+    assert_block(build_message(failure_message, "<?> expected but was\n<?>", expected, actual)) do
+      equal_nodes?(Nokogiri::HTML(expected).root, Nokogiri::HTML(actual).root)
+    end
+  end
+
+  def equal_nodes?(expected, actual)
+    return false unless expected.name == actual.name
+    return false unless ordered_attributes(expected) == ordered_attributes(actual)
+
+    expected.children.each_with_index do |child, index|
+      return false unless equal_nodes?(child, actual.children[index])
+    end
+
+    true
+  end
+
+  def ordered_attributes(element)
+    element.attribute_nodes.map{|attr| [attr.name, attr.value]}.sort
   end
 
   CONFORMANCE_DIR = ENV['CONFORMANCE_DIR'] || File.expand_path("../twitter-text-conformance", __FILE__)
@@ -82,23 +104,23 @@ class ConformanceTest < Test::Unit::TestCase
 
   # Autolink Conformance
   def_conformance_test("autolink.yml", :usernames) do
-    assert_equal expected, auto_link_usernames_or_lists(text, :suppress_no_follow => true), description
+    assert_equal_without_attribute_order expected, auto_link_usernames_or_lists(text, :suppress_no_follow => true), description
   end
 
   def_conformance_test("autolink.yml", :lists) do
-    assert_equal expected, auto_link_usernames_or_lists(text, :suppress_no_follow => true), description
+    assert_equal_without_attribute_order expected, auto_link_usernames_or_lists(text, :suppress_no_follow => true), description
   end
 
   def_conformance_test("autolink.yml", :urls) do
-    assert_equal expected, auto_link_urls_custom(text, :suppress_no_follow => true), description
+    assert_equal_without_attribute_order expected, auto_link_urls_custom(text, :suppress_no_follow => true), description
   end
 
   def_conformance_test("autolink.yml", :hashtags) do
-    assert_equal expected, auto_link_hashtags(text, :suppress_no_follow => true), description
+    assert_equal_without_attribute_order expected, auto_link_hashtags(text, :suppress_no_follow => true), description
   end
 
   def_conformance_test("autolink.yml", :all) do
-    assert_equal expected, auto_link(text, :suppress_no_follow => true), description
+    assert_equal_without_attribute_order expected, auto_link(text, :suppress_no_follow => true), description
   end
 
   # HitHighlighter Conformance
