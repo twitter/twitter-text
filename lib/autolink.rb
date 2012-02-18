@@ -160,9 +160,9 @@ module Twitter
         url
       end
 
-      html_attrs = {
-        :class => options[:url_class]
-      }.merge(options[:html_attrs])
+      # NOTE auto link to urls do not use any default values and options
+      # like url_class but use suppress_no_follow.
+      html_attrs = options[:html_attrs].dup
 
       url_entities = url_entities_hash(options[:url_entities])
 

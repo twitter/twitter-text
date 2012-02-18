@@ -569,8 +569,8 @@ describe Twitter::Autolink do
       html.inner_text.should == " http://blog.twitter.com/2011/05/twitter-for-mac-update.html …"
     end
 
-    it "should apply :url_class as a CSS class" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :url_class => 'myclass')
+    it "should apply :class as a CSS class" do
+      linked = TestAutolink.new.auto_link("http://example.com/", :class => 'myclass')
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/myclass/)
     end
