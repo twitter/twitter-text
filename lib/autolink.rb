@@ -6,59 +6,61 @@ module Twitter
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
   # usernames, lists, hashtags and URLs.
   module Autolink extend self
-    # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>. The
-    # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
-    # hash:
+    # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>.
+    # The <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt> hash:
+    # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
+    # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
-    # <tt>:list_class</tt>::    class to add to list <tt><a></tt> tags
-    # <tt>:username_class</tt>::    class to add to username <tt><a></tt> tags
-    # <tt>:hashtag_class</tt>::    class to add to hashtag <tt><a></tt> tags
-    # <tt>:username_url_base</tt>::      the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
+    # <tt>:url_class</tt>::      class to add to all <tt><a></tt> tags
+    # <tt>:list_class</tt>::     class to add to list <tt><a></tt> tags
+    # <tt>:username_class</tt>:: class to add to username <tt><a></tt> tags
+    # <tt>:hashtag_class</tt>::  class to add to hashtag <tt><a></tt> tags
+    # <tt>:username_url_base</tt>::  the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
-    # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
-    # <tt>:username_include_symbol</tt>::    place the <tt>@</tt> symbol within username and list links
-    # <tt>:suppress_lists</tt>::    disable auto-linking to lists
-    # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
-    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
+    # <tt>:hashtag_url_base</tt>::   the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
+    # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
+    # <tt>:suppress_lists</tt>::          disable auto-linking to lists
+    # <tt>:suppress_no_follow</tt>::      do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_entities_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
 
     # Add <tt><a></a></tt> tags around the usernames and lists in the provided <tt>text</tt>. The
-    # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
-    # hash:
+    # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt> hash.
+    # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
+    # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
-    # <tt>:list_class</tt>::    class to add to list <tt><a></tt> tags
-    # <tt>:username_class</tt>::    class to add to username <tt><a></tt> tags
-    # <tt>:username_url_base</tt>::      the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
-    # <tt>:username_include_symbol</tt>::    place the <tt>@</tt> symbol within username and list links
-    # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
-    # <tt>:suppress_lists</tt>::    disable auto-linking to lists
-    # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
-    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
+    # <tt>:url_class</tt>::      class to add to all <tt><a></tt> tags
+    # <tt>:list_class</tt>::     class to add to list <tt><a></tt> tags
+    # <tt>:username_class</tt>:: class to add to username <tt><a></tt> tags
+    # <tt>:username_url_base</tt>:: the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
+    # <tt>:list_url_base</tt>::     the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
+    # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
+    # <tt>:suppress_lists</tt>::          disable auto-linking to lists
+    # <tt>:suppress_no_follow</tt>::      do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link_usernames_or_lists(text, options = {}, &block) # :yields: list_or_username
       auto_link_entities(text, Extractor.extract_mentions_or_lists_with_indices(text), options, &block)
     end
 
-    # Add <tt><a></a></tt> tags around the hashtags in the provided <tt>text</tt>. The
-    # <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt>
-    # hash:
+    # Add <tt><a></a></tt> tags around the hashtags in the provided <tt>text</tt>.
+    # The <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt> hash.
+    # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
+    # and place in the <tt><a></tt> tag.
     #
     # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
     # <tt>:hashtag_class</tt>:: class to add to hashtag <tt><a></tt> tags
-    # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
-    # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
-    # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
+    # <tt>:hashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
+    # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link_hashtags(text, options = {}, &block)  # :yields: hashtag_text
       auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options, &block)
     end
 
-    # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>. Any
-    # elements in the <tt>href_options</tt> hash will be converted to HTML attributes
-    # and place in the <tt><a></tt> tag. Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
-    # the <tt>rel="nofollow"</tt> attribute will be added.
+    # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>.
+    # The <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt> hash.
+    # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
+    # and place in the <tt><a></tt> tag.
+    #
+    # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link_urls(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
@@ -66,6 +68,12 @@ module Twitter
     # These methods are deprecated, will be removed in future.
     extend Deprecation
 
+    # <b>Deprecated</b>: Please use auto_link_urls instead.
+    # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>.
+    # Any elements in the <tt>href_options</tt> hash will be converted to HTML attributes
+    # and place in the <tt><a></tt> tag.
+    # Unless <tt>href_options</tt> contains <tt>:suppress_no_follow</tt>
+    # the <tt>rel="nofollow"</tt> attribute will be added.
     alias :auto_link_urls_custom :auto_link_urls
     deprecate :auto_link_urls_custom, :auto_link_urls
 
