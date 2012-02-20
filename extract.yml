@@ -701,6 +701,10 @@ tests:
       text: "#http://twitter.com #https://twitter.com"
       expected: []
 
+    - description: "Extract hashtags with Latin extended characters"
+      text: "#Azərbaycanca #mûǁae #Čeština #Ċaoiṁín"
+      expected: ["Azərbaycanca", "mûǁae", "Čeština", "Ċaoiṁín"]
+
     - description: "Extract Arabic hashtags"
       text: "#سیاست #ایران #السياسة #السياح #لغات  #اتمی  #کنفرانس #العربية #الجزيرة #فارسی"
       expected: ["سیاست", "ایران", "السياسة", "السياح", "لغات", "اتمی", "کنفرانس", "العربية", "الجزيرة", "فارسی"]
