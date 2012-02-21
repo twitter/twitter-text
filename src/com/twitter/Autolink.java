@@ -82,7 +82,10 @@ public class Autolink {
     return sb.toString();
   }
 
-  public void appendAutoLinkHTMLForHashtag(Entity entity, CharSequence hashChar, StringBuilder builder) {
+  public void linkToHashtag(Entity entity, String text, StringBuilder builder) {
+    // Get the original hash char from text as it could be a full-width char.
+    CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+
     builder.append("<a href=\"").append(hashtagUrlBase).append(entity.getValue()).append("\"");
     builder.append(" title=\"#").append(entity.getValue()).append("\"");
     builder.append(" class=\"").append(urlClass).append(" ").append(hashtagClass).append("\"");
@@ -94,8 +97,11 @@ public class Autolink {
     builder.append(entity.getValue()).append("</a>");
   }
 
-  public void appendAutoLinkHTMLForMentionAndList(Entity entity, CharSequence atChar, StringBuilder builder) {
+  public void linkToMentionAndList(Entity entity, String text, StringBuilder builder) {
     String mention = entity.getValue();
+    // Get the original at char from text as it could be a full-width char.
+    CharSequence atChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+
     if (!usernameIncludeSymbol) {
       builder.append(atChar);
     }
@@ -119,7 +125,7 @@ public class Autolink {
     builder.append(mention).append("</a>");
   }
 
-  public void appendAutoLinkHTMLForURL(Entity entity, StringBuilder builder) {
+  public void linkToURL(Entity entity, String text, StringBuilder builder) {
     CharSequence url = escapeHTML(entity.getValue());
     CharSequence linkText = url;
 
@@ -199,17 +205,13 @@ public class Autolink {
 
       switch(entity.type) {
         case URL:
-          appendAutoLinkHTMLForURL(entity, builder);
+          linkToURL(entity, text, builder);
           break;
         case HASHTAG:
-          // Get the original hash char from text as it could be a full-width char.
-          CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
-          appendAutoLinkHTMLForHashtag(entity, hashChar, builder);
+          linkToHashtag(entity, text, builder);
           break;
         case MENTION:
-          // Get the original at char from text as it could be a full-width char.
-          CharSequence atChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
-          appendAutoLinkHTMLForMentionAndList(entity, atChar, builder);
+          linkToMentionAndList(entity, text, builder);
      }
       beginIndex = entity.end;
     }
