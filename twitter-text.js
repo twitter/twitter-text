@@ -135,8 +135,30 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x303B, 0x303B); // Han iteration mark
 
   twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
+
+  var latinAccentChars = [];
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
-  twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
+  addCharsToCharClass(latinAccentChars, 0x00c0, 0x00d6);
+  addCharsToCharClass(latinAccentChars, 0x00d8, 0x00f6);
+  addCharsToCharClass(latinAccentChars, 0x00f8, 0x00ff);
+  // Latin Extended A and B
+  addCharsToCharClass(latinAccentChars, 0x0100, 0x024f);
+  // assorted IPA Extensions
+  addCharsToCharClass(latinAccentChars, 0x0253, 0x0254);
+  addCharsToCharClass(latinAccentChars, 0x0256, 0x0257);
+  addCharsToCharClass(latinAccentChars, 0x0259, 0x0259);
+  addCharsToCharClass(latinAccentChars, 0x025b, 0x025b);
+  addCharsToCharClass(latinAccentChars, 0x0263, 0x0263);
+  addCharsToCharClass(latinAccentChars, 0x0268, 0x0268);
+  addCharsToCharClass(latinAccentChars, 0x026f, 0x026f);
+  addCharsToCharClass(latinAccentChars, 0x0272, 0x0272);
+  addCharsToCharClass(latinAccentChars, 0x0289, 0x0289);
+  addCharsToCharClass(latinAccentChars, 0x028b, 0x028b);
+  // Okina for Hawaiian (it *is* a letter character)
+  addCharsToCharClass(latinAccentChars, 0x02bb, 0x02bb);
+  // Latin Extended Additional
+  addCharsToCharClass(latinAccentChars, 0x1e00, 0x1eff);
+  twttr.txt.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
   twttr.txt.regexen.hashSigns = /[#＃]/;
@@ -370,17 +392,88 @@ if (typeof twttr === "undefined" || twttr === null) {
           htmlAttrs = twttr.txt.htmlAttrForOptions(options);
         }
 
-        var d = {
-          htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(entity.url),
-        };
-        if (urlEntities && urlEntities[entity.url] && urlEntities[entity.url].display_url) {
-          d.displayUrl = twttr.txt.htmlEscape(urlEntities[entity.url].display_url);
-        } else {
-          d.displayUrl = d.url;
+        var url = entity.url;
+        var displayUrl = url;
+        var linkText = twttr.txt.htmlEscape(displayUrl);
+        // If the caller passed a urlEntities object (provided by a Twitter API
+        // response with include_entities=true), we use that to render the display_url
+        // for each URL instead of it's underlying t.co URL.
+        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+          var displayUrl = urlEntities[url].display_url;
+          var expandedUrl = urlEntities[url].expanded_url;
+          if (!options.title) {
+            options.title = expandedUrl;
+          }
+
+          // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
+          // should contain the full original URL (expanded_url), not the display URL.
+          //
+          // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
+          // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+          // Elements with font-size:0 get copied even though they are not visible.
+          // Note that display:none doesn't work here. Elements with display:none don't get copied.
+          //
+          // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
+          // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
+          // everything with the tco-ellipsis class.
+          // 
+          // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+          // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+          // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
+
+          var displayUrlSansEllipses = displayUrl.replace(/…/g, ""); // We have to disregard ellipses for matching
+          // Note: we currently only support eliding parts of the URL at the beginning or the end.
+          // Eventually we may want to elide parts of the URL in the *middle*.  If so, this code will
+          // become more complicated.  We will probably want to create a regexp out of display URL,
+          // replacing every ellipsis with a ".*".
+          if (expandedUrl.indexOf(displayUrlSansEllipses) != -1) {
+            var displayUrlIndex = expandedUrl.indexOf(displayUrlSansEllipses);
+            var v = {
+              displayUrlSansEllipses: displayUrlSansEllipses,
+              // Portion of expandedUrl that precedes the displayUrl substring
+              beforeDisplayUrl: expandedUrl.substr(0, displayUrlIndex),
+              // Portion of expandedUrl that comes after displayUrl
+              afterDisplayUrl: expandedUrl.substr(displayUrlIndex + displayUrlSansEllipses.length),
+              precedingEllipsis: displayUrl.match(/^…/) ? "…" : "",
+              followingEllipsis: displayUrl.match(/…$/) ? "…" : ""
+            }
+            $.each(v, function(index, value) {
+              v[index] = twttr.txt.htmlEscape(value);
+            });
+            // As an example: The user tweets "hi http://longdomainname.com/foo"
+            // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
+            // This will get rendered as:
+            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            //   …
+            //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
+            //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
+            //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
+            //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
+            //        e.g. "hi  http://longdomainname.com/foo".
+            //   <span style='font-size:0'>&nbsp;</span>
+            // </span>
+            // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
+            //   http://longdomai
+            // </span>
+            // <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
+            //   nname.com/foo
+            // </span>
+            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            //   <span style='font-size:0'>&nbsp;</span>
+            //   …
+            // </span>
+            v['invisible'] = "style='font-size:0; line-height:0'";
+            linkText = stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
+          }
         }
 
-        replaceStr =  stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>", d);
+        var d = {
+          htmlAttrs: htmlAttrs,
+          url: twttr.txt.htmlEscape(url),
+          linkText: linkText
+        };
+
+        replaceStr = stringSupplant("<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>", d);
       } else if (entity.hashtag) {
         var d = {
             hash: text.substring(entity.indices[0], entity.indices[0] + 1),
@@ -677,27 +770,51 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.modifyIndicesFromUnicodeToUTF16 = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, 1);
+    twttr.txt.convertUnicodeIndices(text, entities, false);
   };
 
   twttr.txt.modifyIndicesFromUTF16ToUnicode = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, -1);
+    twttr.txt.convertUnicodeIndices(text, entities, true);
   };
 
-  twttr.txt.shiftIndices = function(text, entities, diff) {
-    for (var i = 0; i < text.length - 1; i++) {
-      var c1 = text.charCodeAt(i);
-      var c2 = text.charCodeAt(i + 1);
-      if (0xD800 <= c1 && c1 <= 0xDBFF && 0xDC00 <= c2 && c2 <= 0xDFFF) {
-        // supplementary character
-        i++; // skip surrogate pair character
-        for (var j = 0; j < entities.length; j++) {
-          if (entities[j].indices[0] >= i) {
-            entities[j].indices[0] += diff;
-            entities[j].indices[1] += diff;
-          }
+  twttr.txt.convertUnicodeIndices = function(text, entities, indicesInUTF16) {
+    if (entities.length == 0) {
+      return;
+    }
+
+    var charIndex = 0;
+    var codePointIndex = 0;
+
+    // sort entities by start index
+    entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
+    var entityIndex = 0;
+    var entity = entities[0];
+
+    while (charIndex < text.length) {
+      if (entity.indices[0] == (indicesInUTF16 ? charIndex : codePointIndex)) {
+        var len = entity.indices[1] - entity.indices[0];
+        entity.indices[0] = indicesInUTF16 ? codePointIndex : charIndex;
+        entity.indices[1] = entity.indices[0] + len;
+
+        entityIndex++;
+        if (entityIndex == entities.length) {
+          // no more entity
+          break;
+        }
+        entity = entities[entityIndex];
+      }
+
+      var c = text.charCodeAt(charIndex);
+      if (0xD800 <= c && c <= 0xDBFF && charIndex < text.length - 1) {
+        // Found high surrogate char
+        c = text.charCodeAt(charIndex + 1);
+        if (0xDC00 <= c && c <= 0xDFFF) {
+          // Found surrogate pair
+          charIndex++;
         }
       }
+      codePointIndex++;
+      charIndex++;
     }
   };
 
