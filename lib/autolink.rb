@@ -6,6 +6,52 @@ module Twitter
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
   # usernames, lists, hashtags and URLs.
   module Autolink extend self
+    # Default CSS class for auto-linked URLs
+    DEFAULT_URL_CLASS = "tweet-url".freeze
+    # Default CSS class for auto-linked lists (along with the url class)
+    DEFAULT_LIST_CLASS = "list-slug".freeze
+    # Default CSS class for auto-linked usernames (along with the url class)
+    DEFAULT_USERNAME_CLASS = "username".freeze
+    # Default CSS class for auto-linked hashtags (along with the url class)
+    DEFAULT_HASHTAG_CLASS = "hashtag".freeze
+
+    # Default URL base for auto-linked usernames
+    DEFAULT_USERNAME_URL_BASE = "https://twitter.com/".freeze
+    # Default URL base for auto-linked lists
+    DEFAULT_LIST_URL_BASE = "https://twitter.com/".freeze
+    # Default URL base for auto-linked hashtags
+    DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23".freeze
+
+    DEFAULT_OPTIONS = {
+      :url_class      => DEFAULT_URL_CLASS,
+      :list_class     => DEFAULT_LIST_CLASS,
+      :username_class => DEFAULT_USERNAME_CLASS,
+      :hashtag_class  => DEFAULT_HASHTAG_CLASS,
+
+      :username_url_base => DEFAULT_USERNAME_URL_BASE,
+      :list_url_base     => DEFAULT_LIST_URL_BASE,
+      :hashtag_url_base  => DEFAULT_HASHTAG_URL_BASE
+    }.freeze
+
+    def auto_link_entities(text, entities, options = {}, &block)
+      return text if entities.empty?
+
+      # NOTE deprecate these attributes not options keys in options hash, then use html_attrs
+      options = DEFAULT_OPTIONS.merge(options)
+      options[:html_attrs] = extract_html_attrs_from_options!(options)
+      options[:html_attrs][:rel] ||= "nofollow" unless options[:suppress_no_follow]
+
+      Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
+        if entity[:url]
+          link_to_url(entity, chars, options, &block)
+        elsif entity[:hashtag]
+          link_to_hashtag(entity, chars, options, &block)
+        elsif entity[:screen_name]
+          link_to_screen_name(entity, chars, options, &block)
+        end
+      end
+    end
+
     # Add <tt><a></a></tt> tags around the usernames, lists, hashtags and URLs in the provided <tt>text</tt>.
     # The <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt> hash:
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
@@ -78,43 +124,6 @@ module Twitter
     deprecate :auto_link_urls_custom, :auto_link_urls
 
     private
-
-    DEFAULT_OPTIONS = {
-      # Default CSS class for auto-linked URLs
-      :url_class      => "tweet-url",
-      # Default CSS class for auto-linked lists (along with the url class)
-      :list_class     => "list-slug",
-      # Default CSS class for auto-linked usernames (along with the url class)
-      :username_class => "username",
-      # Default CSS class for auto-linked hashtags (along with the url class)
-      :hashtag_class  => "hashtag",
-
-      # Default URL base for auto-linked usernames
-      :username_url_base => "https://twitter.com/",
-      # Default URL base for auto-linked lists
-      :list_url_base     => "https://twitter.com/",
-      # Default URL base for auto-linked hashtags
-      :hashtag_url_base  => "https://twitter.com/#!/search?q=%23",
-    }.freeze
-
-    def auto_link_entities(text, entities, options = {}, &block)
-      return text if entities.empty?
-
-      # NOTE deprecate these attributes not options keys in options hash, then use html_attrs
-      options = DEFAULT_OPTIONS.merge(options)
-      options[:html_attrs] = extract_html_attrs_from_options!(options)
-      options[:html_attrs][:rel] ||= "nofollow" unless options[:suppress_no_follow]
-
-      Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
-        if entity[:url]
-          link_to_url(entity, chars, options, &block)
-        elsif entity[:hashtag]
-          link_to_hashtag(entity, chars, options, &block)
-        elsif entity[:screen_name]
-          link_to_screen_name(entity, chars, options, &block)
-        end
-      end
-    end
 
     HTML_ENTITIES = {
       '&' => '&amp;',
