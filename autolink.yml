@@ -362,6 +362,14 @@ tests:
       text: "#mûǁae"
       expected: "<a href=\"https://twitter.com/#!/search?q=%23mûǁae\" title=\"#mûǁae\" class=\"tweet-url hashtag\">#mûǁae</a>"
 
+    - description: "Autolink Arabic hashtag"
+      text: "Arabic hashtag: #فارسی #لس_آنجلس"
+      expected: "Arabic hashtag: <a href=\"https://twitter.com/#!/search?q=%23فارسی\" title=\"#فارسی\" class=\"tweet-url hashtag\">#فارسی</a> <a href=\"https://twitter.com/#!/search?q=%23لس_آنجلس\" title=\"#لس_آنجلس\" class=\"tweet-url hashtag\">#لس_آنجلس</a>"
+
+    - description: "Autolink Thai hashtag"
+      text: "Thai hashtag: #รายละเอียด"
+      expected: "Thai hashtag: <a href=\"https://twitter.com/#!/search?q=%23รายละเอียด\" title=\"#รายละเอียด\" class=\"tweet-url hashtag\">#รายละเอียด</a>"
+
   urls:
     - description: "Autolink URL with pipe character"
       text: "text http://example.com/pipe|character?yes|pipe|character"

@@ -705,6 +705,18 @@ tests:
       text: "#Azərbaycanca #mûǁae #Čeština #Ċaoiṁín"
       expected: ["Azərbaycanca", "mûǁae", "Čeština", "Ċaoiṁín"]
 
+    - description: "Extract Arabic hashtags"
+      text: "#سیاست #ایران #السياسة #السياح #لغات  #اتمی  #کنفرانس #العربية #الجزيرة #فارسی"
+      expected: ["سیاست", "ایران", "السياسة", "السياح", "لغات", "اتمی", "کنفرانس", "العربية", "الجزيرة", "فارسی"]
+
+    - description: "Extract Arabic hashtags with dash"
+      text: "#برنامه_نویسی  #رییس_جمهور  #رئيس_الوزراء, #ثبت_نام. #لس_آنجلس"
+      expected: ["برنامه_نویسی", "رییس_جمهور", "رئيس_الوزراء", "ثبت_نام", "لس_آنجلس"]
+
+    - description: "Extract Thai hashtags with dash"
+      text: "#ผู้เริ่ม #การเมือง #รายละเอียด #นักท่องเที่ยว #ของขวัญ #สนามบิน #เดินทาง #ประธาน"
+      expected: ["ผู้เริ่ม", "การเมือง", "รายละเอียด", "นักท่องเที่ยว", "ของขวัญ", "สนามบิน", "เดินทาง", "ประธาน"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
