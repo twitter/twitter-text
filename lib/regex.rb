@@ -119,15 +119,15 @@ module Twitter
       regex_range(0xfdf0, 0xfdfb),
       regex_range(0xfe70, 0xfe74), # Arabic Pres. Forms B
       regex_range(0xfe76, 0xfefc),
+      regex_range(0x200c, 0x200c), # Zero-Width Non-Joiner
       regex_range(0x0e01, 0x0e3a), # Thai
-      regex_range(0x0e40, 0x0e4e),
-      # Hangul (Korean)
+      regex_range(0x0e40, 0x0e4e), # Hangul (Korean)
       regex_range(0x1100, 0x11ff), # Hangul Jamo
       regex_range(0x3130, 0x3185), # Hangul Compatibility Jamo
       regex_range(0xA960, 0xA97F), # Hangul Jamo Extended-A
       regex_range(0xAC00, 0xD7AF), # Hangul Syllables
       regex_range(0xD7B0, 0xD7FF), # Hangul Jamo Extended-B
-      regex_range(0xFFA1, 0xFFDC) # Half-width Hangul
+      regex_range(0xFFA1, 0xFFDC)  # Half-width Hangul
     ].join('').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
