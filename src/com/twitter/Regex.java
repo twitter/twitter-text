@@ -21,6 +21,7 @@ public class Regex {
                                                    "\\u0750-\\u077f\\u08a0\\u08a2-\\u08ac\\u08e4-\\u08fe" + // Arabic Supplement and Extended A
                                                    "\\ufb50-\\ufbb1\\ufbd3-\\ufd3d\\ufd50-\\ufd8f\\ufd92-\\ufdc7\\ufdf0-\\ufdfb" + // Pres. Forms A
                                                    "\\ufe70-\\ufe74\\ufe76-\\ufefc" + // Pres. Forms B
+                                                   "\\u200c" +                        // Zero-Width Non-Joiner
                                                    "\\u0e01-\\u0e3a\\u0e40-\\u0e4e" + // Thai
                                                    "\\u1100-\\u11ff\\u3130-\\u3185\\uA960-\\uA97F\\uAC00-\\uD7AF\\uD7B0-\\uD7FF" + // Hangul (Korean)
                                                    "\\p{InHiragana}\\p{InKatakana}" +  // Japanese Hiragana and Katakana
