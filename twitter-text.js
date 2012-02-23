@@ -146,6 +146,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0xfdf0, 0xfdfb);
   addCharsToCharClass(nonLatinHashtagChars, 0xfe70, 0xfe74); // Arabic Pres. Forms B
   addCharsToCharClass(nonLatinHashtagChars, 0xfe76, 0xfefc);
+  addCharsToCharClass(nonLatinHashtagChars, 0x200c, 0x200c); // Zero-Width Non-Joiner
   // Thai
   addCharsToCharClass(nonLatinHashtagChars, 0x0e01, 0x0e3a);
   addCharsToCharClass(nonLatinHashtagChars, 0x0e40, 0x0e4e);
