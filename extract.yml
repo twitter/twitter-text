@@ -709,13 +709,17 @@ tests:
       text: "#سیاست #ایران #السياسة #السياح #لغات  #اتمی  #کنفرانس #العربية #الجزيرة #فارسی"
       expected: ["سیاست", "ایران", "السياسة", "السياح", "لغات", "اتمی", "کنفرانس", "العربية", "الجزيرة", "فارسی"]
 
-    - description: "Extract Arabic hashtags with dash"
+    - description: "Extract Arabic hashtags with underscore"
       text: "#برنامه_نویسی  #رییس_جمهور  #رئيس_الوزراء, #ثبت_نام. #لس_آنجلس"
       expected: ["برنامه_نویسی", "رییس_جمهور", "رئيس_الوزراء", "ثبت_نام", "لس_آنجلس"]
 
-    - description: "Extract Thai hashtags with dash"
+    - description: "Extract Thai hashtags"
       text: "#ผู้เริ่ม #การเมือง #รายละเอียด #นักท่องเที่ยว #ของขวัญ #สนามบิน #เดินทาง #ประธาน"
       expected: ["ผู้เริ่ม", "การเมือง", "รายละเอียด", "นักท่องเที่ยว", "ของขวัญ", "สนามบิน", "เดินทาง", "ประธาน"]
+
+    - description: "Extract Arabic hashtags with Zero-Width Non-Joiner"
+      text: "#أي‌بي‌إم #می‌خواهم"
+      expected: ["أي‌بي‌إم", "می‌خواهم"]
 
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
