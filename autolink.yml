@@ -154,6 +154,10 @@ tests:
       text: "text #hashtag!"
       expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>!"
 
+    - description: "Autolink two hashtags separated by a slash"
+      text: "#dodge/#answer"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23dodge\" title=\"#dodge\" class=\"tweet-url hashtag\">#dodge</a>/<a href=\"https://twitter.com/#!/search?q=%23answer\" title=\"#answer\" class=\"tweet-url hashtag\">#answer</a>"
+
     - description: "Autolink hashtag followed by Japanese"
       text: "text #hashtagの"
       expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtagの\" title=\"#hashtagの\" class=\"tweet-url hashtag\">#hashtagの</a>"
