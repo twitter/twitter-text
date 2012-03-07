@@ -112,13 +112,12 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x2de0, 0x2dff); // Cyrillic Extended A
   addCharsToCharClass(nonLatinHashtagChars, 0xa640, 0xa69f); // Cyrillic Extended B
   // Hebrew
-  addCharsToCharClass(nonLatinHashtagChars, 0x0591, 0x05bd); // Hebrew
-  addCharsToCharClass(nonLatinHashtagChars, 0x05bf, 0x05bf);
+  addCharsToCharClass(nonLatinHashtagChars, 0x0591, 0x05bf); // Hebrew
   addCharsToCharClass(nonLatinHashtagChars, 0x05c1, 0x05c2);
   addCharsToCharClass(nonLatinHashtagChars, 0x05c4, 0x05c5);
   addCharsToCharClass(nonLatinHashtagChars, 0x05c7, 0x05c7);
   addCharsToCharClass(nonLatinHashtagChars, 0x05d0, 0x05ea);
-  addCharsToCharClass(nonLatinHashtagChars, 0x05f0, 0x05f2);
+  addCharsToCharClass(nonLatinHashtagChars, 0x05f0, 0x05f4);
   addCharsToCharClass(nonLatinHashtagChars, 0xfb12, 0xfb28); // Hebrew Presentation Forms
   addCharsToCharClass(nonLatinHashtagChars, 0xfb2a, 0xfb36);
   addCharsToCharClass(nonLatinHashtagChars, 0xfb38, 0xfb3c);
