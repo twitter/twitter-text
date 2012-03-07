@@ -15,6 +15,9 @@ public class RegexTest extends TestCase {
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#caf\u00E9");
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05e2\u05d1\u05e8\u05d9\u05ea"); // "#Hebrew"
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05d0\u05b2\u05e9\u05b6\u05c1\u05e8"); // with marks
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05e2\u05b7\u05dc\u05be\u05d9\u05b0\u05d3\u05b5\u05d9"); // with maqaf 05be
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05d5\u05db\u05d5\u05f3"); // with geresh 05f3
+    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05de\u05f4\u05db"); // with gershayim 05f4
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u0627\u0644\u0639\u0631\u0628\u064a\u0629"); // "#Arabic"
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u062d\u0627\u0644\u064a\u0627\u064b"); // with mark
     assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u064a\u0640\ufbb1\u0640\u064e\u0671"); // with pres. form
