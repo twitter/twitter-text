@@ -86,13 +86,12 @@ module Twitter
       regex_range(0x0500, 0x0527), # Cyrillic Supplement
       regex_range(0x2de0, 0x2dff), # Cyrillic Extended A
       regex_range(0xa640, 0xa69f), # Cyrillic Extended B
-      regex_range(0x0591, 0x05bd), # Hebrew
-      regex_range(0x05bf),
+      regex_range(0x0591, 0x05bf), # Hebrew
       regex_range(0x05c1, 0x05c2),
       regex_range(0x05c4, 0x05c5),
       regex_range(0x05c7),
       regex_range(0x05d0, 0x05ea),
-      regex_range(0x05f0, 0x05f2),
+      regex_range(0x05f0, 0x05f4),
       regex_range(0xfb12, 0xfb28), # Hebrew Presentation Forms
       regex_range(0xfb2a, 0xfb36),
       regex_range(0xfb38, 0xfb3c),
