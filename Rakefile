@@ -65,6 +65,11 @@ namespace :test do
   task :run do
     exec('open test/test.html')
   end
+
+  desc "Run NodeJS test suite"
+  task :node do
+    exec('node test/node_tests.js');
+  end
 end
 
 desc "Run JavaScript test suite"
