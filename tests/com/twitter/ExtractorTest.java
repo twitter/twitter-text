@@ -2,6 +2,9 @@
 package com.twitter;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
@@ -10,12 +13,106 @@ public class ExtractorTest extends TestCase {
   protected Extractor extractor;
 
   public static Test suite() {
-    Class<?>[] testClasses = { ReplyTest.class, MentionTest.class, HashtagTest.class, URLTest.class };
+    Class<?>[] testClasses = { OffsetConversionTest.class, ReplyTest.class,
+            MentionTest.class, HashtagTest.class, URLTest.class };
     return new TestSuite(testClasses);
   }
 
   public void setUp() throws Exception {
     extractor = new Extractor();
+  }
+
+  public static class OffsetConversionTest extends ExtractorTest {
+
+    public void testConvertIndices() {
+      assertOffsetConversionOk("abc", "abc");
+      assertOffsetConversionOk("\ud83d\ude02abc", "abc");
+      assertOffsetConversionOk("\ud83d\ude02abc\ud83d\ude02", "abc");
+      assertOffsetConversionOk("\ud83d\ude02abc\ud838\ude02abc", "abc");
+      assertOffsetConversionOk("\ud83d\ude02abc\ud838\ude02abc\ud83d\ude02",
+              "abc");
+      assertOffsetConversionOk("\ud83d\ude02\ud83d\ude02abc", "abc");
+      assertOffsetConversionOk("\ud83d\ude02\ud83d\ude02\ud83d\ude02abc",
+              "abc");
+
+      assertOffsetConversionOk
+              ("\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d\ude02", "abc");
+
+      // Several surrogate pairs following the entity
+      assertOffsetConversionOk
+              ("\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d\ude02\ud83d" +
+                      "\ude02\ud83d\ude02", "abc");
+
+      // Several surrogate pairs surrounding multiple entities
+      assertOffsetConversionOk
+              ("\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02", "abc");
+
+      // unpaired low surrogate (at start)
+      assertOffsetConversionOk
+              ("\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02", "abc");
+
+      // unpaired low surrogate (at end)
+      assertOffsetConversionOk
+              ("\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ude02\ude02", "abc");
+
+      // unpaired low and high surrogates (at end)
+      assertOffsetConversionOk
+              ("\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02abc\ud83d" +
+                      "\ude02\ud83d\ude02\ud83d\ud83d\ude02\ude02", "abc");
+
+      assertOffsetConversionOk("\ud83dabc\ud83d", "abc");
+
+      assertOffsetConversionOk("\ude02abc\ude02", "abc");
+
+      assertOffsetConversionOk("\ude02\ude02abc\ude02\ude02", "abc");
+
+      assertOffsetConversionOk("abcabc", "abc");
+
+      assertOffsetConversionOk("abc\ud83d\ude02abc", "abc");
+
+      assertOffsetConversionOk("aa", "a");
+
+      assertOffsetConversionOk("\ud83d\ude02a\ud83d\ude02a\ud83d\ude02", "a");
+    }
+
+    private void assertOffsetConversionOk(String testData, String patStr) {
+      // Build an entity at the location of patStr
+      final Pattern pat = Pattern.compile(patStr);
+      final Matcher matcher = pat.matcher(testData);
+
+      List<Extractor.Entity> entities = new ArrayList<Extractor.Entity>();
+      List<Integer> codePointOffsets = new ArrayList<Integer>();
+      List<Integer> charOffsets = new ArrayList<Integer>();
+      while (matcher.find()) {
+        final int charOffset = matcher.start();
+        charOffsets.add(charOffset);
+        codePointOffsets.add(testData.codePointCount(0, charOffset));
+        entities.add(new Extractor.Entity(matcher, "unused", 0, 0));
+      }
+
+      extractor.modifyIndicesFromUTF16ToToUnicode(testData, entities);
+
+      for (int i = 0; i < entities.size(); i++) {
+        assertEquals(codePointOffsets.get(i), entities.get(i).getStart());
+      }
+
+      extractor.modifyIndicesFromUnicodeToUTF16(testData, entities);
+
+      for (int i = 0; i < entities.size(); i++) {
+        // This assertion could fail if the entity location is in the middle
+        // of a surrogate pair, since there is no equivalent code point
+        // offset to that location. It would be pathological for an entity to
+        // start at that point, so we can just let the test fail in that case.
+        assertEquals(charOffsets.get(i), entities.get(i).getStart());
+      }
+    }
   }
 
   /**
@@ -67,6 +164,37 @@ public class ExtractorTest extends TestCase {
       assertEquals(extracted.get(2).getStart().intValue(), 28);
       assertEquals(extracted.get(2).getEnd().intValue(), 34);
     }
+
+    public void testMentionWithSupplementaryCharacters() {
+      // insert U+10400 before " @mention"
+      String text = String.format("%c @mention %c @mention", 0x00010400, 0x00010400);
+
+      // count U+10400 as 2 characters (as in UTF-16)
+      List<Extractor.Entity> extracted = extractor.extractMentionedScreennamesWithIndices(text);
+      assertEquals(extracted.size(), 2);
+      assertEquals(extracted.get(0).value, "mention");
+      assertEquals(extracted.get(0).start, 3);
+      assertEquals(extracted.get(0).end, 11);
+      assertEquals(extracted.get(1).value, "mention");
+      assertEquals(extracted.get(1).start, 15);
+      assertEquals(extracted.get(1).end, 23);
+
+      // count U+10400 as single character
+      extractor.modifyIndicesFromUTF16ToToUnicode(text, extracted);
+      assertEquals(extracted.size(), 2);
+      assertEquals(extracted.get(0).start, 2);
+      assertEquals(extracted.get(0).end, 10);
+      assertEquals(extracted.get(1).start, 13);
+      assertEquals(extracted.get(1).end, 21);
+
+      // count U+10400 as 2 characters (as in UTF-16)
+      extractor.modifyIndicesFromUnicodeToUTF16(text, extracted);
+      assertEquals(2, extracted.size());
+      assertEquals(3, extracted.get(0).start);
+      assertEquals(11, extracted.get(0).end);
+      assertEquals(15, extracted.get(1).start);
+      assertEquals(23, extracted.get(1).end);
+    }
   }
 
    /**
@@ -102,6 +230,37 @@ public class ExtractorTest extends TestCase {
       assertEquals(extracted.get(1).getEnd().intValue(), 22);
       assertEquals(extracted.get(2).getStart().intValue(), 28);
       assertEquals(extracted.get(2).getEnd().intValue(), 34);
+    }
+
+    public void testHashtagWithSupplementaryCharacters() {
+      // insert U+10400 before " #hashtag"
+      String text = String.format("%c #hashtag %c #hashtag", 0x00010400, 0x00010400);
+
+      // count U+10400 as 2 characters (as in UTF-16)
+      List<Extractor.Entity> extracted = extractor.extractHashtagsWithIndices(text);
+      assertEquals(extracted.size(), 2);
+      assertEquals(extracted.get(0).value, "hashtag");
+      assertEquals(extracted.get(0).start, 3);
+      assertEquals(extracted.get(0).end, 11);
+      assertEquals(extracted.get(1).value, "hashtag");
+      assertEquals(extracted.get(1).start, 15);
+      assertEquals(extracted.get(1).end, 23);
+
+      // count U+10400 as single character
+      extractor.modifyIndicesFromUTF16ToToUnicode(text, extracted);
+      assertEquals(extracted.size(), 2);
+      assertEquals(extracted.get(0).start, 2);
+      assertEquals(extracted.get(0).end, 10);
+      assertEquals(extracted.get(1).start, 13);
+      assertEquals(extracted.get(1).end, 21);
+
+      // count U+10400 as 2 characters (as in UTF-16)
+      extractor.modifyIndicesFromUnicodeToUTF16(text, extracted);
+      assertEquals(extracted.size(), 2);
+      assertEquals(extracted.get(0).start, 3);
+      assertEquals(extracted.get(0).end, 11);
+      assertEquals(extracted.get(1).start, 15);
+      assertEquals(extracted.get(1).end, 23);
     }
   }
 
@@ -155,6 +314,37 @@ public class ExtractorTest extends TestCase {
      for (String url : urls) {
        assertEquals(url, extractor.extractURLs(url).get(0));
      }
+   }
+
+   public void testUrlnWithSupplementaryCharacters() {
+     // insert U+10400 before " http://twitter.com"
+     String text = String.format("%c http://twitter.com %c http://twitter.com", 0x00010400, 0x00010400);
+
+     // count U+10400 as 2 characters (as in UTF-16)
+     List<Extractor.Entity> extracted = extractor.extractURLsWithIndices(text);
+     assertEquals(extracted.size(), 2);
+     assertEquals(extracted.get(0).value, "http://twitter.com");
+     assertEquals(extracted.get(0).start, 3);
+     assertEquals(extracted.get(0).end, 21);
+     assertEquals(extracted.get(1).value, "http://twitter.com");
+     assertEquals(extracted.get(1).start, 25);
+     assertEquals(extracted.get(1).end, 43);
+
+     // count U+10400 as single character
+     extractor.modifyIndicesFromUTF16ToToUnicode(text, extracted);
+     assertEquals(extracted.size(), 2);
+     assertEquals(extracted.get(0).start, 2);
+     assertEquals(extracted.get(0).end, 20);
+     assertEquals(extracted.get(1).start, 23);
+     assertEquals(extracted.get(1).end, 41);
+
+     // count U+10400 as 2 characters (as in UTF-16)
+     extractor.modifyIndicesFromUnicodeToUTF16(text, extracted);
+     assertEquals(extracted.size(), 2);
+     assertEquals(extracted.get(0).start, 3);
+     assertEquals(extracted.get(0).end, 21);
+     assertEquals(extracted.get(1).start, 25);
+     assertEquals(extracted.get(1).end, 43);
    }
   }
 

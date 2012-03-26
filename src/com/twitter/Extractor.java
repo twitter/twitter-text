@@ -9,8 +9,8 @@ import java.util.regex.*;
  */
 public class Extractor {
   public static class Entity {
-    protected Integer start = null;
-    protected Integer end = null;
+    protected int start;
+    protected int end;
     protected String  value = null;
     protected String  type = null;
 
@@ -47,8 +47,8 @@ public class Extractor {
       Entity other = (Entity)obj;
 
       if (this.type.equals(other.type) &&
-          this.start.equals(other.start) &&
-          this.end.equals(other.end) &&
+          this.start == other.start &&
+          this.end == other.end &&
           this.value.equals(other.value)) {
         return true;
       } else {
@@ -268,5 +268,91 @@ public class Extractor {
       extracted.add(new Entity(matcher, valueType, groupNumber));
     }
     return extracted;
+  }
+
+  /*
+   * Modify Unicode-based indices of the entities to UTF-16 based indices.
+   *
+   * In UTF-16 based indices, Unicode supplementary characters are counted as two characters.
+   *
+   * This method requires that the list of entities be in ascending order by start index.
+   *
+   * @param text original text
+   * @param entities entities with Unicode based indices
+   */
+  public void modifyIndicesFromUnicodeToUTF16(String text, List<Entity> entities) {
+    IndexConverter convert = new IndexConverter(text);
+
+    for (Entity entity : entities) {
+      entity.start = convert.codePointsToCodeUnits(entity.start);
+      entity.end = convert.codePointsToCodeUnits(entity.end);
+    }
+  }
+
+  /*
+   * Modify UTF-16-based indices of the entities to Unicode-based indices.
+   *
+   * In Unicode-based indices, Unicode supplementary characters are counted as single characters.
+   *
+   * This method requires that the list of entities be in ascending order by start index.
+   *
+   * @param text original text
+   * @param entities entities with UTF-16 based indices
+   */
+  public void modifyIndicesFromUTF16ToToUnicode(String text, List<Entity> entities) {
+    IndexConverter convert = new IndexConverter(text);
+
+    for (Entity entity : entities) {
+      entity.start = convert.codeUnitsToCodePoints(entity.start);
+      entity.end = convert.codeUnitsToCodePoints(entity.end);
+    }
+  }
+
+  /**
+   * An efficient converter of indices between code points and code units.
+   */
+  private static final class IndexConverter {
+    protected final String text;
+
+    // Keep track of a single corresponding pair of code unit and code point
+    // offsets so that we can re-use counting work if the next requested
+    // entity is near the most recent entity.
+    protected int codePointIndex = 0;
+    protected int charIndex = 0;
+
+    IndexConverter(String text) {
+      this.text = text;
+    }
+
+    /**
+     * @param charIndex Index into the string measured in code units.
+     * @return The code point index that corresponds to the specified character index.
+     */
+    int codeUnitsToCodePoints(int charIndex) {
+      if (charIndex < this.charIndex) {
+        this.codePointIndex -= text.codePointCount(charIndex, this.charIndex);
+      } else {
+        this.codePointIndex += text.codePointCount(this.charIndex, charIndex);
+      }
+      this.charIndex = charIndex;
+
+      // Make sure that charIndex never points to the second code unit of a
+      // surrogate pair.
+      if (charIndex > 0 && Character.isSupplementaryCodePoint(text.codePointAt(charIndex - 1))) {
+        this.charIndex -= 1;
+      }
+      return this.codePointIndex;
+    }
+
+    /**
+     * @param codePointIndex Index into the string measured in code points.
+     * @return the code unit index that corresponds to the specified code point index.
+     */
+    int codePointsToCodeUnits(int codePointIndex) {
+      // Note that offsetByCodePoints accepts negative indices.
+      this.charIndex = text.offsetByCodePoints(this.charIndex, codePointIndex - this.codePointIndex);
+      this.codePointIndex = codePointIndex;
+      return this.charIndex;
+    }
   }
 }

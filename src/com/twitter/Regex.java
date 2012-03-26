@@ -4,10 +4,25 @@ package com.twitter;
 import java.util.regex.*;
 
 public class Regex {
-  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff\\u0130-\\u0131\\u015f";
+  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff" + // Latin-1
+                                              "\\u0100-\\u024f" + // Latin Extended A and B
+                                              "\\u0253\\u0254\\u0256\\u0257\\u0259\\u025b\\u0263\\u0268\\u026f\\u0272\\u0289\\u028b" + // IPA Extensions
+                                              "\\u02bb" + // Hawaiian
+                                              "\\u1e00-\\u1eff"; // Latin Extended Additional (mostly for Vietnamese)
   private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff\\u0500-\\u0527" +  // Cyrillic
-                                                   "\\u2de0–\\u2dff\\ua640–\\ua69f" +  // Cyrillic Extended A/B
+                                                   "\\u2de0-\\u2dff\\ua640-\\ua69f" +  // Cyrillic Extended A/B
+                                                   "\\u0591-\\u05bf\\u05c1-\\u05c2\\u05c4-\\u05c5\\u05c7" +
+                                                   "\\u05d0-\\u05ea\\u05f0-\\u05f4" + // Hebrew
+                                                   "\\ufb1d-\\ufb28\\ufb2a-\\ufb36\\ufb38-\\ufb3c\\ufb3e\\ufb40-\\ufb41" +
+                                                   "\\ufb43-\\ufb44\\ufb46-\\ufb4f" + // Hebrew Pres. Forms
+                                                   "\\u0610-\\u061a\\u0620-\\u065f\\u066e-\\u06d3\\u06d5-\\u06dc" +
+                                                   "\\u06de-\\u06e8\\u06ea-\\u06ef\\u06fa-\\u06fc\\u06ff" + // Arabic
+                                                   "\\u0750-\\u077f\\u08a0\\u08a2-\\u08ac\\u08e4-\\u08fe" + // Arabic Supplement and Extended A
+                                                   "\\ufb50-\\ufbb1\\ufbd3-\\ufd3d\\ufd50-\\ufd8f\\ufd92-\\ufdc7\\ufdf0-\\ufdfb" + // Pres. Forms A
+                                                   "\\ufe70-\\ufe74\\ufe76-\\ufefc" + // Pres. Forms B
+                                                   "\\u200c" +                        // Zero-Width Non-Joiner
+                                                   "\\u0e01-\\u0e3a\\u0e40-\\u0e4e" + // Thai
                                                    "\\u1100-\\u11ff\\u3130-\\u3185\\uA960-\\uA97F\\uAC00-\\uD7AF\\uD7B0-\\uD7FF" + // Hangul (Korean)
                                                    "\\p{InHiragana}\\p{InKatakana}" +  // Japanese Hiragana and Katakana
                                                    "\\p{InCJKUnifiedIdeographs}" +     // Japanese Kanji / Chinese Han
@@ -29,7 +44,7 @@ public class Regex {
   private static final String URL_VALID_UNICODE_CHARS = "[.[^\\p{Punct}\\s\\p{Z}\\p{InGeneralPunctuation}]]";
 
   private static final String URL_VALID_GTLD =
-      "(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=\\P{Alpha}|$))";
+      "(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=\\P{Alnum}|$))";
   private static final String URL_VALID_CCTLD =
       "(?:(?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|" +
       "bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|" +
@@ -38,7 +53,7 @@ public class Regex {
       "lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|" +
       "nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|" +
       "sl|sm|sn|so|sr|ss|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|" +
-      "va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)(?=\\P{Alpha}|$))";
+      "va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)(?=\\P{Alnum}|$))";
   private static final String URL_PUNYCODE = "(?:xn--[0-9a-z]+)";
 
   private static final String URL_VALID_DOMAIN =
@@ -113,7 +128,7 @@ public class Regex {
   public static final int AUTO_LINK_HASHTAGS_GROUP_TAG = 3;
   public static final Pattern HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
 
-  public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
+  public static final Pattern AUTO_LINK_USERNAMES_OR_LISTS = Pattern.compile("([^a-z0-9_!#$%&*" + AT_SIGNS_CHARS + "]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE = 1;
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT = 2;
   public static final int AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME = 3;
@@ -131,7 +146,7 @@ public class Regex {
 
   public static final Pattern VALID_TCO_URL = Pattern.compile("^https?:\\/\\/t\\.co\\/[a-z0-9]+", Pattern.CASE_INSENSITIVE);
 
-  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_])" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
+  public static final Pattern EXTRACT_MENTIONS = Pattern.compile("(^|[^a-z0-9_!#$%&*" + AT_SIGNS_CHARS + "])" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
   public static final int EXTRACT_MENTIONS_GROUP_BEFORE = 1;
   public static final int EXTRACT_MENTIONS_GROUP_USERNAME = 2;
 
