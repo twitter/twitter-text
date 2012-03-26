@@ -1,3 +1,14 @@
+/*!
+ * twitter-text-js 1.4.15
+ *
+ * Copyright 2011 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this work except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ */
 if (typeof window === "undefined" || window === null) {
   window = { twttr: {} };
 }
@@ -111,44 +122,6 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x0500, 0x0527); // Cyrillic Supplement
   addCharsToCharClass(nonLatinHashtagChars, 0x2de0, 0x2dff); // Cyrillic Extended A
   addCharsToCharClass(nonLatinHashtagChars, 0xa640, 0xa69f); // Cyrillic Extended B
-  // Hebrew
-  addCharsToCharClass(nonLatinHashtagChars, 0x0591, 0x05bf); // Hebrew
-  addCharsToCharClass(nonLatinHashtagChars, 0x05c1, 0x05c2);
-  addCharsToCharClass(nonLatinHashtagChars, 0x05c4, 0x05c5);
-  addCharsToCharClass(nonLatinHashtagChars, 0x05c7, 0x05c7);
-  addCharsToCharClass(nonLatinHashtagChars, 0x05d0, 0x05ea);
-  addCharsToCharClass(nonLatinHashtagChars, 0x05f0, 0x05f4);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb12, 0xfb28); // Hebrew Presentation Forms
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb2a, 0xfb36);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb38, 0xfb3c);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb3e, 0xfb3e);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb40, 0xfb41);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb43, 0xfb44);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb46, 0xfb4f);
-  // Arabic
-  addCharsToCharClass(nonLatinHashtagChars, 0x0610, 0x061a); // Arabic
-  addCharsToCharClass(nonLatinHashtagChars, 0x0620, 0x065f);
-  addCharsToCharClass(nonLatinHashtagChars, 0x066e, 0x06d3);
-  addCharsToCharClass(nonLatinHashtagChars, 0x06d5, 0x06dc);
-  addCharsToCharClass(nonLatinHashtagChars, 0x06de, 0x06e8);
-  addCharsToCharClass(nonLatinHashtagChars, 0x06ea, 0x06ef);
-  addCharsToCharClass(nonLatinHashtagChars, 0x06fa, 0x06fc);
-  addCharsToCharClass(nonLatinHashtagChars, 0x06ff, 0x06ff);
-  addCharsToCharClass(nonLatinHashtagChars, 0x0750, 0x077f); // Arabic Supplement
-  addCharsToCharClass(nonLatinHashtagChars, 0x08a0, 0x08a0); // Arabic Extended A
-  addCharsToCharClass(nonLatinHashtagChars, 0x08a2, 0x08ac);
-  addCharsToCharClass(nonLatinHashtagChars, 0x08e4, 0x08fe);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfb50, 0xfbb1); // Arabic Pres. Forms A
-  addCharsToCharClass(nonLatinHashtagChars, 0xfbd3, 0xfd3d);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfd50, 0xfd8f);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfd92, 0xfdc7);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfdf0, 0xfdfb);
-  addCharsToCharClass(nonLatinHashtagChars, 0xfe70, 0xfe74); // Arabic Pres. Forms B
-  addCharsToCharClass(nonLatinHashtagChars, 0xfe76, 0xfefc);
-  addCharsToCharClass(nonLatinHashtagChars, 0x200c, 0x200c); // Zero-Width Non-Joiner
-  // Thai
-  addCharsToCharClass(nonLatinHashtagChars, 0x0e01, 0x0e3a);
-  addCharsToCharClass(nonLatinHashtagChars, 0x0e40, 0x0e4e);
   // Hangul (Korean)
   addCharsToCharClass(nonLatinHashtagChars, 0x1100, 0x11ff); // Hangul Jamo
   addCharsToCharClass(nonLatinHashtagChars, 0x3130, 0x3185); // Hangul Compatibility Jamo
@@ -178,30 +151,8 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x303B, 0x303B); // Han iteration mark
 
   twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
-
-  var latinAccentChars = [];
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
-  addCharsToCharClass(latinAccentChars, 0x00c0, 0x00d6);
-  addCharsToCharClass(latinAccentChars, 0x00d8, 0x00f6);
-  addCharsToCharClass(latinAccentChars, 0x00f8, 0x00ff);
-  // Latin Extended A and B
-  addCharsToCharClass(latinAccentChars, 0x0100, 0x024f);
-  // assorted IPA Extensions
-  addCharsToCharClass(latinAccentChars, 0x0253, 0x0254);
-  addCharsToCharClass(latinAccentChars, 0x0256, 0x0257);
-  addCharsToCharClass(latinAccentChars, 0x0259, 0x0259);
-  addCharsToCharClass(latinAccentChars, 0x025b, 0x025b);
-  addCharsToCharClass(latinAccentChars, 0x0263, 0x0263);
-  addCharsToCharClass(latinAccentChars, 0x0268, 0x0268);
-  addCharsToCharClass(latinAccentChars, 0x026f, 0x026f);
-  addCharsToCharClass(latinAccentChars, 0x0272, 0x0272);
-  addCharsToCharClass(latinAccentChars, 0x0289, 0x0289);
-  addCharsToCharClass(latinAccentChars, 0x028b, 0x028b);
-  // Okina for Hawaiian (it *is* a letter character)
-  addCharsToCharClass(latinAccentChars, 0x02bb, 0x02bb);
-  // Latin Extended Additional
-  addCharsToCharClass(latinAccentChars, 0x1e00, 0x1eff);
-  twttr.txt.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
+  twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
 
   twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
@@ -221,8 +172,8 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
   twttr.txt.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
   twttr.txt.regexen.validDomainName = regexSupplant(/(?:(?:#{validDomainChars}(?:-|#{validDomainChars})*)?#{validDomainChars}\.)/);
-  twttr.txt.regexen.validGTLD = regexSupplant(/(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^0-9a-zA-Z]|$))/);
-  twttr.txt.regexen.validCCTLD = regexSupplant(/(?:(?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)(?=[^0-9a-zA-Z]|$))/);
+  twttr.txt.regexen.validGTLD = regexSupplant(/(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^a-zA-Z]|$))/);
+  twttr.txt.regexen.validCCTLD = regexSupplant(/(?:(?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)(?=[^a-zA-Z]|$))/);
   twttr.txt.regexen.validPunycode = regexSupplant(/(?:xn--[0-9a-z]+)/);
   twttr.txt.regexen.validDomain = regexSupplant(/(?:#{validSubdomain}*#{validDomainName}(?:#{validGTLD}|#{validCCTLD}|#{validPunycode}))/);
   twttr.txt.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
@@ -511,7 +462,6 @@ if (typeof twttr === "undefined" || twttr === null) {
     delete options.usernameClass;
     delete options.usernameUrlBase;
     delete options.listUrlBase;
-    delete options.urlEntities;
 
     return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
       var tldComponents;
@@ -519,6 +469,9 @@ if (typeof twttr === "undefined" || twttr === null) {
       if (protocol) {
         var htmlAttrs = "";
         var after = "";
+        for (var k in options) {
+          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
+        }
 
         // In the case of t.co URLs, don't allow additional path characters.
         if (url.match(twttr.txt.regexen.validTcoUrl)) {
@@ -526,94 +479,19 @@ if (typeof twttr === "undefined" || twttr === null) {
           after = RegExp.rightContext;
         }
 
-        var displayUrl = url;
-        var linkText = twttr.txt.htmlEscape(displayUrl);
-        // If the caller passed a urlEntities object (provided by a Twitter API
-        // response with include_entities=true), we use that to render the display_url
-        // for each URL instead of it's underlying t.co URL.
-        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
-          var displayUrl = urlEntities[url].display_url;
-          var expandedUrl = urlEntities[url].expanded_url;
-          if (!options.title) {
-            options.title = expandedUrl;
-          }
-
-          // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
-          // should contain the full original URL (expanded_url), not the display URL.
-          //
-          // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
-          // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
-          // Elements with font-size:0 get copied even though they are not visible.
-          // Note that display:none doesn't work here. Elements with display:none don't get copied.
-          //
-          // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
-          // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
-          // everything with the tco-ellipsis class.
-          // 
-          // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
-          // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
-          // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
-
-          var displayUrlSansEllipses = displayUrl.replace(/…/g, ""); // We have to disregard ellipses for matching
-          // Note: we currently only support eliding parts of the URL at the beginning or the end.
-          // Eventually we may want to elide parts of the URL in the *middle*.  If so, this code will
-          // become more complicated.  We will probably want to create a regexp out of display URL,
-          // replacing every ellipsis with a ".*".
-          if (expandedUrl.indexOf(displayUrlSansEllipses) != -1) {
-            var displayUrlIndex = expandedUrl.indexOf(displayUrlSansEllipses);
-            var v = {
-              displayUrlSansEllipses: displayUrlSansEllipses,
-              // Portion of expandedUrl that precedes the displayUrl substring
-              beforeDisplayUrl: expandedUrl.substr(0, displayUrlIndex),
-              // Portion of expandedUrl that comes after displayUrl
-              afterDisplayUrl: expandedUrl.substr(displayUrlIndex + displayUrlSansEllipses.length),
-              precedingEllipsis: displayUrl.match(/^…/) ? "…" : "",
-              followingEllipsis: displayUrl.match(/…$/) ? "…" : ""
-            }
-            $.each(v, function(index, value) {
-              v[index] = twttr.txt.htmlEscape(value);
-            });
-            // As an example: The user tweets "hi http://longdomainname.com/foo"
-            // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
-            // This will get rendered as:
-            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
-            //   …
-            //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
-            //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
-            //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
-            //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
-            //        e.g. "hi  http://longdomainname.com/foo".
-            //   <span style='font-size:0'>&nbsp;</span>
-            // </span>
-            // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
-            //   http://longdomai
-            // </span>
-            // <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
-            //   nname.com/foo
-            // </span>
-            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
-            //   <span style='font-size:0'>&nbsp;</span>
-            //   …
-            // </span>
-            v['invisible'] = "style='font-size:0; line-height:0'";
-            linkText = stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
-          }
-        }
-
-        for (var k in options) {
-          var val = options[k].toString();
-          htmlAttrs += stringSupplant(" #{k}=\"#{val}\" ", {k: k, val: twttr.txt.htmlEscape(val)});
-        }
-
         var d = {
           before: before,
           htmlAttrs: htmlAttrs,
           url: twttr.txt.htmlEscape(url),
-          linkText: linkText,
           after: after
         };
+        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+          d.displayUrl = twttr.txt.htmlEscape(urlEntities[url].display_url);
+        } else {
+          d.displayUrl = d.url;
+        }
 
-        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>#{after}", d);
+        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
       } else {
         return all;
       }
@@ -805,51 +683,27 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.modifyIndicesFromUnicodeToUTF16 = function(text, entities) {
-    twttr.txt.convertUnicodeIndices(text, entities, false);
+    twttr.txt.shiftIndices(text, entities, 1);
   };
 
   twttr.txt.modifyIndicesFromUTF16ToUnicode = function(text, entities) {
-    twttr.txt.convertUnicodeIndices(text, entities, true);
+    twttr.txt.shiftIndices(text, entities, -1);
   };
 
-  twttr.txt.convertUnicodeIndices = function(text, entities, indicesInUTF16) {
-    if (entities.length == 0) {
-      return;
-    }
-
-    var charIndex = 0;
-    var codePointIndex = 0;
-
-    // sort entities by start index
-    entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
-    var entityIndex = 0;
-    var entity = entities[0];
-
-    while (charIndex < text.length) {
-      if (entity.indices[0] == (indicesInUTF16 ? charIndex : codePointIndex)) {
-        var len = entity.indices[1] - entity.indices[0];
-        entity.indices[0] = indicesInUTF16 ? codePointIndex : charIndex;
-        entity.indices[1] = entity.indices[0] + len;
-
-        entityIndex++;
-        if (entityIndex == entities.length) {
-          // no more entity
-          break;
-        }
-        entity = entities[entityIndex];
-      }
-
-      var c = text.charCodeAt(charIndex);
-      if (0xD800 <= c && c <= 0xDBFF && charIndex < text.length - 1) {
-        // Found high surrogate char
-        c = text.charCodeAt(charIndex + 1);
-        if (0xDC00 <= c && c <= 0xDFFF) {
-          // Found surrogate pair
-          charIndex++;
+  twttr.txt.shiftIndices = function(text, entities, diff) {
+    for (var i = 0; i < text.length - 1; i++) {
+      var c1 = text.charCodeAt(i);
+      var c2 = text.charCodeAt(i + 1);
+      if (0xD800 <= c1 && c1 <= 0xDBFF && 0xDC00 <= c2 && c2 <= 0xDFFF) {
+        // supplementary character
+        i++; // skip surrogate pair character
+        for (var j = 0; j < entities.length; j++) {
+          if (entities[j].indices[0] >= i) {
+            entities[j].indices[0] += diff;
+            entities[j].indices[1] += diff;
+          }
         }
       }
-      codePointIndex++;
-      charIndex++;
     }
   };
 
