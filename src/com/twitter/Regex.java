@@ -12,8 +12,8 @@ public class Regex {
   private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff\\u0500-\\u0527" +  // Cyrillic
                                                    "\\u2de0-\\u2dff\\ua640-\\ua69f" +  // Cyrillic Extended A/B
-                                                   "\\u0591-\\u05bd\\u05bf\\u05c1-\\u05c2\\u05c4-\\u05c5\\u05c7" +
-                                                   "\\u05d0-\\u05ea\\u05f0-\\u05f2" + // Hebrew
+                                                   "\\u0591-\\u05bf\\u05c1-\\u05c2\\u05c4-\\u05c5\\u05c7" +
+                                                   "\\u05d0-\\u05ea\\u05f0-\\u05f4" + // Hebrew
                                                    "\\ufb1d-\\ufb28\\ufb2a-\\ufb36\\ufb38-\\ufb3c\\ufb3e\\ufb40-\\ufb41" +
                                                    "\\ufb43-\\ufb44\\ufb46-\\ufb4f" + // Hebrew Pres. Forms
                                                    "\\u0610-\\u061a\\u0620-\\u065f\\u066e-\\u06d3\\u06d5-\\u06dc" +
