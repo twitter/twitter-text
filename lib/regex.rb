@@ -65,7 +65,19 @@ module Twitter
           regex_range(0xc0, 0xd6),
           regex_range(0xd8, 0xf6),
           regex_range(0xf8, 0xff),
-          regex_range(0x015f)
+          regex_range(0x0100, 0x024f),
+          regex_range(0x0253, 0x0254),
+          regex_range(0x0256, 0x0257),
+          regex_range(0x0259),
+          regex_range(0x025b),
+          regex_range(0x0263),
+          regex_range(0x0268),
+          regex_range(0x026f),
+          regex_range(0x0272),
+          regex_range(0x0289),
+          regex_range(0x028b),
+          regex_range(0x02bb),
+          regex_range(0x1e00, 0x1eff)
     ].join('').freeze
 
     NON_LATIN_HASHTAG_CHARS = [
@@ -74,13 +86,47 @@ module Twitter
       regex_range(0x0500, 0x0527), # Cyrillic Supplement
       regex_range(0x2de0, 0x2dff), # Cyrillic Extended A
       regex_range(0xa640, 0xa69f), # Cyrillic Extended B
-      # Hangul (Korean)
+      regex_range(0x0591, 0x05bf), # Hebrew
+      regex_range(0x05c1, 0x05c2),
+      regex_range(0x05c4, 0x05c5),
+      regex_range(0x05c7),
+      regex_range(0x05d0, 0x05ea),
+      regex_range(0x05f0, 0x05f4),
+      regex_range(0xfb12, 0xfb28), # Hebrew Presentation Forms
+      regex_range(0xfb2a, 0xfb36),
+      regex_range(0xfb38, 0xfb3c),
+      regex_range(0xfb3e),
+      regex_range(0xfb40, 0xfb41),
+      regex_range(0xfb43, 0xfb44),
+      regex_range(0xfb46, 0xfb4f),
+      regex_range(0x0610, 0x061a), # Arabic
+      regex_range(0x0620, 0x065f),
+      regex_range(0x066e, 0x06d3),
+      regex_range(0x06d5, 0x06dc),
+      regex_range(0x06de, 0x06e8),
+      regex_range(0x06ea, 0x06ef),
+      regex_range(0x06fa, 0x06fc),
+      regex_range(0x06ff),
+      regex_range(0x0750, 0x077f), # Arabic Supplement
+      regex_range(0x08a0),         # Arabic Extended A
+      regex_range(0x08a2, 0x08ac),
+      regex_range(0x08e4, 0x08fe),
+      regex_range(0xfb50, 0xfbb1), # Arabic Pres. Forms A
+      regex_range(0xfbd3, 0xfd3d),
+      regex_range(0xfd50, 0xfd8f),
+      regex_range(0xfd92, 0xfdc7),
+      regex_range(0xfdf0, 0xfdfb),
+      regex_range(0xfe70, 0xfe74), # Arabic Pres. Forms B
+      regex_range(0xfe76, 0xfefc),
+      regex_range(0x200c, 0x200c), # Zero-Width Non-Joiner
+      regex_range(0x0e01, 0x0e3a), # Thai
+      regex_range(0x0e40, 0x0e4e), # Hangul (Korean)
       regex_range(0x1100, 0x11ff), # Hangul Jamo
       regex_range(0x3130, 0x3185), # Hangul Compatibility Jamo
       regex_range(0xA960, 0xA97F), # Hangul Jamo Extended-A
       regex_range(0xAC00, 0xD7AF), # Hangul Syllables
       regex_range(0xD7B0, 0xD7FF), # Hangul Jamo Extended-B
-      regex_range(0xFFA1, 0xFFDC) # Half-width Hangul
+      regex_range(0xFFA1, 0xFFDC)  # Half-width Hangul
     ].join('').freeze
     REGEXEN[:latin_accents] = /[#{LATIN_ACCENTS}]+/o
 
@@ -97,6 +143,10 @@ module Twitter
       regex_range(0x2F800, 0x2FA1F), regex_range(0x3005), regex_range(0x303B) # Kanji (CJK supplement)
     ].join('').freeze
 
+    PUNCTUATION_CHARS = '!"#$%&\'()*+,-./:;<=>?@\[\]^_\`{|}~'
+    SPACE_CHARS = " \t\n\x0B\f\r"
+    CTRL_CHARS = "\x00-\x1F\x7F"
+
     # A hashtag must contain latin characters, numbers and underscores, but not all numbers.
     HASHTAG_ALPHA = /[a-z_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
     HASHTAG_ALPHANUMERIC = /[a-z0-9_#{LATIN_ACCENTS}#{NON_LATIN_HASHTAG_CHARS}#{CJ_HASHTAG_CHARACTERS}]/io
@@ -109,19 +159,19 @@ module Twitter
     REGEXEN[:end_hashtag_match] = /\A(?:[#＃]|:\/\/)/o
 
     REGEXEN[:at_signs] = /[@＠]/
-    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
-    REGEXEN[:extract_mentions_or_lists] = /(^|[^a-zA-Z0-9_])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
+    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_!#\$%&*@＠])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
+    REGEXEN[:extract_mentions_or_lists] = /(^|[^a-zA-Z0-9_!#\$%&*@＠])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
     # Used in Extractor and Rewriter for final filtering
     REGEXEN[:end_screen_name_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
-    REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
+    REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_!#\$%&*@＠]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
     REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
 
     # URL related hash regex collection
     REGEXEN[:valid_preceding_chars] = /(?:[^-\/"'!=A-Z0-9_@＠\$#＃\.#{INVALID_CHARACTERS.join('')}]|^)/io
 
-    DOMAIN_VALID_CHARS = "[^[:punct:][:space:][:blank:][:cntrl:]#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
+    DOMAIN_VALID_CHARS = "[^#{PUNCTUATION_CHARS}#{SPACE_CHARS}#{CTRL_CHARS}#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
     REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
     REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
 

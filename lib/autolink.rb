@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'set'
 
 module Twitter
@@ -20,7 +22,7 @@ module Twitter
     OPTIONS_NOT_ATTRIBUTES = [:url_class, :list_class, :username_class, :hashtag_class,
                               :username_url_base, :list_url_base, :hashtag_url_base,
                               :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
-                              :suppress_lists, :suppress_no_follow, :url_entities]
+                              :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities]
 
     HTML_ENTITIES = {
       '&' => '&amp;',
@@ -47,6 +49,7 @@ module Twitter
     # <tt>:username_url_base</tt>::      the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:hashtag_url_base</tt>::      the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
+    # <tt>:username_include_symbol</tt>::    place the <tt>@</tt> symbol within username and list links
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
     # <tt>:target</tt>::   add <tt>target="window_name"</tt> to auto-linked items
@@ -66,6 +69,7 @@ module Twitter
     # <tt>:list_class</tt>::    class to add to list <tt><a></tt> tags
     # <tt>:username_class</tt>::    class to add to username <tt><a></tt> tags
     # <tt>:username_url_base</tt>::      the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
+    # <tt>:username_include_symbol</tt>::    place the <tt>@</tt> symbol within username and list links
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:suppress_lists</tt>::    disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::   Do not add <tt>rel="nofollow"</tt> to auto-linked items
@@ -75,13 +79,16 @@ module Twitter
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:list_class] ||= DEFAULT_LIST_CLASS
       options[:username_class] ||= DEFAULT_USERNAME_CLASS
-      options[:username_url_base] ||= "http://twitter.com/"
-      options[:list_url_base] ||= "http://twitter.com/"
+      options[:username_url_base] ||= "https://twitter.com/"
+      options[:list_url_base] ||= "https://twitter.com/"
       options[:target] ||= DEFAULT_TARGET
 
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
       Twitter::Rewriter.rewrite_usernames_or_lists(text) do |at, username, slash_listname|
+        at_before_user = options[:username_include_symbol] ? at : ''
+        at = options[:username_include_symbol] ? '' : at
+
         name = "#{username}#{slash_listname}"
         chunk = block_given? ? yield(name) : name
 
@@ -89,16 +96,16 @@ module Twitter
           href = if options[:list_url_block]
             options[:list_url_block].call(name.downcase)
           else
-            "#{html_escape(options[:list_url_base])}#{html_escape(name.downcase)}"
+            "#{html_escape(options[:list_url_base] + name.downcase)}"
           end
-          %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
+          %(#{at}<a class="#{options[:url_class]} #{options[:list_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(at_before_user + chunk)}</a>)
         else
           href = if options[:username_url_block]
             options[:username_url_block].call(chunk)
           else
-            "#{html_escape(options[:username_url_base])}#{html_escape(chunk)}"
+            "#{html_escape(options[:username_url_base] + chunk)}"
           end
-          %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(chunk)}</a>)
+          %(#{at}<a class="#{options[:url_class]} #{options[:username_class]}" #{target_tag(options)}href="#{href}"#{extra_html}>#{html_escape(at_before_user + chunk)}</a>)
         end
       end
     end
@@ -116,7 +123,7 @@ module Twitter
       options = options.dup
       options[:url_class] ||= DEFAULT_URL_CLASS
       options[:hashtag_class] ||= DEFAULT_HASHTAG_CLASS
-      options[:hashtag_url_base] ||= "http://twitter.com/#!/search?q=%23"
+      options[:hashtag_url_base] ||= "https://twitter.com/#!/search?q=%23"
       options[:target] ||= DEFAULT_TARGET
       extra_html = HTML_ATTR_NO_FOLLOW unless options[:suppress_no_follow]
 
@@ -143,13 +150,10 @@ module Twitter
       url_entities = {}
       if options[:url_entities]
         options[:url_entities].each do |entity|
-          entity = entity.with_indifferent_access
-          url_entities[entity[:url]] = entity
+          url_entities[entity["url"]] = entity
         end
         options.delete(:url_entities)
       end
-
-      html_attrs = html_attrs_for_options(options)
 
       Twitter::Rewriter.rewrite_urls(text) do |url|
         # In the case of t.co URLs, don't allow additional path characters
@@ -166,11 +170,67 @@ module Twitter
         end
 
         display_url = url
-        if url_entities[url] && url_entities[url][:display_url]
-          display_url = url_entities[url][:display_url]
+        link_text = html_escape(display_url)
+        if url_entities[url] && url_entities[url]["display_url"]
+          display_url = url_entities[url]["display_url"]
+          expanded_url = url_entities[url]["expanded_url"]
+          if !options[:title]
+            options[:title] = expanded_url
+          end
+
+          # Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
+          # should contain the full original URL (expanded_url), not the display URL.
+          #
+          # Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
+          # font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+          # Elements with font-size:0 get copied even though they are not visible.
+          # Note that display:none doesn't work here. Elements with display:none don't get copied.
+          #
+          # Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
+          # wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
+          # everything with the tco-ellipsis class.
+          # 
+          # Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+          # For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+          # For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
+          display_url_sans_ellipses = display_url.sub("…", "")
+          if expanded_url.include?(display_url_sans_ellipses)
+            display_url_index = expanded_url.index(display_url_sans_ellipses)
+            before_display_url = expanded_url.slice(0, display_url_index)
+            # Portion of expanded_url that comes after display_url
+            after_display_url = expanded_url.slice(display_url_index + display_url_sans_ellipses.length, 999999)
+            preceding_ellipsis = display_url.match(/^…/) ? "…" : ""
+            following_ellipsis = display_url.match(/…$/) ? "…" : ""
+            # As an example: The user tweets "hi http://longdomainname.com/foo"
+            # This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
+            # This will get rendered as:
+            # <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            #   …
+            #   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
+            #        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
+            #        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
+            #        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
+            #        e.g. "hi  http://longdomainname.com/foo".
+            #   <span style='font-size:0'>&nbsp;</span>
+            # </span>
+            # <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
+            #   http://longdomai
+            # </span>
+            # <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
+            #   nname.com/foo
+            # </span>
+            # <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+            #   <span style='font-size:0'>&nbsp;</span>
+            #   …
+            # </span>
+            invisible = "style='font-size:0; line-height:0'"
+            link_text = "<span class='tco-ellipsis'>#{preceding_ellipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{html_escape before_display_url}</span><span class='js-display-url'>#{html_escape display_url_sans_ellipses}</span><span #{invisible}>#{after_display_url}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{following_ellipsis}</span>"
+          end
         end
 
-        %(<a href="#{href}"#{html_attrs}>#{html_escape(display_url)}</a>#{after})
+        html_attrs = html_attrs_for_options(options)
+
+        %(<a href="#{href}"#{html_attrs}>#{link_text}</a>#{after})
       end
     end
 
@@ -179,10 +239,10 @@ module Twitter
     BOOLEAN_ATTRIBUTES = Set.new([:disabled, :readonly, :multiple, :checked]).freeze
 
     def html_attrs_for_options(options)
-      html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
+      autolink_html_attrs options.reject{|k, v| OPTIONS_NOT_ATTRIBUTES.include?(k)}
     end
 
-    def html_attrs(options)
+    def autolink_html_attrs(options)
       options.inject("") do |attrs, (key, value)|
         if BOOLEAN_ATTRIBUTES.include?(key)
           value = value ? key : nil
