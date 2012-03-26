@@ -469,6 +469,10 @@ tests:
       text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
       expected: []
 
+    - description: "DO NOT extract .bz2 file name as URL"
+      text: "long.test.tar.bz2 test.tar.bz2 tar.bz2"
+      expected: []
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
