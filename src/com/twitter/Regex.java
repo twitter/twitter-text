@@ -26,7 +26,7 @@ public class Regex {
                                                    "\\u1100-\\u11ff\\u3130-\\u3185\\uA960-\\uA97F\\uAC00-\\uD7AF\\uD7B0-\\uD7FF" + // Hangul (Korean)
                                                    "\\p{InHiragana}\\p{InKatakana}" +  // Japanese Hiragana and Katakana
                                                    "\\p{InCJKUnifiedIdeographs}" +     // Japanese Kanji / Chinese Han
-                                                   "\\u3005\\u303b" +                  // Kanji/Han iteration marks
+                                                   "\\u3003\\u3005\\u303b" +           // Kanji/Han iteration marks
                                                    "\\uff21-\\uff3a\\uff41-\\uff5a" +  // full width Alphabet
                                                    "\\uff66-\\uff9f" +                 // half width Katakana
                                                    "\\uffa1-\\uffdc";                  // half width Hangul (Korean)
