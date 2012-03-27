@@ -198,30 +198,6 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(latinAccentChars, 0x1e00, 0x1eff);
   twttr.txt.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
 
-  var latinAccentChars = [];
-  // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
-  addCharsToCharClass(latinAccentChars, 0x00c0, 0x00d6);
-  addCharsToCharClass(latinAccentChars, 0x00d8, 0x00f6);
-  addCharsToCharClass(latinAccentChars, 0x00f8, 0x00ff);
-  // Latin Extended A and B
-  addCharsToCharClass(latinAccentChars, 0x0100, 0x024f);
-  // assorted IPA Extensions
-  addCharsToCharClass(latinAccentChars, 0x0253, 0x0254);
-  addCharsToCharClass(latinAccentChars, 0x0256, 0x0257);
-  addCharsToCharClass(latinAccentChars, 0x0259, 0x0259);
-  addCharsToCharClass(latinAccentChars, 0x025b, 0x025b);
-  addCharsToCharClass(latinAccentChars, 0x0263, 0x0263);
-  addCharsToCharClass(latinAccentChars, 0x0268, 0x0268);
-  addCharsToCharClass(latinAccentChars, 0x026f, 0x026f);
-  addCharsToCharClass(latinAccentChars, 0x0272, 0x0272);
-  addCharsToCharClass(latinAccentChars, 0x0289, 0x0289);
-  addCharsToCharClass(latinAccentChars, 0x028b, 0x028b);
-  // Okina for Hawaiian (it *is* a letter character)
-  addCharsToCharClass(latinAccentChars, 0x02bb, 0x02bb);
-  // Latin Extended Additional
-  addCharsToCharClass(latinAccentChars, 0x1e00, 0x1eff);
-  twttr.txt.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
-
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
   twttr.txt.regexen.hashSigns = /[#＃]/;
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
@@ -279,7 +255,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
-      '(#{validUrlPrecedingChars})'                                   + // $2 Preceeding chracter
+      '(#{validUrlPrecedingChars})'                                + // $2 Preceeding chracter
       '('                                                          + // $3 URL
         '(https?:\\/\\/)?'                                         + // $4 Protocol (optional)
         '(#{validDomain})'                                         + // $5 Domain(s)
@@ -503,7 +479,7 @@ if (typeof twttr === "undefined" || twttr === null) {
           afterDisplayUrl: expandedUrl.substr(displayUrlIndex + displayUrlSansEllipses.length),
           precedingEllipsis: displayUrl.match(/^…/) ? "…" : "",
           followingEllipsis: displayUrl.match(/…$/) ? "…" : ""
-        }
+        };
         $.each(v, function(index, value) {
           v[index] = twttr.txt.htmlEscape(value);
         });
@@ -924,7 +900,6 @@ if (typeof twttr === "undefined" || twttr === null) {
     var tagName = options.tag || defaultHighlightTag,
         tags = ["<" + tagName + ">", "</" + tagName + ">"],
         chunks = twttr.txt.splitTags(text),
-        split,
         i,
         j,
         result = "",
