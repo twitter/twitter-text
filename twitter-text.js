@@ -99,11 +99,6 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
   twttr.txt.regexen.invalid_chars_group = regexSupplant(INVALID_CHARS.join(""));
   twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
-  twttr.txt.regexen.atSigns = /[@＠]/;
-  twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})/g);
-  twttr.txt.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
-  twttr.txt.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
-  twttr.txt.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -203,20 +198,29 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(latinAccentChars, 0x1e00, 0x1eff);
   twttr.txt.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
 
-  twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
-
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
+  twttr.txt.regexen.hashSigns = /[#＃]/;
   twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
-  twttr.txt.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
+  twttr.txt.regexen.endHashtagMatch = regexSupplant(/^(?:#{hashSigns}|:\/\/)/);
   twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
-  twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
-  twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_!#\$%&*@＠]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
-  twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
+  twttr.txt.regexen.validHashtag = regexSupplant(/(#{hashtagBoundary})(#{hashSigns})(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
 
-  // URL related hash regex collection
-  twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
+  // Mention related regex collection
+  twttr.txt.regexen.validMentionPrecedingChars = /(?:^|[^a-zA-Z0-9_!#$%&*@＠]|RT:?)/;
+  twttr.txt.regexen.atSigns = /[@＠]/;
+  twttr.txt.regexen.validMentionOrList = regexSupplant(
+    '(#{validMentionPrecedingChars})' +  // $1: Preceding character
+    '(#{atSigns})' +                     // $2: At mark
+    '([a-zA-Z0-9_]{1,20})' +             // $3: Screen name
+    '(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?'  // $4: List (optional)
+  , 'g');
+  twttr.txt.regexen.validReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
+  twttr.txt.regexen.endMentionMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
+  // URL related regex collection
+  twttr.txt.regexen.validUrlPrecedingChars = regexSupplant(/(?:[^A-Za-z0-9@＠$#＃#{invalid_chars_group}]|^)/);
+  twttr.txt.regexen.invalidUrlWithoutProtocolPrecedingChars = /[-_.\/]$/;
   twttr.txt.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", twttr.txt.regexen);
   twttr.txt.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
   twttr.txt.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
@@ -251,7 +255,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
-      '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
+      '(#{validUrlPrecedingChars})'                                + // $2 Preceeding chracter
       '('                                                          + // $3 URL
         '(https?:\\/\\/)?'                                         + // $4 Protocol (optional)
         '(#{validDomain})'                                         + // $5 Domain(s)
@@ -362,6 +366,14 @@ if (typeof twttr === "undefined" || twttr === null) {
   var DEFAULT_HASHTAG_CLASS = "hashtag";
   // HTML attribute for robot nofollow behavior (default)
   var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
+  // Options which should not be passed as HTML attributes
+  var OPTIONS_NOT_ATTRIBUTES = {'urlClass':true, 'listClass':true, 'usernameClass':true, 'hashtagClass':true,
+                            'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true,
+                            'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
+                            'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
+                            'suppressDataScreenName':true, 'urlEntities':true, 'before':true
+                            };
+  var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
   // Simple object cloning function for simple objects
   function clone(o) {
@@ -375,106 +387,14 @@ if (typeof twttr === "undefined" || twttr === null) {
     return r;
   }
 
-  twttr.txt.autoLink = function(text, options) {
-    options = clone(options || {});
-    return twttr.txt.autoLinkUsernamesOrLists(
-      twttr.txt.autoLinkUrlsCustom(
-        twttr.txt.autoLinkHashtags(text, options),
-      options),
-    options);
-  };
-
-
-  twttr.txt.autoLinkUsernamesOrLists = function(text, options) {
-    options = clone(options || {});
-
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
-    options.listClass = options.listClass || DEFAULT_LIST_CLASS;
-    options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
-    options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
-    options.listUrlBase = options.listUrlBase || "https://twitter.com/";
-    if (!options.suppressNoFollow) {
-      var extraHtml = HTML_ATTR_NO_FOLLOW;
-    }
-
-    var newText = "",
-        splitText = twttr.txt.splitTags(text);
-
-    for (var index = 0; index < splitText.length; index++) {
-      var chunk = splitText[index];
-
-      if (index !== 0) {
-        newText += ((index % 2 === 0) ? ">" : "<");
-      }
-
-      if (index % 4 !== 0) {
-        newText += chunk;
-      } else {
-        newText += chunk.replace(twttr.txt.regexen.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, offset, chunk) {
-          var after = chunk.slice(offset + match.length);
-
-          var d = {
-            before: before,
-            at: options.usernameIncludeSymbol ? "" : at,
-            at_before_user: options.usernameIncludeSymbol ? at : "",
-            user: twttr.txt.htmlEscape(user),
-            slashListname: twttr.txt.htmlEscape(slashListname),
-            extraHtml: extraHtml,
-            preChunk: "",
-            postChunk: ""
-          };
-          for (var k in options) {
-            if (options.hasOwnProperty(k)) {
-              d[k] = options[k];
-            }
-          }
-
-          if (slashListname && !options.suppressLists) {
-            // the link is a list
-            var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
-            d.list = twttr.txt.htmlEscape(list.toLowerCase());
-            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-          } else {
-            if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
-              // Followed by something that means we don't autolink
-              return match;
-            } else {
-              // this is a screen name
-              d.chunk = d.user;
-              d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-            }
-          }
-        });
-      }
-    }
-
-    return newText;
-  };
-
-  twttr.txt.autoLinkHashtags = function(text, options) {
-    options = clone(options || {});
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
-    options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
-    if (!options.suppressNoFollow) {
-      var extraHtml = HTML_ATTR_NO_FOLLOW;
-    }
-
-    return text.replace(twttr.txt.regexen.autoLinkHashtags, function(match, before, hash, text, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (after.match(twttr.txt.regexen.endHashtagMatch))
-        return match;
-
-      var d = {
-        before: before,
-        hash: twttr.txt.htmlEscape(hash),
+  twttr.txt.linkToHashtag = function(entity, text, options) {
+    var d = {
+        hash: text.substring(entity.indices[0], entity.indices[0] + 1),
         preText: "",
-        text: twttr.txt.htmlEscape(text),
+        text: twttr.txt.htmlEscape(entity.hashtag),
         postText: "",
-        extraHtml: extraHtml
+        extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW
       };
-
       for (var k in options) {
         if (options.hasOwnProperty(k)) {
           d[k] = options[k];
@@ -482,19 +402,141 @@ if (typeof twttr === "undefined" || twttr === null) {
       }
 
       return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
-    });
   };
 
+  twttr.txt.linkToMentionAndList = function(entity, text, options) {
+    var at = text.substring(entity.indices[0], entity.indices[0] + 1);
+    var d = {
+      at: options.usernameIncludeSymbol ? "" : at,
+      at_before_user: options.usernameIncludeSymbol ? at : "",
+      user: twttr.txt.htmlEscape(entity.screenName),
+      slashListname: twttr.txt.htmlEscape(entity.listSlug),
+      extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW,
+      preChunk: "",
+      postChunk: ""
+    };
+    for (var k in options) {
+      if (options.hasOwnProperty(k)) {
+        d[k] = options[k];
+      }
+    }
 
-  twttr.txt.autoLinkUrlsCustom = function(text, options) {
+    if (entity.listSlug && !options.suppressLists) {
+      // the link is a list
+      var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
+      d.list = twttr.txt.htmlEscape(list.toLowerCase());
+      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
+    } else {
+      // this is a screen name
+      d.chunk = d.user;
+      d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
+      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
+    }
+  };
+
+  twttr.txt.linkToUrl = function(entity, text, options) {
+    var url = entity.url;
+    var displayUrl = url;
+    var linkText = twttr.txt.htmlEscape(displayUrl);
+    // If the caller passed a urlEntities object (provided by a Twitter API
+    // response with include_entities=true), we use that to render the display_url
+    // for each URL instead of it's underlying t.co URL.
+    if (options.urlEntities && options.urlEntities[url] && options.urlEntities[url].display_url) {
+      var displayUrl = options.urlEntities[url].display_url;
+      var expandedUrl = options.urlEntities[url].expanded_url;
+      if (!options.title) {
+        options.title = expandedUrl;
+      }
+
+      // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
+      // should contain the full original URL (expanded_url), not the display URL.
+      //
+      // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
+      // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+      // Elements with font-size:0 get copied even though they are not visible.
+      // Note that display:none doesn't work here. Elements with display:none don't get copied.
+      //
+      // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
+      // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
+      // everything with the tco-ellipsis class.
+      //
+      // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+      // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+      // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
+
+      var displayUrlSansEllipses = displayUrl.replace(/…/g, ""); // We have to disregard ellipses for matching
+      // Note: we currently only support eliding parts of the URL at the beginning or the end.
+      // Eventually we may want to elide parts of the URL in the *middle*.  If so, this code will
+      // become more complicated.  We will probably want to create a regexp out of display URL,
+      // replacing every ellipsis with a ".*".
+      if (expandedUrl.indexOf(displayUrlSansEllipses) != -1) {
+        var displayUrlIndex = expandedUrl.indexOf(displayUrlSansEllipses);
+        var v = {
+          displayUrlSansEllipses: displayUrlSansEllipses,
+          // Portion of expandedUrl that precedes the displayUrl substring
+          beforeDisplayUrl: expandedUrl.substr(0, displayUrlIndex),
+          // Portion of expandedUrl that comes after displayUrl
+          afterDisplayUrl: expandedUrl.substr(displayUrlIndex + displayUrlSansEllipses.length),
+          precedingEllipsis: displayUrl.match(/^…/) ? "…" : "",
+          followingEllipsis: displayUrl.match(/…$/) ? "…" : ""
+        };
+        $.each(v, function(index, value) {
+          v[index] = twttr.txt.htmlEscape(value);
+        });
+        // As an example: The user tweets "hi http://longdomainname.com/foo"
+        // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
+        // This will get rendered as:
+        // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+        //   …
+        //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
+        //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
+        //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
+        //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
+        //        e.g. "hi  http://longdomainname.com/foo".
+        //   <span style='font-size:0'>&nbsp;</span>
+        // </span>
+        // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
+        //   http://longdomai
+        // </span>
+        // <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
+        //   nname.com/foo
+        // </span>
+        // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+        //   <span style='font-size:0'>&nbsp;</span>
+        //   …
+        // </span>
+        v['invisible'] = "style='font-size:0; line-height:0'";
+        linkText = stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
+      }
+    }
+
+    var d = {
+      htmlAttrs: options.htmlAttrs,
+      url: twttr.txt.htmlEscape(url),
+      linkText: linkText
+    };
+
+    return stringSupplant("<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>", d);
+  };
+
+  twttr.txt.autoLinkEntities = function(text, entities, options) {
     options = clone(options || {});
+
     if (!options.suppressNoFollow) {
       options.rel = "nofollow";
     }
     if (options.urlClass) {
       options["class"] = options.urlClass;
-      delete options.urlClass;
     }
+    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
+    options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
+    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
+    options.listClass = options.listClass || DEFAULT_LIST_CLASS;
+    options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
+    options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
+    options.listUrlBase = options.listUrlBase || "https://twitter.com/";
+    options.before = options.before || "";
+    options.htmlAttrs = twttr.txt.extractHtmlAttrsFromOptions(options);
 
     // remap url entities to hash
     var urlEntities, i, len;
@@ -503,121 +545,85 @@ if (typeof twttr === "undefined" || twttr === null) {
       for(i = 0, len = options.urlEntities.length; i < len; i++) {
         urlEntities[options.urlEntities[i].url] = options.urlEntities[i];
       }
+      options.urlEntities = urlEntities;
     }
 
-    delete options.suppressNoFollow;
-    delete options.suppressDataScreenName;
-    delete options.listClass;
-    delete options.usernameClass;
-    delete options.usernameUrlBase;
-    delete options.listUrlBase;
-    delete options.urlEntities;
+    var result = "";
+    var beginIndex = 0;
 
-    return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
-      var tldComponents;
+    for (var i = 0; i < entities.length; i++) {
+      var entity = entities[i];
+      result += text.substring(beginIndex, entity.indices[0]);
 
-      if (protocol) {
-        var htmlAttrs = "";
-        var after = "";
-
-        // In the case of t.co URLs, don't allow additional path characters.
-        if (url.match(twttr.txt.regexen.validTcoUrl)) {
-          url = RegExp.lastMatch;
-          after = RegExp.rightContext;
-        }
-
-        var displayUrl = url;
-        var linkText = twttr.txt.htmlEscape(displayUrl);
-        // If the caller passed a urlEntities object (provided by a Twitter API
-        // response with include_entities=true), we use that to render the display_url
-        // for each URL instead of it's underlying t.co URL.
-        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
-          var displayUrl = urlEntities[url].display_url;
-          var expandedUrl = urlEntities[url].expanded_url;
-          if (!options.title) {
-            options.title = expandedUrl;
-          }
-
-          // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
-          // should contain the full original URL (expanded_url), not the display URL.
-          //
-          // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
-          // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
-          // Elements with font-size:0 get copied even though they are not visible.
-          // Note that display:none doesn't work here. Elements with display:none don't get copied.
-          //
-          // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
-          // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
-          // everything with the tco-ellipsis class.
-          // 
-          // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
-          // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
-          // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
-
-          var displayUrlSansEllipses = displayUrl.replace(/…/g, ""); // We have to disregard ellipses for matching
-          // Note: we currently only support eliding parts of the URL at the beginning or the end.
-          // Eventually we may want to elide parts of the URL in the *middle*.  If so, this code will
-          // become more complicated.  We will probably want to create a regexp out of display URL,
-          // replacing every ellipsis with a ".*".
-          if (expandedUrl.indexOf(displayUrlSansEllipses) != -1) {
-            var displayUrlIndex = expandedUrl.indexOf(displayUrlSansEllipses);
-            var v = {
-              displayUrlSansEllipses: displayUrlSansEllipses,
-              // Portion of expandedUrl that precedes the displayUrl substring
-              beforeDisplayUrl: expandedUrl.substr(0, displayUrlIndex),
-              // Portion of expandedUrl that comes after displayUrl
-              afterDisplayUrl: expandedUrl.substr(displayUrlIndex + displayUrlSansEllipses.length),
-              precedingEllipsis: displayUrl.match(/^…/) ? "…" : "",
-              followingEllipsis: displayUrl.match(/…$/) ? "…" : ""
-            }
-            $.each(v, function(index, value) {
-              v[index] = twttr.txt.htmlEscape(value);
-            });
-            // As an example: The user tweets "hi http://longdomainname.com/foo"
-            // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
-            // This will get rendered as:
-            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
-            //   …
-            //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
-            //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
-            //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
-            //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
-            //        e.g. "hi  http://longdomainname.com/foo".
-            //   <span style='font-size:0'>&nbsp;</span>
-            // </span>
-            // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
-            //   http://longdomai
-            // </span>
-            // <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
-            //   nname.com/foo
-            // </span>
-            // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
-            //   <span style='font-size:0'>&nbsp;</span>
-            //   …
-            // </span>
-            v['invisible'] = "style='font-size:0; line-height:0'";
-            linkText = stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
-          }
-        }
-
-        for (var k in options) {
-          var val = options[k].toString();
-          htmlAttrs += stringSupplant(" #{k}=\"#{val}\" ", {k: k, val: twttr.txt.htmlEscape(val)});
-        }
-
-        var d = {
-          before: before,
-          htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(url),
-          linkText: linkText,
-          after: after
-        };
-
-        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>#{after}", d);
-      } else {
-        return all;
+      if (entity.url) {
+        result += twttr.txt.linkToUrl(entity, text, options);
+      } else if (entity.hashtag) {
+        result += twttr.txt.linkToHashtag(entity, text, options);
+      } else if(entity.screenName) {
+        result += twttr.txt.linkToMentionAndList(entity, text, options);
       }
-    });
+      beginIndex = entity.indices[1];
+    }
+    result += text.substring(beginIndex, text.length);
+    return result;
+  };
+
+  twttr.txt.extractHtmlAttrsFromOptions = function(options) {
+    var htmlAttrs = "";
+    for (var k in options) {
+      var v = options[k];
+      if (OPTIONS_NOT_ATTRIBUTES[k]) continue;
+      if (BOOLEAN_ATTRIBUTES[k]) {
+        v = v ? k : null;
+      }
+      if (v == null) continue;
+      htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: twttr.txt.htmlEscape(k), v: twttr.txt.htmlEscape(v.toString())});
+    }
+    return htmlAttrs;
+  };
+
+  twttr.txt.autoLink = function(text, options) {
+    var entities = twttr.txt.extractEntitiesWithIndices(text, {extractUrlWithoutProtocol: false});
+    return twttr.txt.autoLinkEntities(text, entities, options);
+  };
+
+  twttr.txt.autoLinkUsernamesOrLists = function(text, options) {
+    var entities = twttr.txt.extractMentionsOrListsWithIndices(text);
+    return twttr.txt.autoLinkEntities(text, entities, options);
+  };
+
+  twttr.txt.autoLinkHashtags = function(text, options) {
+    var entities = twttr.txt.extractHashtagsWithIndices(text);
+    return twttr.txt.autoLinkEntities(text, entities, options);
+  };
+
+  twttr.txt.autoLinkUrlsCustom = function(text, options) {
+    var entities = twttr.txt.extractUrlsWithIndices(text, {extractUrlWithoutProtocol: false});
+    return twttr.txt.autoLinkEntities(text, entities, options);
+  };
+
+  twttr.txt.extractEntitiesWithIndices = function(text, options) {
+    var entities = twttr.txt.extractUrlsWithIndices(text, options)
+                    .concat(twttr.txt.extractMentionsOrListsWithIndices(text))
+                    .concat(twttr.txt.extractHashtagsWithIndices(text));
+
+    if (entities.length == 0) {
+      return [];
+    }
+
+    entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
+
+    var prev = entities[0];
+    for (var i = 1; i < entities.length; i++) {
+      if (prev.indices[1] > entities[i].indices[0]) {
+        entities.splice(i, 1);
+        i--;
+      } else {
+        prev = entities[i];
+      }
+    }
+
+    return entities;
   };
 
   twttr.txt.extractMentions = function(text) {
@@ -633,26 +639,20 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.extractMentionsWithIndices = function(text) {
-    if (!text) {
-      return [];
-    }
+    var mentions = [];
+    var mentionsOrLists = twttr.txt.extractMentionsOrListsWithIndices(text);
 
-    var possibleScreenNames = [],
-        position = 0;
-
-    text.replace(twttr.txt.regexen.extractMentions, function(match, before, atSign, screenName, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
-        var startPosition = text.indexOf(atSign + screenName, position);
-        position = startPosition + screenName.length + 1;
-        possibleScreenNames.push({
-          screenName: screenName,
-          indices: [startPosition, position]
+    for (var i = 0 ; i < mentionsOrLists.length; i++) {
+      mentionOrList = mentionsOrLists[i];
+      if (mentionOrList.listSlug == '') {
+        mentions.push({
+          screenName: mentionOrList.screenName,
+          indices: mentionOrList.indices
         });
       }
-    });
+    }
 
-    return possibleScreenNames;
+    return mentions;
   };
 
   /**
@@ -660,16 +660,16 @@ if (typeof twttr === "undefined" || twttr === null) {
    * (Presence of listSlug indicates a list)
    */
   twttr.txt.extractMentionsOrListsWithIndices = function(text) {
-    if (!text) {
+    if (!text || !text.match(twttr.txt.regexen.atSign)) {
       return [];
     }
 
     var possibleNames = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.extractMentionsOrLists, function(match, before, atSign, screenName, slashListname, offset, chunk) {
+    text.replace(twttr.txt.regexen.validMentionOrList, function(match, before, atSign, screenName, slashListname, offset, chunk) {
       var after = chunk.slice(offset + match.length);
-      if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
+      if (!after.match(twttr.txt.regexen.endMentionMatch)) {
         slashListname = slashListname || '';
         var startPosition = text.indexOf(atSign + screenName + slashListname, position);
         position = startPosition + screenName.length + slashListname.length + 1;
@@ -690,18 +690,18 @@ if (typeof twttr === "undefined" || twttr === null) {
       return null;
     }
 
-    var possibleScreenName = text.match(twttr.txt.regexen.extractReply);
+    var possibleScreenName = text.match(twttr.txt.regexen.validReply);
     if (!possibleScreenName ||
-        RegExp.rightContext.match(twttr.txt.regexen.endScreenNameMatch)) {
+        RegExp.rightContext.match(twttr.txt.regexen.endMentionMatch)) {
       return null;
     }
 
     return possibleScreenName[1];
   };
 
-  twttr.txt.extractUrls = function(text) {
+  twttr.txt.extractUrls = function(text, options) {
     var urlsOnly = [],
-        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
+        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text, options);
 
     for (var i = 0; i < urlsWithIndices.length; i++) {
       urlsOnly.push(urlsWithIndices[i].url);
@@ -710,8 +710,12 @@ if (typeof twttr === "undefined" || twttr === null) {
     return urlsOnly;
   };
 
-  twttr.txt.extractUrlsWithIndices = function(text) {
-    if (!text) {
+  twttr.txt.extractUrlsWithIndices = function(text, options) {
+    if (!options) {
+      options = {extractUrlsWithoutProtocol: true};
+    }
+
+    if (!text || (options.extractUrlsWithoutProtocol ? !text.match(/\./) : !text.match(/:/))) {
       return [];
     }
 
@@ -725,16 +729,20 @@ if (typeof twttr === "undefined" || twttr === null) {
       // if protocol is missing and domain contains non-ASCII characters,
       // extract ASCII-only domains.
       if (!protocol) {
+        if (!options.extractUrlsWithoutProtocol
+            || before.match(twttr.txt.regexen.invalidUrlWithoutProtocolPrecedingChars)) {
+          continue;
+        }
         var lastUrl = null,
             lastUrlInvalidMatch = false,
             asciiEndPosition = 0;
         domain.replace(twttr.txt.regexen.validAsciiDomain, function(asciiDomain) {
           var asciiStartPosition = domain.indexOf(asciiDomain, asciiEndPosition);
-          asciiEndPosition = asciiStartPosition + asciiDomain.length
+          asciiEndPosition = asciiStartPosition + asciiDomain.length;
           lastUrl = {
             url: asciiDomain,
             indices: [startPosition + asciiStartPosition, startPosition + asciiEndPosition]
-          }
+          };
           lastUrlInvalidMatch = asciiDomain.match(twttr.txt.regexen.invalidShortDomain);
           if (!lastUrlInvalidMatch) {
             urls.push(lastUrl);
@@ -782,14 +790,14 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.extractHashtagsWithIndices = function(text) {
-    if (!text) {
+    if (!text || !text.match(twttr.txt.regexen.hashSigns)) {
       return [];
     }
 
     var tags = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.autoLinkHashtags, function(match, before, hash, hashText, offset, chunk) {
+    text.replace(twttr.txt.regexen.validHashtag, function(match, before, hash, hashText, offset, chunk) {
       var after = chunk.slice(offset + match.length);
       if (after.match(twttr.txt.regexen.endHashtagMatch))
         return;
@@ -891,7 +899,6 @@ if (typeof twttr === "undefined" || twttr === null) {
     var tagName = options.tag || defaultHighlightTag,
         tags = ["<" + tagName + ">", "</" + tagName + ">"],
         chunks = twttr.txt.splitTags(text),
-        split,
         i,
         j,
         result = "",
@@ -1026,7 +1033,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return extracted.length === 1 && extracted[0] === username.slice(1);
   };
 
-  var VALID_LIST_RE = regexSupplant(/^#{autoLinkUsernamesOrLists}$/);
+  var VALID_LIST_RE = regexSupplant(/^#{validMentionOrList}$/);
 
   twttr.txt.isValidList = function(usernameList) {
     var match = usernameList.match(VALID_LIST_RE);
