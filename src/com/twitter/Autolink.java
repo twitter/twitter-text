@@ -1,10 +1,8 @@
 package com.twitter;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import com.twitter.Extractor.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
@@ -37,6 +35,23 @@ public class Autolink {
   protected boolean noFollow = true;
   protected boolean usernameIncludeSymbol = false;
 
+  private Extractor extractor = new Extractor();
+
+  private static CharSequence escapeHTML(String text) {
+    StringBuilder builder = new StringBuilder(text.length() * 2);
+    for (char c : text.toCharArray()) {
+      switch(c) {
+        case '&': builder.append("&amp;"); break;
+        case '>': builder.append("&gt;"); break;
+        case '<': builder.append("&lt;"); break;
+        case '"': builder.append("&quot;"); break;
+        case '\'': builder.append("&#39;"); break;
+        default: builder.append(c); break;
+      }
+    }
+    return builder;
+  }
+
   public Autolink() {
     urlClass = DEFAULT_URL_CLASS;
     listClass = DEFAULT_LIST_CLASS;
@@ -45,6 +60,8 @@ public class Autolink {
     usernameUrlBase = DEFAULT_USERNAME_URL_BASE;
     listUrlBase = DEFAULT_LIST_URL_BASE;
     hashtagUrlBase = DEFAULT_HASHTAG_URL_BASE;
+
+    extractor.setExtractURLWithoutProtocol(false);
   }
 
   public String escapeBrackets(String text) {
@@ -65,6 +82,144 @@ public class Autolink {
     return sb.toString();
   }
 
+  public void linkToHashtag(Entity entity, String text, StringBuilder builder) {
+    // Get the original hash char from text as it could be a full-width char.
+    CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+
+    builder.append("<a href=\"").append(hashtagUrlBase).append(entity.getValue()).append("\"");
+    builder.append(" title=\"#").append(entity.getValue()).append("\"");
+    builder.append(" class=\"").append(urlClass).append(" ").append(hashtagClass).append("\"");
+    if (noFollow) {
+      builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
+    }
+    builder.append(">");
+    builder.append(hashChar);
+    builder.append(entity.getValue()).append("</a>");
+  }
+
+  public void linkToMentionAndList(Entity entity, String text, StringBuilder builder) {
+    String mention = entity.getValue();
+    // Get the original at char from text as it could be a full-width char.
+    CharSequence atChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+
+    if (!usernameIncludeSymbol) {
+      builder.append(atChar);
+    }
+    builder.append("<a class=\"").append(urlClass).append(" ");
+    if (entity.listSlug != null) {
+      // this is list
+      builder.append(listClass).append("\" href=\"").append(listUrlBase);
+      mention += entity.listSlug;
+    } else {
+      // this is @mention
+      builder.append(usernameClass).append("\" href=\"").append(usernameUrlBase);
+    }
+    builder.append(mention).append("\"");
+    if (noFollow){
+      builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
+    }
+    builder.append(">");
+    if (usernameIncludeSymbol) {
+      builder.append(atChar);
+    }
+    builder.append(mention).append("</a>");
+  }
+
+  public void linkToURL(Entity entity, String text, StringBuilder builder) {
+    CharSequence url = escapeHTML(entity.getValue());
+    CharSequence linkText = url;
+
+    if (entity.displayURL != null && entity.expandedURL != null) {
+      // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
+      // should contain the full original URL (expanded_url), not the display URL.
+      //
+      // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
+      // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+      // Elements with font-size:0 get copied even though they are not visible.
+      // Note that display:none doesn't work here. Elements with display:none don't get copied.
+      //
+      // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
+      // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
+      // everything with the tco-ellipsis class.
+      //
+      // As an example: The user tweets "hi http://longdomainname.com/foo"
+      // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
+      // This will get rendered as:
+      // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+      //   …
+      //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
+      //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
+      //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
+      //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
+      //        e.g. "hi  http://longdomainname.com/foo".
+      //   <span style='font-size:0'>&nbsp;</span>
+      // </span>
+      // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
+      //   http://longdomai
+      // </span>
+      // <span class='js-display-url'> <!-- This stuff should get displayed *and* copied -->
+      //   nname.com/foo
+      // </span>
+      // <span class='tco-ellipsis'> <!-- This stuff should get displayed but not copied -->
+      //   <span style='font-size:0'>&nbsp;</span>
+      //   …
+      // </span>
+      //
+      // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+      // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+      // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
+      String displayURLSansEllipses = entity.displayURL.replace("…", "");
+      int diplayURLIndexInExpandedURL = entity.expandedURL.indexOf(displayURLSansEllipses);
+      if (diplayURLIndexInExpandedURL != -1) {
+        String beforeDisplayURL = entity.expandedURL.substring(0, diplayURLIndexInExpandedURL);
+        String afterDisplayURL = entity.expandedURL.substring(diplayURLIndexInExpandedURL + displayURLSansEllipses.length());
+        String precedingEllipsis = entity.displayURL.startsWith("…") ? "…" : "";
+        String followingEllipsis = entity.displayURL.endsWith("…") ? "…" : "";
+        String invisibleSpan = "<span style='font-size:0; line-height:0'>";
+
+        StringBuilder sb = new StringBuilder("<span class='tco-ellipsis'>");
+        sb.append(precedingEllipsis);
+        sb.append(invisibleSpan).append("&nbsp;</span></span>");
+        sb.append(invisibleSpan).append(escapeHTML(beforeDisplayURL)).append("</span>");
+        sb.append("<span class='js-display-url'>").append(escapeHTML(displayURLSansEllipses)).append("</span>");
+        sb.append(invisibleSpan).append(escapeHTML(afterDisplayURL)).append("</span>");
+        sb.append("<span class='tco-ellipsis'>").append(invisibleSpan).append("&nbsp;</span>").append(followingEllipsis).append("</span>");
+
+        linkText = sb;
+      }
+    }
+
+    builder.append("<a href=\"").append(url).append("\"");
+    if (noFollow){
+      builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
+    }
+    builder.append(">").append(linkText).append("</a>");
+  }
+
+  public String autoLinkEntities(String text, List<Entity> entities) {
+    StringBuilder builder = new StringBuilder(text.length() * 2);
+    int beginIndex = 0;
+
+    for (Entity entity : entities) {
+      builder.append(text.subSequence(beginIndex, entity.start));
+
+      switch(entity.type) {
+        case URL:
+          linkToURL(entity, text, builder);
+          break;
+        case HASHTAG:
+          linkToHashtag(entity, text, builder);
+          break;
+        case MENTION:
+          linkToMentionAndList(entity, text, builder);
+     }
+      beginIndex = entity.end;
+    }
+    builder.append(text.subSequence(beginIndex, text.length()));
+
+    return builder.toString();
+  }
+
   /**
    * Auto-link hashtags, URLs, usernames and lists.
    *
@@ -72,7 +227,11 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLink(String text) {
-    return autoLinkUsernamesAndLists( autoLinkURLs( autoLinkHashtags( escapeBrackets(text) ) ) );
+    text = escapeBrackets(text);
+
+    // extract entities
+    List<Entity> entities = extractor.extractEntitiesWithIndices(text);
+    return autoLinkEntities(text, entities);
   }
 
   /**
@@ -84,79 +243,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLinkUsernamesAndLists(String text) {
-    Matcher matcher;
-    int capacity = text.length() * 2;
-    StringBuffer sb = new StringBuffer(capacity);
-    Iterable<String> chunks = split(text, "<>");
-    int i = 0;
-    for (String chunk : chunks) {
-      if (0 != i) {
-        if (i % 2 == 0) {
-          sb.append(">");
-        } else {
-          sb.append("<");
-        }
-      }
-
-      if (i % 4 != 0) {
-        // Inside of a tag, just copy over the chunk.
-        sb.append(chunk);
-      } else {
-        // Outside of a tag, do real work with this chunk
-        matcher = Regex.AUTO_LINK_USERNAMES_OR_LISTS.matcher(chunk);
-        while (matcher.find()) {
-          String at = matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_AT);
-          String username = matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME);
-          if (usernameIncludeSymbol) {
-            username = at + username;
-            at = "";
-          }
-
-          if (matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST) == null ||
-              matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST).isEmpty()) {
-
-            // Username only
-            if (!Regex.SCREEN_NAME_MATCH_END.matcher(chunk.substring(matcher.end())).find()) {
-              StringBuilder rb = new StringBuilder(capacity);
-              rb.append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE))
-                      .append(at)
-                      .append("<a class=\"").append(urlClass).append(" ").append(usernameClass)
-                      .append("\" href=\"").append(usernameUrlBase)
-                      .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
-                      .append("\"");
-              if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
-              rb.append(">")
-                      .append(username)
-                      .append("</a>");
-              matcher.appendReplacement(sb, rb.toString());
-            } else {
-              // Not a screen name valid for linking
-              matcher.appendReplacement(sb, matcher.group(0));
-            }
-          } else {
-            // Username and list
-            StringBuilder rb = new StringBuilder(capacity);
-            rb.append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_BEFORE))
-                    .append(at)
-                    .append("<a class=\"").append(urlClass).append(" ").append(listClass)
-                    .append("\" href=\"").append(listUrlBase)
-                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_USERNAME))
-                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST))
-                    .append("\"");
-            if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
-            rb.append(">").append(username)
-                    .append(matcher.group(Regex.AUTO_LINK_USERNAME_OR_LISTS_GROUP_LIST))
-                    .append("</a>");
-            matcher.appendReplacement(sb, rb.toString());
-          }
-        }
-
-        matcher.appendTail(sb);
-      }
-      i++;
-    }
-
-    return sb.toString();
+    return autoLinkEntities(text, extractor.extractMentionsOrListsWithIndices(text));
   }
 
   /**
@@ -167,31 +254,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLinkHashtags(String text) {
-    StringBuffer sb = new StringBuffer();
-    Matcher matcher = Regex.AUTO_LINK_HASHTAGS.matcher(text);
-    while (matcher.find()) {
-      String after = text.substring(matcher.end());
-      if (!Regex.HASHTAG_MATCH_END.matcher(after).find()) {
-        StringBuilder replacement = new StringBuilder(text.length() * 2);
-        replacement.append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_BEFORE))
-                .append("<a href=\"").append(hashtagUrlBase)
-                .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("\"")
-                .append(" title=\"#").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG))
-                .append("\" class=\"").append(urlClass).append(" ")
-                .append(hashtagClass).append("\"");
-        if (noFollow) {
-          replacement.append(NO_FOLLOW_HTML_ATTRIBUTE);
-        }
-        replacement.append(">").append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_HASH))
-                .append(matcher.group(Regex.AUTO_LINK_HASHTAGS_GROUP_TAG)).append("</a>");
-        matcher.appendReplacement(sb, replacement.toString());
-      } else {
-        // not a valid hashtag
-        matcher.appendReplacement(sb, "$0");
-      }
-    }
-    matcher.appendTail(sb);
-    return sb.toString();
+    return autoLinkEntities(text, extractor.extractHashtagsWithIndices(text));
   }
 
   /**
@@ -203,51 +266,7 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLinkURLs(String text) {
-    Matcher matcher = Regex.VALID_URL.matcher(text);
-    int capacity = text.length() * 2;
-    StringBuffer sb = new StringBuffer(capacity);
-
-    while (matcher.find()) {
-      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
-      if (protocol != null) {
-        // query string needs to be html escaped
-        String url = matcher.group(Regex.VALID_URL_GROUP_URL);
-        String after = "";
-
-        Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
-        if (tco_matcher.find()) {
-          // In the case of t.co URLs, don't allow additional path characters.
-          after = url.substring(tco_matcher.end());
-          url = tco_matcher.group();
-        } else {
-          String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
-          if (query_string != null) {
-            // Doing a replace isn't safe as the query string might match something else in the URL
-            int us = matcher.start(Regex.VALID_URL_GROUP_URL);
-            int qs = matcher.start(Regex.VALID_URL_GROUP_QUERY_STRING);
-            int qe = matcher.end(Regex.VALID_URL_GROUP_QUERY_STRING);
-            String replacement = StringEscapeUtils.escapeHtml(query_string);
-            url = url.substring(0, qs - us) + replacement + url.substring(qe - us);
-          }
-          if (url.indexOf('$') != -1) {
-            url = url.replace("$", "\\$");
-          }
-        }
-
-        StringBuilder rb = new StringBuilder(capacity);
-        rb.append(matcher.group(Regex.VALID_URL_GROUP_BEFORE))
-                .append("<a href=\"").append(url).append("\"");
-        if (noFollow) rb.append(NO_FOLLOW_HTML_ATTRIBUTE);
-        rb.append(">").append(url).append("</a>").append(after);
-        matcher.appendReplacement(sb, rb.toString());
-        continue;
-      }
-
-      matcher.appendReplacement(sb, matcher.group(Regex.VALID_URL_GROUP_ALL));
-
-    }
-    matcher.appendTail(sb);
-    return sb.toString();
+    return autoLinkEntities(text, extractor.extractURLsWithIndices(text));
   }
 
   /**
@@ -385,34 +404,5 @@ public class Autolink {
    */
   public void setUsernameIncludeSymbol(boolean usernameIncludeSymbol) {
     this.usernameIncludeSymbol = usernameIncludeSymbol;
-  }
-
-  // The default String split is horribly inefficient
-  protected static Iterable<String> split(final String s, final String d) {
-    List<String> strings = new ArrayList<String>();
-    int length = s.length();
-    int current = 0;
-    while (current < length) {
-      int minIndex = Integer.MAX_VALUE;
-      for (char c : d.toCharArray()) {
-        int index = s.indexOf(c, current);
-        if (index != -1 && index < minIndex) {
-          minIndex = index;
-        }
-      }
-      if (minIndex == Integer.MAX_VALUE) {
-        // s doesn't contain any char in d
-        strings.add(s.substring(current));
-        current = length;
-      } else {
-        strings.add(s.substring(current, minIndex));
-        current = minIndex + 1;
-        if (current == length) {
-          // last char in s is in d.
-          strings.add("");
-        }
-      }
-    }
-    return strings;
   }
 }

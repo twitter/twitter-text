@@ -1,7 +1,10 @@
 
 package com.twitter;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.twitter.Extractor.Entity;
 
 import junit.framework.TestCase;
 
@@ -48,11 +51,27 @@ public class AutolinkTest extends TestCase {
     assertAutolink(expected, linker.autoLinkURLs(tweet));
   }
 
+  public void testURLEntities() {
+    Entity entity = new Entity(0, 19, "http://t.co/0JG5Mcq", Entity.Type.URL);
+    entity.setDisplayURL("blog.twitter.com/2011/05/twitte…");
+    entity.setExpandedURL("http://blog.twitter.com/2011/05/twitter-for-mac-update.html");
+    List<Entity> entities = new ArrayList<Entity>();
+    entities.add(entity);
+    String tweet = "http://t.co/0JG5Mcq";
+    String expected = "<a href=\"http://t.co/0JG5Mcq\" rel=\"nofollow\"><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span></span><span style='font-size:0; line-height:0'>http://</span><span class='js-display-url'>blog.twitter.com/2011/05/twitte</span><span style='font-size:0; line-height:0'>r-for-mac-update.html</span><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span>…</span></a>";
+
+    assertAutolink(expected, linker.autoLinkEntities(tweet, entities));
+  }
+
   public void testWithAngleBrackets() {
     linker.setNoFollow(false);
     String tweet = "(Debugging) <3 #idol2011";
     String expected = "(Debugging) &lt;3 <a href=\"https://twitter.com/#!/search?q=%23idol2011\" title=\"#idol2011\" class=\"tweet-url hashtag\">#idol2011</a>";
     assertAutolink(expected, linker.autoLink(tweet));
+
+    tweet = "<link rel='true'>http://example.com</link>";
+    expected = "<link rel='true'><a href=\"http://example.com\">http://example.com</a></link>";
+    assertAutolink(expected, linker.autoLinkURLs(tweet));
   }
 
   public void testUsernameIncludeSymbol() {
@@ -64,19 +83,5 @@ public class AutolinkTest extends TestCase {
 
   protected void assertAutolink(String expected, String linked) {
     assertEquals("Autolinked text should equal the input", expected, linked);
-  }
-
-  public void testSplit() {
-    String text = "Url: <a href=\"http://example.com/$ABC\">http://example.com/$ABC</a>";
-    assertEquals(Arrays.asList(text.split("[<>]", -1)), Autolink.split(text, "<>"));
-
-    text = "";
-    assertFalse(Autolink.split(text, "<>").iterator().hasNext());
-
-    text = "there is no bracket in this text.";
-    assertEquals(Arrays.asList(text.split("[<>]", -1)), Autolink.split(text, "<>"));
-
-    text = "><><><><";
-    assertEquals(Arrays.asList(text.split("[<>]", -1)), Autolink.split(text, "<>"));
   }
 }

@@ -6,37 +6,37 @@ import junit.framework.TestCase;
 
 public class RegexTest extends TestCase {
   public void testAutoLinkHashtags() {
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#hashtag");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Azərbaycanca");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#mûǁae");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Čeština");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Ċaoiṁín");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#Caoiṁín");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#caf\u00E9");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05e2\u05d1\u05e8\u05d9\u05ea"); // "#Hebrew"
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05d0\u05b2\u05e9\u05b6\u05c1\u05e8"); // with marks
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05e2\u05b7\u05dc\u05be\u05d9\u05b0\u05d3\u05b5\u05d9"); // with maqaf 05be
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05d5\u05db\u05d5\u05f3"); // with geresh 05f3
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u05de\u05f4\u05db"); // with gershayim 05f4
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u0627\u0644\u0639\u0631\u0628\u064a\u0629"); // "#Arabic"
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u062d\u0627\u0644\u064a\u0627\u064b"); // with mark
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#\u064a\u0640\ufbb1\u0640\u064e\u0671"); // with pres. form
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#ประเทศไทย");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#ฟรี"); // with mark
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "#日本語ハッシュタグ");
-    assertCaptureCount(3, Regex.AUTO_LINK_HASHTAGS, "＃日本語ハッシュタグ");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#hashtag");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Azərbaycanca");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#mûǁae");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Čeština");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Ċaoiṁín");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#Caoiṁín");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#caf\u00E9");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05e2\u05d1\u05e8\u05d9\u05ea"); // "#Hebrew"
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05d0\u05b2\u05e9\u05b6\u05c1\u05e8"); // with marks
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05e2\u05b7\u05dc\u05be\u05d9\u05b0\u05d3\u05b5\u05d9"); // with maqaf 05be
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05d5\u05db\u05d5\u05f3"); // with geresh 05f3
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05de\u05f4\u05db"); // with gershayim 05f4
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u0627\u0644\u0639\u0631\u0628\u064a\u0629"); // "#Arabic"
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u062d\u0627\u0644\u064a\u0627\u064b"); // with mark
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u064a\u0640\ufbb1\u0640\u064e\u0671"); // with pres. form
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#ประเทศไทย");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#ฟรี"); // with mark
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#日本語ハッシュタグ");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "＃日本語ハッシュタグ");
 
-    assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これはOK #ハッシュタグ").find());
-    assertTrue(Regex.AUTO_LINK_HASHTAGS.matcher("これもOK。#ハッシュタグ").find());
-    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("これはダメ#ハッシュタグ").find());
+    assertTrue(Regex.VALID_HASHTAG.matcher("これはOK #ハッシュタグ").find());
+    assertTrue(Regex.VALID_HASHTAG.matcher("これもOK。#ハッシュタグ").find());
+    assertFalse(Regex.VALID_HASHTAG.matcher("これはダメ#ハッシュタグ").find());
 
-    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("#1").find());
-    assertFalse(Regex.AUTO_LINK_HASHTAGS.matcher("#0").find());
+    assertFalse(Regex.VALID_HASHTAG.matcher("#1").find());
+    assertFalse(Regex.VALID_HASHTAG.matcher("#0").find());
   }
 
   public void testAutoLinkUsernamesOrLists() {
-    assertCaptureCount(4, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username");
-    assertCaptureCount(4, Regex.AUTO_LINK_USERNAMES_OR_LISTS, "@username/list");
+    assertCaptureCount(4, Regex.VALID_MENTION_OR_LIST, "@username");
+    assertCaptureCount(4, Regex.VALID_MENTION_OR_LIST, "@username/list");
   }
 
   public void testValidURL() {
@@ -99,20 +99,20 @@ public class RegexTest extends TestCase {
   }
 
   public void testExtractMentions() {
-    assertCaptureCount(2, Regex.EXTRACT_MENTIONS, "sample @user mention");
+    assertCaptureCount(4, Regex.VALID_MENTION_OR_LIST, "sample @user mention");
   }
 
   public void testInvalidMentions() {
     char[] invalid_chars = new char[]{'!', '@', '#', '$', '%', '&', '*'};
     for (char c : invalid_chars) {
-      assertFalse("Failed to ignore a mention preceded by " + c, Regex.EXTRACT_MENTIONS.matcher("f" + c + "@kn").find());
+      assertFalse("Failed to ignore a mention preceded by " + c, Regex.VALID_MENTION_OR_LIST.matcher("f" + c + "@kn").find());
     }
   }
 
   public void testExtractReply() {
-    assertCaptureCount(1, Regex.EXTRACT_REPLY, "@user reply");
-    assertCaptureCount(1, Regex.EXTRACT_REPLY, " @user reply");
-    assertCaptureCount(1, Regex.EXTRACT_REPLY, "\u3000@user reply");
+    assertCaptureCount(1, Regex.VALID_REPLY, "@user reply");
+    assertCaptureCount(1, Regex.VALID_REPLY, " @user reply");
+    assertCaptureCount(1, Regex.VALID_REPLY, "\u3000@user reply");
   }
 
   private void assertCaptureCount(int expectedCount, Pattern pattern, String sample) {

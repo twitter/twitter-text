@@ -9,29 +9,38 @@ import java.util.regex.*;
  */
 public class Extractor {
   public static class Entity {
+    public enum Type {
+      URL, HASHTAG, MENTION
+    }
     protected int start;
     protected int end;
-    protected String  value = null;
-    protected String  type = null;
+    protected final String value;
+    // listSlug is used to store the list portion of @mention/list.
+    protected final String listSlug;
+    protected final Type type;
 
-    public Entity(Matcher matcher, String valueType, Integer groupNumber) {
+    protected String displayURL = null;
+    protected String expandedURL = null;
+
+    public Entity(int start, int end, String value, String listSlug, Type type) {
+      this.start = start;
+      this.end = end;
+      this.value = value;
+      this.listSlug = listSlug;
+      this.type = type;
+    }
+
+    public Entity(int start, int end, String value, Type type) {
+      this(start, end, value, null, type);
+    }
+
+    public Entity(Matcher matcher, Type type, int groupNumber) {
       // Offset -1 on start index to include @, # symbols for mentions and hashtags
-      this(matcher, valueType, groupNumber, -1);
+      this(matcher, type, groupNumber, -1);
     }
 
-    public Entity(Matcher matcher, String valueType, Integer groupNumber, int startOffset) {
-      this.start = matcher.start(groupNumber) + startOffset; // 0-indexed.
-      this.end = matcher.end(groupNumber);
-      this.value = matcher.group(groupNumber);
-      this.type = valueType;
-    }
-    /** Constructor used from conformance data */
-    public Entity(Map<String, Object> config, String valueType) {
-      this.type = valueType;
-      this.value = (String)config.get(valueType);
-      List<Integer> indices = (List<Integer>)config.get("indices");
-      this.start = indices.get(0);
-      this.end = indices.get(1);
+    public Entity(Matcher matcher, Type type, int groupNumber, int startOffset) {
+      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type);
     }
 
     public boolean equals(Object obj) {
@@ -40,7 +49,6 @@ public class Extractor {
       }
 
       if (!(obj instanceof Entity)) {
-        System.out.println("incorrect type");
         return false;
       }
 
@@ -72,15 +80,70 @@ public class Extractor {
       return value;
     }
 
-    public String getType() {
+    public String getListSlug() {
+      return listSlug;
+    }
+
+    public Type getType() {
       return type;
     }
+
+    public String getDisplayURL() {
+      return displayURL;
+    }
+
+    public void setDisplayURL(String displayURL) {
+      this.displayURL = displayURL;
+    }
+
+    public String getExpandedURL() {
+      return expandedURL;
+    }
+
+    public void setExpandedURL(String expandedURL) {
+      this.expandedURL = expandedURL;
+    }
   }
+
+  protected boolean extractURLWithoutProtocol = true;
 
   /**
    * Create a new extractor.
    */
   public Extractor() {
+  }
+
+  public List<Entity> extractEntitiesWithIndices(String text) {
+    List<Entity> entities = new ArrayList<Entity>();
+    entities.addAll(extractURLsWithIndices(text));
+    entities.addAll(extractHashtagsWithIndices(text));
+    entities.addAll(extractMentionsOrListsWithIndices(text));
+
+    // sort by index
+    Collections.<Entity>sort(entities, new Comparator<Entity>() {
+      public int compare(Entity e1, Entity e2) {
+        return e1.start - e2.start;
+      }
+    });
+
+    // Remove overlapping entities.
+    // Two entities overlap only when one is URL and the other is hashtag/mention
+    // which is a part of the URL. When it happens, we choose URL over hashtag/mention
+    // by selecting the one with smaller start index.
+    if (!entities.isEmpty()) {
+      Iterator<Entity> it = entities.iterator();
+      Entity prev = it.next();
+      while (it.hasNext()) {
+        Entity cur = it.next();
+        if (prev.getEnd() > cur.getStart()) {
+          it.remove();
+        } else {
+          prev = cur;
+        }
+      }
+    }
+
+    return entities;
   }
 
   /**
@@ -90,17 +153,13 @@ public class Extractor {
    * @return List of usernames referenced (without the leading @ sign)
    */
   public List<String> extractMentionedScreennames(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
     List<String> extracted = new ArrayList<String>();
-    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
-    while (matcher.find()) {
-      String after = text.substring(matcher.end());
-      if (! Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
-        extracted.add(matcher.group(Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
-      }
+    for (Entity entity : extractMentionedScreennamesWithIndices(text)) {
+      extracted.add(entity.value);
     }
     return extracted;
   }
@@ -112,21 +171,52 @@ public class Extractor {
    * @return List of usernames referenced (without the leading @ sign)
    */
   public List<Entity> extractMentionedScreennamesWithIndices(String text) {
-    if (text == null) {
-      return null;
-    }
-
     List<Entity> extracted = new ArrayList<Entity>();
-    Matcher matcher = Regex.EXTRACT_MENTIONS.matcher(text);
-    while (matcher.find()) {
-      String after = text.substring(matcher.end());
-      if (! Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
-        extracted.add(new Entity(matcher, "mention", Regex.EXTRACT_MENTIONS_GROUP_USERNAME));
+    for (Entity entity : extractMentionsOrListsWithIndices(text)) {
+      if (entity.listSlug == null) {
+        extracted.add(entity);
       }
     }
     return extracted;
   }
 
+  public List<Entity> extractMentionsOrListsWithIndices(String text) {
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    // Performance optimization.
+    // If text doesn't contain @/＠ at all, the text doesn't
+    // contain @mention. So we can simply return an empty list.
+    boolean found = false;
+    for (char c : text.toCharArray()) {
+      if (c == '@' || c == '＠') {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      return Collections.emptyList();
+    }
+
+    List<Entity> extracted = new ArrayList<Entity>();
+    Matcher matcher = Regex.VALID_MENTION_OR_LIST.matcher(text);
+    while (matcher.find()) {
+      String after = text.substring(matcher.end());
+      if (! Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
+        if (matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST) == null) {
+          extracted.add(new Entity(matcher, Entity.Type.MENTION, Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME));
+        } else {
+          extracted.add(new Entity(matcher.start(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME) - 1,
+              matcher.end(Regex.VALID_MENTION_OR_LIST_GROUP_LIST),
+              matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME),
+              matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST),
+              Entity.Type.MENTION));
+        }
+      }
+    }
+    return extracted;
+  }
 
   /**
    * Extract a @username reference from the beginning of Tweet text. A reply is an occurance of @username at the
@@ -140,13 +230,13 @@ public class Extractor {
       return null;
     }
 
-    Matcher matcher = Regex.EXTRACT_REPLY.matcher(text);
+    Matcher matcher = Regex.VALID_REPLY.matcher(text);
     if (matcher.find()) {
       String after = text.substring(matcher.end());
-      if (Regex.SCREEN_NAME_MATCH_END.matcher(after).find()) {
+      if (Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
         return null;
       } else {
-        return matcher.group(Regex.EXTRACT_REPLY_GROUP_USERNAME);
+        return matcher.group(Regex.VALID_REPLY_GROUP_USERNAME);
       }
     } else {
       return null;
@@ -160,23 +250,14 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<String> extractURLs(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
     List<String> urls = new ArrayList<String>();
-
-    Matcher matcher = Regex.VALID_URL.matcher(text);
-    while (matcher.find()) {
-      String url = matcher.group(Regex.VALID_URL_GROUP_URL);
-      Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
-      if (tco_matcher.find()) {
-        // In the case of t.co URLs, don't allow additional path characters.
-        url = tco_matcher.group();
-      }
-      urls.add(url);
+    for (Entity entity : extractURLsWithIndices(text)) {
+      urls.add(entity.value);
     }
-
     return urls;
   }
 
@@ -187,24 +268,38 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<Entity> extractURLsWithIndices(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()
+        || (extractURLWithoutProtocol ? text.indexOf('.') : text.indexOf(':')) == -1) {
+      // Performance optimization.
+      // If text doesn't contain '.' or ':' at all, text doesn't contain URL,
+      // so we can simply return an empty list.
+      return Collections.emptyList();
     }
 
     List<Entity> urls = new ArrayList<Entity>();
 
     Matcher matcher = Regex.VALID_URL.matcher(text);
     while (matcher.find()) {
-      Entity entity = new Entity(matcher, "url", Regex.VALID_URL_GROUP_URL, 0);
+      if (matcher.group(Regex.VALID_URL_GROUP_PROTOCOL) == null) {
+        // skip if protocol is not present and 'extractURLWithoutProtocol' is false
+        // or URL is preceded by invalid character.
+        if (!extractURLWithoutProtocol
+            || Regex.INVALID_URL_WITHOUT_PROTOCOL_MATCH_BEGIN
+                    .matcher(matcher.group(Regex.VALID_URL_GROUP_BEFORE)).matches()) {
+          continue;
+        }
+      }
       String url = matcher.group(Regex.VALID_URL_GROUP_URL);
+      int start = matcher.start(Regex.VALID_URL_GROUP_URL);
+      int end = matcher.end(Regex.VALID_URL_GROUP_URL);
       Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
       if (tco_matcher.find()) {
         // In the case of t.co URLs, don't allow additional path characters.
-        entity.value = tco_matcher.group();
-        entity.end = entity.start + entity.value.length();
+        url = tco_matcher.group();
+        end = start + url.length();
       }
 
-      urls.add(entity);
+      urls.add(new Entity(start, end, url, Entity.Type.URL));
     }
 
     return urls;
@@ -218,11 +313,16 @@ public class Extractor {
    * @return List of hashtags referenced (without the leading # sign)
    */
   public List<String> extractHashtags(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
-    return extractList(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG);
+    List<String> extracted = new ArrayList<String>();
+    for (Entity entity : extractHashtagsWithIndices(text)) {
+      extracted.add(entity.value);
+    }
+
+    return extracted;
   }
 
   /**
@@ -232,42 +332,42 @@ public class Extractor {
    * @return List of hashtags referenced (without the leading # sign)
    */
   public List<Entity> extractHashtagsWithIndices(String text) {
-    if (text == null) {
-      return null;
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
     }
 
-    return extractListWithIndices(Regex.AUTO_LINK_HASHTAGS, text, Regex.AUTO_LINK_HASHTAGS_GROUP_TAG, "hashtag");
-  }
+    // Performance optimization.
+    // If text doesn't contain #/＃ at all, text doesn't contain
+    // hashtag, so we can simply return an empty list.
+    boolean found = false;
+    for (char c : text.toCharArray()) {
+      if (c == '#' || c == '＃') {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      return Collections.emptyList();
+    }
 
-  /**
-   * Helper method for extracting multiple matches from Tweet text.
-   *
-   * @param pattern to match and use for extraction
-   * @param text of the Tweet to extract from
-   * @param groupNumber the capturing group of the pattern that should be added to the list.
-   * @return list of extracted values, or an empty list if there were none.
-   */
-  private List<String> extractList(Pattern pattern, String text, int groupNumber) {
-    List<String> extracted = new ArrayList<String>();
-    Matcher matcher = pattern.matcher(text);
+    List<Entity> extracted = new ArrayList<Entity>();
+    Matcher matcher = Regex.VALID_HASHTAG.matcher(text);
+
     while (matcher.find()) {
       String after = text.substring(matcher.end());
-      if (!Regex.HASHTAG_MATCH_END.matcher(after).find()) {
-        extracted.add(matcher.group(groupNumber));
+      if (!Regex.INVALID_HASHTAG_MATCH_END.matcher(after).find()) {
+        extracted.add(new Entity(matcher, Entity.Type.HASHTAG, Regex.VALID_HASHTAG_GROUP_TAG));
       }
     }
     return extracted;
   }
 
-  // TODO: Make this a real object, not a Map
-  private List<Entity> extractListWithIndices(Pattern pattern, String text, int groupNumber, String valueType) {
-    List<Entity> extracted = new ArrayList<Entity>();
-    Matcher matcher = pattern.matcher(text);
+  public void setExtractURLWithoutProtocol(boolean extractURLWithoutProtocol) {
+    this.extractURLWithoutProtocol = extractURLWithoutProtocol;
+  }
 
-    while (matcher.find()) {
-      extracted.add(new Entity(matcher, valueType, groupNumber));
-    }
-    return extracted;
+  public boolean isExtractURLWithoutProtocol() {
+    return extractURLWithoutProtocol;
   }
 
   /*
