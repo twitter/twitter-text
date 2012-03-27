@@ -682,12 +682,16 @@ tests:
       expected: ["日本語ハッシュタグ"]
 
     - description: "Hashtag with ideographic iteration mark"
-      text: "#云々 #学問のすゝめ #いすゞ #各〻"
-      expected: ["云々", "学問のすゝめ", "いすゞ", "各〻"]
+      text: "#云々 #学問のすゝめ #いすゞ #各〻 #〃"
+      expected: ["云々", "学問のすゝめ", "いすゞ", "各〻", "〃"]
 
     - description: "Hashtags with ş (U+015F)"
       text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
       expected: ["Ateş", "qrşt", "ştu", "ş"]
+
+    - description: "Hashtags with İ (U+0130) and ı (U+0131)"
+      text: "Here’s a test tweet for you: #İn #ın"
+      expected: ["İn", "ın"]
 
     - description: "Hashtag before punctuations"
       text: "#hashtag: #hashtag; #hashtag, #hashtag. #hashtag! #hashtag?"
