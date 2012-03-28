@@ -469,11 +469,11 @@ describe Twitter::Rewriter do
     end
 
     context "with a URL preceded in forbidden characters" do
-      it "should not be rewritten" do
+      it "should be rewritten" do
         %w| \ ' / ! = |.each do |char|
           Twitter::Rewriter.rewrite_urls("#{char}#{url}") do |url|
             "[rewritten]" # should not be called here.
-          end.should == "#{char}#{url}"
+          end.should == "#{char}[rewritten]"
         end
       end
     end

@@ -52,7 +52,7 @@ module Twitter
       extracted.size == 1 && extracted.first == username[1..-1]
     end
 
-    VALID_LIST_RE = /\A#{Twitter::Regex[:auto_link_usernames_or_lists]}\z/o
+    VALID_LIST_RE = /\A#{Twitter::Regex[:valid_mention_or_list]}\z/o
     def valid_list?(username_list)
       match = username_list.match(VALID_LIST_RE)
       # Must have matched and had nothing before or after

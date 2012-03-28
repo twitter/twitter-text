@@ -309,7 +309,7 @@ describe Twitter::Autolink do
         end
 
         it "should be linked" do
-          @autolinked_text.should == "<a href=\"https://twitter.com/#!/search?q=%23éhashtag\" title=\"#éhashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#éhashtag</a>"
+          @autolinked_text.should == "<a class=\"tweet-url hashtag\" href=\"https://twitter.com/#!/search?q=%23éhashtag\" rel=\"nofollow\" title=\"#éhashtag\">#éhashtag</a>"
         end
       end
 
@@ -424,10 +424,10 @@ describe Twitter::Autolink do
       end
 
       context "with a URL preceded in forbidden characters" do
-        it "should not be linked" do
+        it "should be linked" do
           matcher = TestAutolink.new
           %w| \ ' / ! = |.each do |char|
-            matcher.auto_link("#{char}#{url}").should_not have_autolinked_url(url)
+            matcher.auto_link("#{char}#{url}").should have_autolinked_url(url)
           end
         end
       end
@@ -541,6 +541,12 @@ describe Twitter::Autolink do
         auto_linked.should_not include('hashtag_classname')
       end
 
+      it "should autolink url/hashtag/mention in text with Unicode supplementary characters" do
+        auto_linked = @linker.auto_link("#{[0x10400].pack('U')} #hashtag #{[0x10400].pack('U')} @mention #{[0x10400].pack('U')} http://twitter.com/")
+        auto_linked.should have_autolinked_hashtag('#hashtag')
+        auto_linked.should link_to_screen_name('mention')
+        auto_linked.should have_autolinked_url('http://twitter.com/')
+      end
     end
 
   end
@@ -563,8 +569,8 @@ describe Twitter::Autolink do
       html.inner_text.should == " http://blog.twitter.com/2011/05/twitter-for-mac-update.html …"
     end
 
-    it "should apply :url_class as a CSS class" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :url_class => 'myclass')
+    it "should apply :class as a CSS class" do
+      linked = TestAutolink.new.auto_link("http://example.com/", :class => 'myclass')
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/myclass/)
     end

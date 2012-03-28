@@ -23,7 +23,7 @@ end
 
 RSpec::Matchers.define :match_autolink_expression do
   match do |string|
-    Twitter::Regex[:valid_url].match(string)
+    !Twitter::Extractor.extract_urls(string).empty?
   end
 end
 

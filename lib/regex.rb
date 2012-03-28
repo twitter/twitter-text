@@ -1,4 +1,5 @@
-# encoding: utf-8
+# encoding: UTF-8
+
 module Twitter
   # A collection of regular expressions for parsing Tweet text. The regular expression
   # list is frozen at load time to ensure immutability. These reular expressions are
@@ -154,23 +155,25 @@ module Twitter
 
     HASHTAG = /(#{HASHTAG_BOUNDARY})(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
 
-    REGEXEN[:auto_link_hashtags] = /#{HASHTAG}/io
-    # Used in Extractor and Rewriter for final filtering
+    REGEXEN[:valid_hashtag] = /#{HASHTAG}/io
+    # Used in Extractor for final filtering
     REGEXEN[:end_hashtag_match] = /\A(?:[#＃]|:\/\/)/o
 
+    REGEXEN[:valid_mention_preceding_chars] = /(?:[^a-zA-Z0-9_!#\$%&*@＠]|^|RT:?)/o
     REGEXEN[:at_signs] = /[@＠]/
-    REGEXEN[:extract_mentions] = /(^|[^a-zA-Z0-9_!#\$%&*@＠])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
-    REGEXEN[:extract_mentions_or_lists] = /(^|[^a-zA-Z0-9_!#\$%&*@＠])#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
-    REGEXEN[:extract_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
-    # Used in Extractor and Rewriter for final filtering
-    REGEXEN[:end_screen_name_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
-
-    REGEXEN[:auto_link_usernames_or_lists] = /([^a-zA-Z0-9_!#\$%&*@＠]|^|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/o
-    REGEXEN[:auto_link_emoticon] = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/
+    REGEXEN[:valid_mention_or_list] = /
+      (#{REGEXEN[:valid_mention_preceding_chars]})  # $1: Preceeding character
+      (#{REGEXEN[:at_signs]})                       # $2: At mark
+      ([a-zA-Z0-9_]{1,20})                          # $3: Screen name
+      (\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?             # $4: List (optional)
+    /ox
+    REGEXEN[:valid_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
+    # Used in Extractor for final filtering
+    REGEXEN[:end_mention_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
 
     # URL related hash regex collection
-    REGEXEN[:valid_preceding_chars] = /(?:[^-\/"'!=A-Z0-9_@＠\$#＃\.#{INVALID_CHARACTERS.join('')}]|^)/io
-
+    REGEXEN[:valid_url_preceding_chars] = /(?:[^A-Z0-9@＠$#＃#{INVALID_CHARACTERS.join('')}]|^)/io
+    REGEXEN[:invalid_url_without_protocol_preceding_chars] = /[-_.\/]$/
     DOMAIN_VALID_CHARS = "[^#{PUNCTUATION_CHARS}#{SPACE_CHARS}#{CTRL_CHARS}#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
     REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
     REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
@@ -229,7 +232,7 @@ module Twitter
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/]/i
     REGEXEN[:valid_url] = %r{
       (                                                                                     #   $1 total match
-        (#{REGEXEN[:valid_preceding_chars]})                                                #   $2 Preceeding chracter
+        (#{REGEXEN[:valid_url_preceding_chars]})                                            #   $2 Preceeding chracter
         (                                                                                   #   $3 URL
           (https?:\/\/)?                                                                    #   $4 Protocol (optional)
           (#{REGEXEN[:valid_domain]})                                                       #   $5 Domain(s)

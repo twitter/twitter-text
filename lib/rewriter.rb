@@ -1,65 +1,56 @@
 module Twitter
   # A module provides base methods to rewrite usernames, lists, hashtags and URLs.
   module Rewriter extend self
+    def rewrite_entities(text, entities)
+      chars = text.to_s.to_char_a
+
+      result = []
+      last_index = entities.inject(0) do |last_index, entity|
+        result << chars[last_index...entity[:indices].first]
+        result << yield(entity, chars)
+        entity[:indices].last
+      end
+      result << chars[last_index..-1]
+
+      result.flatten.join
+    end
+
+    # These methods are deprecated, will be removed in future.
+    extend Deprecation
+
     def rewrite(text, options = {})
       [:hashtags, :urls, :usernames_or_lists].inject(text) do |key|
-        send("rewrite_#{key}", text, &options[key]) if options[key]
+        options[key] ? send(:"rewrite_#{key}", text, &options[key]) : text
       end
     end
+    deprecate :rewrite, :rewrite_entities
 
     def rewrite_usernames_or_lists(text)
-      new_text = ""
-
-      # this -1 flag allows strings ending in ">" to work
-      text.to_s.split(/[<>]/, -1).each_with_index do |chunk, index|
-        if index != 0
-          new_text << ((index % 2 == 0) ? ">" : "<")
-        end
-
-        if index % 4 != 0
-          new_text << chunk
-        else
-          new_text << chunk.gsub(Twitter::Regex[:auto_link_usernames_or_lists]) do
-            before, at, user, slash_listname, after = $1, $2, $3, $4, $'
-            if slash_listname
-              # the link is a list
-              "#{before}#{yield(at, user, slash_listname)}"
-            else
-              if after =~ Twitter::Regex[:end_screen_name_match]
-                # Followed by something that means we don't autolink
-                "#{before}#{at}#{user}#{slash_listname}"
-              else
-                # this is a screen name
-                "#{before}#{yield(at, user, nil)}#{slash_listname}"
-              end
-            end
-          end
-        end
+      entities = Extractor.extract_mentions_or_lists_with_indices(text)
+      rewrite_entities(text, entities) do |entity, chars|
+        at = chars[entity[:indices].first]
+        list_slug = entity[:list_slug]
+        list_slug = nil if list_slug.empty?
+        yield(at, entity[:screen_name], list_slug)
       end
-
-      new_text
     end
+    deprecate :rewrite_usernames_or_lists, :rewrite_entities
 
     def rewrite_hashtags(text)
-      text.to_s.gsub(Twitter::Regex[:auto_link_hashtags]) do
-        before, hash, hashtag, after = $1, $2, $3, $'
-        if after =~ Twitter::Regex[:end_hashtag_match]
-          "#{before}#{hash}#{hashtag}"
-        else
-          "#{before}#{yield(hash, hashtag)}"
-        end
+      entities = Extractor.extract_hashtags_with_indices(text)
+      rewrite_entities(text, entities) do |entity, chars|
+        hash = chars[entity[:indices].first]
+        yield(hash, entity[:hashtag])
       end
     end
+    deprecate :rewrite_hashtags, :rewrite_entities
 
     def rewrite_urls(text)
-      text.to_s.gsub(Twitter::Regex[:valid_url]) do
-        all, before, url, protocol, domain, path, query_string = $1, $2, $3, $4, $5, $6, $7
-        if protocol && !protocol.empty?
-          "#{before}#{yield(url)}"
-        else
-          all
-        end
+      entities = Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false)
+      rewrite_entities(text, entities) do |entity, chars|
+        yield(entity[:url])
       end
     end
+    deprecate :rewrite_urls, :rewrite_entities
   end
 end
