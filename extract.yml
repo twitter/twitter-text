@@ -713,6 +713,10 @@ tests:
       text: "#http://twitter.com #https://twitter.com"
       expected: []
 
+    - description: "DO NOT extract hashtag if it's a part of URL"
+      text: "http://twitter.com/#hashtag twitter.com/#hashtag"
+      expected: []
+
     - description: "Extract hashtags with Latin extended characters"
       text: "#Azərbaycanca #mûǁae #Čeština #Ċaoiṁín"
       expected: ["Azərbaycanca", "mûǁae", "Čeština", "Ċaoiṁín"]
