@@ -688,6 +688,10 @@ tests:
       text: "#https://twitter.com @https://twitter.com"
       expected: "#https://twitter.com @https://twitter.com"
 
+    - description: "Autolink url with a hashtag-looking fragment"
+      text: "http://www.example.com/#answer"
+      expected: "<a href=\"http://www.example.com/#answer\">http://www.example.com/#answer</a>"
+
     - description: "Autolink hashtag if followed by . and TLD"
       text: "#twitter.com #twitter.co.jp"
       expected: "<a href=\"https://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.com <a href=\"https://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.co.jp"
