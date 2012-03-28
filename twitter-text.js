@@ -818,14 +818,17 @@ if (typeof twttr === "undefined" || twttr === null) {
 
     if (options.checkUrlOverlap) {
       // also extract URL entities
-      var entities = tags.concat(twttr.txt.extractUrlsWithIndices(text));
-      // remove overlap
-      twttr.txt.removeOverlappingEntities(entities);
-      // only push back hashtags
-      tags = [];
-      for (var i = 0; i < entities.length; i++) {
-        if (entities[i].hashtag) {
-          tags.push(entities[i]);
+      var urls = twttr.txt.extractUrlsWithIndices(text);
+      if (urls.length > 0) {
+        var entities = tags.concat(urls);
+        // remove overlap
+        twttr.txt.removeOverlappingEntities(entities);
+        // only push back hashtags
+        tags = [];
+        for (var i = 0; i < entities.length; i++) {
+          if (entities[i].hashtag) {
+            tags.push(entities[i]);
+          }
         }
       }
     }
