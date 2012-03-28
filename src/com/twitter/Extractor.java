@@ -381,15 +381,18 @@ public class Extractor {
 
     if (checkUrlOverlap) {
       // extract URLs
-      extracted.addAll(extractURLsWithIndices(text));
-      // remove overlap
-      removeOverlappingEntities(extracted);
-      // remove URL entities
-      Iterator<Entity> it = extracted.iterator();
-      while (it.hasNext()) {
-        Entity entity = it.next();
-        if (entity.getType() != Entity.Type.HASHTAG) {
-          it.remove();
+      List<Entity> urls = extractURLsWithIndices(text);
+      if (!urls.isEmpty()) {
+        extracted.addAll(urls);
+        // remove overlap
+        removeOverlappingEntities(extracted);
+        // remove URL entities
+        Iterator<Entity> it = extracted.iterator();
+        while (it.hasNext()) {
+          Entity entity = it.next();
+          if (entity.getType() != Entity.Type.HASHTAG) {
+            it.remove();
+          }
         }
       }
     }
