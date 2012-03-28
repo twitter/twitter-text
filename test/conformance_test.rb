@@ -112,7 +112,7 @@ class ConformanceTest < Test::Unit::TestCase
   end
 
   def_conformance_test("autolink.yml", :urls) do
-    assert_equal_without_attribute_order expected, auto_link_urls_custom(text, :suppress_no_follow => true), description
+    assert_equal_without_attribute_order expected, auto_link_urls(text, :suppress_no_follow => true), description
   end
 
   def_conformance_test("autolink.yml", :hashtags) do
