@@ -13,9 +13,13 @@ tests:
       text: "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn. -- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
       expected: true
 
-    - description: "Valid Tweet: 140 characters (double byte chracters)"
+    - description: "Valid Tweet: 140 characters (double byte characters)"
       text: "のののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののの"
       expected: true
+
+    - description: "Invalid Tweet: no characters (empty)"
+      text: ""
+      expected: false
 
     - description: "Invalid Tweet: 141 characters"
       text: "A lie gets halfway around the world before the truth has a chance to get its pants on. --- Winston Churchill (1874-1965) http://bit.ly/dJpywL"

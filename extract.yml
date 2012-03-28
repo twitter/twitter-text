@@ -1,4 +1,3 @@
-
 tests:
   mentions:
     - description: "Extract mention at the begining of a tweet"
@@ -52,6 +51,34 @@ tests:
     - description: "Extract mentions after 'RT'"
       text: "RT@username RT:@mention RT @test"
       expected: ["username", "mention", "test"]
+
+    - description: "DO NOT extract username preceded by !"
+      text: "f!@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by @"
+      text: "f@@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by #"
+      text: "f#@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by $"
+      text: "f$@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by %"
+      text: "f%@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by &"
+      text: "f&@kn"
+      expected: []
+
+    - description: "DO NOT extract username preceded by *"
+      text: "f*@kn"
+      expected: []
 
   mentions_with_indices:
     - description: "Extract a mention at the start"
@@ -442,6 +469,14 @@ tests:
       text: "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nt.co\nt.co/abcde"
       expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co/abcde"]
 
+    - description: "DO NOT extract URL if preceded by $"
+      text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
+      expected: []
+
+    - description: "DO NOT extract .bz2 file name as URL"
+      text: "long.test.tar.bz2 test.tar.bz2 tar.bz2"
+      expected: []
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
@@ -512,6 +547,14 @@ tests:
           indices: [113, 133]
         - url: "http://t.co/FNkPfmii"
           indices: [136, 156]
+
+    - description: "Extract correct indices for duplicate instances of the same URL"
+      text: "http://t.co http://t.co"
+      expected:
+        - url: "http://t.co"
+          indices: [0, 11]
+        - url: "http://t.co"
+          indices: [12, 23]
 
   hashtags:
     - description: "Extract an all-alpha hashtag"
@@ -643,12 +686,16 @@ tests:
       expected: ["日本語ハッシュタグ"]
 
     - description: "Hashtag with ideographic iteration mark"
-      text: "#云々 #学問のすゝめ #いすゞ #各〻"
-      expected: ["云々", "学問のすゝめ", "いすゞ", "各〻"]
+      text: "#云々 #学問のすゝめ #いすゞ #各〻 #〃"
+      expected: ["云々", "学問のすゝめ", "いすゞ", "各〻", "〃"]
 
     - description: "Hashtags with ş (U+015F)"
       text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"
       expected: ["Ateş", "qrşt", "ştu", "ş"]
+
+    - description: "Hashtags with İ (U+0130) and ı (U+0131)"
+      text: "Here’s a test tweet for you: #İn #ın"
+      expected: ["İn", "ın"]
 
     - description: "Hashtag before punctuations"
       text: "#hashtag: #hashtag; #hashtag, #hashtag. #hashtag! #hashtag?"
@@ -665,6 +712,30 @@ tests:
     - description: "DO NOT extract hashtag when # is followed by URL"
       text: "#http://twitter.com #https://twitter.com"
       expected: []
+
+    - description: "Extract hashtags with Latin extended characters"
+      text: "#Azərbaycanca #mûǁae #Čeština #Ċaoiṁín"
+      expected: ["Azərbaycanca", "mûǁae", "Čeština", "Ċaoiṁín"]
+
+    - description: "Extract Arabic hashtags"
+      text: "#سیاست #ایران #السياسة #السياح #لغات  #اتمی  #کنفرانس #العربية #الجزيرة #فارسی"
+      expected: ["سیاست", "ایران", "السياسة", "السياح", "لغات", "اتمی", "کنفرانس", "العربية", "الجزيرة", "فارسی"]
+
+    - description: "Extract Arabic hashtags with underscore"
+      text: "#برنامه_نویسی  #رییس_جمهور  #رئيس_الوزراء, #ثبت_نام. #لس_آنجلس"
+      expected: ["برنامه_نویسی", "رییس_جمهور", "رئيس_الوزراء", "ثبت_نام", "لس_آنجلس"]
+
+    - description: "Extract Hebrew hashtags"
+      text: "#עַל־יְדֵי #וכו׳ #מ״כ"
+      expected: ["עַל־יְדֵי", "וכו׳", "מ״כ"]
+
+    - description: "Extract Thai hashtags"
+      text: "#ผู้เริ่ม #การเมือง #รายละเอียด #นักท่องเที่ยว #ของขวัญ #สนามบิน #เดินทาง #ประธาน"
+      expected: ["ผู้เริ่ม", "การเมือง", "รายละเอียด", "นักท่องเที่ยว", "ของขวัญ", "สนามบิน", "เดินทาง", "ประธาน"]
+
+    - description: "Extract Arabic hashtags with Zero-Width Non-Joiner"
+      text: "#أي‌بي‌إم #می‌خواهم"
+      expected: ["أي‌بي‌إم", "می‌خواهم"]
 
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
