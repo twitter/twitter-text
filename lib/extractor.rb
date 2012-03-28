@@ -274,11 +274,14 @@ module Twitter
 
       if options[:check_url_overlap]
         # extract URLs
-        tags = tags + extract_urls_with_indices(text);
-        # remove duplicates
-        tags = remove_overlapping_entities(tags)
-        # remove URL entities
-        tags.reject!{|entity| !entity[:hashtag] }
+        urls = extract_urls_with_indices(text)
+        unless urls.empty?
+          tags.concat(urls)
+          # remove duplicates
+          tags = remove_overlapping_entities(tags)
+          # remove URL entities
+          tags.reject!{|entity| !entity[:hashtag] }
+        end
       end
 
       tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last} if block_given?
