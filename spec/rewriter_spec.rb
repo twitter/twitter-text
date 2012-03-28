@@ -240,15 +240,6 @@ describe Twitter::Rewriter do
       end
     end
 
-    context "with a page anchor in a url" do
-      def original_text; "Here's my url: http://foobar.com/#home"; end
-
-      it "should not link the hashtag" do
-        @block_args.should be_nil
-        @rewritten_text.should == "Here's my url: http://foobar.com/#home"
-      end
-    end
-
     context "with a hashtag that starts with a number but has word characters" do
       def original_text; "#2ab"; end
 
