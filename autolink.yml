@@ -154,6 +154,18 @@ tests:
       text: "text #hashtag!"
       expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>!"
 
+    - description: "Autolink two hashtags separated by a slash"
+      text: "text #dodge/#answer"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23dodge\" title=\"#dodge\" class=\"tweet-url hashtag\">#dodge</a>/<a href=\"https://twitter.com/#!/search?q=%23answer\" title=\"#answer\" class=\"tweet-url hashtag\">#answer</a>"
+
+    - description: "Autolink hashtag before a slash"
+      text: "text #dodge/answer"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23dodge\" title=\"#dodge\" class=\"tweet-url hashtag\">#dodge</a>/answer"
+
+    - description: "Autolink hashtag after a slash"
+      text: "text dodge/#answer"
+      expected: "text dodge/<a href=\"https://twitter.com/#!/search?q=%23answer\" title=\"#answer\" class=\"tweet-url hashtag\">#answer</a>"
+
     - description: "Autolink hashtag followed by Japanese"
       text: "text #hashtagの"
       expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtagの\" title=\"#hashtagの\" class=\"tweet-url hashtag\">#hashtagの</a>"
@@ -563,6 +575,10 @@ tests:
       text: "http://www.flickr.com/photos/29674651@N00/foobar"
       expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/foobar\">http://www.flickr.com/photos/29674651@N00/foobar</a>"
 
+    - description: "Autolink url with a hashtag-looking fragment"
+      text: "http://www.example.com/#answer"
+      expected: "<a href=\"http://www.example.com/#answer\">http://www.example.com/#answer</a>"
+
     - description: "Autolink URL with only a domain followed by a period doesn't swallow the period."
       text: "I think it's proper to end sentences with a period http://tell.me.com. Even when they contain a URL."
       expected: "I think it's proper to end sentences with a period <a href=\"http://tell.me.com\">http://tell.me.com</a>. Even when they contain a URL."
@@ -671,6 +687,10 @@ tests:
     - description: "DO NOT autolink URLs if preceded by # or @"
       text: "#https://twitter.com @https://twitter.com"
       expected: "#https://twitter.com @https://twitter.com"
+
+    - description: "Autolink url with a hashtag-looking fragment"
+      text: "http://www.example.com/#answer"
+      expected: "<a href=\"http://www.example.com/#answer\">http://www.example.com/#answer</a>"
 
     - description: "Autolink hashtag if followed by . and TLD"
       text: "#twitter.com #twitter.co.jp"
