@@ -48,6 +48,10 @@ tests:
       text: "@username\n@mention"
       expected: ["username", "mention"]
 
+    - description: "Extract mentions after 'RT'"
+      text: "RT@username RT:@mention RT @test"
+      expected: ["username", "mention", "test"]
+
     - description: "DO NOT extract username preceded by !"
       text: "f!@kn"
       expected: []
