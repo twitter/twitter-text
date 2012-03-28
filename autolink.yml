@@ -491,17 +491,21 @@ tests:
       text: "text http://example.com'"
       expected: "text <a href=\"http://example.com\">http://example.com</a>'"
 
-    - description: "DO NOT Autolink url preceded by /"
+    - description: "Autolink url preceded by /"
       text: "text /http://example.com"
-      expected: "text /http://example.com"
+      expected: "text /<a href=\"http://example.com\">http://example.com</a>"
 
-    - description: "DO NOT Autolink url preceded by !"
+    - description: "Autolink url preceded by !"
       text: "text !http://example.com"
-      expected: "text !http://example.com"
+      expected: "text !<a href=\"http://example.com\">http://example.com</a>"
 
     - description: "DO NOT Autolink url preceded by ="
       text: "text =http://example.com"
-      expected: "text =http://example.com"
+      expected: "text =<a href=\"http://example.com\">http://example.com</a>"
+
+    - description: "Autolink url surrounded by double quotes"
+      text: "text \"http://example.com\""
+      expected: "text \"<a href=\"http://example.com\">http://example.com</a>\""
 
     - description: "DO NOT Autolink url preceded by @"
       text: "@http://example.com"
