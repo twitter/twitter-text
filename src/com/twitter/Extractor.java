@@ -113,12 +113,7 @@ public class Extractor {
   public Extractor() {
   }
 
-  public List<Entity> extractEntitiesWithIndices(String text) {
-    List<Entity> entities = new ArrayList<Entity>();
-    entities.addAll(extractURLsWithIndices(text));
-    entities.addAll(extractHashtagsWithIndices(text));
-    entities.addAll(extractMentionsOrListsWithIndices(text));
-
+  private void removeOverlappingEntities(List<Entity> entities) {
     // sort by index
     Collections.<Entity>sort(entities, new Comparator<Entity>() {
       public int compare(Entity e1, Entity e2) {
@@ -142,7 +137,20 @@ public class Extractor {
         }
       }
     }
+  }
 
+  /**
+   * Extract URLs, @mentions, lists and #hashtag from a given text/tweet.
+   * @param text text of tweet
+   * @return list of extracted entities
+   */
+  public List<Entity> extractEntitiesWithIndices(String text) {
+    List<Entity> entities = new ArrayList<Entity>();
+    entities.addAll(extractURLsWithIndices(text));
+    entities.addAll(extractHashtagsWithIndices(text, false));
+    entities.addAll(extractMentionsOrListsWithIndices(text));
+
+    removeOverlappingEntities(entities);
     return entities;
   }
 
@@ -332,6 +340,17 @@ public class Extractor {
    * @return List of hashtags referenced (without the leading # sign)
    */
   public List<Entity> extractHashtagsWithIndices(String text) {
+    return extractHashtagsWithIndices(text, true);
+  }
+
+  /**
+   * Extract #hashtag references from Tweet text.
+   *
+   * @param text of the tweet from which to extract hashtags
+   * @param checkUrlOverlap if true, check if extracted hashtags overlap URLs and remove overlapping ones
+   * @return List of hashtags referenced (without the leading # sign)
+   */
+  private List<Entity> extractHashtagsWithIndices(String text, boolean checkUrlOverlap) {
     if (text == null || text.isEmpty()) {
       return Collections.emptyList();
     }
@@ -359,6 +378,25 @@ public class Extractor {
         extracted.add(new Entity(matcher, Entity.Type.HASHTAG, Regex.VALID_HASHTAG_GROUP_TAG));
       }
     }
+
+    if (checkUrlOverlap) {
+      // extract URLs
+      List<Entity> urls = extractURLsWithIndices(text);
+      if (!urls.isEmpty()) {
+        extracted.addAll(urls);
+        // remove overlap
+        removeOverlappingEntities(extracted);
+        // remove URL entities
+        Iterator<Entity> it = extracted.iterator();
+        while (it.hasNext()) {
+          Entity entity = it.next();
+          if (entity.getType() != Entity.Type.HASHTAG) {
+            it.remove();
+          }
+        }
+      }
+    }
+
     return extracted;
   }
 
