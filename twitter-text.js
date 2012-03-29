@@ -602,15 +602,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return twttr.txt.autoLinkEntities(text, entities, options);
   };
 
-  twttr.txt.extractEntitiesWithIndices = function(text, options) {
-    var entities = twttr.txt.extractUrlsWithIndices(text, options)
-                    .concat(twttr.txt.extractMentionsOrListsWithIndices(text))
-                    .concat(twttr.txt.extractHashtagsWithIndices(text));
-
-    if (entities.length == 0) {
-      return [];
-    }
-
+  twttr.txt.removeOverlappingEntities = function(entities) {
     entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
 
     var prev = entities[0];
@@ -622,7 +614,18 @@ if (typeof twttr === "undefined" || twttr === null) {
         prev = entities[i];
       }
     }
+  };
 
+  twttr.txt.extractEntitiesWithIndices = function(text, options) {
+    var entities = twttr.txt.extractUrlsWithIndices(text, options)
+                    .concat(twttr.txt.extractMentionsOrListsWithIndices(text))
+                    .concat(twttr.txt.extractHashtagsWithIndices(text, {checkUrlOverlap: false}));
+
+    if (entities.length == 0) {
+      return [];
+    }
+
+    twttr.txt.removeOverlappingEntities(entities);
     return entities;
   };
 
@@ -789,7 +792,11 @@ if (typeof twttr === "undefined" || twttr === null) {
     return hashtagsOnly;
   };
 
-  twttr.txt.extractHashtagsWithIndices = function(text) {
+  twttr.txt.extractHashtagsWithIndices = function(text, options) {
+    if (!options) {
+      options = {checkUrlOverlap: true};
+    }
+
     if (!text || !text.match(twttr.txt.regexen.hashSigns)) {
       return [];
     }
@@ -808,6 +815,23 @@ if (typeof twttr === "undefined" || twttr === null) {
         indices: [startPosition, position]
       });
     });
+
+    if (options.checkUrlOverlap) {
+      // also extract URL entities
+      var urls = twttr.txt.extractUrlsWithIndices(text);
+      if (urls.length > 0) {
+        var entities = tags.concat(urls);
+        // remove overlap
+        twttr.txt.removeOverlappingEntities(entities);
+        // only push back hashtags
+        tags = [];
+        for (var i = 0; i < entities.length; i++) {
+          if (entities[i].hashtag) {
+            tags.push(entities[i]);
+          }
+        }
+      }
+    }
 
     return tags;
   };
