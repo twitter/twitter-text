@@ -505,8 +505,10 @@ if (typeof twttr === "undefined" || twttr === null) {
         //   <span style='font-size:0'>&nbsp;</span>
         //   …
         // </span>
-        v['invisible'] = "style='font-size:0; line-height:0'";
+        v['invisible'] = "style='position:absolute;left:-999px;'";
         linkText = stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
+      } else {
+        linkText = displayUrl;
       }
     }
 
