@@ -47,6 +47,18 @@ module Twitter
   # A module for including Tweet parsing in a class. This module provides function for the extraction and processing
   # of usernames, lists, URLs and hashtags.
   module Extractor extend self
+    # Remove overlapping entities.
+    # This returns a new array with no overlapping entities.
+    def remove_overlapping_entities(entities)
+      # sort by start index
+      entities = entities.sort_by{|entity| entity[:indices].first}
+
+      # remove duplicates
+      prev = nil
+      entities.reject!{|entity| (prev && prev[:indices].last > entity[:indices].first) || (prev = entity) && false}
+      entities
+    end
+
     # Extracts all usernames, lists, hashtags and URLs  in the Tweet <tt>text</tt>
     # along with the indices for where the entity ocurred
     # If the <tt>text</tt> is <tt>nil</tt> or contains no entity an empty array
@@ -56,17 +68,12 @@ module Twitter
     def extract_entities_with_indices(text, options = {}, &block)
       # extract all entities
       entities = extract_urls_with_indices(text, options) +
-                 extract_hashtags_with_indices(text) +
+                 extract_hashtags_with_indices(text, :check_url_overlap => false) +
                  extract_mentions_or_lists_with_indices(text)
 
       return [] if entities.empty?
 
-      # sort by start index
-      entities = entities.sort_by{|entity| entity[:indices].first}
-
-      # remove duplicates
-      prev = nil
-      entities.reject!{|entity| (prev && prev[:indices].last > entity[:indices].first) || (prev = entity) && false}
+      entities = remove_overlapping_entities(entities)
 
       entities.each(&block) if block_given?
       entities
@@ -248,7 +255,7 @@ module Twitter
     # character.
     #
     # If a block is given then it will be called for each hashtag.
-    def extract_hashtags_with_indices(text) # :yields: hashtag_text, start, end
+    def extract_hashtags_with_indices(text, options = {:check_url_overlap => true}) # :yields: hashtag_text, start, end
       return [] unless text =~ /[#＃]/
 
       tags = []
@@ -264,6 +271,19 @@ module Twitter
           }
         end
       end
+
+      if options[:check_url_overlap]
+        # extract URLs
+        urls = extract_urls_with_indices(text)
+        unless urls.empty?
+          tags.concat(urls)
+          # remove duplicates
+          tags = remove_overlapping_entities(tags)
+          # remove URL entities
+          tags.reject!{|entity| !entity[:hashtag] }
+        end
+      end
+
       tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last} if block_given?
       tags
     end
