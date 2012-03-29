@@ -183,9 +183,12 @@ module Twitter
 
       url_entities = url_entities_hash(options[:url_entities])
 
-      link_text = if (url_entity = url_entities[url]) && url_entity["display_url"]
+      link_text = if entity[:display_url]
+        html_attrs[:title] ||= entity[:expanded_url]
+        link_text_with_display_expanded_urls(entity[:display_url], entity[:expanded_url])
+      elsif (url_entity = url_entities[url]) && url_entity["display_url"]
         html_attrs[:title] ||= url_entity["expanded_url"]
-        link_text_with_entity(url_entity)
+        link_text_with_display_expanded_urls(url_entity["display_url"], url_entity["expanded_url"])
       else
         html_escape(url)
       end
@@ -195,10 +198,7 @@ module Twitter
 
     INVISIBLE_TAG_ATTRS = "style='font-size:0; line-height:0'".freeze
 
-    def link_text_with_entity(url_entity)
-      display_url  = url_entity["display_url"]
-      expanded_url = url_entity["expanded_url"]
-
+    def link_text_with_display_expanded_urls(display_url, expanded_url)
       # Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
       # should contain the full original URL (expanded_url), not the display URL.
       #
