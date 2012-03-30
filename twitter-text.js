@@ -575,6 +575,29 @@ if (typeof twttr === "undefined" || twttr === null) {
     return result;
   };
 
+  twttr.txt.autoLinkWithJSON = function(text, json, options) {
+    // concatenate all entities
+    var entities = [];
+    for (var key in json) {
+      entities = entities.concat(json[key]);
+    }
+    // map JSON entity to twitter-text entity
+    for (var i = 0; i < entities.length; i++) {
+      entity = entities[i];
+      if (entity.screen_name) {
+        // this is @mention
+        entity.screenName = entity.screen_name;
+      } else if (entity.text) {
+        // this is #hashtag
+        entity.hashtag = entity.text;
+      }
+    }
+    // modify indices to UTF-16
+    twttr.txt.modifyIndicesFromUnicodeToUTF16(text, entities);
+
+    return twttr.txt.autoLinkEntities(text, entities, options);
+  };
+
   twttr.txt.extractHtmlAttrsFromOptions = function(options) {
     var htmlAttrs = "";
     for (var k in options) {

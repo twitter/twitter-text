@@ -35,6 +35,10 @@
               return function(test) {
                 return twttr.txt.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
               };
+            case "json":
+              return function(test) {
+                return twttr.txt.autoLinkWithJSON(test.text, JSON.parse(test.json), {suppressNoFollow: true, suppressDataScreenName: true});
+              }
           }
         case "extract":
           switch (section) {
