@@ -38,11 +38,10 @@ module Twitter
       entities = json.values().flatten()
 
       # map JSON entity to twitter-text entity
-      entities.map! do |entity|
-        entity = entity.symbolize_keys
+      entities.each do |entity|
+        entity.symbolize_keys!
         # hashtag
         entity[:hashtag] = entity[:text] if entity[:text]
-        entity
       end
 
       auto_link_entities(text, entities, options)
