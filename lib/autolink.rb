@@ -23,7 +23,7 @@ module Twitter
     DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23".freeze
 
     # Default attributes for invisible span tag
-    DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-999px;'".freeze
+    DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'".freeze
 
     DEFAULT_OPTIONS = {
       :url_class      => DEFAULT_URL_CLASS,

@@ -567,7 +567,7 @@ describe Twitter::Autolink do
       html.search('a[@href="http://t.co/0JG5Mcq"]').should_not be_empty
       html.search('span[@class=js-display-url]').inner_text.should == "blog.twitter.com/2011/05/twitte"
       html.inner_text.should == " http://blog.twitter.com/2011/05/twitter-for-mac-update.html …"
-      html.search('span[@style="position:absolute;left:-999px;"]').size.should == 4
+      html.search('span[@style="position:absolute;left:-9999px;"]').size.should == 4
     end
 
     it "should accept invisible_tag_attrs option" do
