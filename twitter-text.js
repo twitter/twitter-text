@@ -445,7 +445,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     var urlEntity = (options.urlEntities && options.urlEntities[url]) || entity;
     if (urlEntity.display_url) {
       if (!options.title) {
-        options.title = urlEntity.expanded_url;
+        options.htmlAttrs = (options.htmlAttrs || "") + " title=\"" + urlEntity.expanded_url + "\"";
       }
       linkText = twttr.txt.linkTextWithEntity(urlEntity);
     }
