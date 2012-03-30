@@ -33,6 +33,21 @@ module Twitter
       :hashtag_url_base  => DEFAULT_HASHTAG_URL_BASE
     }.freeze
 
+    def auto_link_with_json(text, json, options = {})
+      # concatenate entities
+      entities = json.values().flatten()
+
+      # map JSON entity to twitter-text entity
+      entities.map! do |entity|
+        entity = entity.symbolize_keys
+        # hashtag
+        entity[:hashtag] = entity[:text] if entity[:text]
+        entity
+      end
+
+      auto_link_entities(text, entities, options)
+    end
+
     def auto_link_entities(text, entities, options = {}, &block)
       return text if entities.empty?
 
@@ -293,7 +308,7 @@ module Twitter
 
       html_attrs = options[:html_attrs].dup
 
-      if !entity[:list_slug].empty? && !options[:suppress_lists]
+      if entity[:list_slug] && !entity[:list_slug].empty? && !options[:suppress_lists]
         href = if options[:list_url_block]
           options[:list_url_block].call(name)
         else
