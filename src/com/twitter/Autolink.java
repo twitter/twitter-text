@@ -25,7 +25,7 @@ public class Autolink {
   /** HTML attribute to add when noFollow is true (default) */
   public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
   /** Default attribute for invisible span tag */
-  public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-999px;'";
+  public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'";
 
   protected String urlClass;
   protected String listClass;
