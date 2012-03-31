@@ -663,7 +663,7 @@ if (typeof twttr === "undefined" || twttr === null) {
    * (Presence of listSlug indicates a list)
    */
   twttr.txt.extractMentionsOrListsWithIndices = function(text) {
-    if (!text || !text.match(twttr.txt.regexen.atSign)) {
+    if (!text || !text.match(twttr.txt.regexen.atSigns)) {
       return [];
     }
 
