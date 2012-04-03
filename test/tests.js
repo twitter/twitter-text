@@ -125,6 +125,7 @@ test("twttr.txt.autolink", function() {
 
   // url entities
   var autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+    invisibleTagAttrs: "style='font-size:0'",
     urlEntities: [{
       "url": "http://t.co/0JG5Mcq",
       "display_url": "blog.twitter.com/2011/05/twitte…",
@@ -139,6 +140,7 @@ test("twttr.txt.autolink", function() {
   ok(autoLinkResult.match(/>blog.twitter.com\/2011\/05\/twitte.*…</), 'Use display url from url entities');
   ok(autoLinkResult.match(/r-for-mac-update.html</), 'Include the tail of expanded_url');
   ok(autoLinkResult.match(/>http:\/\//), 'Include the head of expanded_url');
+  ok(autoLinkResult.match(/span style='font-size:0'/), 'Obey invisibleTagAttrs');
 
   // Insert the HTML into the document and verify that, if copied and pasted, it would get the expanded_url.
   var div = document.createElement('div');
@@ -148,6 +150,21 @@ test("twttr.txt.autolink", function() {
   range.selectNode(div);
   ok(range.toString().match(/\shttp:\/\/blog.twitter.com\/2011\/05\/twitter-for-mac-update.html\s…/), 'Selection copies expanded_url');
   document.body.removeChild(div);
+
+  var picTwitter = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+    urlEntities: [{
+      "url": "http://t.co/0JG5Mcq",
+      "display_url": "pic.twitter.com/xyz",
+      "expanded_url": "http://twitter.com/foo/statuses/123/photo/1",
+      "indices": [
+        84,
+        103
+      ]
+    }]
+  });
+  ok(picTwitter.match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>/), 'Use t.co URL as link target');
+  ok(picTwitter.match(/>pic.twitter.com\/xyz</), 'Use display url from url entities');
+  ok(!picTwitter.match(/foo\/statuses/), 'Don\'t include the tail of expanded_url');
 
   // urls with invalid character
   var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
