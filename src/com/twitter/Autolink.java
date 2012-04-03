@@ -24,6 +24,8 @@ public class Autolink {
   public static final String DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23";
   /** HTML attribute to add when noFollow is true (default) */
   public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
+  /** Default attribute for invisible span tag */
+  public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'";
 
   protected String urlClass;
   protected String listClass;
@@ -32,6 +34,7 @@ public class Autolink {
   protected String usernameUrlBase;
   protected String listUrlBase;
   protected String hashtagUrlBase;
+  protected String invisibleTagAttrs;
   protected boolean noFollow = true;
   protected boolean usernameIncludeSymbol = false;
 
@@ -60,6 +63,7 @@ public class Autolink {
     usernameUrlBase = DEFAULT_USERNAME_URL_BASE;
     listUrlBase = DEFAULT_LIST_URL_BASE;
     hashtagUrlBase = DEFAULT_HASHTAG_URL_BASE;
+    invisibleTagAttrs = DEFAULT_INVISIBLE_TAG_ATTRS;
 
     extractor.setExtractURLWithoutProtocol(false);
   }
@@ -175,7 +179,7 @@ public class Autolink {
         String afterDisplayURL = entity.expandedURL.substring(diplayURLIndexInExpandedURL + displayURLSansEllipses.length());
         String precedingEllipsis = entity.displayURL.startsWith("…") ? "…" : "";
         String followingEllipsis = entity.displayURL.endsWith("…") ? "…" : "";
-        String invisibleSpan = "<span style='font-size:0; line-height:0'>";
+        String invisibleSpan = "<span " + invisibleTagAttrs + ">";
 
         StringBuilder sb = new StringBuilder("<span class='tco-ellipsis'>");
         sb.append(precedingEllipsis);
@@ -186,6 +190,8 @@ public class Autolink {
         sb.append("<span class='tco-ellipsis'>").append(invisibleSpan).append("&nbsp;</span>").append(followingEllipsis).append("</span>");
 
         linkText = sb;
+      } else {
+        linkText = entity.displayURL;
       }
     }
 

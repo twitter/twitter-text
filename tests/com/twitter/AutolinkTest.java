@@ -58,7 +58,7 @@ public class AutolinkTest extends TestCase {
     List<Entity> entities = new ArrayList<Entity>();
     entities.add(entity);
     String tweet = "http://t.co/0JG5Mcq";
-    String expected = "<a href=\"http://t.co/0JG5Mcq\" rel=\"nofollow\"><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span></span><span style='font-size:0; line-height:0'>http://</span><span class='js-display-url'>blog.twitter.com/2011/05/twitte</span><span style='font-size:0; line-height:0'>r-for-mac-update.html</span><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span>…</span></a>";
+    String expected = "<a href=\"http://t.co/0JG5Mcq\" rel=\"nofollow\"><span class='tco-ellipsis'><span style='position:absolute;left:-9999px;'>&nbsp;</span></span><span style='position:absolute;left:-9999px;'>http://</span><span class='js-display-url'>blog.twitter.com/2011/05/twitte</span><span style='position:absolute;left:-9999px;'>r-for-mac-update.html</span><span class='tco-ellipsis'><span style='position:absolute;left:-9999px;'>&nbsp;</span>…</span></a>";
 
     assertAutolink(expected, linker.autoLinkEntities(tweet, entities));
   }
