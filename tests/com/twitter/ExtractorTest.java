@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.twitter.Extractor.Entity.Type;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
@@ -94,7 +96,7 @@ public class ExtractorTest extends TestCase {
         final int charOffset = matcher.start();
         charOffsets.add(charOffset);
         codePointOffsets.add(testData.codePointCount(0, charOffset));
-        entities.add(new Extractor.Entity(matcher, "unused", 0, 0));
+        entities.add(new Extractor.Entity(matcher, Type.HASHTAG, 0, 0));
       }
 
       extractor.modifyIndicesFromUTF16ToToUnicode(testData, entities);
@@ -289,6 +291,9 @@ public class ExtractorTest extends TestCase {
      assertEquals(extracted.get(1).getEnd().intValue(), 32);
      assertEquals(extracted.get(2).getStart().intValue(), 34);
      assertEquals(extracted.get(2).getEnd().intValue(), 47);
+
+     extractor.setExtractURLWithoutProtocol(false);
+     assertTrue("Should not extract URLs w/o protocol", extractor.extractURLs(text).isEmpty());
    }
 
    public void testURLFollowedByPunctuations() {

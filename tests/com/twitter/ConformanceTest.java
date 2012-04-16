@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import junit.framework.TestCase;
 import org.ho.yaml.Yaml;
 
+import com.twitter.Extractor.Entity;
+
 public class ConformanceTest extends TestCase {
 
   private static final String CONFORMANCE_DIR_PROPERTY = "conformance.dir";
@@ -59,7 +61,8 @@ public class ConformanceTest extends TestCase {
       List<Map<String, Object>> expectedConfig = (List)testCase.get(KEY_EXPECTED_OUTPUT);
       List<Extractor.Entity> expected = new ArrayList<Extractor.Entity>();
       for (Map<String, Object> configEntry : expectedConfig) {
-        expected.add(new Extractor.Entity(configEntry, "hashtag"));
+        List<Integer> indices = (List<Integer>)configEntry.get("indices");
+        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("hashtag").toString(), Entity.Type.HASHTAG));
       }
 
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
@@ -129,7 +132,7 @@ public class ConformanceTest extends TestCase {
     File yamlFile = new File(conformanceDir, "hit_highlighting.yml");
     List testCases = loadConformanceData(yamlFile, "plain_text");
     List<List<Integer>> hits = null;
-    
+
     for (Map testCase : (List<Map>)testCases) {
       hits = (List<List<Integer>>)testCase.get(KEY_HIGHLIGHT_HITS);
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
