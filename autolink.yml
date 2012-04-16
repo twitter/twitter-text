@@ -374,6 +374,10 @@ tests:
       text: "#mûǁae"
       expected: "<a href=\"https://twitter.com/#!/search?q=%23mûǁae\" title=\"#mûǁae\" class=\"tweet-url hashtag\">#mûǁae</a>"
 
+    - description: "Autolink hashtags with combining diacritics"
+      text: "#táim #hag̃ua"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23táim\" title=\"#táim\" class=\"tweet-url hashtag\">#táim</a> <a href=\"https://twitter.com/#!/search?q=%23hag̃ua\" title=\"#hag̃ua\" class=\"tweet-url hashtag\">#hag̃ua</a>"
+
     - description: "Autolink Arabic hashtag"
       text: "Arabic hashtag: #فارسی #لس_آنجلس"
       expected: "Arabic hashtag: <a href=\"https://twitter.com/#!/search?q=%23فارسی\" title=\"#فارسی\" class=\"tweet-url hashtag\">#فارسی</a> <a href=\"https://twitter.com/#!/search?q=%23لس_آنجلس\" title=\"#لس_آنجلس\" class=\"tweet-url hashtag\">#لس_آنجلس</a>"
