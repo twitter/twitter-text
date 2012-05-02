@@ -78,6 +78,7 @@ module Twitter
           regex_range(0x0289),
           regex_range(0x028b),
           regex_range(0x02bb),
+          regex_range(0x0300, 0x036f),
           regex_range(0x1e00, 0x1eff)
     ].join('').freeze
 
@@ -190,7 +191,7 @@ module Twitter
         (?=[^0-9a-z]|$)
       )
     }ix
-    REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/
+    REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/i
 
     REGEXEN[:valid_domain] = /(?:
       #{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}
