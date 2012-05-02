@@ -23,6 +23,7 @@ public class Regex {
                                               "\\u0100-\\u024f" + // Latin Extended A and B
                                               "\\u0253\\u0254\\u0256\\u0257\\u0259\\u025b\\u0263\\u0268\\u026f\\u0272\\u0289\\u028b" + // IPA Extensions
                                               "\\u02bb" + // Hawaiian
+                                              "\\u0300-\\u036f" + // Combining diacritics
                                               "\\u1e00-\\u1eff"; // Latin Extended Additional (mostly for Vietnamese)
   private static final String HASHTAG_ALPHA_CHARS = "a-z" + LATIN_ACCENTS_CHARS +
                                                    "\\u0400-\\u04ff\\u0500-\\u0527" +  // Cyrillic

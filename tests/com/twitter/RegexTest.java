@@ -12,6 +12,8 @@ public class RegexTest extends TestCase {
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#Čeština");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#Ċaoiṁín");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#Caoiṁín");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#ta\u0301im");
+    assertCaptureCount(3, Regex.VALID_HASHTAG, "#hag\u0303ua");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#caf\u00E9");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05e2\u05d1\u05e8\u05d9\u05ea"); // "#Hebrew"
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05d0\u05b2\u05e9\u05b6\u05c1\u05e8"); // with marks
