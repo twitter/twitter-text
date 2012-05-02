@@ -191,7 +191,7 @@ module Twitter
         (?=[^0-9a-z]|$)
       )
     }ix
-    REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/
+    REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/i
 
     REGEXEN[:valid_domain] = /(?:
       #{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}
