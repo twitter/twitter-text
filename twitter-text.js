@@ -194,6 +194,8 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(latinAccentChars, 0x028b, 0x028b);
   // Okina for Hawaiian (it *is* a letter character)
   addCharsToCharClass(latinAccentChars, 0x02bb, 0x02bb);
+  // Combining diacritics
+  addCharsToCharClass(latinAccentChars, 0x0300, 0x036f);
   // Latin Extended Additional
   addCharsToCharClass(latinAccentChars, 0x1e00, 0x1eff);
   twttr.txt.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
@@ -523,7 +525,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       v['invisible'] = "style='font-size:0; line-height:0'";
       return stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
     }
-    return dispalyUrl;
+    return displayUrl;
   };
 
   twttr.txt.autoLinkEntities = function(text, entities, options) {
@@ -544,6 +546,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     options.listUrlBase = options.listUrlBase || "https://twitter.com/";
     options.before = options.before || "";
     options.htmlAttrs = twttr.txt.extractHtmlAttrsFromOptions(options);
+    options.invisibleTagAttrs = options.invisibleTagAttrs || "style='position:absolute;left:-9999px;'";
 
     // remap url entities to hash
     var urlEntities, i, len;
@@ -670,7 +673,7 @@ if (typeof twttr === "undefined" || twttr === null) {
    * (Presence of listSlug indicates a list)
    */
   twttr.txt.extractMentionsOrListsWithIndices = function(text) {
-    if (!text || !text.match(twttr.txt.regexen.atSign)) {
+    if (!text || !text.match(twttr.txt.regexen.atSigns)) {
       return [];
     }
 
