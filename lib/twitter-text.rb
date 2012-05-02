@@ -20,7 +20,7 @@ require 'active_support/core_ext/hash/keys.rb'
   extractor
   unicode
   validation
-  hithighlighter
+  hit_highlighter
 ).each do |name|
-  require File.expand_path("../#{name}", __FILE__)
+  require "twitter-text/#{name}"
 end
