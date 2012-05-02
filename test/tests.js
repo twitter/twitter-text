@@ -177,7 +177,8 @@ test("twttr.txt.autolink", function() {
   });
   ok(picTwitter.match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>/), 'Use t.co URL as link target');
   ok(picTwitter.match(/>pic.twitter.com\/xyz</), 'Use display url from url entities');
-  ok(!picTwitter.match(/foo\/statuses/), 'Don\'t include the tail of expanded_url');
+  ok(picTwitter.match(/title="http:\/\/twitter.com\/foo\/statuses\/123\/photo\/1"/), 'Use expanded url as title');
+  ok(!picTwitter.match(/foo\/statuses</), 'Don\'t include the tail of expanded_url');
 
   // urls with invalid character
   var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
