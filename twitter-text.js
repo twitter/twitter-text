@@ -505,8 +505,10 @@ if (typeof twttr === "undefined" || twttr === null) {
         //   <span style='font-size:0'>&nbsp;</span>
         //   …
         // </span>
-        v['invisible'] = "style='font-size:0; line-height:0'";
+        v['invisible'] = options.invisibleTagAttrs;
         linkText = stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
+      } else {
+        linkText = displayUrl;
       }
     }
 
@@ -537,6 +539,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     options.listUrlBase = options.listUrlBase || "https://twitter.com/";
     options.before = options.before || "";
     options.htmlAttrs = twttr.txt.extractHtmlAttrsFromOptions(options);
+    options.invisibleTagAttrs = options.invisibleTagAttrs || "style='position:absolute;left:-9999px;'";
 
     // remap url entities to hash
     var urlEntities, i, len;
