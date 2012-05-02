@@ -449,7 +449,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       if (!options.title) {
         options.htmlAttrs = (options.htmlAttrs || "") + " title=\"" + urlEntity.expanded_url + "\"";
       }
-      linkText = twttr.txt.linkTextWithEntity(urlEntity);
+      linkText = twttr.txt.linkTextWithEntity(urlEntity, options);
     }
 
     var d = {
@@ -461,7 +461,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return stringSupplant("<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>", d);
   };
 
-  twttr.txt.linkTextWithEntity = function (entity) {
+  twttr.txt.linkTextWithEntity = function (entity, options) {
     var displayUrl = entity.display_url;
     var expandedUrl = entity.expanded_url;
 
@@ -522,7 +522,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       //   <span style='font-size:0'>&nbsp;</span>
       //   …
       // </span>
-      v['invisible'] = "style='font-size:0; line-height:0'";
+      v['invisible'] = options.invisibleTagAttrs;
       return stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
     }
     return displayUrl;
