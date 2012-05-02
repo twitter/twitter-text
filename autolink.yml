@@ -374,6 +374,7 @@ tests:
       text: "#mûǁae"
       expected: "<a href=\"https://twitter.com/#!/search?q=%23mûǁae\" title=\"#mûǁae\" class=\"tweet-url hashtag\">#mûǁae</a>"
 
+# Please be careful with changes to this test case - what looks like "á" is really a + U+0301, and many editors will silently convert this to U+00E1.
     - description: "Autolink hashtags with combining diacritics"
       text: "#táim #hag̃ua"
       expected: "<a href=\"https://twitter.com/#!/search?q=%23táim\" title=\"#táim\" class=\"tweet-url hashtag\">#táim</a> <a href=\"https://twitter.com/#!/search?q=%23hag̃ua\" title=\"#hag̃ua\" class=\"tweet-url hashtag\">#hag̃ua</a>"
