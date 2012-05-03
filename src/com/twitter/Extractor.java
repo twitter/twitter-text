@@ -10,7 +10,7 @@ import java.util.regex.*;
 public class Extractor {
   public static class Entity {
     public enum Type {
-      URL, HASHTAG, MENTION
+      URL, HASHTAG, MENTION, CASHTAG
     }
     protected int start;
     protected int end;
@@ -43,6 +43,7 @@ public class Extractor {
       this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type);
     }
 
+    @Override
     public boolean equals(Object obj) {
       if (this == obj) {
         return true;
@@ -64,8 +65,14 @@ public class Extractor {
       }
     }
 
+    @Override
     public int hashCode() {
       return this.type.hashCode() + this.value.hashCode() + this.start + this.end;
+    }
+
+    @Override
+    public String toString() {
+      return value + "(" + type +") [" +start + "," + end +"]";
     }
 
     public Integer getStart() {
@@ -149,6 +156,7 @@ public class Extractor {
     entities.addAll(extractURLsWithIndices(text));
     entities.addAll(extractHashtagsWithIndices(text, false));
     entities.addAll(extractMentionsOrListsWithIndices(text));
+    entities.addAll(extractCashtagsWithIndices(text));
 
     removeOverlappingEntities(entities);
     return entities;
@@ -395,6 +403,54 @@ public class Extractor {
           }
         }
       }
+    }
+
+    return extracted;
+  }
+
+  /**
+   * Extract $cashtag references from Tweet text.
+   *
+   * @param text of the tweet from which to extract cashtags
+   * @return List of cashtags referenced (without the leading $ sign)
+   */
+  public List<String> extractCashtags(String text) {
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    List<String> extracted = new ArrayList<String>();
+    for (Entity entity : extractCashtagsWithIndices(text)) {
+      extracted.add(entity.value);
+    }
+
+    return extracted;
+  }
+
+  /**
+   * Extract $cashtag references from Tweet text.
+   *
+   * @param text of the tweet from which to extract cashtags
+   * @return List of cashtags referenced (without the leading $ sign)
+   */
+  public List<Entity> extractCashtagsWithIndices(String text) {
+    if (text == null || text.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    // Performance optimization.
+    // If text doesn't contain $, text doesn't contain
+    // cashtag, so we can simply return an empty list.
+    if (text.indexOf('$') == -1) {
+      return Collections.emptyList();
+
+    }
+
+    List<Entity> extracted = new ArrayList<Entity>();
+    Matcher matcher = Regex.VALID_CASHTAG.matcher(text);
+
+    while (matcher.find()) {
+      extracted.add(new Entity(matcher, Entity.Type.CASHTAG, Regex.VALID_CASHTAG_GROUP_CASHTAG));
     }
 
     return extracted;
