@@ -1019,18 +1019,31 @@ if (typeof twttr === "undefined" || twttr === null) {
     fromCode(0x202D),
     fromCode(0x202E)
   ];
-  
+
   // Returns the length of Tweet text with consideration to t.co URL replacement
-  twttr.txt.getLengthWithWrappedUrls = function(text) {
+  twttr.txt.getTweetLength = function(text, options) {
+    if (!options) {
+      options = {
+          short_url_length: 20,
+          short_url_length_https: 21
+      };
+    }
     var textLength = text.length;
     var urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
-    
+
     for (var i = 0; i < urlsWithIndices.length; i++) {
     	// Subtract the length of the original URL
-    	// Add 20 characters to account for a t.co URL
-    	textLength += urlsWithIndices[i].indices[0] - urlsWithIndices[i].indices[1] + 20;
+      textLength += urlsWithIndices[i].indices[0] - urlsWithIndices[i].indices[1];
+
+      // Add 21 characters for URL starting with https://
+      // Otherwise add 20 characters
+      if (urlsWithIndices[i].url.toLowerCase().match(/^https:\/\//)) {
+         textLength += options.short_url_length_https;
+      } else {
+        textLength += options.short_url_length;
+      }
     }
-    
+
     return textLength;
   };
 
@@ -1049,7 +1062,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     }
 
     // Determine max length independent of URL length
-    if (twttr.txt.getLengthWithWrappedUrls(text) > MAX_LENGTH) {
+    if (twttr.txt.getTweetLength(text) > MAX_LENGTH) {
       return "too_long";
     }
 
