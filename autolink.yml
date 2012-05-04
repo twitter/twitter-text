@@ -672,6 +672,15 @@ tests:
       text: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
       expected: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
 
+  cashtags:
+    - description: "Autolink a cashtag"
+      text: "$STOCK"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%24STOCK\" title=\"$STOCK\" class=\"tweet-url cashtag\">$STOCK</a>"
+
+    - description: "Autolink a cashtag in text"
+      text: "Text $STOCK text $symbol text"
+      expected: "Text <a href=\"https://twitter.com/#!/search?q=%24STOCK\" title=\"$STOCK\" class=\"tweet-url cashtag\">$STOCK</a> text <a href=\"https://twitter.com/#!/search?q=%24symbol\" title=\"$symbol\" class=\"tweet-url cashtag\">$symbol</a> text"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
@@ -708,3 +717,7 @@ tests:
     - description: "Autolink @mention if followed by . and TLD"
       text: "@twitter.com @twitter.co.jp"
       expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.com @<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.co.jp"
+
+    - description: "Autolink a cashtag"
+      text: "$STOCK"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%24STOCK\" title=\"$STOCK\" class=\"tweet-url cashtag\">$STOCK</a>"
