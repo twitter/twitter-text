@@ -201,3 +201,24 @@ tests:
     - description: "Valid url without protocol: domain + path + query"
       text: "example.com/path/to/resource?search=foo&lang=en"
       expected: true
+
+  lengths:
+    - description: "Count the number of characters"
+      text: "This is a test."
+      expected: 15
+
+    - description: "Count a URL starting with http:// as 20 characters"
+      text: "http://test.com"
+      expected: 20
+
+    - description: "Count a URL starting with https:// as 21 characters"
+      text: "https://test.com"
+      expected: 21
+
+    - description: "Count a URL without protocol as 20 characters"
+      text: "test.com"
+      expected: 20
+
+    - description: "Count multiple URLs correctly"
+      text: "Test http://test.com test http://test.com test.com test"
+      expected: 77
