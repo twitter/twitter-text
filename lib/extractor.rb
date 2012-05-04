@@ -69,7 +69,8 @@ module Twitter
       # extract all entities
       entities = extract_urls_with_indices(text, options) +
                  extract_hashtags_with_indices(text, :check_url_overlap => false) +
-                 extract_mentions_or_lists_with_indices(text)
+                 extract_mentions_or_lists_with_indices(text) +
+                 extract_cashtags_with_indices(text)
 
       return [] if entities.empty?
 
@@ -285,6 +286,43 @@ module Twitter
       end
 
       tags.each{|tag| yield tag[:hashtag], tag[:indices].first, tag[:indices].last} if block_given?
+      tags
+    end
+
+    # Extracts a list of all cashtags included in the Tweet <tt>text</tt>. If the
+    # <tt>text</tt> is <tt>nil</tt> or contains no cashtags an empty array
+    # will be returned. The array returned will not include the leading <tt>$</tt>
+    # character.
+    #
+    # If a block is given then it will be called for each cashtag.
+    def extract_cashtags(text, &block) # :yields: cashtag_text
+      cashtags = extract_cashtags_with_indices(text).map{|h| h[:cashtag]}
+      cashtags.each(&block) if block_given?
+      cashtags
+    end
+
+    # Extracts a list of all cashtags included in the Tweet <tt>text</tt>. If the
+    # <tt>text</tt> is <tt>nil</tt> or contains no cashtags an empty array
+    # will be returned. The array returned will not include the leading <tt>$</tt>
+    # character.
+    #
+    # If a block is given then it will be called for each cashtag.
+    def extract_cashtags_with_indices(text) # :yields: cashtag_text, start, end
+      return [] unless text =~ /\$/
+
+      tags = []
+      text.scan(Twitter::Regex[:valid_cashtag]) do |cash_text|
+        match_data = $~
+        # cash_text doesn't contain $ symbol, so need to decrement start_position by one
+        start_position = match_data.char_begin(1) - 1
+        end_position = match_data.char_end(1)
+        tags << {
+          :cashtag => cash_text[0],
+          :indices => [start_position, end_position]
+        }
+      end
+
+      tags.each{|tag| yield tag[:cashtag], tag[:indices].first, tag[:indices].last} if block_given?
       tags
     end
   end
