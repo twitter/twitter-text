@@ -22,6 +22,7 @@ public class ConformanceTest extends TestCase {
   protected File conformanceDir;
   protected Extractor extractor = new Extractor();
   protected Autolink linker = new Autolink();
+  protected Validator validator = new Validator();
   protected HitHighlighter hitHighlighter = new HitHighlighter();
 
   public void testMentionsExtractor() throws Exception {
@@ -126,6 +127,26 @@ public class ConformanceTest extends TestCase {
     File yamlFile = new File(conformanceDir, "autolink.yml");
     List testCases = loadConformanceData(yamlFile, "all");
     autolink(testCases);
+  }
+
+  public void testIsValidTweet() throws Exception {
+    File yamlFile = new File(conformanceDir, "validate.yml");
+    List testCases = loadConformanceData(yamlFile, "tweets");
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   ((Boolean)testCase.get(KEY_EXPECTED_OUTPUT)).booleanValue(),
+                   validator.isValidTweet(((String)testCase.get(KEY_INPUT))));
+    }
+  }
+
+  public void testGetTweetLength() throws Exception {
+    File yamlFile = new File(conformanceDir, "validate.yml");
+    List testCases = loadConformanceData(yamlFile, "lengths");
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   ((Integer)testCase.get(KEY_EXPECTED_OUTPUT)).intValue(),
+                   validator.getTweetLength(((String)testCase.get(KEY_INPUT))));
+    }
   }
 
   public void testPlainTextHitHighlighting() throws Exception {
