@@ -1019,6 +1019,20 @@ if (typeof twttr === "undefined" || twttr === null) {
     fromCode(0x202D),
     fromCode(0x202E)
   ];
+  
+  // Returns the length of Tweet text with consideration to t.co URL replacement
+  twttr.txt.getLengthWithWrappedUrls = function(text) {
+    var textLength = text.length;
+    var urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
+    
+    for (var i = 0; i < urlsWithIndices.length; i++) {
+    	// Subtract the length of the original URL
+    	// Add 20 characters to account for a t.co URL
+    	textLength += urlsWithIndices[i].indices[0] - urlsWithIndices[i].indices[1] + 20;
+    }
+    
+    return textLength;
+  };
 
   // Check the text for any reason that it may not be valid as a Tweet. This is meant as a pre-validation
   // before posting to api.twitter.com. There are several server-side reasons for Tweets to fail but this pre-validation
@@ -1034,7 +1048,8 @@ if (typeof twttr === "undefined" || twttr === null) {
       return "empty";
     }
 
-    if (text.length > MAX_LENGTH) {
+    // Determine max length independent of URL length
+    if (twttr.txt.getLengthWithWrappedUrls(text) > MAX_LENGTH) {
       return "too_long";
     }
 
