@@ -2,6 +2,11 @@ module Twitter
   module Validation extend self
     MAX_LENGTH = 140
 
+    DEFAULT_TCO_URL_LENGTHS = {
+      :short_url_length => 20,
+      :short_url_length_https => 21
+    }.freeze
+
     # Returns the length of the string as it would be displayed. This is equivilent to the length of the Unicode NFC
     # (See: http://www.unicode.org/reports/tr15). This is needed in order to consistently calculate the length of a
     # string no matter which actual form was transmitted. For example:
@@ -14,8 +19,17 @@ module Twitter
     #
     # The string could also contain U+00E9 already, in which case the canonicalization will not change the value.
     #
-    def tweet_length(text)
-      ActiveSupport::Multibyte::Chars.new(text).normalize(:c).length
+    def tweet_length(text, options = {})
+      options = DEFAULT_TCO_URL_LENGTHS.merge(options)
+
+      length = ActiveSupport::Multibyte::Chars.new(text).normalize(:c).length
+
+      Twitter::Extractor.extract_urls_with_indices(text) do |url, start_position, end_position|
+        length += start_position - end_position
+        length += url.downcase =~ /^https:\/\// ? options[:short_url_length_https] : options[:short_url_length]
+      end
+
+      length
     end
 
     # Check the <tt>text</tt> for any reason that it may not be valid as a Tweet. This is meant as a pre-validation
