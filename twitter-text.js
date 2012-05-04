@@ -270,6 +270,10 @@ if (typeof twttr === "undefined" || twttr === null) {
 
   twttr.txt.regexen.validTcoUrl = /^https?:\/\/t\.co\/[a-z0-9]+/i;
 
+  // cashtag related regex
+  twttr.txt.regexen.cashtag = /[a-z]{1,6}(?:[._][a-z]{1,2})?/i;
+  twttr.txt.regexen.validCashtag = regexSupplant('(?:^|#{spaces})\\$(#{cashtag})(?=$|\\s|[#{punct}])', 'gi');
+
   // These URL validation pattern strings are based on the ABNF from RFC 3986
   twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
   twttr.txt.regexen.validateUrlPctEncoded = /(?:%[0-9a-f]{2})/i;
@@ -366,11 +370,13 @@ if (typeof twttr === "undefined" || twttr === null) {
   var DEFAULT_USERNAME_CLASS = "username";
   // Default CSS class for auto-linked hashtags (along with the url class)
   var DEFAULT_HASHTAG_CLASS = "hashtag";
+  // Default CSS class for auto-linked cashtags (along with the url class)
+  var DEFAULT_CASHTAG_CLASS = "cashtag";
   // HTML attribute for robot nofollow behavior (default)
   var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
   // Options which should not be passed as HTML attributes
-  var OPTIONS_NOT_ATTRIBUTES = {'urlClass':true, 'listClass':true, 'usernameClass':true, 'hashtagClass':true,
-                            'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true,
+  var OPTIONS_NOT_ATTRIBUTES = {'urlClass':true, 'listClass':true, 'usernameClass':true, 'hashtagClass':true, 'cashtagClass':true,
+                            'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true, 'cashtagUrlBase':true,
                             'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
                             'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
                             'suppressDataScreenName':true, 'urlEntities':true, 'before':true
@@ -404,6 +410,22 @@ if (typeof twttr === "undefined" || twttr === null) {
       }
 
       return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
+  };
+
+  twttr.txt.linkToCashtag = function(entity, text, options) {
+    var d = {
+        preText: "",
+        text: twttr.txt.htmlEscape(entity.cashtag),
+        postText: "",
+        extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW
+      };
+      for (var k in options) {
+        if (options.hasOwnProperty(k)) {
+          d[k] = options[k];
+        }
+      }
+
+      return stringSupplant("#{before}<a href=\"#{cashtagUrlBase}#{text}\" title=\"$#{text}\" class=\"#{urlClass} #{cashtagClass}\"#{extraHtml}>$#{preText}#{text}#{postText}</a>", d);
   };
 
   twttr.txt.linkToMentionAndList = function(entity, text, options) {
@@ -535,6 +557,8 @@ if (typeof twttr === "undefined" || twttr === null) {
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
+    options.cashtagClass = options.cashtagClass || DEFAULT_CASHTAG_CLASS;
+    options.cashtagUrlBase = options.cashtagUrlBase || "https://twitter.com/#!/search?q=%24";
     options.listClass = options.listClass || DEFAULT_LIST_CLASS;
     options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
     options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
@@ -564,8 +588,10 @@ if (typeof twttr === "undefined" || twttr === null) {
         result += twttr.txt.linkToUrl(entity, text, options);
       } else if (entity.hashtag) {
         result += twttr.txt.linkToHashtag(entity, text, options);
-      } else if(entity.screenName) {
+      } else if (entity.screenName) {
         result += twttr.txt.linkToMentionAndList(entity, text, options);
+      } else if (entity.cashtag) {
+        result += twttr.txt.linkToCashtag(entity, text, options);
       }
       beginIndex = entity.indices[1];
     }
@@ -602,6 +628,11 @@ if (typeof twttr === "undefined" || twttr === null) {
     return twttr.txt.autoLinkEntities(text, entities, options);
   };
 
+  twttr.txt.autoLinkCashtags = function(text, options) {
+    var entities = twttr.txt.extractCashtagsWithIndices(text);
+    return twttr.txt.autoLinkEntities(text, entities, options);
+  };
+
   twttr.txt.autoLinkUrlsCustom = function(text, options) {
     var entities = twttr.txt.extractUrlsWithIndices(text, {extractUrlWithoutProtocol: false});
     return twttr.txt.autoLinkEntities(text, entities, options);
@@ -624,7 +655,8 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.extractEntitiesWithIndices = function(text, options) {
     var entities = twttr.txt.extractUrlsWithIndices(text, options)
                     .concat(twttr.txt.extractMentionsOrListsWithIndices(text))
-                    .concat(twttr.txt.extractHashtagsWithIndices(text, {checkUrlOverlap: false}));
+                    .concat(twttr.txt.extractHashtagsWithIndices(text, {checkUrlOverlap: false}))
+                    .concat(twttr.txt.extractCashtagsWithIndices(text));
 
     if (entities.length == 0) {
       return [];
@@ -837,6 +869,38 @@ if (typeof twttr === "undefined" || twttr === null) {
         }
       }
     }
+
+    return tags;
+  };
+
+  twttr.txt.extractCashtags = function(text) {
+    var cashtagsOnly = [],
+        cashtagsWithIndices = twttr.txt.extractCashtagsWithIndices(text);
+
+    for (var i = 0; i < cashtagsWithIndices.length; i++) {
+      cashtagsOnly.push(cashtagsWithIndices[i].cashtag);
+    }
+
+    return cashtagsOnly;
+  };
+
+  twttr.txt.extractCashtagsWithIndices = function(text) {
+    if (!text || text.indexOf("$") == -1) {
+      return [];
+    }
+
+    var tags = [],
+        position = 0;
+
+    text.replace(twttr.txt.regexen.validCashtag, function(match, cashtag, offset, chunk) {
+      // cashtag doesn't contain $ sign, so need to decrement index by 1.
+      var startPosition = text.indexOf(cashtag, position) - 1;
+      position = startPosition + cashtag.length + 1;
+      tags.push({
+        cashtag: cashtag,
+        indices: [startPosition, position]
+      });
+    });
 
     return tags;
   };
