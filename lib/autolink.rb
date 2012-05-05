@@ -14,8 +14,6 @@ module Twitter
     DEFAULT_USERNAME_CLASS = "username".freeze
     # Default CSS class for auto-linked hashtags (along with the url class)
     DEFAULT_HASHTAG_CLASS = "hashtag".freeze
-    # Default CSS class for auto-linked cashtags (along with the url class)
-    DEFAULT_CASHTAG_CLASS = "cashtag".freeze
 
     # Default URL base for auto-linked usernames
     DEFAULT_USERNAME_URL_BASE = "https://twitter.com/".freeze
@@ -23,8 +21,6 @@ module Twitter
     DEFAULT_LIST_URL_BASE = "https://twitter.com/".freeze
     # Default URL base for auto-linked hashtags
     DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23".freeze
-    # Default URL base for auto-linked cashtags
-    DEFAULT_CASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%24".freeze
 
     # Default attributes for invisible span tag
     DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'".freeze
@@ -34,12 +30,10 @@ module Twitter
       :list_class     => DEFAULT_LIST_CLASS,
       :username_class => DEFAULT_USERNAME_CLASS,
       :hashtag_class  => DEFAULT_HASHTAG_CLASS,
-      :cashtag_class  => DEFAULT_CASHTAG_CLASS,
 
       :username_url_base => DEFAULT_USERNAME_URL_BASE,
       :list_url_base     => DEFAULT_LIST_URL_BASE,
       :hashtag_url_base  => DEFAULT_HASHTAG_URL_BASE,
-      :cashtag_url_base  => DEFAULT_CASHTAG_URL_BASE,
 
       :invisible_tag_attrs => DEFAULT_INVISIBLE_TAG_ATTRS
     }.freeze
@@ -59,8 +53,6 @@ module Twitter
           link_to_hashtag(entity, chars, options, &block)
         elsif entity[:screen_name]
           link_to_screen_name(entity, chars, options, &block)
-        elsif entity[:cashtag]
-          link_to_cashtag(entity, chars, options, &block)
         end
       end
     end
@@ -115,19 +107,6 @@ module Twitter
       auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options, &block)
     end
 
-    # Add <tt><a></a></tt> tags around the cashtags in the provided <tt>text</tt>.
-    # The <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt> hash.
-    # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
-    # and place in the <tt><a></tt> tag.
-    #
-    # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
-    # <tt>:cashtag_class</tt>:: class to add to cashtag <tt><a></tt> tags
-    # <tt>:cashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The cashtag text (minus the <tt>$</tt>) will be appended at the end of this.
-    # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
-    def auto_link_cashtags(text, options = {}, &block)  # :yields: cashtag_text
-      auto_link_entities(text, Extractor.extract_cashtags_with_indices(text), options, &block)
-    end
-
     # Add <tt><a></a></tt> tags around the URLs in the provided <tt>text</tt>.
     # The <tt><a></tt> tags can be controlled with the following entries in the <tt>options</tt> hash.
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
@@ -172,8 +151,8 @@ module Twitter
 
     # Options which should not be passed as HTML attributes
     OPTIONS_NOT_ATTRIBUTES = Set.new([
-      :url_class, :list_class, :username_class, :hashtag_class, :cashtag_class,
-      :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
+      :url_class, :list_class, :username_class, :hashtag_class,
+      :username_url_base, :list_url_base, :hashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
       :invisible_tag_attrs
@@ -304,24 +283,6 @@ module Twitter
         # FIXME As our conformance test, hash in title should be half-width,
         # this should be bug of conformance data.
         :title => "##{hashtag}"
-      }.merge(options[:html_attrs])
-
-      link_to(text, href, html_attrs)
-    end
-
-    def link_to_cashtag(entity, chars, options = {})
-      cashtag = entity[:cashtag]
-      cashtag = yield(cashtag) if block_given?
-
-      href = if options[:cashtag_url_block]
-        options[:cashtag_url_block].call(cashtag)
-      else
-        "#{options[:cashtag_url_base]}#{cashtag}"
-      end
-
-      html_attrs = {
-        :class => "#{options[:url_class]} #{options[:cashtag_class]}",
-        :title => "$#{cashtag}"
       }.merge(options[:html_attrs])
 
       link_to(text, href, html_attrs)
