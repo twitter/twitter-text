@@ -10,6 +10,7 @@ end
 
 require 'active_support'
 require 'active_support/core_ext/string/multibyte.rb'
+require 'active_support/core_ext/hash/keys.rb'
 
 %w(
   deprecation

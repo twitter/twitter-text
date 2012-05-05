@@ -588,6 +588,22 @@ describe Twitter::Autolink do
       html.search('span[@style="dummy;"]').size.should == 4
     end
 
+    it "should show display_url if available in entity" do
+      linked = TestAutolink.new.auto_link_entities("http://t.co/0JG5Mcq",
+        [{
+          :url => "http://t.co/0JG5Mcq",
+          :display_url => "blog.twitter.com/2011/05/twitte…",
+          :expanded_url => "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
+          :indices => [0, 19]
+        }]
+      )
+      html = Nokogiri::HTML(linked)
+      html.search('a').should_not be_empty
+      html.search('a[@href="http://t.co/0JG5Mcq"]').should_not be_empty
+      html.search('span[@class=js-display-url]').inner_text.should == "blog.twitter.com/2011/05/twitte"
+      html.inner_text.should == " http://blog.twitter.com/2011/05/twitter-for-mac-update.html …"
+    end
+
     it "should apply :class as a CSS class" do
       linked = TestAutolink.new.auto_link("http://example.com/", :class => 'myclass')
       linked.should have_autolinked_url('http://example.com/')
@@ -646,6 +662,48 @@ describe Twitter::Autolink do
     it "should customize href by link_url_block option" do
       linked = TestAutolink.new.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'http://example.com/')
+    end
+  end
+
+  describe "link_text_with_entity" do
+    before do
+      @linker = TestAutolink.new
+    end
+
+    it "should use display_url and expanded_url" do
+      @linker.send(:link_text_with_entity,
+        {
+          :url => "http://t.co/abcde",
+          :display_url => "twitter.com",
+          :expanded_url => "http://twitter.com/"},
+        {:invisible_tag_attrs => "class='invisible'"}).gsub('"', "'").should == "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>";
+    end
+
+    it "should correctly handle display_url ending with '…'" do
+      @linker.send(:link_text_with_entity,
+        {
+          :url => "http://t.co/abcde",
+          :display_url => "twitter.com…",
+          :expanded_url => "http://twitter.com/abcdefg"},
+        {:invisible_tag_attrs => "class='invisible'"}).gsub('"', "'").should == "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/abcdefg</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span>…</span>";
+    end
+
+    it "should correctly handle display_url starting with '…'" do
+      @linker.send(:link_text_with_entity,
+        {
+          :url => "http://t.co/abcde",
+          :display_url => "…tter.com/abcdefg",
+          :expanded_url => "http://twitter.com/abcdefg"},
+        {:invisible_tag_attrs => "class='invisible'"}).gsub('"', "'").should == "<span class='tco-ellipsis'>…<span class='invisible'>&nbsp;</span></span><span class='invisible'>http://twi</span><span class='js-display-url'>tter.com/abcdefg</span><span class='invisible'></span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>";
+    end
+
+    it "should not create spans if display_url and expanded_url are on different domains" do
+      @linker.send(:link_text_with_entity,
+        {
+          :url => "http://t.co/abcde",
+          :display_url => "pic.twitter.com/xyz",
+          :expanded_url => "http://twitter.com/foo/statuses/123/photo/1"},
+        {:invisible_tag_attrs => "class='invisible'"}).gsub('"', "'").should == "pic.twitter.com/xyz"
     end
   end
 
