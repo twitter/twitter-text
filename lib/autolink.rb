@@ -192,7 +192,8 @@ module Twitter
 
     def url_entities_hash(url_entities)
       (url_entities || {}).inject({}) do |entities, entity|
-        entities[entity["url"]] = entity
+        entity = entity.symbolize_keys
+        entities[entity[:url]] = entity
         entities
       end
     end
@@ -212,8 +213,10 @@ module Twitter
 
       url_entities = url_entities_hash(options[:url_entities])
 
-      link_text = if (url_entity = url_entities[url]) && url_entity["display_url"]
-        html_attrs[:title] ||= url_entity["expanded_url"]
+      # use entity from urlEntities if available
+      url_entity = url_entities[url] || entity
+      link_text = if url_entity[:display_url]
+        html_attrs[:title] ||= url_entity[:expanded_url]
         link_text_with_entity(url_entity, options)
       else
         html_escape(url)
@@ -222,9 +225,11 @@ module Twitter
       link_to(link_text, href, html_attrs, :no_escape_text => true)
     end
 
-    def link_text_with_entity(url_entity, options)
-      display_url  = url_entity["display_url"]
-      expanded_url = url_entity["expanded_url"]
+    INVISIBLE_TAG_ATTRS = "style='font-size:0; line-height:0'".freeze
+
+    def link_text_with_entity(entity, options)
+      display_url = entity[:display_url]
+      expanded_url = entity[:expanded_url]
       invisible_tag_attrs = options[:invisible_tag_attrs] || DEFAULT_INVISIBLE_TAG_ATTRS
 
       # Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
