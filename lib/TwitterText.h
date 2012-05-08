@@ -15,12 +15,12 @@
 
 @interface TwitterText : NSObject
 
-+ (NSArray*)extractEntities:(NSString*)text;
-+ (NSArray*)extractURLs:(NSString*)text;
-+ (NSArray*)extractHashtags:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
-+ (NSArray*)extractMentionedScreenNames:(NSString*)text;
-+ (NSArray*)extractMentionsOrLists:(NSString*)text;
-+ (TwitterTextEntity*)extractReplyScreenName:(NSString*)text;
++ (NSArray*)entitiesInTex:(NSString*)text;
++ (NSArray*)URLsInText:(NSString*)text;
++ (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
++ (NSArray*)mentionedScreenNamesInText:(NSString*)text;
++ (NSArray*)mentionsOrListsInText:(NSString*)text;
++ (TwitterTextEntity*)repliedScreenNameInText:(NSString*)text;
 
 + (int)tweetLength:(NSString*)text;
 

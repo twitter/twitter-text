@@ -60,7 +60,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText extractMentionsOrLists:text];
+        NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
             int count = results.count;
             for (int i=0; i<count; i++) {
@@ -87,7 +87,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText extractMentionsOrLists:text];
+        NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
             int count = results.count;
             for (int i=0; i<count; i++) {
@@ -121,7 +121,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText extractMentionsOrLists:text];
+        NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
             int count = results.count;
             for (int i=0; i<count; i++) {
@@ -162,7 +162,7 @@
             expected = nil;
         }
         
-        TwitterTextEntity *result = [TwitterText extractReplyScreenName:text];
+        TwitterTextEntity *result = [TwitterText repliedScreenNameInText:text];
         if (result || expected) {
             NSRange range = result.range;
             NSString *actual = [text substringWithRange:range];
@@ -182,7 +182,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText extractURLs:text];
+        NSArray *results = [TwitterText URLsInText:text];
         if (results.count == expected.count) {
             int count = results.count;
             for (int i=0; i<count; i++) {
@@ -207,7 +207,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText extractURLs:text];
+        NSArray *results = [TwitterText URLsInText:text];
         if (results.count == expected.count) {
             int count = results.count;
             for (int i=0; i<count; i++) {
@@ -238,7 +238,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText extractHashtags:text checkingURLOverlap:YES];
+        NSArray *results = [TwitterText hashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
             int count = results.count;
             for (int i=0; i<count; i++) {
@@ -265,7 +265,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText extractHashtags:text checkingURLOverlap:YES];
+        NSArray *results = [TwitterText hashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
             int count = results.count;
             for (int i=0; i<count; i++) {

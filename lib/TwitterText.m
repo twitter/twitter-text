@@ -288,12 +288,12 @@ static NSRegularExpression *validReplyRegexp;
 static NSRegularExpression *endMentionRegexp;
 
 @interface TwitterText ()
-+ (NSArray*)extractHashtags:(NSString*)text withURLEntities:(NSArray*)urlEntities;
++ (NSArray*)hashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities;
 @end
 
 @implementation TwitterText
 
-+ (NSArray*)extractEntities:(NSString*)text
++ (NSArray*)entitiesInTex:(NSString*)text
 {
     if (!text.length) {
         return [NSArray array];
@@ -301,12 +301,12 @@ static NSRegularExpression *endMentionRegexp;
 
     NSMutableArray *results = [NSMutableArray array];
     
-    NSArray *urls = [self extractURLs:text];
-    NSArray *hashtags = [self extractHashtags:text withURLEntities:urls];
+    NSArray *urls = [self URLsInText:text];
+    NSArray *hashtags = [self hashtagsInText:text withURLEntities:urls];
     [results addObjectsFromArray:urls];
     [results addObjectsFromArray:hashtags];
     
-    NSArray *mentionsAndLists = [self extractMentionsOrLists:text];
+    NSArray *mentionsAndLists = [self mentionsOrListsInText:text];
     NSMutableArray *addingItems = [NSMutableArray array];
     
     for (TwitterTextEntity *entity in mentionsAndLists) {
@@ -329,7 +329,7 @@ static NSRegularExpression *endMentionRegexp;
     return results;
 }
 
-+ (NSArray*)extractURLs:(NSString*)text
++ (NSArray*)URLsInText:(NSString*)text
 {
     if (!text.length) {
         return [NSArray array];
@@ -435,7 +435,7 @@ static NSRegularExpression *endMentionRegexp;
     return results;
 }
 
-+ (NSArray*)extractHashtags:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
++ (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
         return [NSArray array];
@@ -443,12 +443,12 @@ static NSRegularExpression *endMentionRegexp;
 
     NSArray *urls = nil;
     if (checkingURLOverlap) {
-        urls = [self extractURLs:text];
+        urls = [self URLsInText:text];
     }
-    return [self extractHashtags:text withURLEntities:urls];
+    return [self hashtagsInText:text withURLEntities:urls];
 }
 
-+ (NSArray*)extractHashtags:(NSString*)text withURLEntities:(NSArray*)urlEntities
++ (NSArray*)hashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities
 {
     if (!text.length) {
         return [NSArray array];
@@ -503,13 +503,13 @@ static NSRegularExpression *endMentionRegexp;
     return results;
 }
 
-+ (NSArray*)extractMentionedScreenNames:(NSString*)text
++ (NSArray*)mentionedScreenNamesInText:(NSString*)text
 {
     if (!text.length) {
         return [NSArray array];
     }
 
-    NSArray *mentionsOrLists = [self extractMentionsOrLists:text];
+    NSArray *mentionsOrLists = [self mentionsOrListsInText:text];
     NSMutableArray *results = [NSMutableArray array];
     
     for (TwitterTextEntity *entity in mentionsOrLists) {
@@ -521,7 +521,7 @@ static NSRegularExpression *endMentionRegexp;
     return results;
 }
 
-+ (NSArray*)extractMentionsOrLists:(NSString*)text
++ (NSArray*)mentionsOrListsInText:(NSString*)text
 {
     if (!text.length) {
         return [NSArray array];
@@ -571,7 +571,7 @@ static NSRegularExpression *endMentionRegexp;
     return results;
 }
 
-+ (TwitterTextEntity*)extractReplyScreenName:(NSString*)text
++ (TwitterTextEntity*)repliedScreenNameInText:(NSString*)text
 {
     if (!text.length) {
         return nil;
@@ -652,7 +652,7 @@ static NSRegularExpression *endMentionRegexp;
 #endif
     
     int urlLengthOffset = 0;
-    NSArray *urlEntities = [self extractURLs:text];
+    NSArray *urlEntities = [self URLsInText:text];
     for (int i=urlEntities.count-1; i>=0; i--) {
         TwitterTextEntity *entity = [urlEntities objectAtIndex:i];
         NSRange urlRange = entity.range;
