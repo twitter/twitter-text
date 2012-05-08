@@ -284,7 +284,7 @@ static NSRegularExpression *validReplyRegexp;
 static NSRegularExpression *endMentionRegexp;
 
 @interface TwitterText ()
-+ (NSArray*)_extractHashtags:(NSString*)text withURLEntities:(NSArray*)urlEntities;
++ (NSArray*)extractHashtags:(NSString*)text withURLEntities:(NSArray*)urlEntities;
 @end
 
 @implementation TwitterText
@@ -298,7 +298,7 @@ static NSRegularExpression *endMentionRegexp;
     NSMutableArray *results = [NSMutableArray array];
     
     NSArray *urls = [self extractURLs:text];
-    NSArray *hashtags = [self _extractHashtags:text withURLEntities:urls];
+    NSArray *hashtags = [self extractHashtags:text withURLEntities:urls];
     [results addObjectsFromArray:urls];
     [results addObjectsFromArray:hashtags];
     
@@ -441,10 +441,10 @@ static NSRegularExpression *endMentionRegexp;
     if (checkingURLOverlap) {
         urls = [self extractURLs:text];
     }
-    return [self _extractHashtags:text withURLEntities:urls];
+    return [self extractHashtags:text withURLEntities:urls];
 }
 
-+ (NSArray*)_extractHashtags:(NSString*)text withURLEntities:(NSArray*)urlEntities
++ (NSArray*)extractHashtags:(NSString*)text withURLEntities:(NSArray*)urlEntities
 {
     if (!text.length) {
         return [NSArray array];
