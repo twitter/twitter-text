@@ -600,6 +600,8 @@ static NSRegularExpression *endMentionRegexp;
 
 + (int)tweetLength:(NSString*)text
 {
+    text = [text precomposedStringWithCanonicalMapping];
+    
     int len = text.length;
     if (!len) {
         return 0;
