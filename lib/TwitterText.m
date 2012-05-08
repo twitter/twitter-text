@@ -272,6 +272,10 @@
     @")" \
 @")"
 
+static const int MaxTweetLength = 140;
+static const int HTTPShortURLLength = 14;
+static const int HTTPSShortURLLength = 15;
+
 static NSRegularExpression *validURLRegexp;
 static NSCharacterSet *invalidURLWithoutProtocolPrecedingCharSet;
 static NSRegularExpression *validASCIIDomainRegexp;
@@ -607,6 +611,7 @@ static NSRegularExpression *endMentionRegexp;
         return 0;
     }
     
+    // Adjust count for non-BMP characters
     UniChar buffer[len];
     [text getCharacters:buffer];
     int charCount = len;
@@ -623,8 +628,68 @@ static NSRegularExpression *endMentionRegexp;
             }
         }
     }
-    
+
     return charCount;
+}
+
++ (int)remainingCharacterCount:(NSString*)text
+{
+    return [self remainingCharacterCount:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
+}
+
++ (int)remainingCharacterCount:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength
+{
+    text = [text precomposedStringWithCanonicalMapping];
+    
+    if (!text.length) {
+        return MaxTweetLength;
+    }
+    
+    // Remove URLs from text and add t.co length
+    NSMutableString *string = [text mutableCopy];
+#if !__has_feature(objc_arc)
+    [string autorelease];
+#endif
+    
+    int urlLengthOffset = 0;
+    NSArray *urlEntities = [self extractURLs:text];
+    for (int i=urlEntities.count-1; i>=0; i--) {
+        TwitterTextEntity *entity = [urlEntities objectAtIndex:i];
+        NSRange urlRange = entity.range;
+        NSString *url = [string substringWithRange:urlRange];
+        if ([url rangeOfString:@"https" options:NSCaseInsensitiveSearch | NSAnchoredSearch].location == 0) {
+            urlLengthOffset += httpsURLLength;
+        } else {
+            urlLengthOffset += httpURLLength;
+        }
+        [string deleteCharactersInRange:urlRange];
+    }
+    
+    int len = string.length;
+    int charCount = len;
+    
+    if (len > 0) {
+        // Adjust count for non-BMP characters
+        UniChar buffer[len];
+        [string getCharacters:buffer];
+        
+        for (int i=0; i<len; i++) {
+            UniChar c = buffer[i];
+            if (CFStringIsSurrogateHighCharacter(c)) {
+                if (i+1 < len) {
+                    UniChar d = buffer[i+1];
+                    if (CFStringIsSurrogateLowCharacter(d)) {
+                        charCount--;
+                        i++;
+                    }
+                }
+            }
+        }
+    }
+    
+    charCount += urlLengthOffset;
+
+    return MaxTweetLength - charCount;
 }
 
 @end

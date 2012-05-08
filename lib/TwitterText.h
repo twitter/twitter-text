@@ -24,4 +24,7 @@
 
 + (int)tweetLength:(NSString*)text;
 
++ (int)remainingCharacterCount:(NSString*)text;
++ (int)remainingCharacterCount:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength;
+
 @end
