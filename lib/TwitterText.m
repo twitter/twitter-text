@@ -293,7 +293,7 @@ static NSRegularExpression *endMentionRegexp;
 
 @implementation TwitterText
 
-+ (NSArray*)entitiesInTex:(NSString*)text
++ (NSArray*)entitiesInText:(NSString*)text
 {
     if (!text.length) {
         return [NSArray array];

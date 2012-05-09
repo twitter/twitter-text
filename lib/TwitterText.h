@@ -15,7 +15,7 @@
 
 @interface TwitterText : NSObject
 
-+ (NSArray*)entitiesInTex:(NSString*)text;
++ (NSArray*)entitiesInText:(NSString*)text;
 + (NSArray*)URLsInText:(NSString*)text;
 + (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
 + (NSArray*)mentionedScreenNamesInText:(NSString*)text;
