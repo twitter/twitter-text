@@ -666,7 +666,7 @@ static NSRegularExpression *endMentionRegexp;
     }
     
     int len = string.length;
-    int charCount = len;
+    int charCount = len + urlLengthOffset;
     
     if (len > 0) {
         // Adjust count for non-BMP characters
@@ -686,8 +686,6 @@ static NSRegularExpression *endMentionRegexp;
             }
         }
     }
-    
-    charCount += urlLengthOffset;
 
     return MaxTweetLength - charCount;
 }
