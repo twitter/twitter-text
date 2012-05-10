@@ -613,7 +613,7 @@ static NSRegularExpression *endMentionRegexp;
     
     // Adjust count for non-BMP characters
     UniChar buffer[len];
-    [text getCharacters:buffer];
+    [text getCharacters:buffer range:NSMakeRange(0, len)];
     int charCount = len;
     
     for (int i=0; i<len; i++) {
@@ -671,7 +671,7 @@ static NSRegularExpression *endMentionRegexp;
     if (len > 0) {
         // Adjust count for non-BMP characters
         UniChar buffer[len];
-        [string getCharacters:buffer];
+        [string getCharacters:buffer range:NSMakeRange(0, len)];
         
         for (int i=0; i<len; i++) {
             UniChar c = buffer[i];
