@@ -273,8 +273,8 @@
 @")"
 
 static const int MaxTweetLength = 140;
-static const int HTTPShortURLLength = 14;
-static const int HTTPSShortURLLength = 15;
+static const int HTTPShortURLLength = 20;
+static const int HTTPSShortURLLength = 21;
 
 static NSRegularExpression *validURLRegexp;
 static NSCharacterSet *invalidURLWithoutProtocolPrecedingCharSet;
