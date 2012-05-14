@@ -498,7 +498,9 @@ if (typeof twttr === "undefined" || twttr === null) {
         followingEllipsis: displayUrl.match(/…$/) ? "…" : ""
       };
       for (var k in v) {
-        v[k] = twttr.txt.htmlEscape(v[k]);
+        if (v.hasOwnProperty(k)) {
+          v[k] = twttr.txt.htmlEscape(v[k]);
+        }
       }
       // As an example: The user tweets "hi http://longdomainname.com/foo"
       // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
