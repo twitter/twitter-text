@@ -142,6 +142,19 @@ test("twttr.txt.autolink", function() {
   ok(autoLinkResult.match(/>http:\/\//), 'Include the head of expanded_url');
   ok(autoLinkResult.match(/span style='font-size:0'/), 'Obey invisibleTagAttrs');
 
+  autoLinkResult = twttr.txt.autoLinkEntities("http://t.co/0JG5Mcq",
+    [{
+      "url": "http://t.co/0JG5Mcq",
+      "display_url": "blog.twitter.com/2011/05/twitte…",
+      "expanded_url": "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
+      "indices": [0, 19]
+    }]
+  );
+  ok(autoLinkResult.match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>/), 'autoLinkEntities: Use t.co URL as link target');
+  ok(autoLinkResult.match(/>blog.twitter.com\/2011\/05\/twitte.*…</), 'autoLinkEntities: Use display url from entities');
+  ok(autoLinkResult.match(/r-for-mac-update.html</), 'autoLinkEntities: Include the tail of expanded_url');
+  ok(autoLinkResult.match(/>http:\/\//), 'autoLinkEntities: Include the head of expanded_url');
+
   // Insert the HTML into the document and verify that, if copied and pasted, it would get the expanded_url.
   var div = document.createElement('div');
   div.innerHTML = autoLinkResult;
@@ -164,11 +177,12 @@ test("twttr.txt.autolink", function() {
   });
   ok(picTwitter.match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>/), 'Use t.co URL as link target');
   ok(picTwitter.match(/>pic.twitter.com\/xyz</), 'Use display url from url entities');
-  ok(!picTwitter.match(/foo\/statuses/), 'Don\'t include the tail of expanded_url');
+  ok(picTwitter.match(/title="http:\/\/twitter.com\/foo\/statuses\/123\/photo\/1"/), 'Use expanded url as title');
+  ok(!picTwitter.match(/foo\/statuses</), 'Don\'t include the tail of expanded_url');
 
   // urls with invalid character
   var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
-  for (i = 0; i < invalidChars.length; i++) {
+  for (var i = 0; i < invalidChars.length; i++) {
     equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid character');
   }
 
@@ -177,8 +191,46 @@ test("twttr.txt.autolink", function() {
       "Autolink hashtag/mentionURL w/ Supplementary character");
 });
 
+test("twttr.txt.linkTextWithEntity", function() {
+  var result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "twitter.com",
+    "expanded_url": "http://twitter.com/"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>",
+      "Entire display_url is in expanded_url");
+
+  result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "twitter.com…",
+    "expanded_url": "http://twitter.com/abcdefg"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/abcdefg</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span>…</span>",
+      "display_url ends with …");
+
+  result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "…tter.com/abcdefg",
+    "expanded_url": "http://twitter.com/abcdefg"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "<span class='tco-ellipsis'>…<span class='invisible'>&nbsp;</span></span><span class='invisible'>http://twi</span><span class='js-display-url'>tter.com/abcdefg</span><span class='invisible'></span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>",
+      "display_url begins with …");
+
+  result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "pic.twitter.com/xyz",
+    "expanded_url": "http://twitter.com/foo/statuses/123/photo/1"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "pic.twitter.com/xyz",
+      "display_url and expanded_url are on different domains");
+});
+
 test("twttr.txt.extractMentionsOrListsWithIndices", function() {
-  var invalid_chars = ['!', '@', '#', '$', '%', '&', '*']
+  var invalid_chars = ['!', '@', '#', '$', '%', '&', '*'];
 
   for (var i = 0; i < invalid_chars.length; i++) {
     c = invalid_chars[i];
