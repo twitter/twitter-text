@@ -218,8 +218,6 @@ module Twitter
       link_to(link_text, href, html_attrs, :no_escape_text => true)
     end
 
-    INVISIBLE_TAG_ATTRS = "style='font-size:0; line-height:0'".freeze
-
     def link_text_with_entity(entity, options)
       display_url = entity[:display_url]
       expanded_url = entity[:expanded_url]
