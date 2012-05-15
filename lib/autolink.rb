@@ -22,6 +22,9 @@ module Twitter
     # Default URL base for auto-linked hashtags
     DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23".freeze
 
+    # Default attributes for invisible span tag
+    DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'".freeze
+
     DEFAULT_OPTIONS = {
       :url_class      => DEFAULT_URL_CLASS,
       :list_class     => DEFAULT_LIST_CLASS,
@@ -30,7 +33,9 @@ module Twitter
 
       :username_url_base => DEFAULT_USERNAME_URL_BASE,
       :list_url_base     => DEFAULT_LIST_URL_BASE,
-      :hashtag_url_base  => DEFAULT_HASHTAG_URL_BASE
+      :hashtag_url_base  => DEFAULT_HASHTAG_URL_BASE,
+
+      :invisible_tag_attrs => DEFAULT_INVISIBLE_TAG_ATTRS
     }.freeze
 
     def auto_link_with_json(text, json, options = {})
@@ -78,6 +83,7 @@ module Twitter
     # <tt>:username_url_base</tt>::  the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:hashtag_url_base</tt>::   the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
+    # <tt>:invisible_tag_attrs</tt>::   HTML attribute to add to invisible span tags
     # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
     # <tt>:suppress_lists</tt>::          disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::      do not add <tt>rel="nofollow"</tt> to auto-linked items
@@ -120,6 +126,7 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
+    # <tt>:invisible_tag_attrs</tt>::   HTML attribute to add to invisible span tags
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link_urls(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false), options, &block)
@@ -161,7 +168,8 @@ module Twitter
       :url_class, :list_class, :username_class, :hashtag_class,
       :username_url_base, :list_url_base, :hashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
-      :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities
+      :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
+      :invisible_tag_attrs
     ]).freeze
 
     def extract_html_attrs_from_options!(options)
@@ -202,7 +210,7 @@ module Twitter
       url_entity = url_entities[url] || entity
       link_text = if url_entity[:display_url]
         html_attrs[:title] ||= url_entity[:expanded_url]
-        link_text_with_entity(url_entity)
+        link_text_with_entity(url_entity, options)
       else
         html_escape(url)
       end
@@ -212,9 +220,10 @@ module Twitter
 
     INVISIBLE_TAG_ATTRS = "style='font-size:0; line-height:0'".freeze
 
-    def link_text_with_entity(entity)
+    def link_text_with_entity(entity, options)
       display_url = entity[:display_url]
       expanded_url = entity[:expanded_url]
+      invisible_tag_attrs = options[:invisible_tag_attrs] || DEFAULT_INVISIBLE_TAG_ATTRS
 
       # Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
       # should contain the full original URL (expanded_url), not the display URL.
@@ -260,11 +269,11 @@ module Twitter
         #   <span style='font-size:0'>&nbsp;</span>
         #   …
         # </span>
-        %(<span class="tco-ellipsis">#{preceding_ellipsis}<span #{INVISIBLE_TAG_ATTRS}>&nbsp;</span></span>) <<
-        %(<span #{INVISIBLE_TAG_ATTRS}>#{html_escape(before_display_url)}</span>) <<
+        %(<span class="tco-ellipsis">#{preceding_ellipsis}<span #{invisible_tag_attrs}>&nbsp;</span></span>) <<
+        %(<span #{invisible_tag_attrs}>#{html_escape(before_display_url)}</span>) <<
         %(<span class="js-display-url">#{html_escape(display_url_sans_ellipses)}</span>) <<
-        %(<span #{INVISIBLE_TAG_ATTRS}>#{html_escape(after_display_url)}</span>) <<
-        %(<span class="tco-ellipsis"><span #{INVISIBLE_TAG_ATTRS}>&nbsp;</span>#{following_ellipsis}</span>)
+        %(<span #{invisible_tag_attrs}>#{html_escape(after_display_url)}</span>) <<
+        %(<span class="tco-ellipsis"><span #{invisible_tag_attrs}>&nbsp;</span>#{following_ellipsis}</span>)
       else
         html_escape(display_url)
       end
