@@ -18,7 +18,7 @@ class ConformanceTest < Test::Unit::TestCase
 
   private
 
-  %w(description expected text hits).each do |key|
+  %w(description expected text json hits).each do |key|
     define_method key.to_sym do
       @test_info[key]
     end
@@ -121,6 +121,10 @@ class ConformanceTest < Test::Unit::TestCase
 
   def_conformance_test("autolink.yml", :all) do
     assert_equal_without_attribute_order expected, auto_link(text, :suppress_no_follow => true), description
+  end
+
+  def_conformance_test("autolink.yml", :json) do
+    assert_equal_without_attribute_order expected, auto_link_with_json(text, ActiveSupport::JSON.decode(json), :suppress_no_follow => true), description
   end
 
   # HitHighlighter Conformance

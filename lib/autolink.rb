@@ -38,6 +38,20 @@ module Twitter
       :invisible_tag_attrs => DEFAULT_INVISIBLE_TAG_ATTRS
     }.freeze
 
+    def auto_link_with_json(text, json, options = {})
+      # concatenate entities
+      entities = json.values().flatten()
+
+      # map JSON entity to twitter-text entity
+      entities.each do |entity|
+        entity.symbolize_keys!
+        # hashtag
+        entity[:hashtag] = entity[:text] if entity[:text]
+      end
+
+      auto_link_entities(text, entities, options)
+    end
+
     def auto_link_entities(text, entities, options = {}, &block)
       return text if entities.empty?
 
@@ -305,7 +319,7 @@ module Twitter
 
       html_attrs = options[:html_attrs].dup
 
-      if !entity[:list_slug].empty? && !options[:suppress_lists]
+      if entity[:list_slug] && !entity[:list_slug].empty? && !options[:suppress_lists]
         href = if options[:list_url_block]
           options[:list_url_block].call(name)
         else
