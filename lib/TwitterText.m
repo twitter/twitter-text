@@ -138,7 +138,7 @@
 @"]"
 
 #define TWUHashtagBoundary \
-@"\\A|\\z|[^&a-z0-9_" \
+@"^|$|[^&a-z0-9_" \
     TWULatinAccents \
     TWUNonLatinHashtagChars \
     TWUCJKHashtagCharacters \
@@ -148,6 +148,16 @@
     @"(?:" TWUHashtagBoundary @")([#＃]" TWUHashtagAlphanumeric @"*" TWHashtagAlpha TWUHashtagAlphanumeric @"*)"
 
 #define TWUEndHashTagMatch      @"\\A(?:[#＃]|://)"
+
+//
+// Cashtag
+//
+
+#define TWUCashtag          @"[a-z]{1,6}(?:[._][a-z]{1,2})?"
+#define TWUValidCashtag \
+    @"(?:^|[" TWUUnicodeSpaces @"])" \
+    @"(\\$" TWUCashtag @")" \
+    @"(?=$|\\s|[" TWUPunctuationChars @"])"
 
 //
 // Mention and list name
@@ -283,12 +293,14 @@ static NSRegularExpression *invalidShortDomainRegexp;
 static NSRegularExpression *validTCOURLRegexp;
 static NSRegularExpression *validHashtagRegexp;
 static NSRegularExpression *endHashtagRegexp;
+static NSRegularExpression *validCashtagRegexp;
 static NSRegularExpression *validMentionOrListRegexp;
 static NSRegularExpression *validReplyRegexp;
 static NSRegularExpression *endMentionRegexp;
 
 @interface TwitterText ()
 + (NSArray*)hashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities;
++ (NSArray*)cashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities;
 @end
 
 @implementation TwitterText
@@ -302,9 +314,13 @@ static NSRegularExpression *endMentionRegexp;
     NSMutableArray *results = [NSMutableArray array];
     
     NSArray *urls = [self URLsInText:text];
-    NSArray *hashtags = [self hashtagsInText:text withURLEntities:urls];
     [results addObjectsFromArray:urls];
+    
+    NSArray *hashtags = [self hashtagsInText:text withURLEntities:urls];
     [results addObjectsFromArray:hashtags];
+    
+    NSArray *cashtags = [self cashtagsInText:text withURLEntities:urls];
+    [results addObjectsFromArray:cashtags];
     
     NSArray *mentionsAndLists = [self mentionsOrListsInText:text];
     NSMutableArray *addingItems = [NSMutableArray array];
@@ -361,7 +377,7 @@ static NSRegularExpression *endMentionRegexp;
 
     while (1) {
         position = NSMaxRange(allRange);
-        NSTextCheckingResult *urlResult = [validURLRegexp firstMatchInString:text options:0 range:NSMakeRange(position, len - position)];
+        NSTextCheckingResult *urlResult = [validURLRegexp firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
         if (!urlResult || urlResult.numberOfRanges < 9) {
             break;
         }
@@ -466,7 +482,7 @@ static NSRegularExpression *endMentionRegexp;
     NSInteger position = 0;
     
     while (1) {
-        NSTextCheckingResult *matchResult = [validHashtagRegexp firstMatchInString:text options:0 range:NSMakeRange(position, len - position)];
+        NSTextCheckingResult *matchResult = [validHashtagRegexp firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
         if (!matchResult || matchResult.numberOfRanges < 2) {
             break;
         }
@@ -495,6 +511,61 @@ static NSRegularExpression *endMentionRegexp;
                 TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityHashtag range:hashtagRange];
                 [results addObject:entity];
             }
+        }
+        
+        position = NSMaxRange(matchResult.range);
+    }
+    
+    return results;
+}
+
++ (NSArray*)cashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
+{
+    if (!text.length) {
+        return [NSArray array];
+    }
+    
+    NSArray *urls = nil;
+    if (checkingURLOverlap) {
+        urls = [self URLsInText:text];
+    }
+    return [self cashtagsInText:text withURLEntities:urls];
+}
+
++ (NSArray*)cashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities
+{
+    if (!text.length) {
+        return [NSArray array];
+    }
+    
+    if (!validCashtagRegexp) {
+        validCashtagRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidCashtag options:NSRegularExpressionCaseInsensitive error:NULL];
+    }
+    
+    NSMutableArray *results = [NSMutableArray array];
+    NSInteger len = text.length;
+    NSInteger position = 0;
+    
+    while (1) {
+        NSTextCheckingResult *matchResult = [validCashtagRegexp firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
+        if (!matchResult || matchResult.numberOfRanges < 2) {
+            break;
+        }
+        
+        NSRange cashtagRange = [matchResult rangeAtIndex:1];
+        BOOL matchOk = YES;
+        
+        // Check URL overlap
+        for (TwitterTextEntity *urlEntity in urlEntities) {
+            if (NSIntersectionRange(urlEntity.range, cashtagRange).length > 0) {
+                matchOk = NO;
+                break;
+            }
+        }
+        
+        if (matchOk) {
+            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityCashtag range:cashtagRange];
+            [results addObject:entity];
         }
         
         position = NSMaxRange(matchResult.range);
@@ -539,7 +610,7 @@ static NSRegularExpression *endMentionRegexp;
     NSInteger position = 0;
 
     while (1) {
-        NSTextCheckingResult *matchResult = [validMentionOrListRegexp firstMatchInString:text options:0 range:NSMakeRange(position, len - position)];
+        NSTextCheckingResult *matchResult = [validMentionOrListRegexp firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
         if (!matchResult || matchResult.numberOfRanges < 5) {
             break;
         }
@@ -586,7 +657,7 @@ static NSRegularExpression *endMentionRegexp;
 
     NSInteger len = text.length;
     
-    NSTextCheckingResult *matchResult = [validReplyRegexp firstMatchInString:text options:0 range:NSMakeRange(0, len)];
+    NSTextCheckingResult *matchResult = [validReplyRegexp firstMatchInString:text options:(NSMatchingWithoutAnchoringBounds | NSMatchingAnchored) range:NSMakeRange(0, len)];
     if (!matchResult || matchResult.numberOfRanges < 2) {
         return nil;
     }
@@ -657,7 +728,7 @@ static NSRegularExpression *endMentionRegexp;
         TwitterTextEntity *entity = [urlEntities objectAtIndex:i];
         NSRange urlRange = entity.range;
         NSString *url = [string substringWithRange:urlRange];
-        if ([url rangeOfString:@"https" options:NSCaseInsensitiveSearch | NSAnchoredSearch].location == 0) {
+        if ([url rangeOfString:@"https" options:(NSCaseInsensitiveSearch | NSAnchoredSearch)].location == 0) {
             urlLengthOffset += httpsURLLength;
         } else {
             urlLengthOffset += httpURLLength;

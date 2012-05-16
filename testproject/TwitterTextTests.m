@@ -51,6 +51,8 @@
     NSArray *urlsWithIndices = [tests objectForKey:@"urls_with_indices"];
     NSArray *hashtags = [tests objectForKey:@"hashtags"];
     NSArray *hashtagsWithIndices = [tests objectForKey:@"hashtags_with_indices"];
+    NSArray *cashtags = [tests objectForKey:@"cashtags"];
+    NSArray *cashtagsWithIndices = [tests objectForKey:@"cashtags_with_indices"];
     
     //
     // Mentions
@@ -284,6 +286,67 @@
                 NSString *actualText = [text substringWithRange:r];
                 
                 STAssertEqualObjects(expectedHashtag, actualText, @"%@", testCase);
+                STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
+            }
+        } else {
+            STFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+        }
+    }
+    
+    //
+    // Cashtag
+    //
+    
+    for (NSDictionary *testCase in cashtags) {
+        NSString *text = [testCase objectForKey:@"text"];
+        NSArray *expected = [testCase objectForKey:@"expected"];
+        
+        NSArray *results = [TwitterText cashtagsInText:text checkingURLOverlap:YES];
+        if (results.count == expected.count) {
+            int count = results.count;
+            for (int i=0; i<count; i++) {
+                NSString *expectedText = [expected objectAtIndex:i];
+                
+                TwitterTextEntity *entity = [results objectAtIndex:i];
+                NSRange r = entity.range;
+                r.location++;
+                r.length--;
+                NSString *actualText = [text substringWithRange:r];
+                
+                STAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+            }
+        } else {
+            STFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+            NSLog(@"### %@", results);
+        }
+    }
+    
+    //
+    // Cashtags with indices
+    //
+    for (NSDictionary *testCase in cashtagsWithIndices) {
+        NSString *text = [testCase objectForKey:@"text"];
+        NSArray *expected = [testCase objectForKey:@"expected"];
+        
+        NSArray *results = [TwitterText cashtagsInText:text checkingURLOverlap:YES];
+        if (results.count == expected.count) {
+            int count = results.count;
+            for (int i=0; i<count; i++) {
+                NSDictionary *expectedDic = [expected objectAtIndex:i];
+                NSString *expectedCashtag = [expectedDic objectForKey:@"cashtag"];
+                NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
+                int expectedStart = [[expectedIndices objectAtIndex:0] intValue];
+                int expectedEnd = [[expectedIndices objectAtIndex:1] intValue];
+                NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
+                
+                TwitterTextEntity *entity = [results objectAtIndex:i];
+                NSRange actualRange = entity.range;
+                NSRange r = actualRange;
+                r.location++;
+                r.length--;
+                NSString *actualText = [text substringWithRange:r];
+                
+                STAssertEqualObjects(expectedCashtag, actualText, @"%@", testCase);
                 STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
