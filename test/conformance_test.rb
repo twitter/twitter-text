@@ -156,4 +156,8 @@ class ConformanceTest < Test::Unit::TestCase
   def_conformance_test("validate.yml", :hashtags) do
     assert_equal expected, valid_hashtag?(text), description
   end
+
+  def_conformance_test("validate.yml", :lengths) do
+    assert_equal expected, tweet_length(text), description
+  end
 end
