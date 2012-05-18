@@ -171,7 +171,7 @@
 // URL
 //
 
-#define TWUValidURLPrecedingChars       @"(?:[^a-zA-Z0-9@＠$#＃" TWUInvalidCharacters @"]|^)"
+#define TWUValidURLPrecedingChars       @"(?:[^a-zA-Z0-9@＠$#＃'\"" TWUInvalidCharacters @"]|^)"
 
 #define TWUDomainValidStartEndChars \
 @"[^" \
