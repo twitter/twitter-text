@@ -125,6 +125,7 @@ test("twttr.txt.autolink", function() {
 
   // url entities
   var autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+    invisibleTagAttrs: "style='font-size:0'",
     urlEntities: [{
       "url": "http://t.co/0JG5Mcq",
       "display_url": "blog.twitter.com/2011/05/twitte…",
@@ -139,6 +140,7 @@ test("twttr.txt.autolink", function() {
   ok(autoLinkResult.match(/>blog.twitter.com\/2011\/05\/twitte.*…</), 'Use display url from url entities');
   ok(autoLinkResult.match(/r-for-mac-update.html</), 'Include the tail of expanded_url');
   ok(autoLinkResult.match(/>http:\/\//), 'Include the head of expanded_url');
+  ok(autoLinkResult.match(/span style='font-size:0'/), 'Obey invisibleTagAttrs');
 
   autoLinkResult = twttr.txt.autoLinkEntities("http://t.co/0JG5Mcq",
     [{
@@ -162,6 +164,22 @@ test("twttr.txt.autolink", function() {
   ok(range.toString().match(/\shttp:\/\/blog.twitter.com\/2011\/05\/twitter-for-mac-update.html\s…/), 'Selection copies expanded_url');
   document.body.removeChild(div);
 
+  var picTwitter = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+    urlEntities: [{
+      "url": "http://t.co/0JG5Mcq",
+      "display_url": "pic.twitter.com/xyz",
+      "expanded_url": "http://twitter.com/foo/statuses/123/photo/1",
+      "indices": [
+        84,
+        103
+      ]
+    }]
+  });
+  ok(picTwitter.match(/<a href="http:\/\/t.co\/0JG5Mcq"[^>]+>/), 'Use t.co URL as link target');
+  ok(picTwitter.match(/>pic.twitter.com\/xyz</), 'Use display url from url entities');
+  ok(picTwitter.match(/title="http:\/\/twitter.com\/foo\/statuses\/123\/photo\/1"/), 'Use expanded url as title');
+  ok(!picTwitter.match(/foo\/statuses</), 'Don\'t include the tail of expanded_url');
+
   // urls with invalid character
   var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
   for (var i = 0; i < invalidChars.length; i++) {
@@ -171,6 +189,44 @@ test("twttr.txt.autolink", function() {
   same(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
       "\uD801\uDC00 <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" data-screen-name=\"mention\" href=\"https://twitter.com/mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\" >http://twitter.com</a>",
       "Autolink hashtag/mentionURL w/ Supplementary character");
+});
+
+test("twttr.txt.linkTextWithEntity", function() {
+  var result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "twitter.com",
+    "expanded_url": "http://twitter.com/"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>",
+      "Entire display_url is in expanded_url");
+
+  result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "twitter.com…",
+    "expanded_url": "http://twitter.com/abcdefg"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/abcdefg</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span>…</span>",
+      "display_url ends with …");
+
+  result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "…tter.com/abcdefg",
+    "expanded_url": "http://twitter.com/abcdefg"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "<span class='tco-ellipsis'>…<span class='invisible'>&nbsp;</span></span><span class='invisible'>http://twi</span><span class='js-display-url'>tter.com/abcdefg</span><span class='invisible'></span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>",
+      "display_url begins with …");
+
+  result = twttr.txt.linkTextWithEntity({
+    "url": "http://t.co/abcde",
+    "display_url": "pic.twitter.com/xyz",
+    "expanded_url": "http://twitter.com/foo/statuses/123/photo/1"},
+    {invisibleTagAttrs: "class='invisible'"});
+  same(result,
+      "pic.twitter.com/xyz",
+      "display_url and expanded_url are on different domains");
 });
 
 test("twttr.txt.extractMentionsOrListsWithIndices", function() {
