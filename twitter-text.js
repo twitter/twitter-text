@@ -558,6 +558,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     var result = "";
     var beginIndex = 0;
 
+    // sort entities by start index
+    entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
+
     for (var i = 0; i < entities.length; i++) {
       var entity = entities[i];
       result += text.substring(beginIndex, entity.indices[0]);
