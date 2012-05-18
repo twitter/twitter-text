@@ -4,6 +4,9 @@ module Twitter
     def rewrite_entities(text, entities)
       chars = text.to_s.to_char_a
 
+      # sort by start index
+      entities = entities.sort_by{|entity| entity[:indices].first}
+
       result = []
       last_index = entities.inject(0) do |last_index, entity|
         result << chars[last_index...entity[:indices].first]
