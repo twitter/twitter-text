@@ -708,3 +708,29 @@ tests:
     - description: "Autolink @mention if followed by . and TLD"
       text: "@twitter.com @twitter.co.jp"
       expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.com @<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.co.jp"
+
+  json:
+    - description: "Do not autolink if JSON is empty."
+      text: "This is a tweet with no entity."
+      json: '{"hashtags":[], "urls":[], "user_mentions":[]}'
+      expected: "This is a tweet with no entity."
+
+    - description: "Autolink username"
+      text: "text @username"
+      json: '{"hashtags":[], "urls":[], "user_mentions":[{"screen_name": "username", "name": "@username", "id": 318686216, "id_str": "318686216", "indices": [5, 14]}]}'
+      expected: "text @<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>"
+
+    - description: "Autolink hashtag"
+      text: "text #hashtag"
+      json: '{"hashtags":[{"text":"hashtag", "indices":[5,13]}], "urls":[], "user_mentions":[]}'
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a>"
+
+    - description: "Autolink URL"
+      text: "text http://t.co/gksG6xlq"
+      json: '{"hashtags":[], "urls":[{"url": "http://t.co/gksG6xlq", "expanded_url": "http://twitter.com/", "display_url": "twitter.com", "indices": [5, 25]}], "user_mentions":[]}'
+      expected: "text <a href=\"http://t.co/gksG6xlq\" title=\"http://twitter.com/\"><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span></span><span style='font-size:0; line-height:0'>http://</span><span class='js-display-url'>twitter.com</span><span style='font-size:0; line-height:0'>/</span><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span></span></a>"
+
+    - description: "Autolink all"
+      text: "text http://t.co/gksG6xlq text #hashtag text @username"
+      json: '{"hashtags":[{"text":"hashtag", "indices":[31,39]}], "urls":[{"url": "http://t.co/gksG6xlq", "expanded_url": "http://twitter.com/", "display_url": "twitter.com", "indices": [5, 25]}], "user_mentions":[{"screen_name": "username", "name": "@username", "id": 318686216, "id_str": "318686216", "indices": [45, 54]}]}'
+      expected: "text <a href=\"http://t.co/gksG6xlq\" title=\"http://twitter.com/\"><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span></span><span style='font-size:0; line-height:0'>http://</span><span class='js-display-url'>twitter.com</span><span style='font-size:0; line-height:0'>/</span><span class='tco-ellipsis'><span style='font-size:0; line-height:0'>&nbsp;</span></span></a> text <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\">#hashtag</a> text @<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>"
