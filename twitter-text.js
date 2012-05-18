@@ -53,12 +53,16 @@ if (typeof twttr === "undefined" || twttr === null) {
     }), flags);
   }
 
+  twttr.txt.regexSupplant = regexSupplant;
+
   // simple string interpolation
   function stringSupplant(str, values) {
     return str.replace(/#\{(\w+)\}/g, function(match, name) {
       return values[name] || "";
     });
   }
+
+  twttr.txt.stringSupplant = stringSupplant;
 
   function addCharsToCharClass(charClass, start, end) {
     var s = String.fromCharCode(start);
@@ -68,6 +72,8 @@ if (typeof twttr === "undefined" || twttr === null) {
     charClass.push(s);
     return charClass;
   }
+
+  twttr.txt.addCharsToCharClass = addCharsToCharClass;
 
   // Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
   // to access both the list of characters and a pattern suitible for use with String#split
