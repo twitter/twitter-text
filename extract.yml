@@ -798,3 +798,52 @@ tests:
         - hashtag: "русский"
           indices: [33, 41]
 
+  cashtags:
+    - description: "Extract cashtags"
+      text: "Example cashtags: $TEST $Stock   $symbol"
+      expected: ["TEST", "Stock", "symbol"]
+
+    - description: "Extract cashtags with . or _"
+      text: "Example cashtags: $TEST.T $test.tt $Stock_X $symbol_ab"
+      expected: ["TEST.T", "test.tt", "Stock_X", "symbol_ab"]
+
+    - description: "Do not extract cashtags if they contain numbers"
+      text: "$123 $test123 $TE123ST"
+      expected: []
+
+    - description: "Do not extract cashtags with non-ASCII characters"
+      text: "$ストック $株"
+      expected: []
+
+    - description: "Do not extract cashtags with punctuations"
+      text: "$ $. $- $@ $! $() $+"
+      expected: []
+
+    - description: "Do not include trailing . or _"
+      text: "$TEST. $TEST_"
+      expected: ["TEST", "TEST"]
+
+    - description: "Do not extract cashtags if there is no space before $"
+      text: "$OK$NG$BAD text$NO .$NG $$NG"
+      expected: ["OK"]
+
+    - description: "Do not extract too long cashtags"
+      text: "$CashtagMustBeLessThanSixCharacter"
+      expected: []
+
+  cashtags_with_indices:
+    - description: "Extract cashtags"
+      text: "Example: $TEST $symbol test"
+      expected:
+        - cashtag: "TEST"
+          indices: [9, 14]
+        - cashtag: "symbol"
+          indices: [15, 22]
+
+    - description: "Extract cashtags with . or _"
+      text: "Example: $TEST.T test $symbol_ab end"
+      expected:
+        - cashtag: "TEST.T"
+          indices: [9, 16]
+        - cashtag: "symbol_ab"
+          indices: [22, 32]
