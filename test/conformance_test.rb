@@ -102,6 +102,15 @@ class ConformanceTest < Test::Unit::TestCase
     assert_equal e, extract_hashtags_with_indices(text), description
   end
 
+  def_conformance_test("extract.yml", :cashtags) do
+    assert_equal expected, extract_cashtags(text), description
+  end
+
+  def_conformance_test("extract.yml", :cashtags_with_indices) do
+    e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
+    assert_equal e, extract_cashtags_with_indices(text), description
+  end
+
   # Autolink Conformance
   def_conformance_test("autolink.yml", :usernames) do
     assert_equal_without_attribute_order expected, auto_link_usernames_or_lists(text, :suppress_no_follow => true), description
@@ -117,6 +126,10 @@ class ConformanceTest < Test::Unit::TestCase
 
   def_conformance_test("autolink.yml", :hashtags) do
     assert_equal_without_attribute_order expected, auto_link_hashtags(text, :suppress_no_follow => true), description
+  end
+
+  def_conformance_test("autolink.yml", :cashtags) do
+    assert_equal_without_attribute_order expected, auto_link_cashtags(text, :suppress_no_follow => true), description
   end
 
   def_conformance_test("autolink.yml", :all) do
