@@ -355,4 +355,31 @@
     }
 }
 
+- (void)testValidate
+{
+    NSString *fileName = @"../test/json-conformance/validate.json";
+    NSData *data = [NSData dataWithContentsOfFile:fileName];
+    if (!data) {
+        NSString *error = [NSString stringWithFormat:@"No test data: %@", fileName];
+        STFail(error);
+        return;
+    }
+    NSDictionary *rootDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    if (!rootDic) {
+        NSString *error = [NSString stringWithFormat:@"Invalid test data: %@", fileName];
+        STFail(error);
+        return;
+    }
+    
+    NSDictionary *tests = [rootDic objectForKey:@"tests"];
+    NSArray *lengths = [tests objectForKey:@"lengths"];
+    
+    for (NSDictionary *testCase in lengths) {
+        NSString *text = [testCase objectForKey:@"text"];
+        int expected = [[testCase objectForKey:@"expected"] intValue];
+        int len = [TwitterText tweetLength:text];
+        STAssertTrue(len == expected, @"Length should be %d (%d)", expected, len);
+    }
+}
+
 @end

@@ -24,6 +24,7 @@
 + (TwitterTextEntity*)repliedScreenNameInText:(NSString*)text;
 
 + (int)tweetLength:(NSString*)text;
++ (int)tweetLength:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength;
 
 + (int)remainingCharacterCount:(NSString*)text;
 + (int)remainingCharacterCount:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength;

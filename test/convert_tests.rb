@@ -12,6 +12,7 @@ OUTPUT_PATH = 'json-conformance/'
 
 FILES = [
   'extract.yml',
+  'validate.yml',
 ]
 
 FILES.each do |filename|
