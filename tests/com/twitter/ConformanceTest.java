@@ -82,6 +82,33 @@ public class ConformanceTest extends TestCase {
     }
   }
 
+  public void testCashtagsExtractor() throws Exception {
+    File yamlFile = new File(conformanceDir, "extract.yml");
+    List testCases = loadConformanceData(yamlFile, "cashtags");
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
+                   extractor.extractCashtags((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
+  public void testCashtagsWithIndicesExtractor() throws Exception {
+    File yamlFile = new File(conformanceDir, "extract.yml");
+    List testCases = loadConformanceData(yamlFile, "cashtags_with_indices");
+    for (Map testCase : (List<Map>)testCases) {
+      List<Map<String, Object>> expectedConfig = (List)testCase.get(KEY_EXPECTED_OUTPUT);
+      List<Extractor.Entity> expected = new ArrayList<Extractor.Entity>();
+      for (Map<String, Object> configEntry : expectedConfig) {
+        List<Integer> indices = (List<Integer>)configEntry.get("indices");
+        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("cashtag").toString(), Entity.Type.CASHTAG));
+      }
+
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   expected,
+                   extractor.extractCashtagsWithIndices((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
 
   public void testUsernameAutolinking() throws Exception {
     File yamlFile = new File(conformanceDir, "autolink.yml");
@@ -120,6 +147,16 @@ public class ConformanceTest extends TestCase {
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
                    (String)testCase.get(KEY_EXPECTED_OUTPUT),
                    linker.autoLinkURLs((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
+  public void testCashtagAutolinking() throws Exception {
+    File yamlFile = new File(conformanceDir, "autolink.yml");
+    List testCases = loadConformanceData(yamlFile, "cashtags");
+    for (Map testCase : (List<Map>) testCases) {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          (String) testCase.get(KEY_EXPECTED_OUTPUT),
+          linker.autoLinkCashtags((String) testCase.get(KEY_INPUT)));
     }
   }
 
