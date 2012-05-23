@@ -34,7 +34,7 @@ https://github.com/twitter/twitter-text-objc/issues
 
 == Authors
 
-* Satoshi Nakagawa
+* Satoshi Nakagawa https://github.com/psychs
 
 == License
 
