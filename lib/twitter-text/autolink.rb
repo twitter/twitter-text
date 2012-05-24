@@ -236,7 +236,7 @@ module Twitter
         html_escape(url)
       end
 
-      link_to(link_text, href, html_attrs, :no_escape_text => true)
+      link_to_text(link_text, href, html_attrs, :no_escape_text => true)
     end
 
     def link_text_with_entity(entity, options)
@@ -318,7 +318,7 @@ module Twitter
         :title => "##{hashtag}"
       }.merge(options[:html_attrs])
 
-      link_to(text, href, html_attrs)
+      link_to_text(text, href, html_attrs)
     end
 
     def link_to_cashtag(entity, chars, options = {})
@@ -336,7 +336,7 @@ module Twitter
         :title => "$#{cashtag}"
       }.merge(options[:html_attrs])
 
-      link_to(text, href, html_attrs)
+      link_to_text(text, href, html_attrs)
     end
 
     def link_to_screen_name(entity, chars, options = {})
@@ -372,10 +372,10 @@ module Twitter
         html_attrs[:class] ||= "#{options[:url_class]} #{options[:username_class]}"
       end
 
-      "#{at}#{link_to(text, href, html_attrs)}"
+      "#{at}#{link_to_text(text, href, html_attrs)}"
     end
 
-    def link_to(text, href, attributes = {}, options = {})
+    def link_to_text(text, href, attributes = {}, options = {})
       attributes[:href] = href
       text = html_escape(text) unless options[:no_escape_text]
       %(<a#{tag_attrs(attributes)}>#{text}</a>)
