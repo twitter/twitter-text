@@ -31,6 +31,10 @@
               return function(test) {
                 return twttr.txt.autoLinkUsernamesOrLists(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
               };
+            case "cashtags":
+              return function(test) {
+                return twttr.txt.autoLinkCashtags(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
             case "all":
               return function(test) {
                 return twttr.txt.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
@@ -85,6 +89,14 @@
             case "hashtags_with_indices":
               return function(test) {
                 return twttr.txt.extractHashtagsWithIndices(test.text);
+              };
+            case "cashtags":
+              return function(test) {
+                return twttr.txt.extractCashtags(test.text);
+              };
+            case "cashtags_with_indices":
+              return function(test) {
+                return twttr.txt.extractCashtagsWithIndices(test.text);
               };
           }
         case "hit_highlighting":
