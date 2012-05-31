@@ -117,6 +117,10 @@
               return function(test) {
                 return twttr.txt.isValidUrl(test.text, true, false);
               };
+            case "lengths":
+              return function(test) {
+                return twttr.txt.getTweetLength(test.text);
+              };
           }
       }
 
