@@ -336,7 +336,7 @@ module Twitter
         :title => "$#{cashtag}"
       }.merge(options[:html_attrs])
 
-      link_to_text(text, href, html_attrs)
+      link_to_text('$' + cashtag, href, html_attrs)
     end
 
     def link_to_screen_name(entity, chars, options = {})
