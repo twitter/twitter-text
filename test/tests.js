@@ -123,6 +123,11 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("#hi", { preText: "<b>" }).match(/<a[^>]+>#<b>hi<\/a>/), "Override preText");
   ok(twttr.txt.autoLink("#hi", { postText: "</b>" }).match(/<a[^>]+>#hi<\/b><\/a>/), "Override postText");
 
+  // test urlClass
+  same(twttr.txt.autoLink("http://twitter.com"), "<a href=\"http://twitter.com\" rel=\"nofollow\" >http://twitter.com</a>", "AutoLink without urlClass");
+  same(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" rel=\"nofollow\"  class=\"testClass\">http://twitter.com</a>", "autoLink with urlClass");
+  ok(!twttr.txt.autoLink("#hash @tw", {urlClass: "testClass"}).match(/class=\"testClass\"/), "urlClass won't be used for hashtag and @mention auto-links")
+
   // url entities
   var autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
     invisibleTagAttrs: "style='font-size:0'",

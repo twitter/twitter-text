@@ -368,16 +368,14 @@ if (typeof twttr === "undefined" || twttr === null) {
   , "i");
 
 
-  // Default CSS class for auto-linked URLs
-  var DEFAULT_URL_CLASS = "tweet-url";
   // Default CSS class for auto-linked lists (along with the url class)
-  var DEFAULT_LIST_CLASS = "list-slug";
+  var DEFAULT_LIST_CLASS = "tweet-url list-slug";
   // Default CSS class for auto-linked usernames (along with the url class)
-  var DEFAULT_USERNAME_CLASS = "username";
+  var DEFAULT_USERNAME_CLASS = "tweet-url username";
   // Default CSS class for auto-linked hashtags (along with the url class)
-  var DEFAULT_HASHTAG_CLASS = "hashtag";
+  var DEFAULT_HASHTAG_CLASS = "tweet-url hashtag";
   // Default CSS class for auto-linked cashtags (along with the url class)
-  var DEFAULT_CASHTAG_CLASS = "cashtag";
+  var DEFAULT_CASHTAG_CLASS = "tweet-url cashtag";
   // HTML attribute for robot nofollow behavior (default)
   var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
   // Options which should not be passed as HTML attributes
@@ -415,7 +413,7 @@ if (typeof twttr === "undefined" || twttr === null) {
         }
       }
 
-      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
+      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
   };
 
   twttr.txt.linkToCashtag = function(entity, text, options) {
@@ -431,7 +429,7 @@ if (typeof twttr === "undefined" || twttr === null) {
         }
       }
 
-      return stringSupplant("#{before}<a href=\"#{cashtagUrlBase}#{text}\" title=\"$#{text}\" class=\"#{urlClass} #{cashtagClass}\"#{extraHtml}>$#{preText}#{text}#{postText}</a>", d);
+      return stringSupplant("#{before}<a href=\"#{cashtagUrlBase}#{text}\" title=\"$#{text}\" class=\"#{cashtagClass}\"#{extraHtml}>$#{preText}#{text}#{postText}</a>", d);
   };
 
   twttr.txt.linkToMentionAndList = function(entity, text, options) {
@@ -455,12 +453,12 @@ if (typeof twttr === "undefined" || twttr === null) {
       // the link is a list
       var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
       d.list = twttr.txt.htmlEscape(list.toLowerCase());
-      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
+      return stringSupplant("#{before}#{at}<a class=\"#{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
     } else {
       // this is a screen name
       d.chunk = d.user;
       d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
+      return stringSupplant("#{before}#{at}<a class=\"#{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
     }
   };
 
@@ -478,6 +476,11 @@ if (typeof twttr === "undefined" || twttr === null) {
         options.htmlAttrs = (options.htmlAttrs || "") + " title=\"" + urlEntity.expanded_url + "\"";
       }
       linkText = twttr.txt.linkTextWithEntity(urlEntity, options);
+    }
+
+    // set class only if urlClass is specified.
+    if (options.urlClass) {
+      options.htmlAttrs = (options.htmlAttrs || "") + " class=\"" + options.urlClass + "\"";
     }
 
     var d = {
@@ -564,10 +567,6 @@ if (typeof twttr === "undefined" || twttr === null) {
     if (!options.suppressNoFollow) {
       options.rel = "nofollow";
     }
-    if (options.urlClass) {
-      options["class"] = options.urlClass;
-    }
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
     options.cashtagClass = options.cashtagClass || DEFAULT_CASHTAG_CLASS;
