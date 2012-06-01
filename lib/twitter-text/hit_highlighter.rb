@@ -23,9 +23,9 @@ module Twitter
 
       chunks = text.split(/[<>]/)
 
-      result = ""
+      result = []
       chunk_index, chunk = 0, chunks[0]
-      chunk_chars = chunk.respond_to?("mb_chars") ? chunk.mb_chars : chunk.respond_to?("chars") && chunk.chars.respond_to?("[]") ? chunk.chars : chunk
+      chunk_chars = chunk.to_s.to_char_a
       prev_chunks_len = 0
       chunk_cursor = 0
       start_in_chunk = false
@@ -49,13 +49,13 @@ module Twitter
           chunk_cursor = 0
           chunk_index += 2
           chunk = chunks[chunk_index]
-          chunk_chars = chunk.respond_to?("mb_chars") ? chunk.mb_chars : chunk.respond_to?("chars") && chunk.chars.respond_to?("[]") ? chunk.chars : chunk
+          chunk_chars = chunk.to_s.to_char_a
           start_in_chunk = false
         end
 
         if !placed && !chunk.nil?
           hit_spot = hit - prev_chunks_len
-          result << chunk_chars[chunk_cursor...hit_spot].to_s + tag
+          result << chunk_chars[chunk_cursor...hit_spot] << tag
           chunk_cursor = hit_spot
           if index % 2 == 0
             start_in_chunk = true
@@ -80,9 +80,7 @@ module Twitter
         end
       end
 
-      result
-    rescue
-      text
+      result.flatten.join
     end
   end
 end
