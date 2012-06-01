@@ -8,16 +8,14 @@ import java.util.List;
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
  */
 public class Autolink {
-  /** Default CSS class for auto-linked URLs */
-  public static final String DEFAULT_URL_CLASS = "tweet-url";
   /** Default CSS class for auto-linked list URLs */
-  public static final String DEFAULT_LIST_CLASS = "list-slug";
+  public static final String DEFAULT_LIST_CLASS = "tweet-url list-slug";
   /** Default CSS class for auto-linked username URLs */
-  public static final String DEFAULT_USERNAME_CLASS = "username";
+  public static final String DEFAULT_USERNAME_CLASS = "tweet-url username";
   /** Default CSS class for auto-linked hashtag URLs */
-  public static final String DEFAULT_HASHTAG_CLASS = "hashtag";
+  public static final String DEFAULT_HASHTAG_CLASS = "tweet-url hashtag";
   /** Default CSS class for auto-linked cashtag URLs */
-  public static final String DEFAULT_CASHTAG_CLASS = "cashtag";
+  public static final String DEFAULT_CASHTAG_CLASS = "tweet-url cashtag";
   /** Default href for username links (the username without the @ will be appended) */
   public static final String DEFAULT_USERNAME_URL_BASE = "https://twitter.com/";
   /** Default href for list links (the username/list without the @ will be appended) */
@@ -62,7 +60,7 @@ public class Autolink {
   }
 
   public Autolink() {
-    urlClass = DEFAULT_URL_CLASS;
+    urlClass = null;
     listClass = DEFAULT_LIST_CLASS;
     usernameClass = DEFAULT_USERNAME_CLASS;
     hashtagClass = DEFAULT_HASHTAG_CLASS;
@@ -100,7 +98,7 @@ public class Autolink {
 
     builder.append("<a href=\"").append(hashtagUrlBase).append(entity.getValue()).append("\"");
     builder.append(" title=\"#").append(entity.getValue()).append("\"");
-    builder.append(" class=\"").append(urlClass).append(" ").append(hashtagClass).append("\"");
+    builder.append(" class=\"").append(hashtagClass).append("\"");
     if (noFollow) {
       builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
     }
@@ -117,7 +115,7 @@ public class Autolink {
     if (!usernameIncludeSymbol) {
       builder.append(atChar);
     }
-    builder.append("<a class=\"").append(urlClass).append(" ");
+    builder.append("<a class=\"");
     if (entity.listSlug != null) {
       // this is list
       builder.append(listClass).append("\" href=\"").append(listUrlBase);
@@ -204,6 +202,9 @@ public class Autolink {
     }
 
     builder.append("<a href=\"").append(url).append("\"");
+    if (urlClass != null && !urlClass.isEmpty()) {
+      builder.append(" class=\"").append(urlClass).append("\"");
+    }
     if (noFollow){
       builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
     }
@@ -213,7 +214,7 @@ public class Autolink {
   public void linkToCashtag(Entity entity, String text, StringBuilder builder) {
     builder.append("<a href=\"").append(cashtagUrlBase).append(entity.getValue()).append("\"");
     builder.append(" title=\"$").append(entity.getValue()).append("\"");
-    builder.append(" class=\"").append(urlClass).append(" ").append(cashtagClass).append("\"");
+    builder.append(" class=\"").append(cashtagClass).append("\"");
     if (noFollow) {
       builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
     }

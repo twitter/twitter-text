@@ -81,6 +81,24 @@ public class AutolinkTest extends TestCase {
     assertAutolink(expected, linker.autoLink(tweet));
   }
 
+  public void testUrlClass() {
+    linker.setNoFollow(false);
+
+    String tweet = "http://twitter.com";
+    String expected = "<a href=\"http://twitter.com\">http://twitter.com</a>";
+    assertAutolink(expected, linker.autoLink(tweet));
+
+    linker.setUrlClass("testClass");
+    expected = "<a href=\"http://twitter.com\" class=\"testClass\">http://twitter.com</a>";
+    assertAutolink(expected, linker.autoLink(tweet));
+
+    tweet = "#hash @tw";
+    String result = linker.autoLink(tweet);
+    assertTrue(result.contains("class=\"" + Autolink.DEFAULT_HASHTAG_CLASS + "\""));
+    assertTrue(result.contains("class=\"" + Autolink.DEFAULT_USERNAME_CLASS + "\""));
+    assertFalse(result.contains("class=\"testClass\""));
+  }
+
   protected void assertAutolink(String expected, String linked) {
     assertEquals("Autolinked text should equal the input", expected, linked);
   }
