@@ -6,16 +6,14 @@ module Twitter
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
   # usernames, lists, hashtags and URLs.
   module Autolink extend self
-    # Default CSS class for auto-linked URLs
-    DEFAULT_URL_CLASS = "tweet-url".freeze
-    # Default CSS class for auto-linked lists (along with the url class)
-    DEFAULT_LIST_CLASS = "list-slug".freeze
-    # Default CSS class for auto-linked usernames (along with the url class)
-    DEFAULT_USERNAME_CLASS = "username".freeze
-    # Default CSS class for auto-linked hashtags (along with the url class)
-    DEFAULT_HASHTAG_CLASS = "hashtag".freeze
-    # Default CSS class for auto-linked cashtags (along with the url class)
-    DEFAULT_CASHTAG_CLASS = "cashtag".freeze
+    # Default CSS class for auto-linked lists
+    DEFAULT_LIST_CLASS = "tweet-url list-slug".freeze
+    # Default CSS class for auto-linked usernames
+    DEFAULT_USERNAME_CLASS = "tweet-url username".freeze
+    # Default CSS class for auto-linked hashtags
+    DEFAULT_HASHTAG_CLASS = "tweet-url hashtag".freeze
+    # Default CSS class for auto-linked cashtags
+    DEFAULT_CASHTAG_CLASS = "tweet-url cashtag".freeze
 
     # Default URL base for auto-linked usernames
     DEFAULT_USERNAME_URL_BASE = "https://twitter.com/".freeze
@@ -30,7 +28,6 @@ module Twitter
     DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'".freeze
 
     DEFAULT_OPTIONS = {
-      :url_class      => DEFAULT_URL_CLASS,
       :list_class     => DEFAULT_LIST_CLASS,
       :username_class => DEFAULT_USERNAME_CLASS,
       :hashtag_class  => DEFAULT_HASHTAG_CLASS,
@@ -84,13 +81,15 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::      class to add to all <tt><a></tt> tags
+    # <tt>:url_class</tt>::      class to add to url <tt><a></tt> tags
     # <tt>:list_class</tt>::     class to add to list <tt><a></tt> tags
     # <tt>:username_class</tt>:: class to add to username <tt><a></tt> tags
     # <tt>:hashtag_class</tt>::  class to add to hashtag <tt><a></tt> tags
+    # <tt>:cashtag_class</tt>::  class to add to cashtag <tt><a></tt> tags
     # <tt>:username_url_base</tt>::  the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:hashtag_url_base</tt>::   the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
+    # <tt>:cashtag_url_base</tt>::   the value for <tt>href</tt> attribute on cashtag links. The <tt>$cashtag</tt> (minus the <tt>$</tt>) will be appended at the end of this.
     # <tt>:invisible_tag_attrs</tt>::   HTML attribute to add to invisible span tags
     # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
     # <tt>:suppress_lists</tt>::          disable auto-linking to lists
@@ -104,7 +103,6 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::      class to add to all <tt><a></tt> tags
     # <tt>:list_class</tt>::     class to add to list <tt><a></tt> tags
     # <tt>:username_class</tt>:: class to add to username <tt><a></tt> tags
     # <tt>:username_url_base</tt>:: the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
@@ -121,7 +119,6 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
     # <tt>:hashtag_class</tt>:: class to add to hashtag <tt><a></tt> tags
     # <tt>:hashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
@@ -134,7 +131,6 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
     # <tt>:cashtag_class</tt>:: class to add to cashtag <tt><a></tt> tags
     # <tt>:cashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The cashtag text (minus the <tt>$</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
@@ -147,6 +143,7 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
+    # <tt>:url_class</tt>::     class to add to url <tt><a></tt> tags
     # <tt>:invisible_tag_attrs</tt>::   HTML attribute to add to invisible span tags
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
     def auto_link_urls(text, options = {}, &block)
@@ -224,6 +221,7 @@ module Twitter
       # NOTE auto link to urls do not use any default values and options
       # like url_class but use suppress_no_follow.
       html_attrs = options[:html_attrs].dup
+      html_attrs[:class] = options[:url_class] if options.key?(:url_class)
 
       url_entities = url_entities_hash(options[:url_entities])
 
@@ -312,7 +310,7 @@ module Twitter
       end
 
       html_attrs = {
-        :class => "#{options[:url_class]} #{options[:hashtag_class]}",
+        :class => "#{options[:hashtag_class]}",
         # FIXME As our conformance test, hash in title should be half-width,
         # this should be bug of conformance data.
         :title => "##{hashtag}"
@@ -332,7 +330,7 @@ module Twitter
       end
 
       html_attrs = {
-        :class => "#{options[:url_class]} #{options[:cashtag_class]}",
+        :class => "#{options[:cashtag_class]}",
         :title => "$#{cashtag}"
       }.merge(options[:html_attrs])
 
@@ -362,14 +360,14 @@ module Twitter
         else
           "#{options[:list_url_base]}#{name}"
         end
-        html_attrs[:class] ||= "#{options[:url_class]} #{options[:list_class]}"
+        html_attrs[:class] ||= "#{options[:list_class]}"
       else
         href = if options[:username_url_block]
           options[:username_url_block].call(chunk)
         else
           "#{options[:username_url_base]}#{name}"
         end
-        html_attrs[:class] ||= "#{options[:url_class]} #{options[:username_class]}"
+        html_attrs[:class] ||= "#{options[:username_class]}"
       end
 
       "#{at}#{link_to_text(text, href, html_attrs)}"

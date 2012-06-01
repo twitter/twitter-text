@@ -552,8 +552,12 @@ describe Twitter::Autolink do
   end
 
   describe "autolinking options" do
+    before do
+      @linker = TestAutolink.new
+    end
+
     it "should show display_url when :url_entities provided" do
-      linked = TestAutolink.new.auto_link("http://t.co/0JG5Mcq", :url_entities => [{
+      linked = @linker.auto_link("http://t.co/0JG5Mcq", :url_entities => [{
         "url" => "http://t.co/0JG5Mcq",
         "display_url" => "blog.twitter.com/2011/05/twitte…",
         "expanded_url" => "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
@@ -571,7 +575,7 @@ describe Twitter::Autolink do
     end
 
     it "should accept invisible_tag_attrs option" do
-      linked = TestAutolink.new.auto_link("http://t.co/0JG5Mcq",
+      linked = @linker.auto_link("http://t.co/0JG5Mcq",
         {
           :url_entities => [{
             "url" => "http://t.co/0JG5Mcq",
@@ -589,7 +593,7 @@ describe Twitter::Autolink do
     end
 
     it "should show display_url if available in entity" do
-      linked = TestAutolink.new.auto_link_entities("http://t.co/0JG5Mcq",
+      linked = @linker.auto_link_entities("http://t.co/0JG5Mcq",
         [{
           :url => "http://t.co/0JG5Mcq",
           :display_url => "blog.twitter.com/2011/05/twitte…",
@@ -605,62 +609,77 @@ describe Twitter::Autolink do
     end
 
     it "should apply :class as a CSS class" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :class => 'myclass')
+      linked = @linker.auto_link("http://example.com/", :class => 'myclass')
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/myclass/)
     end
 
+    it "should apply :url_class only on URL" do
+      linked = @linker.auto_link("http://twitter.com")
+      linked.should have_autolinked_url('http://twitter.com')
+      linked.should_not match(/class/)
+
+      linked = @linker.auto_link("http://twitter.com", :url_class => 'testClass')
+      linked.should have_autolinked_url('http://twitter.com')
+      linked.should match(/class=\"testClass\"/)
+
+      linked = @linker.auto_link("#hash @tw", :url_class => 'testClass')
+      linked.should match(/class=\"tweet-url hashtag\"/)
+      linked.should match(/class=\"tweet-url username\"/)
+      linked.should_not match(/class=\"testClass\"/)
+    end
+
     it "should add rel=nofollow by default" do
-      linked = TestAutolink.new.auto_link("http://example.com/")
+      linked = @linker.auto_link("http://example.com/")
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/nofollow/)
     end
 
     it "should include the '@' symbol in a username when passed :username_include_symbol" do
-      linked = TestAutolink.new.auto_link("@user", :username_include_symbol => true)
+      linked = @linker.auto_link("@user", :username_include_symbol => true)
       linked.should link_to_screen_name('user', '@user')
     end
 
     it "should include the '@' symbol in a list when passed :username_include_symbol" do
-      linked = TestAutolink.new.auto_link("@user/list", :username_include_symbol => true)
+      linked = @linker.auto_link("@user/list", :username_include_symbol => true)
       linked.should link_to_list_path('user/list', '@user/list')
     end
 
     it "should not add rel=nofollow when passed :suppress_no_follow" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :suppress_no_follow => true)
+      linked = @linker.auto_link("http://example.com/", :suppress_no_follow => true)
       linked.should have_autolinked_url('http://example.com/')
       linked.should_not match(/nofollow/)
     end
 
     it "should not add a target attribute by default" do
-      linked = TestAutolink.new.auto_link("http://example.com/")
+      linked = @linker.auto_link("http://example.com/")
       linked.should have_autolinked_url('http://example.com/')
       linked.should_not match(/target=/)
     end
 
     it "should respect the :target option" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :target => 'mywindow')
+      linked = @linker.auto_link("http://example.com/", :target => 'mywindow')
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/target="mywindow"/)
     end
 
     it "should customize href by username_url_block option" do
-      linked = TestAutolink.new.auto_link("@test", :username_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("@test", :username_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'test')
     end
 
     it "should customize href by list_url_block option" do
-      linked = TestAutolink.new.auto_link("@test/list", :list_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("@test/list", :list_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'test/list')
     end
 
     it "should customize href by hashtag_url_block option" do
-      linked = TestAutolink.new.auto_link("#hashtag", :hashtag_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("#hashtag", :hashtag_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', '#hashtag')
     end
 
     it "should customize href by link_url_block option" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'http://example.com/')
     end
   end
