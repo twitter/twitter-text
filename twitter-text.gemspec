@@ -14,12 +14,13 @@ Gem::Specification.new do |s|
   s.has_rdoc = true
   s.summary = "Twitter text handling library"
 
+  s.add_development_dependency "multi_json", "~> 1.3"
   s.add_development_dependency "nokogiri"
   s.add_development_dependency "rake"
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec"
   s.add_development_dependency "simplecov"
-  s.add_runtime_dependency "activesupport"
+  s.add_runtime_dependency     "unf", "~> 0.0.5"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

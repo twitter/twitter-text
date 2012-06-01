@@ -1,6 +1,7 @@
+require 'multi_json'
+require 'nokogiri'
 require 'test/unit'
 require 'yaml'
-require 'nokogiri'
 
 # Ruby 1.8 encoding check
 major, minor, patch = RUBY_VERSION.split('.')
@@ -138,7 +139,7 @@ class ConformanceTest < Test::Unit::TestCase
   end
 
   def_conformance_test("autolink.yml", :json) do
-    assert_equal_without_attribute_order expected, auto_link_with_json(text, ActiveSupport::JSON.decode(json), :suppress_no_follow => true), description
+    assert_equal_without_attribute_order expected, auto_link_with_json(text, MultiJson.load(json), :suppress_no_follow => true), description
   end
 
   # HitHighlighter Conformance
