@@ -29,7 +29,7 @@ public class Autolink {
   /** Default attribute for invisible span tag */
   public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'";
 
-  protected String urlClass;
+  protected String urlClass = null;
   protected String listClass;
   protected String usernameClass;
   protected String hashtagClass;
@@ -41,12 +41,15 @@ public class Autolink {
   protected String invisibleTagAttrs;
   protected boolean noFollow = true;
   protected boolean usernameIncludeSymbol = false;
+  protected String symbolTag = null;
+  protected String textWithSymbolTag = null;
 
   private Extractor extractor = new Extractor();
 
-  private static CharSequence escapeHTML(String text) {
+  private static CharSequence escapeHTML(CharSequence text) {
     StringBuilder builder = new StringBuilder(text.length() * 2);
-    for (char c : text.toCharArray()) {
+    for (int i = 0; i < text.length(); i++) {
+      char c = text.charAt(i);
       switch(c) {
         case '&': builder.append("&amp;"); break;
         case '>': builder.append("&gt;"); break;
@@ -92,19 +95,63 @@ public class Autolink {
     return sb.toString();
   }
 
-  public void linkToHashtag(Entity entity, String text, StringBuilder builder) {
-    // Get the original hash char from text as it could be a full-width char.
-    CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+  public void linkToTextWithSymbol(CharSequence symbol, CharSequence text, String[][] attributes, StringBuilder builder) {
+    CharSequence taggedSymbol = symbolTag == null || symbolTag.isEmpty() ? symbol : String.format("<%s>%s</%s>", symbolTag, symbol, symbolTag);
+    text = escapeHTML(text);
+    CharSequence taggedText = textWithSymbolTag == null || textWithSymbolTag.isEmpty() ? text : String.format("<%s>%s</%s>", textWithSymbolTag, text, textWithSymbolTag);
 
-    builder.append("<a href=\"").append(hashtagUrlBase).append(entity.getValue()).append("\"");
-    builder.append(" title=\"#").append(entity.getValue()).append("\"");
-    builder.append(" class=\"").append(hashtagClass).append("\"");
+    boolean includeSymbol = usernameIncludeSymbol || !Regex.AT_SIGNS.matcher(symbol).matches();
+
+    if (!includeSymbol) {
+      builder.append(taggedSymbol);
+    }
+
+    // append <a> tag
+    builder.append("<a");
+    for (String[] attr : attributes) {
+      if (attr.length == 2 && attr[0] != null && attr[1] != null) {
+        builder.append(" ").append(escapeHTML(attr[0])).append("=\"").append(escapeHTML(attr[1])).append("\"");
+      }
+    }
     if (noFollow) {
       builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
     }
     builder.append(">");
-    builder.append(hashChar);
-    builder.append(entity.getValue()).append("</a>");
+
+    // append inner text
+    if (includeSymbol) {
+      builder.append(taggedSymbol);
+    }
+    builder.append(taggedText);
+
+    // append closing </a> tag
+    builder.append("</a>");
+  }
+
+  public void linkToHashtag(Entity entity, String text, StringBuilder builder) {
+    // Get the original hash char from text as it could be a full-width char.
+    CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+    CharSequence hashtag = entity.getValue();
+
+    String[][] attrs = new String[][] {
+        {"href", hashtagUrlBase + hashtag},
+        {"title", "#" + hashtag},
+        {"class", hashtagClass}
+    };
+
+    linkToTextWithSymbol(hashChar, hashtag, attrs, builder);
+  }
+
+  public void linkToCashtag(Entity entity, String text, StringBuilder builder) {
+    CharSequence cashtag = entity.getValue();
+
+    String[][] attrs = new String[][] {
+        {"href", cashtagUrlBase + cashtag},
+        {"title", "$" + cashtag},
+        {"class", cashtagClass},
+    };
+
+    linkToTextWithSymbol("$", cashtag, attrs, builder);
   }
 
   public void linkToMentionAndList(Entity entity, String text, StringBuilder builder) {
@@ -112,27 +159,21 @@ public class Autolink {
     // Get the original at char from text as it could be a full-width char.
     CharSequence atChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
 
-    if (!usernameIncludeSymbol) {
-      builder.append(atChar);
-    }
-    builder.append("<a class=\"");
+    String[][] attrs;
     if (entity.listSlug != null) {
-      // this is list
-      builder.append(listClass).append("\" href=\"").append(listUrlBase);
       mention += entity.listSlug;
+      attrs = new String[][]{
+          {"class", listClass},
+          {"href", listUrlBase + mention}
+      };
     } else {
-      // this is @mention
-      builder.append(usernameClass).append("\" href=\"").append(usernameUrlBase);
+      attrs = new String[][]{
+          {"class", usernameClass},
+          {"href", usernameUrlBase + mention}
+      };
     }
-    builder.append(mention).append("\"");
-    if (noFollow){
-      builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
-    }
-    builder.append(">");
-    if (usernameIncludeSymbol) {
-      builder.append(atChar);
-    }
-    builder.append(mention).append("</a>");
+
+    linkToTextWithSymbol(atChar, mention, attrs, builder);
   }
 
   public void linkToURL(Entity entity, String text, StringBuilder builder) {
@@ -209,17 +250,6 @@ public class Autolink {
       builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
     }
     builder.append(">").append(linkText).append("</a>");
-  }
-
-  public void linkToCashtag(Entity entity, String text, StringBuilder builder) {
-    builder.append("<a href=\"").append(cashtagUrlBase).append(entity.getValue()).append("\"");
-    builder.append(" title=\"$").append(entity.getValue()).append("\"");
-    builder.append(" class=\"").append(cashtagClass).append("\"");
-    if (noFollow) {
-      builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
-    }
-    builder.append(">$");
-    builder.append(entity.getValue()).append("</a>");
   }
 
   public String autoLinkEntities(String text, List<Entity> entities) {
