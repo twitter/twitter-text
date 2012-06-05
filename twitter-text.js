@@ -381,7 +381,7 @@ if (typeof twttr === "undefined" || twttr === null) {
                             'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true, 'cashtagUrlBase':true,
                             'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
                             'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
-                            'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true
+                            'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true, 'urlTarget':true
                             };
   var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
@@ -469,6 +469,11 @@ if (typeof twttr === "undefined" || twttr === null) {
     // set class only if urlClass is specified.
     if (options.urlClass) {
       options.htmlAttrs = (options.htmlAttrs || "") + " class=\"" + options.urlClass + "\"";
+    }
+
+    // set target only if urlTarget is specified.
+    if (options.urlTarget) {
+      options.htmlAttrs = (options.htmlAttrs || "") + " target=\"" + options.urlTarget + "\"";
     }
 
     var d = {

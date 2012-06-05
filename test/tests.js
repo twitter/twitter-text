@@ -125,10 +125,17 @@ test("twttr.txt.autolink", function() {
   // test urlClass
   same(twttr.txt.autoLink("http://twitter.com"), "<a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>", "AutoLink without urlClass");
   same(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" rel=\"nofollow\" class=\"testClass\">http://twitter.com</a>", "autoLink with urlClass");
-  ok(!twttr.txt.autoLink("#hash @tw", {urlClass: "testClass"}).match(/class=\"testClass\"/), "urlClass won't be used for hashtag and @mention auto-links")
+  ok(!twttr.txt.autoLink("#hash @tw", {urlClass: "testClass"}).match(/class=\"testClass\"/), "urlClass won't be used for hashtag and @mention auto-links");
+
+  // test urlTarget
+  var autoLinkResult = twttr.txt.autoLink("#hashtag @mention http://test.com", {urlTarget:'_blank'});
+  ok(!autoLinkResult.match(/<a[^>]+hashtag[^>]+target[^>]+>/), "urlTarget shouldn't be applied to auto-linked hashtag");
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+target[^>]+>/), "urlTarget shouldn't be applied to auto-linked mention");
+  ok(autoLinkResult.match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/), "urlTarget should be applied to auto-linked URL");
+  ok(!autoLinkResult.match(/urlClass/i), "urlClass should not appear in HTML");
 
   // url entities
-  var autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+  autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
     invisibleTagAttrs: "style='font-size:0'",
     urlEntities: [{
       "url": "http://t.co/0JG5Mcq",
