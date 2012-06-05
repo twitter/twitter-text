@@ -683,6 +683,25 @@ describe Twitter::Autolink do
       linked.should have_autolinked_url('dummy', 'http://example.com/')
     end
 
+    it "should customie HTML attributes by link_attribute_block" do
+      linked = @linker.auto_link("#hash @mention",
+        :link_attribute_block => lambda{|entity, attributes|
+          attributes[:"dummy-hash-attr"] = "test" if entity[:hashtag]
+        }
+      )
+      linked.should match(/<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]+>/)
+      linked.should_not match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]+>/)
+      linked.should_not match(/link_attribute_block/i)
+      
+      linked = @linker.auto_link("@mention http://twitter.com/",
+        :link_attribute_block => lambda{|entity, attributes|
+          attributes["dummy-url-attr"] = entity[:url] if entity[:url]
+        }
+      )
+      linked.should_not match(/<a[^>]+username[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"[^>]*>/)
+      linked.should match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/)
+    end
+
     it "should apply :url_target only to auto-linked URLs" do
       auto_linked = @linker.auto_link("#hashtag @mention http://test.com/", {:url_target => '_blank'})
       auto_linked.should have_autolinked_hashtag('#hashtag')
@@ -694,13 +713,13 @@ describe Twitter::Autolink do
     end
   end
 
-  describe "link_text_with_entity" do
+  describe "link_url_with_entity" do
     before do
       @linker = TestAutolink.new
     end
 
     it "should use display_url and expanded_url" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "twitter.com",
@@ -709,7 +728,7 @@ describe Twitter::Autolink do
     end
 
     it "should correctly handle display_url ending with '…'" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "twitter.com…",
@@ -718,7 +737,7 @@ describe Twitter::Autolink do
     end
 
     it "should correctly handle display_url starting with '…'" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "…tter.com/abcdefg",
@@ -727,7 +746,7 @@ describe Twitter::Autolink do
     end
 
     it "should not create spans if display_url and expanded_url are on different domains" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "pic.twitter.com/xyz",
