@@ -100,7 +100,9 @@ test("twttr.txt.extract", function() {
 test("twttr.txt.autolink", function() {
   // Username Overrides
   ok(twttr.txt.autoLink("@tw", { symbolTag: "s" }).match(/<s>@<\/s><a[^>]+>tw<\/a>/), "Apply symbolTag to @username");
+  ok(!twttr.txt.autoLink("@tw", { symbolTag: "s" }).match(/symbolTag/i), "Do not include symbolTag attribute");
   ok(twttr.txt.autoLink("@tw", { textWithSymbolTag: "b" }).match(/@<a[^>]+><b>tw<\/b><\/a>/), "Apply textWithSymbolTag to @username");
+  ok(!twttr.txt.autoLink("@tw", { textWithSymbolTag: "b" }).match(/textWithSymbolTag/i), "Do not include textWithSymbolTag attribute");
   ok(twttr.txt.autoLink("@tw", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<s>@<\/s><a[^>]+><b>tw<\/b><\/a>/), "Apply symbolTag and textWithSymbolTag to @username");
   same(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }), "<a class=\"tweet-url username\" href=\"https://twitter.com/tw\" data-screen-name=\"tw\" rel=\"nofollow\">@tw</a>",
       "Include @ in the autolinked username");

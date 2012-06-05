@@ -381,7 +381,7 @@ if (typeof twttr === "undefined" || twttr === null) {
                             'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true, 'cashtagUrlBase':true,
                             'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
                             'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
-                            'suppressDataScreenName':true, 'urlEntities':true, 'before':true
+                            'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true
                             };
   var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
