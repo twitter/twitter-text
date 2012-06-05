@@ -368,16 +368,14 @@ if (typeof twttr === "undefined" || twttr === null) {
   , "i");
 
 
-  // Default CSS class for auto-linked URLs
-  var DEFAULT_URL_CLASS = "tweet-url";
   // Default CSS class for auto-linked lists (along with the url class)
-  var DEFAULT_LIST_CLASS = "list-slug";
+  var DEFAULT_LIST_CLASS = "tweet-url list-slug";
   // Default CSS class for auto-linked usernames (along with the url class)
-  var DEFAULT_USERNAME_CLASS = "username";
+  var DEFAULT_USERNAME_CLASS = "tweet-url username";
   // Default CSS class for auto-linked hashtags (along with the url class)
-  var DEFAULT_HASHTAG_CLASS = "hashtag";
+  var DEFAULT_HASHTAG_CLASS = "tweet-url hashtag";
   // Default CSS class for auto-linked cashtags (along with the url class)
-  var DEFAULT_CASHTAG_CLASS = "cashtag";
+  var DEFAULT_CASHTAG_CLASS = "tweet-url cashtag";
   // HTML attribute for robot nofollow behavior (default)
   var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
   // Options which should not be passed as HTML attributes
@@ -424,7 +422,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     var attrs = {
       href: options.hashtagUrlBase + hashtag,
       title: "#" + hashtag,
-      class: options.urlClass + " " + options.hashtagClass
+      class: options.hashtagClass
     };
 
     return twttr.txt.linkToTextWithSymbol(hash, hashtag, attrs, options);
@@ -435,7 +433,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     var attrs = {
       href: options.cashtagUrlBase + cashtag,
       title: "$" + cashtag,
-      class: options.urlClass + " " + options.cashtagClass
+      class: options.cashtagClass
     };
 
     return twttr.txt.linkToTextWithSymbol("$", cashtag, attrs, options);
@@ -447,7 +445,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     var slashListname = twttr.txt.htmlEscape(entity.listSlug);
     var isList = entity.listSlug && !options.suppressLists;
     var attrs = {
-      class: options.urlClass + " " + (isList ? options.listClass : options.usernameClass),
+      class: (isList ? options.listClass : options.usernameClass),
       href: isList ? options.listUrlBase + user + slashListname : options.usernameUrlBase + user
     };
     if (!isList && !options.suppressDataScreenName) {
@@ -468,6 +466,11 @@ if (typeof twttr === "undefined" || twttr === null) {
     var urlEntity = (options.urlEntities && options.urlEntities[url]) || entity;
     if (urlEntity.display_url) {
       linkText = twttr.txt.linkTextWithEntity(urlEntity, options);
+    }
+
+    // set class only if urlClass is specified.
+    if (options.urlClass) {
+      options.htmlAttrs = (options.htmlAttrs || "") + " class=\"" + options.urlClass + "\"";
     }
 
     var d = {
@@ -554,10 +557,6 @@ if (typeof twttr === "undefined" || twttr === null) {
     if (!options.suppressNoFollow) {
       options.rel = "nofollow";
     }
-    if (options.urlClass) {
-      options["class"] = options.urlClass;
-    }
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
     options.cashtagClass = options.cashtagClass || DEFAULT_CASHTAG_CLASS;
