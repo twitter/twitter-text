@@ -124,7 +124,7 @@ test("twttr.txt.autolink", function() {
 
   // test urlClass
   same(twttr.txt.autoLink("http://twitter.com"), "<a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>", "AutoLink without urlClass");
-  same(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" rel=\"nofollow\" class=\"testClass\">http://twitter.com</a>", "autoLink with urlClass");
+  same(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" class=\"testClass\" rel=\"nofollow\">http://twitter.com</a>", "autoLink with urlClass");
   ok(!twttr.txt.autoLink("#hash @tw", {urlClass: "testClass"}).match(/class=\"testClass\"/), "urlClass won't be used for hashtag and @mention auto-links");
 
   // test urlTarget
@@ -133,6 +133,16 @@ test("twttr.txt.autolink", function() {
   ok(!autoLinkResult.match(/<a[^>]+username[^>]+target[^>]+>/), "urlTarget shouldn't be applied to auto-linked mention");
   ok(autoLinkResult.match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/), "urlTarget should be applied to auto-linked URL");
   ok(!autoLinkResult.match(/urlClass/i), "urlClass should not appear in HTML");
+
+  // test htmlAttributeBlock
+  autoLinkResult = twttr.txt.autoLink("#hash @mention", {htmlAttributeBlock: function(entity, attributes) {if (entity.hashtag) attributes["dummy-hash-attr"] = "test";}});
+  ok(autoLinkResult.match(/<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]+>/), "htmlAttributeBlock should be applied to hashtag");
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]+>/), "htmlAttributeBlock should not be applied to mention");
+  ok(!autoLinkResult.match(/html_attribute_block/i), "htmlAttributeBlock should not appear in HTML");
+
+  autoLinkResult = twttr.txt.autoLink("@mention http://twitter.com/", {htmlAttributeBlock: function(entity, attributes) {if (entity.url) attributes["dummy-url-attr"] = entity.url;}});
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]+>/), "htmlAttributeBlock should not be applied to mention");
+  ok(autoLinkResult.match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/), "htmlAttributeBlock should be applied to URL");
 
   // url entities
   autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {

@@ -397,11 +397,15 @@ if (typeof twttr === "undefined" || twttr === null) {
     return r;
   }
 
-  twttr.txt.linkToTextWithSymbol = function(symbol, text, attributes, options) {
+  twttr.txt.linkToTextWithSymbol = function(entity, symbol, text, attributes, options) {
     var taggedSymbol = options.symbolTag ? "<" + options.symbolTag + ">" + symbol + "</"+ options.symbolTag + ">" : symbol;
     text = twttr.txt.htmlEscape(text);
     var taggedText = options.textWithSymbolTag ? "<" + options.textWithSymbolTag + ">" + text + "</"+ options.textWithSymbolTag + ">" : text;
 
+    // if htmlAttributeBlock is specified, call it to modify the attributes
+    if (options.htmlAttributeBlock) {
+      options.htmlAttributeBlock(entity, attributes);
+    }
     var d = {
       tagAttr: twttr.txt.extractHtmlAttrsFromOptions(attributes) + (options.htmlAttrs || ""),
       taggedSymbol: taggedSymbol,
@@ -423,7 +427,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       class: options.hashtagClass
     };
 
-    return twttr.txt.linkToTextWithSymbol(hash, hashtag, attrs, options);
+    return twttr.txt.linkToTextWithSymbol(entity, hash, hashtag, attrs, options);
   };
 
   twttr.txt.linkToCashtag = function(entity, text, options) {
@@ -434,7 +438,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       class: options.cashtagClass
     };
 
-    return twttr.txt.linkToTextWithSymbol("$", cashtag, attrs, options);
+    return twttr.txt.linkToTextWithSymbol(entity, "$", cashtag, attrs, options);
   };
 
   twttr.txt.linkToMentionAndList = function(entity, text, options) {
@@ -450,7 +454,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       attrs['data-screen-name'] = user;
     }
 
-    return twttr.txt.linkToTextWithSymbol(at, isList ? user + slashListname : user, attrs, options);
+    return twttr.txt.linkToTextWithSymbol(entity, at, isList ? user + slashListname : user, attrs, options);
   };
 
   twttr.txt.linkToUrl = function(entity, text, options) {
@@ -466,18 +470,29 @@ if (typeof twttr === "undefined" || twttr === null) {
       linkText = twttr.txt.linkTextWithEntity(urlEntity, options);
     }
 
+    var attrs = {};
+
     // set class only if urlClass is specified.
     if (options.urlClass) {
-      options.htmlAttrs = (options.htmlAttrs || "") + " class=\"" + options.urlClass + "\"";
+      attrs["class"] = options.urlClass;
     }
 
     // set target only if urlTarget is specified.
     if (options.urlTarget) {
-      options.htmlAttrs = (options.htmlAttrs || "") + " target=\"" + options.urlTarget + "\"";
+      attrs.target = options.urlTarget;
+    }
+
+    if (!options.title && urlEntity.display_url) {
+      attrs.title = urlEntity.expanded_url;
+    }
+
+    // if htmlAttributeBlock is specified, call it to modify the attributes
+    if (options.htmlAttributeBlock) {
+      options.htmlAttributeBlock(entity, attrs);
     }
 
     var d = {
-      htmlAttrs: options.htmlAttrs + (!options.title && urlEntity.display_url ? " title=\"" + urlEntity.expanded_url + "\"" : ""),
+      htmlAttrs: twttr.txt.extractHtmlAttrsFromOptions(attrs) + (options.htmlAttrs || ""),
       url: twttr.txt.htmlEscape(url),
       linkText: linkText
     };
