@@ -3,6 +3,7 @@ package com.twitter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.twitter.Extractor.Entity;
 
@@ -115,6 +116,17 @@ public class AutolinkTest extends TestCase {
     linker.setUsernameIncludeSymbol(true);
     expected = "<a class=\"tweet-url username\" href=\"https://twitter.com/mention\"><s>@</s><b>mention</b></a>";
     assertAutolink(expected, linker.autoLink(tweet));
+  }
+
+  public void testUrlTarget() {
+    linker.setUrlTarget("_blank");
+
+    String tweet = "http://test.com";
+    String result = linker.autoLink(tweet);
+    assertFalse("urlTarget shouldn't be applied to auto-linked hashtag", Pattern.matches(".*<a[^>]+hashtag[^>]+target[^>]+>.*", result));
+    assertFalse("urlTarget shouldn't be applied to auto-linked mention", Pattern.matches(".*<a[^>]+username[^>]+target[^>]+>.*", result));
+    assertTrue("urlTarget should be applied to auto-linked URL", Pattern.matches(".*<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>.*", result));
+    assertFalse("urlClass should not appear in HTML", result.toLowerCase().contains("urlclass"));
   }
 
   protected void assertAutolink(String expected, String linked) {

@@ -43,6 +43,7 @@ public class Autolink {
   protected boolean usernameIncludeSymbol = false;
   protected String symbolTag = null;
   protected String textWithSymbolTag = null;
+  protected String urlTarget = null;
 
   private Extractor extractor = new Extractor();
 
@@ -245,6 +246,9 @@ public class Autolink {
     builder.append("<a href=\"").append(url).append("\"");
     if (urlClass != null && !urlClass.isEmpty()) {
       builder.append(" class=\"").append(urlClass).append("\"");
+    }
+    if (urlTarget != null && !urlTarget.isEmpty()) {
+      builder.append(" target=\"").append(urlTarget).append("\"");
     }
     if (noFollow){
       builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
@@ -525,5 +529,14 @@ public class Autolink {
    */
   public void setTextWithSymbolTag(String tag) {
     this.textWithSymbolTag = tag;
+  }
+
+  /**
+   * Set the value of the target attribute in auto-linked URLs
+   *
+   * @param target target value e.g., "_blank"
+   */
+  public void setUrlTarget(String target) {
+    this.urlTarget = target;
   }
 }
