@@ -190,7 +190,7 @@ module Twitter
       :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
-      :invisible_tag_attrs
+      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag
     ]).freeze
 
     def extract_html_attrs_from_options!(options)
@@ -303,8 +303,6 @@ module Twitter
       hashtag = entity[:hashtag]
       hashtag = yield(hashtag) if block_given?
 
-      text = hash + hashtag
-
       href = if options[:hashtag_url_block]
         options[:hashtag_url_block].call(hashtag)
       else
@@ -318,10 +316,11 @@ module Twitter
         :title => "##{hashtag}"
       }.merge(options[:html_attrs])
 
-      link_to_text(text, href, html_attrs)
+      link_to_text_with_symbol(hash, hashtag, href, html_attrs, options)
     end
 
     def link_to_cashtag(entity, chars, options = {})
+      dollar = chars[entity[:indices].first]
       cashtag = entity[:cashtag]
       cashtag = yield(cashtag) if block_given?
 
@@ -336,7 +335,7 @@ module Twitter
         :title => "$#{cashtag}"
       }.merge(options[:html_attrs])
 
-      link_to_text('$' + cashtag, href, html_attrs)
+      link_to_text_with_symbol(dollar, cashtag, href, html_attrs, options)
     end
 
     def link_to_screen_name(entity, chars, options = {})
@@ -346,13 +345,6 @@ module Twitter
       name.downcase!
 
       at = chars[entity[:indices].first]
-      at_before_user = ""
-      if options[:username_include_symbol]
-        at_before_user = at
-        at = ""
-      end
-
-      text = at_before_user + chunk
 
       html_attrs = options[:html_attrs].dup
 
@@ -372,7 +364,19 @@ module Twitter
         html_attrs[:class] ||= "#{options[:url_class]} #{options[:username_class]}"
       end
 
-      "#{at}#{link_to_text(text, href, html_attrs)}"
+      link_to_text_with_symbol(at, chunk, href, html_attrs, options)
+    end
+
+    def link_to_text_with_symbol(symbol, text, href, attributes = {}, options = {})
+      tagged_symbol = options[:symbol_tag] ? "<#{options[:symbol_tag]}>#{symbol}</#{options[:symbol_tag]}>" : symbol
+      text = html_escape(text)
+      tagged_text = options[:text_with_symbol_tag] ? "<#{options[:text_with_symbol_tag]}>#{text}</#{options[:text_with_symbol_tag]}>" : text
+      options[:no_escape_text] = true
+      if options[:username_include_symbol] || symbol !~ Twitter::Regex::REGEXEN[:at_signs]
+        "#{link_to_text(tagged_symbol + tagged_text, href, attributes, options)}"
+      else
+        "#{tagged_symbol}#{link_to_text(tagged_text, href, attributes, options)}"
+      end
     end
 
     def link_to_text(text, href, attributes = {}, options = {})
