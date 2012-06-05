@@ -3,6 +3,7 @@ package com.twitter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.twitter.Extractor.Entity;
@@ -127,6 +128,31 @@ public class AutolinkTest extends TestCase {
     assertFalse("urlTarget shouldn't be applied to auto-linked mention", Pattern.matches(".*<a[^>]+username[^>]+target[^>]+>.*", result));
     assertTrue("urlTarget should be applied to auto-linked URL", Pattern.matches(".*<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>.*", result));
     assertFalse("urlClass should not appear in HTML", result.toLowerCase().contains("urlclass"));
+  }
+
+  public void testHtmlAttributeModifier() {
+    linker.setHtmlAttributeModifier(new Autolink.HtmlAttributeModifier() {
+      public void modify(Entity entity, Map<String, String> attributes) {
+        if (entity.type == Entity.Type.HASHTAG) {
+          attributes.put("dummy-hash-attr", "test");
+        }
+      }
+    });
+
+    String result = linker.autoLink("#hash @mention");
+    assertTrue("HtmlAttributeModifier should be applied to hashtag", Pattern.matches(".*<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]*>.*", result));
+    assertFalse("HtmlAttributeModifier should not be applied to mention", Pattern.matches(".*<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]*>.*", result));
+
+    linker.setHtmlAttributeModifier(new Autolink.HtmlAttributeModifier() {
+      public void modify(Entity entity, Map<String, String> attributes) {
+        if (entity.type == Entity.Type.URL) {
+          attributes.put("dummy-url-attr", entity.value);
+        }
+      }
+    });
+    result = linker.autoLink("@mention http://twitter.com/");
+    assertFalse("HtmlAttributeModifier should not be applied to mention", Pattern.matches(".*<a[^>]+username[^>]+dummy-url-attr[^>]*>.*", result));
+    assertTrue("htmlAttributeBlock should be applied to URL", Pattern.matches(".*<a[^>]+dummy-url-attr=\"http://twitter.com/\".*", result));
   }
 
   protected void assertAutolink(String expected, String linked) {

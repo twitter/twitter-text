@@ -2,7 +2,9 @@ package com.twitter;
 
 import com.twitter.Extractor.Entity;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
@@ -24,10 +26,12 @@ public class Autolink {
   public static final String DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23";
   /** Default href for cashtag links (the cashtag without the $ will be appended) */
   public static final String DEFAULT_CASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%24";
-  /** HTML attribute to add when noFollow is true (default) */
-  public static final String NO_FOLLOW_HTML_ATTRIBUTE = " rel=\"nofollow\"";
   /** Default attribute for invisible span tag */
   public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'";
+
+  public static interface HtmlAttributeModifier {
+    public void modify(Entity entity, Map<String, String> attributes);
+  };
 
   protected String urlClass = null;
   protected String listClass;
@@ -44,6 +48,7 @@ public class Autolink {
   protected String symbolTag = null;
   protected String textWithSymbolTag = null;
   protected String urlTarget = null;
+  protected HtmlAttributeModifier htmlAttributeModifier = null;
 
   private Extractor extractor = new Extractor();
 
@@ -96,37 +101,34 @@ public class Autolink {
     return sb.toString();
   }
 
-  public void linkToTextWithSymbol(CharSequence symbol, CharSequence text, String[][] attributes, StringBuilder builder) {
+  public void linkToText(Entity entity, CharSequence text, Map<String, String> attributes, StringBuilder builder) {
+    if (noFollow) {
+      attributes.put("rel", "nofollow");
+    }
+    if (htmlAttributeModifier != null) {
+      htmlAttributeModifier.modify(entity, attributes);
+    }
+    // append <a> tag
+    builder.append("<a");
+    for (Map.Entry<String, String> entry : attributes.entrySet()) {
+      builder.append(" ").append(escapeHTML(entry.getKey())).append("=\"").append(escapeHTML(entry.getValue())).append("\"");
+    }
+    builder.append(">").append(text).append("</a>");
+  }
+
+  public void linkToTextWithSymbol(Entity entity, CharSequence symbol, CharSequence text, Map<String, String> attributes, StringBuilder builder) {
     CharSequence taggedSymbol = symbolTag == null || symbolTag.isEmpty() ? symbol : String.format("<%s>%s</%s>", symbolTag, symbol, symbolTag);
     text = escapeHTML(text);
     CharSequence taggedText = textWithSymbolTag == null || textWithSymbolTag.isEmpty() ? text : String.format("<%s>%s</%s>", textWithSymbolTag, text, textWithSymbolTag);
 
     boolean includeSymbol = usernameIncludeSymbol || !Regex.AT_SIGNS.matcher(symbol).matches();
 
-    if (!includeSymbol) {
-      builder.append(taggedSymbol);
-    }
-
-    // append <a> tag
-    builder.append("<a");
-    for (String[] attr : attributes) {
-      if (attr.length == 2 && attr[0] != null && attr[1] != null) {
-        builder.append(" ").append(escapeHTML(attr[0])).append("=\"").append(escapeHTML(attr[1])).append("\"");
-      }
-    }
-    if (noFollow) {
-      builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
-    }
-    builder.append(">");
-
-    // append inner text
     if (includeSymbol) {
+      linkToText(entity, taggedSymbol.toString() + taggedText, attributes, builder);
+    } else {
       builder.append(taggedSymbol);
+      linkToText(entity, taggedText, attributes, builder);
     }
-    builder.append(taggedText);
-
-    // append closing </a> tag
-    builder.append("</a>");
   }
 
   public void linkToHashtag(Entity entity, String text, StringBuilder builder) {
@@ -134,25 +136,23 @@ public class Autolink {
     CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
     CharSequence hashtag = entity.getValue();
 
-    String[][] attrs = new String[][] {
-        {"href", hashtagUrlBase + hashtag},
-        {"title", "#" + hashtag},
-        {"class", hashtagClass}
-    };
+    Map<String, String> attrs = new LinkedHashMap<String, String>();
+    attrs.put("href", hashtagUrlBase + hashtag);
+    attrs.put("title", "#" + hashtag);
+    attrs.put("class", hashtagClass);
 
-    linkToTextWithSymbol(hashChar, hashtag, attrs, builder);
+    linkToTextWithSymbol(entity, hashChar, hashtag, attrs, builder);
   }
 
   public void linkToCashtag(Entity entity, String text, StringBuilder builder) {
     CharSequence cashtag = entity.getValue();
 
-    String[][] attrs = new String[][] {
-        {"href", cashtagUrlBase + cashtag},
-        {"title", "$" + cashtag},
-        {"class", cashtagClass},
-    };
+    Map<String, String> attrs = new LinkedHashMap<String, String>();
+    attrs.put("href", cashtagUrlBase + cashtag);
+    attrs.put("title", "$" + cashtag);
+    attrs.put("class", cashtagClass);
 
-    linkToTextWithSymbol("$", cashtag, attrs, builder);
+    linkToTextWithSymbol(entity, "$", cashtag, attrs, builder);
   }
 
   public void linkToMentionAndList(Entity entity, String text, StringBuilder builder) {
@@ -160,26 +160,22 @@ public class Autolink {
     // Get the original at char from text as it could be a full-width char.
     CharSequence atChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
 
-    String[][] attrs;
+    Map<String, String> attrs = new LinkedHashMap<String, String>();
     if (entity.listSlug != null) {
       mention += entity.listSlug;
-      attrs = new String[][]{
-          {"class", listClass},
-          {"href", listUrlBase + mention}
-      };
+      attrs.put("class", listClass);
+      attrs.put("href", listUrlBase + mention);
     } else {
-      attrs = new String[][]{
-          {"class", usernameClass},
-          {"href", usernameUrlBase + mention}
-      };
+      attrs.put("class", usernameClass);
+      attrs.put("href", usernameUrlBase + mention);
     }
 
-    linkToTextWithSymbol(atChar, mention, attrs, builder);
+    linkToTextWithSymbol(entity, atChar, mention, attrs, builder);
   }
 
   public void linkToURL(Entity entity, String text, StringBuilder builder) {
-    CharSequence url = escapeHTML(entity.getValue());
-    CharSequence linkText = url;
+    CharSequence url = entity.getValue();
+    CharSequence linkText = escapeHTML(url);
 
     if (entity.displayURL != null && entity.expandedURL != null) {
       // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
@@ -243,17 +239,18 @@ public class Autolink {
       }
     }
 
-    builder.append("<a href=\"").append(url).append("\"");
+    Map<String, String> attrs = new LinkedHashMap<String, String>();
+    attrs.put("href", url.toString());
+    if (urlClass != null) {
+      attrs.put("class", urlClass);
+    }
     if (urlClass != null && !urlClass.isEmpty()) {
-      builder.append(" class=\"").append(urlClass).append("\"");
+      attrs.put("class", urlClass);
     }
     if (urlTarget != null && !urlTarget.isEmpty()) {
-      builder.append(" target=\"").append(urlTarget).append("\"");
+      attrs.put("target", urlTarget);
     }
-    if (noFollow){
-      builder.append(NO_FOLLOW_HTML_ATTRIBUTE);
-    }
-    builder.append(">").append(linkText).append("</a>");
+    linkToText(entity, linkText, attrs, builder);
   }
 
   public String autoLinkEntities(String text, List<Entity> entities) {
@@ -538,5 +535,14 @@ public class Autolink {
    */
   public void setUrlTarget(String target) {
     this.urlTarget = target;
+  }
+
+  /**
+   * Set a modifier to modify HTML attributes based on entity
+   *
+   * @param modifier HtmlAttributeModifier instance
+   */
+  public void setHtmlAttributeModifier(HtmlAttributeModifier modifier) {
+    this.htmlAttributeModifier = modifier;
   }
 }
