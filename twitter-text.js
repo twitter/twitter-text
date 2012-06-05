@@ -401,67 +401,60 @@ if (typeof twttr === "undefined" || twttr === null) {
     return r;
   }
 
-  twttr.txt.linkToHashtag = function(entity, text, options) {
-    var d = {
-        hash: text.substring(entity.indices[0], entity.indices[0] + 1),
-        preText: "",
-        text: twttr.txt.htmlEscape(entity.hashtag),
-        postText: "",
-        extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW
-      };
-      for (var k in options) {
-        if (options.hasOwnProperty(k)) {
-          d[k] = options[k];
-        }
-      }
+  twttr.txt.linkToTextWithSymbol = function(symbol, text, attributes, options) {
+    var taggedSymbol = options.symbolTag ? "<" + options.symbolTag + ">" + symbol + "</"+ options.symbolTag + ">" : symbol;
+    text = twttr.txt.htmlEscape(text);
+    var taggedText = options.textWithSymbolTag ? "<" + options.textWithSymbolTag + ">" + text + "</"+ options.textWithSymbolTag + ">" : text;
 
-      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
+    var d = {
+      tagAttr: twttr.txt.extractHtmlAttrsFromOptions(attributes) + (options.htmlAttrs || ""),
+      taggedSymbol: taggedSymbol,
+      taggedText: taggedText
+    };
+    if (options.usernameIncludeSymbol || !symbol.match(twttr.txt.regexen.atSigns)) {
+      return stringSupplant("<a#{tagAttr}>#{taggedSymbol}#{taggedText}</a>", d);
+    } else {
+      return stringSupplant("#{taggedSymbol}<a#{tagAttr}>#{taggedText}</a>", d);
+    }
+  }
+
+  twttr.txt.linkToHashtag = function(entity, text, options) {
+    var hash = text.substring(entity.indices[0], entity.indices[0] + 1);
+    var hashtag = twttr.txt.htmlEscape(entity.hashtag);
+    var attrs = {
+      href: options.hashtagUrlBase + hashtag,
+      title: "#" + hashtag,
+      class: options.urlClass + " " + options.hashtagClass
+    };
+
+    return twttr.txt.linkToTextWithSymbol(hash, hashtag, attrs, options);
   };
 
   twttr.txt.linkToCashtag = function(entity, text, options) {
-    var d = {
-        preText: "",
-        text: twttr.txt.htmlEscape(entity.cashtag),
-        postText: "",
-        extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW
-      };
-      for (var k in options) {
-        if (options.hasOwnProperty(k)) {
-          d[k] = options[k];
-        }
-      }
+    var cashtag = twttr.txt.htmlEscape(entity.cashtag);
+    var attrs = {
+      href: options.cashtagUrlBase + cashtag,
+      title: "$" + cashtag,
+      class: options.urlClass + " " + options.cashtagClass
+    };
 
-      return stringSupplant("#{before}<a href=\"#{cashtagUrlBase}#{text}\" title=\"$#{text}\" class=\"#{urlClass} #{cashtagClass}\"#{extraHtml}>$#{preText}#{text}#{postText}</a>", d);
+    return twttr.txt.linkToTextWithSymbol("$", cashtag, attrs, options);
   };
 
   twttr.txt.linkToMentionAndList = function(entity, text, options) {
     var at = text.substring(entity.indices[0], entity.indices[0] + 1);
-    var d = {
-      at: options.usernameIncludeSymbol ? "" : at,
-      at_before_user: options.usernameIncludeSymbol ? at : "",
-      user: twttr.txt.htmlEscape(entity.screenName),
-      slashListname: twttr.txt.htmlEscape(entity.listSlug),
-      extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW,
-      preChunk: "",
-      postChunk: ""
+    var user = twttr.txt.htmlEscape(entity.screenName);
+    var slashListname = twttr.txt.htmlEscape(entity.listSlug);
+    var isList = entity.listSlug && !options.suppressLists;
+    var attrs = {
+      class: options.urlClass + " " + (isList ? options.listClass : options.usernameClass),
+      href: isList ? options.listUrlBase + user + slashListname : options.usernameUrlBase + user
     };
-    for (var k in options) {
-      if (options.hasOwnProperty(k)) {
-        d[k] = options[k];
-      }
+    if (!isList && !options.suppressDataScreenName) {
+      attrs['data-screen-name'] = user;
     }
 
-    if (entity.listSlug && !options.suppressLists) {
-      // the link is a list
-      var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
-      d.list = twttr.txt.htmlEscape(list.toLowerCase());
-      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-    } else {
-      // this is a screen name
-      d.chunk = d.user;
-      d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-    }
+    return twttr.txt.linkToTextWithSymbol(at, isList ? user + slashListname : user, attrs, options);
   };
 
   twttr.txt.linkToUrl = function(entity, text, options) {
@@ -474,14 +467,11 @@ if (typeof twttr === "undefined" || twttr === null) {
     // for each URL instead of it's underlying t.co URL.
     var urlEntity = (options.urlEntities && options.urlEntities[url]) || entity;
     if (urlEntity.display_url) {
-      if (!options.title) {
-        options.htmlAttrs = (options.htmlAttrs || "") + " title=\"" + urlEntity.expanded_url + "\"";
-      }
       linkText = twttr.txt.linkTextWithEntity(urlEntity, options);
     }
 
     var d = {
-      htmlAttrs: options.htmlAttrs,
+      htmlAttrs: options.htmlAttrs + (!options.title && urlEntity.display_url ? " title=\"" + urlEntity.expanded_url + "\"" : ""),
       url: twttr.txt.htmlEscape(url),
       linkText: linkText
     };
@@ -576,7 +566,6 @@ if (typeof twttr === "undefined" || twttr === null) {
     options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
     options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
     options.listUrlBase = options.listUrlBase || "https://twitter.com/";
-    options.before = options.before || "";
     options.htmlAttrs = twttr.txt.extractHtmlAttrsFromOptions(options);
     options.invisibleTagAttrs = options.invisibleTagAttrs || "style='position:absolute;left:-9999px;'";
 
@@ -647,7 +636,7 @@ if (typeof twttr === "undefined" || twttr === null) {
         v = v ? k : null;
       }
       if (v == null) continue;
-      htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: twttr.txt.htmlEscape(k), v: twttr.txt.htmlEscape(v.toString())});
+      htmlAttrs += stringSupplant(" #{k}=\"#{v}\"", {k: twttr.txt.htmlEscape(k), v: twttr.txt.htmlEscape(v.toString())});
     }
     return htmlAttrs;
   };
