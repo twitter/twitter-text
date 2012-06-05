@@ -508,4 +508,22 @@ public class Autolink {
   public void setUsernameIncludeSymbol(boolean usernameIncludeSymbol) {
     this.usernameIncludeSymbol = usernameIncludeSymbol;
   }
+
+  /**
+   * Set HTML tag to be applied around #/@/# symbols in hashtags/usernames/lists/cashtag
+   *
+   * @param tag HTML tag without bracket. e.g., "b" or "s"
+   */
+  public void setSymbolTag(String tag) {
+    this.symbolTag = tag;
+  }
+
+  /**
+   * Set HTML tag to be applied around text part of hashtags/usernames/lists/cashtag
+   *
+   * @param tag HTML tag without bracket. e.g., "b" or "s"
+   */
+  public void setTextWithSymbolTag(String tag) {
+    this.textWithSymbolTag = tag;
+  }
 }

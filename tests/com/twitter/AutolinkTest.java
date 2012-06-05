@@ -99,6 +99,24 @@ public class AutolinkTest extends TestCase {
     assertFalse(result.contains("class=\"testClass\""));
   }
 
+  public void testSymbolTag() {
+    linker.setSymbolTag("s");
+    linker.setTextWithSymbolTag("b");
+    linker.setNoFollow(false);
+
+    String tweet = "#hash";
+    String expected = "<a href=\"https://twitter.com/#!/search?q=%23hash\" title=\"#hash\" class=\"tweet-url hashtag\"><s>#</s><b>hash</b></a>";
+    assertAutolink(expected, linker.autoLink(tweet));
+
+    tweet = "@mention";
+    expected = "<s>@</s><a class=\"tweet-url username\" href=\"https://twitter.com/mention\"><b>mention</b></a>";
+    assertAutolink(expected, linker.autoLink(tweet));
+
+    linker.setUsernameIncludeSymbol(true);
+    expected = "<a class=\"tweet-url username\" href=\"https://twitter.com/mention\"><s>@</s><b>mention</b></a>";
+    assertAutolink(expected, linker.autoLink(tweet));
+  }
+
   protected void assertAutolink(String expected, String linked) {
     assertEquals("Autolinked text should equal the input", expected, linked);
   }
