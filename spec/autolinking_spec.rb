@@ -682,6 +682,16 @@ describe Twitter::Autolink do
       linked = @linker.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'http://example.com/')
     end
+
+    it "should apply :url_target only to auto-linked URLs" do
+      auto_linked = @linker.auto_link("#hashtag @mention http://test.com/", {:url_target => '_blank'})
+      auto_linked.should have_autolinked_hashtag('#hashtag')
+      auto_linked.should link_to_screen_name('mention')
+      auto_linked.should have_autolinked_url('http://test.com/')
+      auto_linked.should_not match(/<a[^>]+hashtag[^>]+target[^>]+>/)
+      auto_linked.should_not match(/<a[^>]+username[^>]+target[^>]+>/)
+      auto_linked.should match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/)
+    end
   end
 
   describe "link_text_with_entity" do
@@ -731,24 +741,24 @@ describe Twitter::Autolink do
       @linker = TestAutolink.new
     end
     it "should put :symbol_tag around symbol" do
-      @linker.auto_link("@mention", {:symbol_tag => 's', :username_include_symbol=>true}).should match /<s>@<\/s>mention/
-      @linker.auto_link("#hash", {:symbol_tag => 's'}).should match /<s>#<\/s>hash/
+      @linker.auto_link("@mention", {:symbol_tag => 's', :username_include_symbol=>true}).should match(/<s>@<\/s>mention/)
+      @linker.auto_link("#hash", {:symbol_tag => 's'}).should match(/<s>#<\/s>hash/)
       result = @linker.auto_link("@mention #hash $CASH", {:symbol_tag => 'b', :username_include_symbol=>true})
-      result.should match /<b>@<\/b>mention/
-      result.should match /<b>#<\/b>hash/
-      result.should match /<b>\$<\/b>CASH/
+      result.should match(/<b>@<\/b>mention/)
+      result.should match(/<b>#<\/b>hash/)
+      result.should match(/<b>\$<\/b>CASH/)
     end
     it "should put :text_with_symbol_tag around text" do
       result = @linker.auto_link("@mention #hash $CASH", {:text_with_symbol_tag => 'b'})
-      result.should match /<b>mention<\/b>/
-      result.should match /<b>hash<\/b>/
-      result.should match /<b>CASH<\/b>/
+      result.should match(/<b>mention<\/b>/)
+      result.should match(/<b>hash<\/b>/)
+      result.should match(/<b>CASH<\/b>/)
     end
     it "should put :symbol_tag around symbol and :text_with_symbol_tag around text" do
       result = @linker.auto_link("@mention #hash $CASH", {:symbol_tag => 's', :text_with_symbol_tag => 'b', :username_include_symbol=>true})
-      result.should match /<s>@<\/s><b>mention<\/b>/
-      result.should match /<s>#<\/s><b>hash<\/b>/
-      result.should match /<s>\$<\/s><b>CASH<\/b>/
+      result.should match(/<s>@<\/s><b>mention<\/b>/)
+      result.should match(/<s>#<\/s><b>hash<\/b>/)
+      result.should match(/<s>\$<\/s><b>CASH<\/b>/)
     end
   end
 

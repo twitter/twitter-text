@@ -187,7 +187,7 @@ module Twitter
       :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
-      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag
+      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target
     ]).freeze
 
     def extract_html_attrs_from_options!(options)
@@ -222,6 +222,9 @@ module Twitter
       # like url_class but use suppress_no_follow.
       html_attrs = options[:html_attrs].dup
       html_attrs[:class] = options[:url_class] if options.key?(:url_class)
+
+      # add target attribute only if :url_target is specified
+      html_attrs[:target] = options[:url_target] if options.key?(:url_target)
 
       url_entities = url_entities_hash(options[:url_entities])
 
