@@ -376,8 +376,6 @@ if (typeof twttr === "undefined" || twttr === null) {
   var DEFAULT_HASHTAG_CLASS = "tweet-url hashtag";
   // Default CSS class for auto-linked cashtags (along with the url class)
   var DEFAULT_CASHTAG_CLASS = "tweet-url cashtag";
-  // HTML attribute for robot nofollow behavior (default)
-  var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
   // Options which should not be passed as HTML attributes
   var OPTIONS_NOT_ATTRIBUTES = {'urlClass':true, 'listClass':true, 'usernameClass':true, 'hashtagClass':true, 'cashtagClass':true,
                             'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true, 'cashtagUrlBase':true,
@@ -414,7 +412,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     } else {
       return stringSupplant("#{taggedSymbol}<a#{tagAttr}>#{taggedText}</a>", d);
     }
-  }
+  };
 
   twttr.txt.linkToHashtag = function(entity, text, options) {
     var hash = text.substring(entity.indices[0], entity.indices[0] + 1);
