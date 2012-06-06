@@ -702,6 +702,25 @@ describe Twitter::Autolink do
       linked.should match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/)
     end
 
+    it "should modify link text by link_text_block" do
+      linked = @linker.auto_link("#hash @mention",
+        :link_text_block => lambda{|entity, text|
+          entity[:hashtag] ? "#replaced" : "pre_#{text}_post"
+        }
+      )
+      linked.should match(/<a[^>]+>#replaced<\/a>/)
+      linked.should match(/<a[^>]+>pre_mention_post<\/a>/)
+
+      linked = @linker.auto_link("#hash @mention", {
+        :link_text_block => lambda{|entity, text|
+          "pre_#{text}_post"
+        },
+        :symbol_tag => "s", :text_with_symbol_tag => "b", :username_include_symbol => true
+      })
+      linked.should match(/<a[^>]+>pre_<s>#<\/s><b>hash<\/b>_post<\/a>/)
+      linked.should match(/<a[^>]+>pre_<s>@<\/s><b>mention<\/b>_post<\/a>/)
+    end
+
     it "should apply :url_target only to auto-linked URLs" do
       auto_linked = @linker.auto_link("#hashtag @mention http://test.com/", {:url_target => '_blank'})
       auto_linked.should have_autolinked_hashtag('#hashtag')

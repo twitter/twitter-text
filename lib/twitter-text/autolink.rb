@@ -187,7 +187,8 @@ module Twitter
       :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
-      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target, :link_attribute_block
+      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target,
+      :link_attribute_block, :link_text_block
     ]).freeze
 
     def extract_html_attrs_from_options!(options)
@@ -382,6 +383,7 @@ module Twitter
     def link_to_text(entity, text, href, attributes = {}, options = {})
       attributes[:href] = href
       options[:link_attribute_block].call(entity, attributes) if options[:link_attribute_block]
+      text = options[:link_text_block].call(entity, text) if options[:link_text_block]
       %(<a#{tag_attrs(attributes)}>#{text}</a>)
     end
 
