@@ -29,9 +29,13 @@ public class Autolink {
   /** Default attribute for invisible span tag */
   public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'";
 
-  public static interface HtmlAttributeModifier {
+  public static interface LinkAttributeModifier {
     public void modify(Entity entity, Map<String, String> attributes);
   };
+
+  public static interface LinkTextModifier {
+    public CharSequence modify(Entity entity, CharSequence text);
+  }
 
   protected String urlClass = null;
   protected String listClass;
@@ -48,7 +52,8 @@ public class Autolink {
   protected String symbolTag = null;
   protected String textWithSymbolTag = null;
   protected String urlTarget = null;
-  protected HtmlAttributeModifier htmlAttributeModifier = null;
+  protected LinkAttributeModifier linkAttributeModifier = null;
+  protected LinkTextModifier linkTextModifier = null;
 
   private Extractor extractor = new Extractor();
 
@@ -105,8 +110,11 @@ public class Autolink {
     if (noFollow) {
       attributes.put("rel", "nofollow");
     }
-    if (htmlAttributeModifier != null) {
-      htmlAttributeModifier.modify(entity, attributes);
+    if (linkAttributeModifier != null) {
+      linkAttributeModifier.modify(entity, attributes);
+    }
+    if (linkTextModifier != null) {
+      text = linkTextModifier.modify(entity, text);
     }
     // append <a> tag
     builder.append("<a");
@@ -538,11 +546,20 @@ public class Autolink {
   }
 
   /**
-   * Set a modifier to modify HTML attributes based on entity
+   * Set a modifier to modify attributes of a link based on an entity
    *
-   * @param modifier HtmlAttributeModifier instance
+   * @param modifier LinkAttributeModifier instance
    */
-  public void setHtmlAttributeModifier(HtmlAttributeModifier modifier) {
-    this.htmlAttributeModifier = modifier;
+  public void setLinkAttributeModifier(LinkAttributeModifier modifier) {
+    this.linkAttributeModifier = modifier;
+  }
+
+  /**
+   * Set a modifier to modify text of a link based on an entity
+   *
+   * @param modifier LinkTextModifier instance
+   */
+  public void setLinkTextModifier(LinkTextModifier modifier) {
+    this.linkTextModifier = modifier;
   }
 }

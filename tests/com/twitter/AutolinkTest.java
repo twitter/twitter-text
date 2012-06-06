@@ -130,8 +130,8 @@ public class AutolinkTest extends TestCase {
     assertFalse("urlClass should not appear in HTML", result.toLowerCase().contains("urlclass"));
   }
 
-  public void testHtmlAttributeModifier() {
-    linker.setHtmlAttributeModifier(new Autolink.HtmlAttributeModifier() {
+  public void testLinkAttributeModifier() {
+    linker.setLinkAttributeModifier(new Autolink.LinkAttributeModifier() {
       public void modify(Entity entity, Map<String, String> attributes) {
         if (entity.type == Entity.Type.HASHTAG) {
           attributes.put("dummy-hash-attr", "test");
@@ -143,7 +143,7 @@ public class AutolinkTest extends TestCase {
     assertTrue("HtmlAttributeModifier should be applied to hashtag", Pattern.matches(".*<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]*>.*", result));
     assertFalse("HtmlAttributeModifier should not be applied to mention", Pattern.matches(".*<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]*>.*", result));
 
-    linker.setHtmlAttributeModifier(new Autolink.HtmlAttributeModifier() {
+    linker.setLinkAttributeModifier(new Autolink.LinkAttributeModifier() {
       public void modify(Entity entity, Map<String, String> attributes) {
         if (entity.type == Entity.Type.URL) {
           attributes.put("dummy-url-attr", entity.value);
@@ -153,6 +153,30 @@ public class AutolinkTest extends TestCase {
     result = linker.autoLink("@mention http://twitter.com/");
     assertFalse("HtmlAttributeModifier should not be applied to mention", Pattern.matches(".*<a[^>]+username[^>]+dummy-url-attr[^>]*>.*", result));
     assertTrue("htmlAttributeBlock should be applied to URL", Pattern.matches(".*<a[^>]+dummy-url-attr=\"http://twitter.com/\".*", result));
+  }
+
+  public void testLinkTextModifier() {
+    linker.setLinkTextModifier(new Autolink.LinkTextModifier() {
+      public CharSequence modify(Entity entity, CharSequence text) {
+        return entity.type == Entity.Type.HASHTAG ? "#replaced" : "pre_" + text + "_post";
+      }
+    });
+
+    String result = linker.autoLink("#hash @mention");
+    assertTrue("LinkTextModifier should modify a hashtag link text", Pattern.matches(".*<a[^>]+>#replaced</a>.*", result));
+    assertTrue("LinkTextModifier should modify a username link text", Pattern.matches(".*<a[^>]+>pre_mention_post</a>.*", result));
+
+    linker.setLinkTextModifier(new Autolink.LinkTextModifier() {
+      public CharSequence modify(Entity entity, CharSequence text) {
+        return "pre_" + text + "_post";
+      }
+    });
+    linker.setSymbolTag("s");
+    linker.setTextWithSymbolTag("b");
+    linker.setUsernameIncludeSymbol(true);
+    result = linker.autoLink("#hash @mention");
+    assertTrue("LinkTextModifier should modify a hashtag link text", Pattern.matches(".*<a[^>]+>pre_<s>#</s><b>hash</b>_post</a>.*", result));
+    assertTrue("LinkTextModifier should modify a username link text", Pattern.matches(".*<a[^>]+>pre_<s>@</s><b>mention</b>_post</a>.*", result));
   }
 
   protected void assertAutolink(String expected, String linked) {
