@@ -683,7 +683,7 @@ describe Twitter::Autolink do
       linked.should have_autolinked_url('dummy', 'http://example.com/')
     end
 
-    it "should customie HTML attributes by link_attribute_block" do
+    it "should modify link attributes by link_attribute_block" do
       linked = @linker.auto_link("#hash @mention",
         :link_attribute_block => lambda{|entity, attributes|
           attributes[:"dummy-hash-attr"] = "test" if entity[:hashtag]
@@ -692,7 +692,7 @@ describe Twitter::Autolink do
       linked.should match(/<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]+>/)
       linked.should_not match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]+>/)
       linked.should_not match(/link_attribute_block/i)
-      
+
       linked = @linker.auto_link("@mention http://twitter.com/",
         :link_attribute_block => lambda{|entity, attributes|
           attributes["dummy-url-attr"] = entity[:url] if entity[:url]

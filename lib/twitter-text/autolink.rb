@@ -94,6 +94,11 @@ module Twitter
     # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
     # <tt>:suppress_lists</tt>::          disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::      do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:url_target</tt>::     the value for <tt>target</tt> attribute on URL links.
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_entities_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
@@ -110,6 +115,10 @@ module Twitter
     # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
     # <tt>:suppress_lists</tt>::          disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::      do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_usernames_or_lists(text, options = {}, &block) # :yields: list_or_username
       auto_link_entities(text, Extractor.extract_mentions_or_lists_with_indices(text), options, &block)
     end
@@ -122,6 +131,10 @@ module Twitter
     # <tt>:hashtag_class</tt>:: class to add to hashtag <tt><a></tt> tags
     # <tt>:hashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_hashtags(text, options = {}, &block)  # :yields: hashtag_text
       auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options, &block)
     end
@@ -134,6 +147,10 @@ module Twitter
     # <tt>:cashtag_class</tt>:: class to add to cashtag <tt><a></tt> tags
     # <tt>:cashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The cashtag text (minus the <tt>$</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_cashtags(text, options = {}, &block)  # :yields: cashtag_text
       auto_link_entities(text, Extractor.extract_cashtags_with_indices(text), options, &block)
     end
@@ -146,6 +163,11 @@ module Twitter
     # <tt>:url_class</tt>::     class to add to url <tt><a></tt> tags
     # <tt>:invisible_tag_attrs</tt>::   HTML attribute to add to invisible span tags
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:url_target</tt>::     the value for <tt>target</tt> attribute on URL links.
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_urls(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
