@@ -134,15 +134,34 @@ test("twttr.txt.autolink", function() {
   ok(autoLinkResult.match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/), "urlTarget should be applied to auto-linked URL");
   ok(!autoLinkResult.match(/urlClass/i), "urlClass should not appear in HTML");
 
-  // test htmlAttributeBlock
-  autoLinkResult = twttr.txt.autoLink("#hash @mention", {htmlAttributeBlock: function(entity, attributes) {if (entity.hashtag) attributes["dummy-hash-attr"] = "test";}});
-  ok(autoLinkResult.match(/<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]+>/), "htmlAttributeBlock should be applied to hashtag");
-  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]+>/), "htmlAttributeBlock should not be applied to mention");
-  ok(!autoLinkResult.match(/html_attribute_block/i), "htmlAttributeBlock should not appear in HTML");
+  // test linkAttributeBlock
+  autoLinkResult = twttr.txt.autoLink("#hash @mention", {linkAttributeBlock: function(entity, attributes) {if (entity.hashtag) attributes["dummy-hash-attr"] = "test";}});
+  ok(autoLinkResult.match(/<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]*>/), "linkAttributeBlock should be applied to hashtag");
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]*>/), "linkAttributeBlock should not be applied to mention");
+  ok(!autoLinkResult.match(/linkAttributeBlock/i), "linkAttributeBlock should not appear in HTML");
 
-  autoLinkResult = twttr.txt.autoLink("@mention http://twitter.com/", {htmlAttributeBlock: function(entity, attributes) {if (entity.url) attributes["dummy-url-attr"] = entity.url;}});
-  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]+>/), "htmlAttributeBlock should not be applied to mention");
-  ok(autoLinkResult.match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/), "htmlAttributeBlock should be applied to URL");
+  autoLinkResult = twttr.txt.autoLink("@mention http://twitter.com/", {linkAttributeBlock: function(entity, attributes) {if (entity.url) attributes["dummy-url-attr"] = entity.url;}});
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]*>/), "linkAttributeBlock should not be applied to mention");
+  ok(autoLinkResult.match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/), "linkAttributeBlock should be applied to URL");
+
+  // test linkTextBlock
+  autoLinkResult = twttr.txt.autoLink("#hash @mention", {
+      linkTextBlock: function(entity, text) {
+        return entity.hashtag ? "#replaced" : "pre_" + text + "_post";
+      }
+  });
+  ok(autoLinkResult.match(/<a[^>]+>#replaced<\/a>/), "linkTextBlock should modify a hashtag link text");
+  ok(autoLinkResult.match(/<a[^>]+>pre_mention_post<\/a>/), "linkTextBlock should modify a username link text");
+  ok(!autoLinkResult.match(/linkTextBlock/i), "linkTextBlock should not appear in HTML");
+
+  autoLinkResult = twttr.txt.autoLink("#hash @mention", {
+    linkTextBlock: function(entity, text) {
+      return "pre_" + text +"_post";
+    },
+    symbolTag: "s", textWithSymbolTag: "b", usernameIncludeSymbol: true
+  });
+  ok(autoLinkResult.match(/<a[^>]+>pre_<s>#<\/s><b>hash<\/b>_post<\/a>/), "linkTextBlock should modify a hashtag link text");
+  ok(autoLinkResult.match(/<a[^>]+>pre_<s>@<\/s><b>mention<\/b>_post<\/a>/), "linkTextBlock should modify a username link text");
 
   // url entities
   autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {

@@ -381,7 +381,8 @@ if (typeof twttr === "undefined" || twttr === null) {
                             'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true, 'cashtagUrlBase':true,
                             'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
                             'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
-                            'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true, 'urlTarget':true
+                            'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true, 'urlTarget':true,
+                            'invisibleTagAttrs':true, 'linkAttributeBlock':true, 'linkTextBlock': true
                             };
   var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
@@ -397,46 +398,67 @@ if (typeof twttr === "undefined" || twttr === null) {
     return r;
   }
 
+  twttr.txt.tagAttrs = function(attributes) {
+    var htmlAttrs = "";
+    for (var k in attributes) {
+      var v = attributes[k];
+      if (BOOLEAN_ATTRIBUTES[k]) {
+        v = v ? k : null;
+      }
+      if (v == null) continue;
+      htmlAttrs += " " + twttr.txt.htmlEscape(k) + "=\"" + twttr.txt.htmlEscape(v.toString()) + "\"";
+    }
+    return htmlAttrs;
+  };
+
+  twttr.txt.linkToText = function(entity, text, attributes, options) {
+    if (!options.suppressNoFollow) {
+      attributes.rel = "nofollow";
+    }
+    // if linkAttributeBlock is specified, call it to modify the attributes
+    if (options.linkAttributeBlock) {
+      options.linkAttributeBlock(entity, attributes);
+    }
+    // if linkTextBlock is specified, call it to get a new/modified link text
+    if (options.linkTextBlock) {
+      text = options.linkTextBlock(entity, text);
+    }
+    var d = {
+      text: text,
+      attr: twttr.txt.tagAttrs(attributes)
+    };
+    return stringSupplant("<a#{attr}>#{text}</a>", d);
+  };
+
   twttr.txt.linkToTextWithSymbol = function(entity, symbol, text, attributes, options) {
     var taggedSymbol = options.symbolTag ? "<" + options.symbolTag + ">" + symbol + "</"+ options.symbolTag + ">" : symbol;
     text = twttr.txt.htmlEscape(text);
     var taggedText = options.textWithSymbolTag ? "<" + options.textWithSymbolTag + ">" + text + "</"+ options.textWithSymbolTag + ">" : text;
 
-    // if htmlAttributeBlock is specified, call it to modify the attributes
-    if (options.htmlAttributeBlock) {
-      options.htmlAttributeBlock(entity, attributes);
-    }
-    var d = {
-      tagAttr: twttr.txt.extractHtmlAttrsFromOptions(attributes) + (options.htmlAttrs || ""),
-      taggedSymbol: taggedSymbol,
-      taggedText: taggedText
-    };
     if (options.usernameIncludeSymbol || !symbol.match(twttr.txt.regexen.atSigns)) {
-      return stringSupplant("<a#{tagAttr}>#{taggedSymbol}#{taggedText}</a>", d);
+      return twttr.txt.linkToText(entity, taggedSymbol + taggedText, attributes, options);
     } else {
-      return stringSupplant("#{taggedSymbol}<a#{tagAttr}>#{taggedText}</a>", d);
+      return taggedSymbol + twttr.txt.linkToText(entity, taggedText, attributes, options);
     }
   };
 
   twttr.txt.linkToHashtag = function(entity, text, options) {
     var hash = text.substring(entity.indices[0], entity.indices[0] + 1);
     var hashtag = twttr.txt.htmlEscape(entity.hashtag);
-    var attrs = {
-      href: options.hashtagUrlBase + hashtag,
-      title: "#" + hashtag,
-      class: options.hashtagClass
-    };
+    var attrs = clone(options.htmlAttrs || {});
+    attrs.href = options.hashtagUrlBase + hashtag;
+    attrs.title = "#" + hashtag;
+    attrs["class"] = options.hashtagClass;
 
     return twttr.txt.linkToTextWithSymbol(entity, hash, hashtag, attrs, options);
   };
 
   twttr.txt.linkToCashtag = function(entity, text, options) {
     var cashtag = twttr.txt.htmlEscape(entity.cashtag);
-    var attrs = {
-      href: options.cashtagUrlBase + cashtag,
-      title: "$" + cashtag,
-      class: options.cashtagClass
-    };
+    var attrs = clone(options.htmlAttrs || {});
+    attrs.href = options.cashtagUrlBase + cashtag;
+    attrs.title = "$" + cashtag;
+    attrs["class"] =  options.cashtagClass;
 
     return twttr.txt.linkToTextWithSymbol(entity, "$", cashtag, attrs, options);
   };
@@ -446,10 +468,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     var user = twttr.txt.htmlEscape(entity.screenName);
     var slashListname = twttr.txt.htmlEscape(entity.listSlug);
     var isList = entity.listSlug && !options.suppressLists;
-    var attrs = {
-      class: (isList ? options.listClass : options.usernameClass),
-      href: isList ? options.listUrlBase + user + slashListname : options.usernameUrlBase + user
-    };
+    var attrs = clone(options.htmlAttrs || {});
+    attrs["class"] = (isList ? options.listClass : options.usernameClass);
+    attrs.href = isList ? options.listUrlBase + user + slashListname : options.usernameUrlBase + user;
     if (!isList && !options.suppressDataScreenName) {
       attrs['data-screen-name'] = user;
     }
@@ -470,7 +491,8 @@ if (typeof twttr === "undefined" || twttr === null) {
       linkText = twttr.txt.linkTextWithEntity(urlEntity, options);
     }
 
-    var attrs = {};
+    var attrs = clone(options.htmlAttrs || {});
+    attrs.href = url;
 
     // set class only if urlClass is specified.
     if (options.urlClass) {
@@ -486,18 +508,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       attrs.title = urlEntity.expanded_url;
     }
 
-    // if htmlAttributeBlock is specified, call it to modify the attributes
-    if (options.htmlAttributeBlock) {
-      options.htmlAttributeBlock(entity, attrs);
-    }
-
-    var d = {
-      htmlAttrs: twttr.txt.extractHtmlAttrsFromOptions(attrs) + (options.htmlAttrs || ""),
-      url: twttr.txt.htmlEscape(url),
-      linkText: linkText
-    };
-
-    return stringSupplant("<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>", d);
+    return twttr.txt.linkToText(entity, linkText, attrs, options);
   };
 
   twttr.txt.linkTextWithEntity = function (entity, options) {
@@ -572,9 +583,6 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.autoLinkEntities = function(text, entities, options) {
     options = clone(options || {});
 
-    if (!options.suppressNoFollow) {
-      options.rel = "nofollow";
-    }
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
     options.cashtagClass = options.cashtagClass || DEFAULT_CASHTAG_CLASS;
@@ -645,7 +653,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.extractHtmlAttrsFromOptions = function(options) {
-    var htmlAttrs = "";
+    var htmlAttrs = {};
     for (var k in options) {
       var v = options[k];
       if (OPTIONS_NOT_ATTRIBUTES[k]) continue;
@@ -653,7 +661,7 @@ if (typeof twttr === "undefined" || twttr === null) {
         v = v ? k : null;
       }
       if (v == null) continue;
-      htmlAttrs += stringSupplant(" #{k}=\"#{v}\"", {k: twttr.txt.htmlEscape(k), v: twttr.txt.htmlEscape(v.toString())});
+      htmlAttrs[k] = v;
     }
     return htmlAttrs;
   };
