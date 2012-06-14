@@ -6,16 +6,14 @@ module Twitter
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
   # usernames, lists, hashtags and URLs.
   module Autolink extend self
-    # Default CSS class for auto-linked URLs
-    DEFAULT_URL_CLASS = "tweet-url".freeze
-    # Default CSS class for auto-linked lists (along with the url class)
-    DEFAULT_LIST_CLASS = "list-slug".freeze
-    # Default CSS class for auto-linked usernames (along with the url class)
-    DEFAULT_USERNAME_CLASS = "username".freeze
-    # Default CSS class for auto-linked hashtags (along with the url class)
-    DEFAULT_HASHTAG_CLASS = "hashtag".freeze
-    # Default CSS class for auto-linked cashtags (along with the url class)
-    DEFAULT_CASHTAG_CLASS = "cashtag".freeze
+    # Default CSS class for auto-linked lists
+    DEFAULT_LIST_CLASS = "tweet-url list-slug".freeze
+    # Default CSS class for auto-linked usernames
+    DEFAULT_USERNAME_CLASS = "tweet-url username".freeze
+    # Default CSS class for auto-linked hashtags
+    DEFAULT_HASHTAG_CLASS = "tweet-url hashtag".freeze
+    # Default CSS class for auto-linked cashtags
+    DEFAULT_CASHTAG_CLASS = "tweet-url cashtag".freeze
 
     # Default URL base for auto-linked usernames
     DEFAULT_USERNAME_URL_BASE = "https://twitter.com/".freeze
@@ -30,7 +28,6 @@ module Twitter
     DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'".freeze
 
     DEFAULT_OPTIONS = {
-      :url_class      => DEFAULT_URL_CLASS,
       :list_class     => DEFAULT_LIST_CLASS,
       :username_class => DEFAULT_USERNAME_CLASS,
       :hashtag_class  => DEFAULT_HASHTAG_CLASS,
@@ -84,17 +81,24 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::      class to add to all <tt><a></tt> tags
+    # <tt>:url_class</tt>::      class to add to url <tt><a></tt> tags
     # <tt>:list_class</tt>::     class to add to list <tt><a></tt> tags
     # <tt>:username_class</tt>:: class to add to username <tt><a></tt> tags
     # <tt>:hashtag_class</tt>::  class to add to hashtag <tt><a></tt> tags
+    # <tt>:cashtag_class</tt>::  class to add to cashtag <tt><a></tt> tags
     # <tt>:username_url_base</tt>::  the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:list_url_base</tt>::      the value for <tt>href</tt> attribute on list links. The <tt>@username/list</tt> (minus the <tt>@</tt>) will be appended at the end of this.
     # <tt>:hashtag_url_base</tt>::   the value for <tt>href</tt> attribute on hashtag links. The <tt>#hashtag</tt> (minus the <tt>#</tt>) will be appended at the end of this.
+    # <tt>:cashtag_url_base</tt>::   the value for <tt>href</tt> attribute on cashtag links. The <tt>$cashtag</tt> (minus the <tt>$</tt>) will be appended at the end of this.
     # <tt>:invisible_tag_attrs</tt>::   HTML attribute to add to invisible span tags
     # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
     # <tt>:suppress_lists</tt>::          disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::      do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:url_target</tt>::     the value for <tt>target</tt> attribute on URL links.
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_entities_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
@@ -104,7 +108,6 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::      class to add to all <tt><a></tt> tags
     # <tt>:list_class</tt>::     class to add to list <tt><a></tt> tags
     # <tt>:username_class</tt>:: class to add to username <tt><a></tt> tags
     # <tt>:username_url_base</tt>:: the value for <tt>href</tt> attribute on username links. The <tt>@username</tt> (minus the <tt>@</tt>) will be appended at the end of this.
@@ -112,6 +115,10 @@ module Twitter
     # <tt>:username_include_symbol</tt>:: place the <tt>@</tt> symbol within username and list links
     # <tt>:suppress_lists</tt>::          disable auto-linking to lists
     # <tt>:suppress_no_follow</tt>::      do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_usernames_or_lists(text, options = {}, &block) # :yields: list_or_username
       auto_link_entities(text, Extractor.extract_mentions_or_lists_with_indices(text), options, &block)
     end
@@ -121,10 +128,13 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
     # <tt>:hashtag_class</tt>:: class to add to hashtag <tt><a></tt> tags
     # <tt>:hashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The hashtag text (minus the <tt>#</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_hashtags(text, options = {}, &block)  # :yields: hashtag_text
       auto_link_entities(text, Extractor.extract_hashtags_with_indices(text), options, &block)
     end
@@ -134,10 +144,13 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
-    # <tt>:url_class</tt>::     class to add to all <tt><a></tt> tags
     # <tt>:cashtag_class</tt>:: class to add to cashtag <tt><a></tt> tags
     # <tt>:cashtag_url_base</tt>:: the value for <tt>href</tt> attribute. The cashtag text (minus the <tt>$</tt>) will be appended at the end of this.
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_cashtags(text, options = {}, &block)  # :yields: cashtag_text
       auto_link_entities(text, Extractor.extract_cashtags_with_indices(text), options, &block)
     end
@@ -147,8 +160,14 @@ module Twitter
     # Also any elements in the <tt>options</tt> hash will be converted to HTML attributes
     # and place in the <tt><a></tt> tag.
     #
+    # <tt>:url_class</tt>::     class to add to url <tt><a></tt> tags
     # <tt>:invisible_tag_attrs</tt>::   HTML attribute to add to invisible span tags
     # <tt>:suppress_no_follow</tt>:: do not add <tt>rel="nofollow"</tt> to auto-linked items
+    # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
+    # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
+    # <tt>:url_target</tt>::     the value for <tt>target</tt> attribute on URL links.
+    # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
+    # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link_urls(text, options = {}, &block)
       auto_link_entities(text, Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false), options, &block)
     end
@@ -190,7 +209,8 @@ module Twitter
       :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
-      :invisible_tag_attrs
+      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target,
+      :link_attribute_block, :link_text_block
     ]).freeze
 
     def extract_html_attrs_from_options!(options)
@@ -224,6 +244,10 @@ module Twitter
       # NOTE auto link to urls do not use any default values and options
       # like url_class but use suppress_no_follow.
       html_attrs = options[:html_attrs].dup
+      html_attrs[:class] = options[:url_class] if options.key?(:url_class)
+
+      # add target attribute only if :url_target is specified
+      html_attrs[:target] = options[:url_target] if options.key?(:url_target)
 
       url_entities = url_entities_hash(options[:url_entities])
 
@@ -231,15 +255,15 @@ module Twitter
       url_entity = url_entities[url] || entity
       link_text = if url_entity[:display_url]
         html_attrs[:title] ||= url_entity[:expanded_url]
-        link_text_with_entity(url_entity, options)
+        link_url_with_entity(url_entity, options)
       else
         html_escape(url)
       end
 
-      link_to_text(link_text, href, html_attrs, :no_escape_text => true)
+      link_to_text(entity, link_text, href, html_attrs, options)
     end
 
-    def link_text_with_entity(entity, options)
+    def link_url_with_entity(entity, options)
       display_url = entity[:display_url]
       expanded_url = entity[:expanded_url]
       invisible_tag_attrs = options[:invisible_tag_attrs] || DEFAULT_INVISIBLE_TAG_ATTRS
@@ -303,8 +327,6 @@ module Twitter
       hashtag = entity[:hashtag]
       hashtag = yield(hashtag) if block_given?
 
-      text = hash + hashtag
-
       href = if options[:hashtag_url_block]
         options[:hashtag_url_block].call(hashtag)
       else
@@ -312,16 +334,17 @@ module Twitter
       end
 
       html_attrs = {
-        :class => "#{options[:url_class]} #{options[:hashtag_class]}",
+        :class => "#{options[:hashtag_class]}",
         # FIXME As our conformance test, hash in title should be half-width,
         # this should be bug of conformance data.
         :title => "##{hashtag}"
       }.merge(options[:html_attrs])
 
-      link_to_text(text, href, html_attrs)
+      link_to_text_with_symbol(entity, hash, hashtag, href, html_attrs, options)
     end
 
     def link_to_cashtag(entity, chars, options = {})
+      dollar = chars[entity[:indices].first]
       cashtag = entity[:cashtag]
       cashtag = yield(cashtag) if block_given?
 
@@ -332,11 +355,11 @@ module Twitter
       end
 
       html_attrs = {
-        :class => "#{options[:url_class]} #{options[:cashtag_class]}",
+        :class => "#{options[:cashtag_class]}",
         :title => "$#{cashtag}"
       }.merge(options[:html_attrs])
 
-      link_to_text('$' + cashtag, href, html_attrs)
+      link_to_text_with_symbol(entity, dollar, cashtag, href, html_attrs, options)
     end
 
     def link_to_screen_name(entity, chars, options = {})
@@ -346,13 +369,6 @@ module Twitter
       name.downcase!
 
       at = chars[entity[:indices].first]
-      at_before_user = ""
-      if options[:username_include_symbol]
-        at_before_user = at
-        at = ""
-      end
-
-      text = at_before_user + chunk
 
       html_attrs = options[:html_attrs].dup
 
@@ -362,22 +378,34 @@ module Twitter
         else
           "#{options[:list_url_base]}#{name}"
         end
-        html_attrs[:class] ||= "#{options[:url_class]} #{options[:list_class]}"
+        html_attrs[:class] ||= "#{options[:list_class]}"
       else
         href = if options[:username_url_block]
           options[:username_url_block].call(chunk)
         else
           "#{options[:username_url_base]}#{name}"
         end
-        html_attrs[:class] ||= "#{options[:url_class]} #{options[:username_class]}"
+        html_attrs[:class] ||= "#{options[:username_class]}"
       end
 
-      "#{at}#{link_to_text(text, href, html_attrs)}"
+      link_to_text_with_symbol(entity, at, chunk, href, html_attrs, options)
     end
 
-    def link_to_text(text, href, attributes = {}, options = {})
+    def link_to_text_with_symbol(entity, symbol, text, href, attributes = {}, options = {})
+      tagged_symbol = options[:symbol_tag] ? "<#{options[:symbol_tag]}>#{symbol}</#{options[:symbol_tag]}>" : symbol
+      text = html_escape(text)
+      tagged_text = options[:text_with_symbol_tag] ? "<#{options[:text_with_symbol_tag]}>#{text}</#{options[:text_with_symbol_tag]}>" : text
+      if options[:username_include_symbol] || symbol !~ Twitter::Regex::REGEXEN[:at_signs]
+        "#{link_to_text(entity, tagged_symbol + tagged_text, href, attributes, options)}"
+      else
+        "#{tagged_symbol}#{link_to_text(entity, tagged_text, href, attributes, options)}"
+      end
+    end
+
+    def link_to_text(entity, text, href, attributes = {}, options = {})
       attributes[:href] = href
-      text = html_escape(text) unless options[:no_escape_text]
+      options[:link_attribute_block].call(entity, attributes) if options[:link_attribute_block]
+      text = options[:link_text_block].call(entity, text) if options[:link_text_block]
       %(<a#{tag_attrs(attributes)}>#{text}</a>)
     end
 

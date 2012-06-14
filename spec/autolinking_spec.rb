@@ -552,8 +552,12 @@ describe Twitter::Autolink do
   end
 
   describe "autolinking options" do
+    before do
+      @linker = TestAutolink.new
+    end
+
     it "should show display_url when :url_entities provided" do
-      linked = TestAutolink.new.auto_link("http://t.co/0JG5Mcq", :url_entities => [{
+      linked = @linker.auto_link("http://t.co/0JG5Mcq", :url_entities => [{
         "url" => "http://t.co/0JG5Mcq",
         "display_url" => "blog.twitter.com/2011/05/twitte…",
         "expanded_url" => "http://blog.twitter.com/2011/05/twitter-for-mac-update.html",
@@ -571,7 +575,7 @@ describe Twitter::Autolink do
     end
 
     it "should accept invisible_tag_attrs option" do
-      linked = TestAutolink.new.auto_link("http://t.co/0JG5Mcq",
+      linked = @linker.auto_link("http://t.co/0JG5Mcq",
         {
           :url_entities => [{
             "url" => "http://t.co/0JG5Mcq",
@@ -589,7 +593,7 @@ describe Twitter::Autolink do
     end
 
     it "should show display_url if available in entity" do
-      linked = TestAutolink.new.auto_link_entities("http://t.co/0JG5Mcq",
+      linked = @linker.auto_link_entities("http://t.co/0JG5Mcq",
         [{
           :url => "http://t.co/0JG5Mcq",
           :display_url => "blog.twitter.com/2011/05/twitte…",
@@ -605,73 +609,136 @@ describe Twitter::Autolink do
     end
 
     it "should apply :class as a CSS class" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :class => 'myclass')
+      linked = @linker.auto_link("http://example.com/", :class => 'myclass')
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/myclass/)
     end
 
+    it "should apply :url_class only on URL" do
+      linked = @linker.auto_link("http://twitter.com")
+      linked.should have_autolinked_url('http://twitter.com')
+      linked.should_not match(/class/)
+
+      linked = @linker.auto_link("http://twitter.com", :url_class => 'testClass')
+      linked.should have_autolinked_url('http://twitter.com')
+      linked.should match(/class=\"testClass\"/)
+
+      linked = @linker.auto_link("#hash @tw", :url_class => 'testClass')
+      linked.should match(/class=\"tweet-url hashtag\"/)
+      linked.should match(/class=\"tweet-url username\"/)
+      linked.should_not match(/class=\"testClass\"/)
+    end
+
     it "should add rel=nofollow by default" do
-      linked = TestAutolink.new.auto_link("http://example.com/")
+      linked = @linker.auto_link("http://example.com/")
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/nofollow/)
     end
 
     it "should include the '@' symbol in a username when passed :username_include_symbol" do
-      linked = TestAutolink.new.auto_link("@user", :username_include_symbol => true)
+      linked = @linker.auto_link("@user", :username_include_symbol => true)
       linked.should link_to_screen_name('user', '@user')
     end
 
     it "should include the '@' symbol in a list when passed :username_include_symbol" do
-      linked = TestAutolink.new.auto_link("@user/list", :username_include_symbol => true)
+      linked = @linker.auto_link("@user/list", :username_include_symbol => true)
       linked.should link_to_list_path('user/list', '@user/list')
     end
 
     it "should not add rel=nofollow when passed :suppress_no_follow" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :suppress_no_follow => true)
+      linked = @linker.auto_link("http://example.com/", :suppress_no_follow => true)
       linked.should have_autolinked_url('http://example.com/')
       linked.should_not match(/nofollow/)
     end
 
     it "should not add a target attribute by default" do
-      linked = TestAutolink.new.auto_link("http://example.com/")
+      linked = @linker.auto_link("http://example.com/")
       linked.should have_autolinked_url('http://example.com/')
       linked.should_not match(/target=/)
     end
 
     it "should respect the :target option" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :target => 'mywindow')
+      linked = @linker.auto_link("http://example.com/", :target => 'mywindow')
       linked.should have_autolinked_url('http://example.com/')
       linked.should match(/target="mywindow"/)
     end
 
     it "should customize href by username_url_block option" do
-      linked = TestAutolink.new.auto_link("@test", :username_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("@test", :username_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'test')
     end
 
     it "should customize href by list_url_block option" do
-      linked = TestAutolink.new.auto_link("@test/list", :list_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("@test/list", :list_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'test/list')
     end
 
     it "should customize href by hashtag_url_block option" do
-      linked = TestAutolink.new.auto_link("#hashtag", :hashtag_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("#hashtag", :hashtag_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', '#hashtag')
     end
 
     it "should customize href by link_url_block option" do
-      linked = TestAutolink.new.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
+      linked = @linker.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'http://example.com/')
+    end
+
+    it "should modify link attributes by link_attribute_block" do
+      linked = @linker.auto_link("#hash @mention",
+        :link_attribute_block => lambda{|entity, attributes|
+          attributes[:"dummy-hash-attr"] = "test" if entity[:hashtag]
+        }
+      )
+      linked.should match(/<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]+>/)
+      linked.should_not match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]+>/)
+      linked.should_not match(/link_attribute_block/i)
+
+      linked = @linker.auto_link("@mention http://twitter.com/",
+        :link_attribute_block => lambda{|entity, attributes|
+          attributes["dummy-url-attr"] = entity[:url] if entity[:url]
+        }
+      )
+      linked.should_not match(/<a[^>]+username[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"[^>]*>/)
+      linked.should match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/)
+    end
+
+    it "should modify link text by link_text_block" do
+      linked = @linker.auto_link("#hash @mention",
+        :link_text_block => lambda{|entity, text|
+          entity[:hashtag] ? "#replaced" : "pre_#{text}_post"
+        }
+      )
+      linked.should match(/<a[^>]+>#replaced<\/a>/)
+      linked.should match(/<a[^>]+>pre_mention_post<\/a>/)
+
+      linked = @linker.auto_link("#hash @mention", {
+        :link_text_block => lambda{|entity, text|
+          "pre_#{text}_post"
+        },
+        :symbol_tag => "s", :text_with_symbol_tag => "b", :username_include_symbol => true
+      })
+      linked.should match(/<a[^>]+>pre_<s>#<\/s><b>hash<\/b>_post<\/a>/)
+      linked.should match(/<a[^>]+>pre_<s>@<\/s><b>mention<\/b>_post<\/a>/)
+    end
+
+    it "should apply :url_target only to auto-linked URLs" do
+      auto_linked = @linker.auto_link("#hashtag @mention http://test.com/", {:url_target => '_blank'})
+      auto_linked.should have_autolinked_hashtag('#hashtag')
+      auto_linked.should link_to_screen_name('mention')
+      auto_linked.should have_autolinked_url('http://test.com/')
+      auto_linked.should_not match(/<a[^>]+hashtag[^>]+target[^>]+>/)
+      auto_linked.should_not match(/<a[^>]+username[^>]+target[^>]+>/)
+      auto_linked.should match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/)
     end
   end
 
-  describe "link_text_with_entity" do
+  describe "link_url_with_entity" do
     before do
       @linker = TestAutolink.new
     end
 
     it "should use display_url and expanded_url" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "twitter.com",
@@ -680,7 +747,7 @@ describe Twitter::Autolink do
     end
 
     it "should correctly handle display_url ending with '…'" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "twitter.com…",
@@ -689,7 +756,7 @@ describe Twitter::Autolink do
     end
 
     it "should correctly handle display_url starting with '…'" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "…tter.com/abcdefg",
@@ -698,12 +765,38 @@ describe Twitter::Autolink do
     end
 
     it "should not create spans if display_url and expanded_url are on different domains" do
-      @linker.send(:link_text_with_entity,
+      @linker.send(:link_url_with_entity,
         {
           :url => "http://t.co/abcde",
           :display_url => "pic.twitter.com/xyz",
           :expanded_url => "http://twitter.com/foo/statuses/123/photo/1"},
         {:invisible_tag_attrs => "class='invisible'"}).gsub('"', "'").should == "pic.twitter.com/xyz"
+    end
+  end
+
+  describe "symbol_tag" do
+    before do
+      @linker = TestAutolink.new
+    end
+    it "should put :symbol_tag around symbol" do
+      @linker.auto_link("@mention", {:symbol_tag => 's', :username_include_symbol=>true}).should match(/<s>@<\/s>mention/)
+      @linker.auto_link("#hash", {:symbol_tag => 's'}).should match(/<s>#<\/s>hash/)
+      result = @linker.auto_link("@mention #hash $CASH", {:symbol_tag => 'b', :username_include_symbol=>true})
+      result.should match(/<b>@<\/b>mention/)
+      result.should match(/<b>#<\/b>hash/)
+      result.should match(/<b>\$<\/b>CASH/)
+    end
+    it "should put :text_with_symbol_tag around text" do
+      result = @linker.auto_link("@mention #hash $CASH", {:text_with_symbol_tag => 'b'})
+      result.should match(/<b>mention<\/b>/)
+      result.should match(/<b>hash<\/b>/)
+      result.should match(/<b>CASH<\/b>/)
+    end
+    it "should put :symbol_tag around symbol and :text_with_symbol_tag around text" do
+      result = @linker.auto_link("@mention #hash $CASH", {:symbol_tag => 's', :text_with_symbol_tag => 'b', :username_include_symbol=>true})
+      result.should match(/<s>@<\/s><b>mention<\/b>/)
+      result.should match(/<s>#<\/s><b>hash<\/b>/)
+      result.should match(/<s>\$<\/s><b>CASH<\/b>/)
     end
   end
 
