@@ -99,32 +99,72 @@ test("twttr.txt.extract", function() {
 
 test("twttr.txt.autolink", function() {
   // Username Overrides
-  ok(twttr.txt.autoLink("@tw", { before: "!" }).match(/!@<a[^>]+>tw<\/a>/), "Override before");
-  ok(twttr.txt.autoLink("@tw", { at: "!" }).match(/!<a[^>]+>tw<\/a>/), "Override at");
-  ok(twttr.txt.autoLink("@tw", { preChunk: "<b>" }).match(/@<a[^>]+><b>tw<\/a>/), "Override preChunk");
-  ok(twttr.txt.autoLink("@tw", { postChunk: "</b>" }).match(/@<a[^>]+>tw<\/b><\/a>/), "Override postChunk");
-  same(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }), "<a class=\"tweet-url username\" data-screen-name=\"tw\" href=\"https://twitter.com/tw\" rel=\"nofollow\">@tw</a>",
+  ok(twttr.txt.autoLink("@tw", { symbolTag: "s" }).match(/<s>@<\/s><a[^>]+>tw<\/a>/), "Apply symbolTag to @username");
+  ok(!twttr.txt.autoLink("@tw", { symbolTag: "s" }).match(/symbolTag/i), "Do not include symbolTag attribute");
+  ok(twttr.txt.autoLink("@tw", { textWithSymbolTag: "b" }).match(/@<a[^>]+><b>tw<\/b><\/a>/), "Apply textWithSymbolTag to @username");
+  ok(!twttr.txt.autoLink("@tw", { textWithSymbolTag: "b" }).match(/textWithSymbolTag/i), "Do not include textWithSymbolTag attribute");
+  ok(twttr.txt.autoLink("@tw", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<s>@<\/s><a[^>]+><b>tw<\/b><\/a>/), "Apply symbolTag and textWithSymbolTag to @username");
+  same(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }), "<a class=\"tweet-url username\" href=\"https://twitter.com/tw\" data-screen-name=\"tw\" rel=\"nofollow\">@tw</a>",
       "Include @ in the autolinked username");
   ok(!twttr.txt.autoLink("foo http://example.com", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to URL");
 
   // List Overrides
-  ok(twttr.txt.autoLink("@tw/somelist", { before: "!" }).match(/!@<a[^>]+>tw\/somelist<\/a>/), "Override list before");
-  ok(twttr.txt.autoLink("@tw/somelist", { at: "!" }).match(/!<a[^>]+>tw\/somelist<\/a>/), "Override list at");
-  ok(twttr.txt.autoLink("@tw/somelist", { preChunk: "<b>" }).match(/@<a[^>]+><b>tw\/somelist<\/a>/), "Override list preChunk");
-  ok(twttr.txt.autoLink("@tw/somelist", { postChunk: "</b>" }).match(/@<a[^>]+>tw\/somelist<\/b><\/a>/), "Override list postChunk");
+  ok(twttr.txt.autoLink("@tw/somelist", { symbolTag: "s" }).match(/<s>@<\/s><a[^>]+>tw\/somelist<\/a>/), "Apply symbolTag to list");
+  ok(twttr.txt.autoLink("@tw/somelist", { textWithSymbolTag: "b" }).match(/@<a[^>]+><b>tw\/somelist<\/b><\/a>/), "apply textWithSymbolTag to list");
+  ok(twttr.txt.autoLink("@tw/somelist", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<s>@<\/s><a[^>]+><b>tw\/somelist<\/b><\/a>/), "apply symbolTag and textWithSymbolTag to list");
   same(twttr.txt.autoLink("@tw/somelist", { usernameIncludeSymbol: true }), "<a class=\"tweet-url list-slug\" href=\"https://twitter.com/tw/somelist\" rel=\"nofollow\">@tw/somelist</a>",
       "Include @ in the autolinked list");
   ok(twttr.txt.autoLink("foo @tw/somelist", { listClass: 'custom-list' }).match(/custom-list/), "Override listClass");
   ok(!twttr.txt.autoLink("foo @tw/somelist", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to a List");
 
   // Hashtag Overrides
-  ok(twttr.txt.autoLink("#hi", { before: "!" }).match(/!<a[^>]+>#hi<\/a>/), "Override before");
-  ok(twttr.txt.autoLink("#hi", { hash: "!" }).match(/<a[^>]+>!hi<\/a>/), "Override hash");
-  ok(twttr.txt.autoLink("#hi", { preText: "<b>" }).match(/<a[^>]+>#<b>hi<\/a>/), "Override preText");
-  ok(twttr.txt.autoLink("#hi", { postText: "</b>" }).match(/<a[^>]+>#hi<\/b><\/a>/), "Override postText");
+  ok(twttr.txt.autoLink("#hi", { symbolTag: "s" }).match(/<a[^>]+><s>#<\/s>hi<\/a>/), "Apply symbolTag to hash");
+  ok(twttr.txt.autoLink("#hi", { textWithSymbolTag: "b" }).match(/<a[^>]+>#<b>hi<\/b><\/a>/), "Apply textWithSymbolTag to hash");
+  ok(twttr.txt.autoLink("#hi", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<a[^>]+><s>#<\/s><b>hi<\/b><\/a>/), "Apply symbolTag and textWithSymbolTag to hash");
+
+  // test urlClass
+  same(twttr.txt.autoLink("http://twitter.com"), "<a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>", "AutoLink without urlClass");
+  same(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" class=\"testClass\" rel=\"nofollow\">http://twitter.com</a>", "autoLink with urlClass");
+  ok(!twttr.txt.autoLink("#hash @tw", {urlClass: "testClass"}).match(/class=\"testClass\"/), "urlClass won't be used for hashtag and @mention auto-links");
+
+  // test urlTarget
+  var autoLinkResult = twttr.txt.autoLink("#hashtag @mention http://test.com", {urlTarget:'_blank'});
+  ok(!autoLinkResult.match(/<a[^>]+hashtag[^>]+target[^>]+>/), "urlTarget shouldn't be applied to auto-linked hashtag");
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+target[^>]+>/), "urlTarget shouldn't be applied to auto-linked mention");
+  ok(autoLinkResult.match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/), "urlTarget should be applied to auto-linked URL");
+  ok(!autoLinkResult.match(/urlClass/i), "urlClass should not appear in HTML");
+
+  // test linkAttributeBlock
+  autoLinkResult = twttr.txt.autoLink("#hash @mention", {linkAttributeBlock: function(entity, attributes) {if (entity.hashtag) attributes["dummy-hash-attr"] = "test";}});
+  ok(autoLinkResult.match(/<a[^>]+hashtag[^>]+dummy-hash-attr=\"test\"[^>]*>/), "linkAttributeBlock should be applied to hashtag");
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]*>/), "linkAttributeBlock should not be applied to mention");
+  ok(!autoLinkResult.match(/linkAttributeBlock/i), "linkAttributeBlock should not appear in HTML");
+
+  autoLinkResult = twttr.txt.autoLink("@mention http://twitter.com/", {linkAttributeBlock: function(entity, attributes) {if (entity.url) attributes["dummy-url-attr"] = entity.url;}});
+  ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]*>/), "linkAttributeBlock should not be applied to mention");
+  ok(autoLinkResult.match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/), "linkAttributeBlock should be applied to URL");
+
+  // test linkTextBlock
+  autoLinkResult = twttr.txt.autoLink("#hash @mention", {
+      linkTextBlock: function(entity, text) {
+        return entity.hashtag ? "#replaced" : "pre_" + text + "_post";
+      }
+  });
+  ok(autoLinkResult.match(/<a[^>]+>#replaced<\/a>/), "linkTextBlock should modify a hashtag link text");
+  ok(autoLinkResult.match(/<a[^>]+>pre_mention_post<\/a>/), "linkTextBlock should modify a username link text");
+  ok(!autoLinkResult.match(/linkTextBlock/i), "linkTextBlock should not appear in HTML");
+
+  autoLinkResult = twttr.txt.autoLink("#hash @mention", {
+    linkTextBlock: function(entity, text) {
+      return "pre_" + text +"_post";
+    },
+    symbolTag: "s", textWithSymbolTag: "b", usernameIncludeSymbol: true
+  });
+  ok(autoLinkResult.match(/<a[^>]+>pre_<s>#<\/s><b>hash<\/b>_post<\/a>/), "linkTextBlock should modify a hashtag link text");
+  ok(autoLinkResult.match(/<a[^>]+>pre_<s>@<\/s><b>mention<\/b>_post<\/a>/), "linkTextBlock should modify a username link text");
 
   // url entities
-  var autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
+  autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {
     invisibleTagAttrs: "style='font-size:0'",
     urlEntities: [{
       "url": "http://t.co/0JG5Mcq",
@@ -187,7 +227,7 @@ test("twttr.txt.autolink", function() {
   }
 
   same(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
-      "\uD801\uDC00 <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" data-screen-name=\"mention\" href=\"https://twitter.com/mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\" >http://twitter.com</a>",
+      "\uD801\uDC00 <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>",
       "Autolink hashtag/mentionURL w/ Supplementary character");
 });
 

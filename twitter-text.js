@@ -368,24 +368,21 @@ if (typeof twttr === "undefined" || twttr === null) {
   , "i");
 
 
-  // Default CSS class for auto-linked URLs
-  var DEFAULT_URL_CLASS = "tweet-url";
   // Default CSS class for auto-linked lists (along with the url class)
-  var DEFAULT_LIST_CLASS = "list-slug";
+  var DEFAULT_LIST_CLASS = "tweet-url list-slug";
   // Default CSS class for auto-linked usernames (along with the url class)
-  var DEFAULT_USERNAME_CLASS = "username";
+  var DEFAULT_USERNAME_CLASS = "tweet-url username";
   // Default CSS class for auto-linked hashtags (along with the url class)
-  var DEFAULT_HASHTAG_CLASS = "hashtag";
+  var DEFAULT_HASHTAG_CLASS = "tweet-url hashtag";
   // Default CSS class for auto-linked cashtags (along with the url class)
-  var DEFAULT_CASHTAG_CLASS = "cashtag";
-  // HTML attribute for robot nofollow behavior (default)
-  var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
+  var DEFAULT_CASHTAG_CLASS = "tweet-url cashtag";
   // Options which should not be passed as HTML attributes
   var OPTIONS_NOT_ATTRIBUTES = {'urlClass':true, 'listClass':true, 'usernameClass':true, 'hashtagClass':true, 'cashtagClass':true,
                             'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true, 'cashtagUrlBase':true,
                             'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
                             'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
-                            'suppressDataScreenName':true, 'urlEntities':true, 'before':true
+                            'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true, 'urlTarget':true,
+                            'invisibleTagAttrs':true, 'linkAttributeBlock':true, 'linkTextBlock': true
                             };
   var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
@@ -401,67 +398,84 @@ if (typeof twttr === "undefined" || twttr === null) {
     return r;
   }
 
-  twttr.txt.linkToHashtag = function(entity, text, options) {
-    var d = {
-        hash: text.substring(entity.indices[0], entity.indices[0] + 1),
-        preText: "",
-        text: twttr.txt.htmlEscape(entity.hashtag),
-        postText: "",
-        extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW
-      };
-      for (var k in options) {
-        if (options.hasOwnProperty(k)) {
-          d[k] = options[k];
-        }
+  twttr.txt.tagAttrs = function(attributes) {
+    var htmlAttrs = "";
+    for (var k in attributes) {
+      var v = attributes[k];
+      if (BOOLEAN_ATTRIBUTES[k]) {
+        v = v ? k : null;
       }
+      if (v == null) continue;
+      htmlAttrs += " " + twttr.txt.htmlEscape(k) + "=\"" + twttr.txt.htmlEscape(v.toString()) + "\"";
+    }
+    return htmlAttrs;
+  };
 
-      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
+  twttr.txt.linkToText = function(entity, text, attributes, options) {
+    if (!options.suppressNoFollow) {
+      attributes.rel = "nofollow";
+    }
+    // if linkAttributeBlock is specified, call it to modify the attributes
+    if (options.linkAttributeBlock) {
+      options.linkAttributeBlock(entity, attributes);
+    }
+    // if linkTextBlock is specified, call it to get a new/modified link text
+    if (options.linkTextBlock) {
+      text = options.linkTextBlock(entity, text);
+    }
+    var d = {
+      text: text,
+      attr: twttr.txt.tagAttrs(attributes)
+    };
+    return stringSupplant("<a#{attr}>#{text}</a>", d);
+  };
+
+  twttr.txt.linkToTextWithSymbol = function(entity, symbol, text, attributes, options) {
+    var taggedSymbol = options.symbolTag ? "<" + options.symbolTag + ">" + symbol + "</"+ options.symbolTag + ">" : symbol;
+    text = twttr.txt.htmlEscape(text);
+    var taggedText = options.textWithSymbolTag ? "<" + options.textWithSymbolTag + ">" + text + "</"+ options.textWithSymbolTag + ">" : text;
+
+    if (options.usernameIncludeSymbol || !symbol.match(twttr.txt.regexen.atSigns)) {
+      return twttr.txt.linkToText(entity, taggedSymbol + taggedText, attributes, options);
+    } else {
+      return taggedSymbol + twttr.txt.linkToText(entity, taggedText, attributes, options);
+    }
+  };
+
+  twttr.txt.linkToHashtag = function(entity, text, options) {
+    var hash = text.substring(entity.indices[0], entity.indices[0] + 1);
+    var hashtag = twttr.txt.htmlEscape(entity.hashtag);
+    var attrs = clone(options.htmlAttrs || {});
+    attrs.href = options.hashtagUrlBase + hashtag;
+    attrs.title = "#" + hashtag;
+    attrs["class"] = options.hashtagClass;
+
+    return twttr.txt.linkToTextWithSymbol(entity, hash, hashtag, attrs, options);
   };
 
   twttr.txt.linkToCashtag = function(entity, text, options) {
-    var d = {
-        preText: "",
-        text: twttr.txt.htmlEscape(entity.cashtag),
-        postText: "",
-        extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW
-      };
-      for (var k in options) {
-        if (options.hasOwnProperty(k)) {
-          d[k] = options[k];
-        }
-      }
+    var cashtag = twttr.txt.htmlEscape(entity.cashtag);
+    var attrs = clone(options.htmlAttrs || {});
+    attrs.href = options.cashtagUrlBase + cashtag;
+    attrs.title = "$" + cashtag;
+    attrs["class"] =  options.cashtagClass;
 
-      return stringSupplant("#{before}<a href=\"#{cashtagUrlBase}#{text}\" title=\"$#{text}\" class=\"#{urlClass} #{cashtagClass}\"#{extraHtml}>$#{preText}#{text}#{postText}</a>", d);
+    return twttr.txt.linkToTextWithSymbol(entity, "$", cashtag, attrs, options);
   };
 
   twttr.txt.linkToMentionAndList = function(entity, text, options) {
     var at = text.substring(entity.indices[0], entity.indices[0] + 1);
-    var d = {
-      at: options.usernameIncludeSymbol ? "" : at,
-      at_before_user: options.usernameIncludeSymbol ? at : "",
-      user: twttr.txt.htmlEscape(entity.screenName),
-      slashListname: twttr.txt.htmlEscape(entity.listSlug),
-      extraHtml: options.suppressNoFollow ? "" : HTML_ATTR_NO_FOLLOW,
-      preChunk: "",
-      postChunk: ""
-    };
-    for (var k in options) {
-      if (options.hasOwnProperty(k)) {
-        d[k] = options[k];
-      }
+    var user = twttr.txt.htmlEscape(entity.screenName);
+    var slashListname = twttr.txt.htmlEscape(entity.listSlug);
+    var isList = entity.listSlug && !options.suppressLists;
+    var attrs = clone(options.htmlAttrs || {});
+    attrs["class"] = (isList ? options.listClass : options.usernameClass);
+    attrs.href = isList ? options.listUrlBase + user + slashListname : options.usernameUrlBase + user;
+    if (!isList && !options.suppressDataScreenName) {
+      attrs['data-screen-name'] = user;
     }
 
-    if (entity.listSlug && !options.suppressLists) {
-      // the link is a list
-      var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
-      d.list = twttr.txt.htmlEscape(list.toLowerCase());
-      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-    } else {
-      // this is a screen name
-      d.chunk = d.user;
-      d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-      return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-    }
+    return twttr.txt.linkToTextWithSymbol(entity, at, isList ? user + slashListname : user, attrs, options);
   };
 
   twttr.txt.linkToUrl = function(entity, text, options) {
@@ -474,19 +488,27 @@ if (typeof twttr === "undefined" || twttr === null) {
     // for each URL instead of it's underlying t.co URL.
     var urlEntity = (options.urlEntities && options.urlEntities[url]) || entity;
     if (urlEntity.display_url) {
-      if (!options.title) {
-        options.htmlAttrs = (options.htmlAttrs || "") + " title=\"" + urlEntity.expanded_url + "\"";
-      }
       linkText = twttr.txt.linkTextWithEntity(urlEntity, options);
     }
 
-    var d = {
-      htmlAttrs: options.htmlAttrs,
-      url: twttr.txt.htmlEscape(url),
-      linkText: linkText
-    };
+    var attrs = clone(options.htmlAttrs || {});
+    attrs.href = url;
 
-    return stringSupplant("<a href=\"#{url}\"#{htmlAttrs}>#{linkText}</a>", d);
+    // set class only if urlClass is specified.
+    if (options.urlClass) {
+      attrs["class"] = options.urlClass;
+    }
+
+    // set target only if urlTarget is specified.
+    if (options.urlTarget) {
+      attrs.target = options.urlTarget;
+    }
+
+    if (!options.title && urlEntity.display_url) {
+      attrs.title = urlEntity.expanded_url;
+    }
+
+    return twttr.txt.linkToText(entity, linkText, attrs, options);
   };
 
   twttr.txt.linkTextWithEntity = function (entity, options) {
@@ -561,13 +583,6 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.autoLinkEntities = function(text, entities, options) {
     options = clone(options || {});
 
-    if (!options.suppressNoFollow) {
-      options.rel = "nofollow";
-    }
-    if (options.urlClass) {
-      options["class"] = options.urlClass;
-    }
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
     options.cashtagClass = options.cashtagClass || DEFAULT_CASHTAG_CLASS;
@@ -576,7 +591,6 @@ if (typeof twttr === "undefined" || twttr === null) {
     options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
     options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
     options.listUrlBase = options.listUrlBase || "https://twitter.com/";
-    options.before = options.before || "";
     options.htmlAttrs = twttr.txt.extractHtmlAttrsFromOptions(options);
     options.invisibleTagAttrs = options.invisibleTagAttrs || "style='position:absolute;left:-9999px;'";
 
@@ -639,7 +653,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.extractHtmlAttrsFromOptions = function(options) {
-    var htmlAttrs = "";
+    var htmlAttrs = {};
     for (var k in options) {
       var v = options[k];
       if (OPTIONS_NOT_ATTRIBUTES[k]) continue;
@@ -647,7 +661,7 @@ if (typeof twttr === "undefined" || twttr === null) {
         v = v ? k : null;
       }
       if (v == null) continue;
-      htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: twttr.txt.htmlEscape(k), v: twttr.txt.htmlEscape(v.toString())});
+      htmlAttrs[k] = v;
     }
     return htmlAttrs;
   };
