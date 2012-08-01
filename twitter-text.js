@@ -278,7 +278,7 @@ if (typeof twttr === "undefined" || twttr === null) {
 
   // cashtag related regex
   twttr.txt.regexen.cashtag = /[a-z]{1,6}(?:[._][a-z]{1,2})?/i;
-  twttr.txt.regexen.validCashtag = regexSupplant('(?:^|#{spaces})\\$(#{cashtag})(?=$|\\s|[#{punct}])', 'gi');
+  twttr.txt.regexen.validCashtag = regexSupplant('(^|#{spaces})(\\$)(#{cashtag})(?=$|\\s|[#{punct}])', 'gi');
 
   // These URL validation pattern strings are based on the ABNF from RFC 3986
   twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
@@ -757,19 +757,18 @@ if (typeof twttr === "undefined" || twttr === null) {
       return [];
     }
 
-    var possibleNames = [],
-        position = 0;
+    var possibleNames = [];
 
     text.replace(twttr.txt.regexen.validMentionOrList, function(match, before, atSign, screenName, slashListname, offset, chunk) {
       var after = chunk.slice(offset + match.length);
       if (!after.match(twttr.txt.regexen.endMentionMatch)) {
         slashListname = slashListname || '';
-        var startPosition = text.indexOf(atSign + screenName + slashListname, position);
-        position = startPosition + screenName.length + slashListname.length + 1;
+        var startPosition = offset + before.length;
+        var endPosition = startPosition + screenName.length + slashListname.length + 1;
         possibleNames.push({
           screenName: screenName,
           listSlug: slashListname,
-          indices: [startPosition, position]
+          indices: [startPosition, endPosition]
         });
       }
     });
@@ -891,18 +890,17 @@ if (typeof twttr === "undefined" || twttr === null) {
       return [];
     }
 
-    var tags = [],
-        position = 0;
+    var tags = [];
 
     text.replace(twttr.txt.regexen.validHashtag, function(match, before, hash, hashText, offset, chunk) {
       var after = chunk.slice(offset + match.length);
       if (after.match(twttr.txt.regexen.endHashtagMatch))
         return;
-      var startPosition = text.indexOf(hash + hashText, position);
-      position = startPosition + hashText.length + 1;
+      var startPosition = offset + before.length;
+      var endPosition = startPosition + hashText.length + 1;
       tags.push({
         hashtag: hashText,
-        indices: [startPosition, position]
+        indices: [startPosition, endPosition]
       });
     });
 
@@ -942,16 +940,14 @@ if (typeof twttr === "undefined" || twttr === null) {
       return [];
     }
 
-    var tags = [],
-        position = 0;
+    var tags = [];
 
-    text.replace(twttr.txt.regexen.validCashtag, function(match, cashtag, offset, chunk) {
-      // cashtag doesn't contain $ sign, so need to decrement index by 1.
-      var startPosition = text.indexOf(cashtag, position) - 1;
-      position = startPosition + cashtag.length + 1;
+    text.replace(twttr.txt.regexen.validCashtag, function(match, before, dollar, cashtag, offset, chunk) {
+      var startPosition = offset + before.length;
+      var endPosition = startPosition + cashtag.length + 1;
       tags.push({
         cashtag: cashtag,
-        indices: [startPosition, position]
+        indices: [startPosition, endPosition]
       });
     });
 
