@@ -311,13 +311,12 @@ module Twitter
       return [] unless text =~ /\$/
 
       tags = []
-      text.scan(Twitter::Regex[:valid_cashtag]) do |cash_text|
+      text.scan(Twitter::Regex[:valid_cashtag]) do |before, dollar, cash_text|
         match_data = $~
-        # cash_text doesn't contain $ symbol, so need to decrement start_position by one
-        start_position = match_data.char_begin(1) - 1
-        end_position = match_data.char_end(1)
+        start_position = match_data.char_begin(2)
+        end_position = match_data.char_end(3)
         tags << {
-          :cashtag => cash_text[0],
+          :cashtag => cash_text,
           :indices => [start_position, end_position]
         }
       end
