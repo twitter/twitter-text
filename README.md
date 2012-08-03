@@ -16,7 +16,7 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 ## Extraction Examples
 
     // basic extraction
-    var usernames = twttr.txt.extract_mentioned_screen_names("Mentioning @twitter and @jack")
+    var usernames = twttr.txt.extractMentions("Mentioning @twitter and @jack")
     // usernames == ["twitter", "jack"]
 
 ## Auto-linking Examples
