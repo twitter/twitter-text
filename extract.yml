@@ -556,6 +556,12 @@ tests:
         - url: "http://t.co"
           indices: [12, 23]
 
+    - description: "Extract I18N URL"
+      text: "test http://xn--ls8h.XN--ls8h.la/"
+      expected:
+        - url: "http://xn--ls8h.XN--ls8h.la/"
+          indices: [5, 33]
+
   hashtags:
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
