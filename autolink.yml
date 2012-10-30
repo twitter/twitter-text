@@ -381,7 +381,7 @@ tests:
 
     - description: "Autolink Arabic hashtag"
       text: "Arabic hashtag: #فارسی #لس_آنجلس"
-      expected: "Arabic hashtag: <a href=\"https://twitter.com/#!/search?q=%23فارسی\" title=\"#فارسی\" class=\"tweet-url hashtag\">#فارسی</a> <a href=\"https://twitter.com/#!/search?q=%23لس_آنجلس\" title=\"#لس_آنجلس\" class=\"tweet-url hashtag\">#لس_آنجلس</a>"
+      expected: "Arabic hashtag: <a href=\"https://twitter.com/#!/search?q=%23فارسی\" title=\"#فارسی\" class=\"tweet-url hashtag rtl\">#فارسی</a> <a href=\"https://twitter.com/#!/search?q=%23لس_آنجلس\" title=\"#لس_آنجلس\" class=\"tweet-url hashtag rtl\">#لس_آنجلس</a>"
 
     - description: "Autolink Thai hashtag"
       text: "Thai hashtag: #รายละเอียด"
