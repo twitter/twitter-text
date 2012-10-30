@@ -105,6 +105,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   twttr.txt.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
   twttr.txt.regexen.invalid_chars_group = regexSupplant(INVALID_CHARS.join(""));
   twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
+  twttr.txt.regexen.rtl_chars = /[\u0600-\u06FF]|[\u0750-\u077F]|[\u0590-\u05FF]|[\uFE70-\uFEFF]/mg;
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -449,6 +450,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     attrs.href = options.hashtagUrlBase + hashtag;
     attrs.title = "#" + hashtag;
     attrs["class"] = options.hashtagClass;
+    if (hashtag[0].match(twttr.txt.regexen.rtl_chars)){
+      attrs["class"] += " rtl";
+    }
 
     return twttr.txt.linkToTextWithSymbol(entity, hash, hashtag, attrs, options);
   };
