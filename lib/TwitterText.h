@@ -23,10 +23,10 @@
 + (NSArray*)mentionsOrListsInText:(NSString*)text;
 + (TwitterTextEntity*)repliedScreenNameInText:(NSString*)text;
 
-+ (int)tweetLength:(NSString*)text;
-+ (int)tweetLength:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength;
++ (NSInteger)tweetLength:(NSString*)text;
++ (NSInteger)tweetLength:(NSString*)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength;
 
-+ (int)remainingCharacterCount:(NSString*)text;
-+ (int)remainingCharacterCount:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength;
++ (NSInteger)remainingCharacterCount:(NSString*)text;
++ (NSInteger)remainingCharacterCount:(NSString*)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength;
 
 @end

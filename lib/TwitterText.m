@@ -282,9 +282,9 @@
     @")" \
 @")"
 
-static const int MaxTweetLength = 140;
-static const int HTTPShortURLLength = 20;
-static const int HTTPSShortURLLength = 21;
+static const NSInteger MaxTweetLength = 140;
+static const NSInteger HTTPShortURLLength = 21;
+static const NSInteger HTTPSShortURLLength = 22;
 
 static NSRegularExpression *validURLRegexp;
 static NSCharacterSet *invalidURLWithoutProtocolPrecedingCharSet;
@@ -673,12 +673,12 @@ static NSRegularExpression *endMentionRegexp;
     return [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:replyRange];
 }
 
-+ (int)tweetLength:(NSString*)text
++ (NSInteger)tweetLength:(NSString*)text
 {
     return [self tweetLength:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (int)tweetLength:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength
++ (NSInteger)tweetLength:(NSString*)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
 {
     text = [text precomposedStringWithCanonicalMapping];
     
@@ -694,7 +694,7 @@ static NSRegularExpression *endMentionRegexp;
     
     int urlLengthOffset = 0;
     NSArray *urlEntities = [self URLsInText:text];
-    for (int i=urlEntities.count-1; i>=0; i--) {
+    for (NSInteger i=urlEntities.count-1; i>=0; i--) {
         TwitterTextEntity *entity = [urlEntities objectAtIndex:i];
         NSRange urlRange = entity.range;
         NSString *url = [string substringWithRange:urlRange];
@@ -706,8 +706,8 @@ static NSRegularExpression *endMentionRegexp;
         [string deleteCharactersInRange:urlRange];
     }
     
-    int len = string.length;
-    int charCount = len + urlLengthOffset;
+    NSInteger len = string.length;
+    NSInteger charCount = len + urlLengthOffset;
     
     if (len > 0) {
         // Adjust count for non-BMP characters
@@ -731,12 +731,12 @@ static NSRegularExpression *endMentionRegexp;
     return charCount;
 }
 
-+ (int)remainingCharacterCount:(NSString*)text
++ (NSInteger)remainingCharacterCount:(NSString*)text
 {
     return [self remainingCharacterCount:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (int)remainingCharacterCount:(NSString*)text httpURLLength:(int)httpURLLength httpsURLLength:(int)httpsURLLength
++ (NSInteger)remainingCharacterCount:(NSString*)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
 {
     return MaxTweetLength - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
 }

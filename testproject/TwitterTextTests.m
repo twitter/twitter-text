@@ -64,8 +64,8 @@
         
         NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -91,8 +91,8 @@
         
         NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedText = [expectedDic objectForKey:@"screen_name"];
                 NSArray *indices = [expectedDic objectForKey:@"indices"];
@@ -125,8 +125,8 @@
         
         NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedText = [expectedDic objectForKey:@"screen_name"];
                 NSString *expectedListSlug = [expectedDic objectForKey:@"list_slug"];
@@ -186,8 +186,8 @@
         
         NSArray *results = [TwitterText URLsInText:text];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -211,8 +211,8 @@
         
         NSArray *results = [TwitterText URLsInText:text];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedUrl = [expectedDic objectForKey:@"url"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
@@ -242,8 +242,8 @@
         
         NSArray *results = [TwitterText hashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -269,8 +269,8 @@
         
         NSArray *results = [TwitterText hashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedHashtag = [expectedDic objectForKey:@"hashtag"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
@@ -303,8 +303,8 @@
         
         NSArray *results = [TwitterText cashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -330,8 +330,8 @@
         
         NSArray *results = [TwitterText cashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            int count = results.count;
-            for (int i=0; i<count; i++) {
+            NSInteger count = results.count;
+            for (NSInteger i=0; i<count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedCashtag = [expectedDic objectForKey:@"cashtag"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
@@ -376,8 +376,8 @@
     
     for (NSDictionary *testCase in lengths) {
         NSString *text = [testCase objectForKey:@"text"];
-        int expected = [[testCase objectForKey:@"expected"] intValue];
-        int len = [TwitterText tweetLength:text];
+        NSInteger expected = [[testCase objectForKey:@"expected"] intValue];
+        NSInteger len = [TwitterText tweetLength:text];
         STAssertTrue(len == expected, @"Length should be %d (%d)", expected, len);
     }
 }
