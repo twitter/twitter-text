@@ -13,6 +13,9 @@
 #import "TwitterTextTests.h"
 #import "TwitterText.h"
 
+#define HTTP_SHORT_URL_LENGTH 20
+#define HTTPS_SHORT_URL_LENGTH 21
+
 @implementation TwitterTextTests
 
 - (void)setUp
@@ -377,7 +380,7 @@
     for (NSDictionary *testCase in lengths) {
         NSString *text = [testCase objectForKey:@"text"];
         NSInteger expected = [[testCase objectForKey:@"expected"] intValue];
-        NSInteger len = [TwitterText tweetLength:text];
+        NSInteger len = [TwitterText tweetLength:text httpURLLength:HTTP_SHORT_URL_LENGTH httpsURLLength:HTTPS_SHORT_URL_LENGTH];
         STAssertTrue(len == expected, @"Length should be %d (%d)", expected, len);
     }
 }
