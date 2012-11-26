@@ -301,6 +301,7 @@ static NSRegularExpression *endMentionRegexp;
 @interface TwitterText ()
 + (NSArray*)hashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities;
 + (NSArray*)cashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities;
++ (NSRegularExpression*)endMentionRegexp;
 @end
 
 @implementation TwitterText
@@ -618,7 +619,7 @@ static NSRegularExpression *endMentionRegexp;
         NSRange allRange = matchResult.range;
         NSInteger end = NSMaxRange(allRange);
         
-        NSRange endMentionRange = [endMentionRegexp rangeOfFirstMatchInString:text options:0 range:NSMakeRange(end, len - end)];
+        NSRange endMentionRange = [[self endMentionRegexp] rangeOfFirstMatchInString:text options:0 range:NSMakeRange(end, len - end)];
         if (endMentionRange.location == NSNotFound) {
             NSRange atSignRange = [matchResult rangeAtIndex:2];
             NSRange screenNameRange = [matchResult rangeAtIndex:3];
@@ -651,9 +652,6 @@ static NSRegularExpression *endMentionRegexp;
     if (!validReplyRegexp) {
         validReplyRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidReply options:NSRegularExpressionCaseInsensitive error:NULL];
     }
-    if (!endMentionRegexp) {
-        endMentionRegexp = [[NSRegularExpression alloc] initWithPattern:TWUEndMentionMatch options:NSRegularExpressionCaseInsensitive error:NULL];
-    }
 
     NSInteger len = text.length;
     
@@ -665,7 +663,7 @@ static NSRegularExpression *endMentionRegexp;
     NSRange replyRange = [matchResult rangeAtIndex:1];
     NSInteger replyEnd = NSMaxRange(replyRange);
     
-    NSRange endMentionRange = [endMentionRegexp rangeOfFirstMatchInString:text options:0 range:NSMakeRange(replyEnd, len - replyEnd)];
+    NSRange endMentionRange = [[self endMentionRegexp] rangeOfFirstMatchInString:text options:0 range:NSMakeRange(replyEnd, len - replyEnd)];
     if (endMentionRange.location != NSNotFound) {
         return nil;
     }
@@ -739,6 +737,14 @@ static NSRegularExpression *endMentionRegexp;
 + (NSInteger)remainingCharacterCount:(NSString*)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
 {
     return MaxTweetLength - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
+}
+
++ (NSRegularExpression*)endMentionRegexp
+{
+    if (!endMentionRegexp) {
+        endMentionRegexp = [[NSRegularExpression alloc] initWithPattern:TWUEndMentionMatch options:NSRegularExpressionCaseInsensitive error:NULL];
+    }
+    return endMentionRegexp;
 }
 
 @end
