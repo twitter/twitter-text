@@ -33,7 +33,7 @@ class ConformanceTest < Test::Unit::TestCase
   def equal_nodes?(expected, actual)
     return false unless expected.name == actual.name
     return false unless ordered_attributes(expected) == ordered_attributes(actual)
-    return false if expected.text? && actual.text? && !(expected.content= actual.content)
+    return false if expected.text? && actual.text? && expected.content != actual.content
 
     expected.children.each_with_index do |child, index|
       return false unless equal_nodes?(child, actual.children[index])
