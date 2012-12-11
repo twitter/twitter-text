@@ -383,7 +383,7 @@ if (typeof twttr === "undefined" || twttr === null) {
                             'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
                             'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
                             'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true, 'urlTarget':true,
-                            'invisibleTagAttrs':true, 'linkAttributeBlock':true, 'linkTextBlock': true
+                            'invisibleTagAttrs':true, 'linkAttributeBlock':true, 'linkTextBlock': true, 'htmlEscapeNonEntities': true
                             };
   var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
@@ -614,9 +614,13 @@ if (typeof twttr === "undefined" || twttr === null) {
     // sort entities by start index
     entities.sort(function(a,b){ return a.indices[0] - b.indices[0]; });
 
+    var nonEntity = options.htmlEscapeNonEntities ? twttr.txt.htmlEscape : function(text) {
+      return text;
+    };
+
     for (var i = 0; i < entities.length; i++) {
       var entity = entities[i];
-      result += text.substring(beginIndex, entity.indices[0]);
+      result += nonEntity(text.substring(beginIndex, entity.indices[0]));
 
       if (entity.url) {
         result += twttr.txt.linkToUrl(entity, text, options);
@@ -629,7 +633,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       }
       beginIndex = entity.indices[1];
     }
-    result += text.substring(beginIndex, text.length);
+    result += nonEntity(text.substring(beginIndex, text.length));
     return result;
   };
 
