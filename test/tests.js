@@ -122,6 +122,13 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("#hi", { textWithSymbolTag: "b" }).match(/<a[^>]+>#<b>hi<\/b><\/a>/), "Apply textWithSymbolTag to hash");
   ok(twttr.txt.autoLink("#hi", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<a[^>]+><s>#<\/s><b>hi<\/b><\/a>/), "Apply symbolTag and textWithSymbolTag to hash");
 
+  // htmlEscapeNonEntities
+  same(twttr.txt.autoLink("&<>\"'"), "&<>\"'", "Don't escape non-entities by default");
+  same(twttr.txt.autoLink("&<>\"'", { htmlEscapeNonEntities: true } ), "&amp;&lt;&gt;&quot;&#39;", "Escape non-entities");
+  same(twttr.txt.autoLink("& http://twitter.com/?a&b &", { htmlEscapeNonEntities: true }),
+      "&amp; <a href=\"http://twitter.com/?a&amp;b\" rel=\"nofollow\">http://twitter.com/?a&amp;b</a> &amp;",
+      "Escape non-entity text before and after a link while also escaping the link href and link text");
+
   // test urlClass
   same(twttr.txt.autoLink("http://twitter.com"), "<a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>", "AutoLink without urlClass");
   same(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" class=\"testClass\" rel=\"nofollow\">http://twitter.com</a>", "autoLink with urlClass");
