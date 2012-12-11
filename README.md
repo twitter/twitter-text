@@ -22,8 +22,8 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 ## Auto-linking Examples
 
     twttr.txt.autoLink("link @user, please #request");
-    
-    twttr.txt.autoLink("link @user, and expand url... http://t.co/0JG5Mcq", { 
+
+    twttr.txt.autoLink("link @user, and expand url... http://t.co/0JG5Mcq", {
         urlEntities: [
             {
               "url": "http://t.co/0JG5Mcq",
@@ -37,7 +37,7 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
         ]});
 
 See [Tweet Entities](https://dev.twitter.com/docs/tweet-entities) for more info getting url entities from Twitter's API.
-    
+
 
 ## Usernames
 
@@ -110,7 +110,7 @@ Please direct bug reports to the [twitter-text-js issue tracker on GitHub](http:
 
 ## Copyright and License
 
-Copyright 2011 Twitter, Inc.
+Copyright 2012 Twitter, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this work except in compliance with the License.
