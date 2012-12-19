@@ -151,6 +151,10 @@ test("twttr.txt.autolink", function() {
   ok(!autoLinkResult.match(/<a[^>]+username[^>]+dummy-hash-attr=\"test\"[^>]*>/), "linkAttributeBlock should not be applied to mention");
   ok(autoLinkResult.match(/<a[^>]+dummy-url-attr=\"http:\/\/twitter.com\/\"/), "linkAttributeBlock should be applied to URL");
 
+  // test targetBlank
+  ok(!twttr.txt.autoLink("#hash @mention").match(/target="_blank"/), "target=\"blank\" attribute should not be added to link");
+  ok(twttr.txt.autoLink("#hash @mention", { targetBlank: true }).match(/target="_blank"/), "target=\"blank\" attribute should be added to link");
+
   // test linkTextBlock
   autoLinkResult = twttr.txt.autoLink("#hash @mention", {
       linkTextBlock: function(entity, text) {
