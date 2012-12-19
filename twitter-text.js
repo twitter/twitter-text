@@ -453,6 +453,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     if (hashtag[0].match(twttr.txt.regexen.rtl_chars)){
       attrs["class"] += " rtl";
     }
+    if (options.targetBlank) {
+      attrs.target = '_blank';
+    }
 
     return twttr.txt.linkToTextWithSymbol(entity, hash, hashtag, attrs, options);
   };
@@ -463,6 +466,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     attrs.href = options.cashtagUrlBase + cashtag;
     attrs.title = "$" + cashtag;
     attrs["class"] =  options.cashtagClass;
+    if (options.targetBlank) {
+      attrs.target = '_blank';
+    }
 
     return twttr.txt.linkToTextWithSymbol(entity, "$", cashtag, attrs, options);
   };
@@ -477,6 +483,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     attrs.href = isList ? options.listUrlBase + user + slashListname : options.usernameUrlBase + user;
     if (!isList && !options.suppressDataScreenName) {
       attrs['data-screen-name'] = user;
+    }
+    if (options.targetBlank) {
+      attrs.target = '_blank';
     }
 
     return twttr.txt.linkToTextWithSymbol(entity, at, isList ? user + slashListname : user, attrs, options);
@@ -497,6 +506,10 @@ if (typeof twttr === "undefined" || twttr === null) {
 
     var attrs = clone(options.htmlAttrs || {});
     attrs.href = url;
+
+    if (options.targetBlank) {
+      attrs.target = '_blank';
+    }
 
     // set class only if urlClass is specified.
     if (options.urlClass) {
