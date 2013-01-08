@@ -688,7 +688,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.autoLink = function(text, options) {
-    var entities = twttr.txt.extractEntitiesWithIndices(text, {extractUrlWithoutProtocol: false});
+    var entities = twttr.txt.extractEntitiesWithIndices(text, {extractUrlsWithoutProtocol: false});
     return twttr.txt.autoLinkEntities(text, entities, options);
   };
 
@@ -708,7 +708,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.autoLinkUrlsCustom = function(text, options) {
-    var entities = twttr.txt.extractUrlsWithIndices(text, {extractUrlWithoutProtocol: false});
+    var entities = twttr.txt.extractUrlsWithIndices(text, {extractUrlsWithoutProtocol: false});
     return twttr.txt.autoLinkEntities(text, entities, options);
   };
 
