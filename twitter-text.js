@@ -780,7 +780,8 @@ if (typeof twttr === "undefined" || twttr === null) {
       return [];
     }
 
-    var possibleNames = [];
+    var possibleNames = [],
+        slashListname;
 
     text.replace(twttr.txt.regexen.validMentionOrList, function(match, before, atSign, screenName, slashListname, offset, chunk) {
       var after = chunk.slice(offset + match.length);
