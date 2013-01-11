@@ -381,10 +381,11 @@ if (typeof twttr === "undefined" || twttr === null) {
   var OPTIONS_NOT_ATTRIBUTES = {'urlClass':true, 'listClass':true, 'usernameClass':true, 'hashtagClass':true, 'cashtagClass':true,
                             'usernameUrlBase':true, 'listUrlBase':true, 'hashtagUrlBase':true, 'cashtagUrlBase':true,
                             'usernameUrlBlock':true, 'listUrlBlock':true, 'hashtagUrlBlock':true, 'linkUrlBlock':true,
-                            'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true,
+                            'usernameIncludeSymbol':true, 'suppressLists':true, 'suppressNoFollow':true, 'targetBlank':true,
                             'suppressDataScreenName':true, 'urlEntities':true, 'symbolTag':true, 'textWithSymbolTag':true, 'urlTarget':true,
                             'invisibleTagAttrs':true, 'linkAttributeBlock':true, 'linkTextBlock': true, 'htmlEscapeNonEntities': true
                             };
+
   var BOOLEAN_ATTRIBUTES = {'disabled':true, 'readonly':true, 'multiple':true, 'checked':true};
 
   // Simple object cloning function for simple objects
@@ -753,8 +754,9 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   twttr.txt.extractMentionsWithIndices = function(text) {
-    var mentions = [];
-    var mentionsOrLists = twttr.txt.extractMentionsOrListsWithIndices(text);
+    var mentions = [],
+        mentionOrList,
+        mentionsOrLists = twttr.txt.extractMentionsOrListsWithIndices(text);
 
     for (var i = 0 ; i < mentionsOrLists.length; i++) {
       mentionOrList = mentionsOrLists[i];
@@ -778,7 +780,8 @@ if (typeof twttr === "undefined" || twttr === null) {
       return [];
     }
 
-    var possibleNames = [];
+    var possibleNames = [],
+        slashListname;
 
     text.replace(twttr.txt.regexen.validMentionOrList, function(match, before, atSign, screenName, slashListname, offset, chunk) {
       var after = chunk.slice(offset + match.length);
