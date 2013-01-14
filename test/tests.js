@@ -294,3 +294,10 @@ test("twttr.txt.extractMentionsOrListsWithIndices", function() {
     equal(twttr.txt.extractMentionsOrListsWithIndices("f" + c + "@kn").length, 0, "Should not extract mention if preceded by " + c);
   }
 });
+
+test("twttr.txt.extractUrls", function() {
+  var message_with_hyphenated_url = "Message with hyphenated-url.com";
+  var message_with_www_hyphenated_url = "Message with www.123-hyphenated-url.com";
+  equal(twttr.txt.extractUrls(message_with_hyphenated_url)[0], "hyphenated-url.com", "Should extract full url with hyphen.");
+  equal(twttr.txt.extractUrls(message_with_www_hyphenated_url)[0], "www.123-hyphenated-url.com", "Should extract full url with hyphen.");
+});
