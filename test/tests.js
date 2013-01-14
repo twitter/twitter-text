@@ -244,8 +244,6 @@ test("twttr.txt.autolink", function() {
   // handle the @ character in the URL
   var testUrl = "http://twitter.com?var=@val";
   same(twttr.txt.autoLink(testUrl),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a>", "Autolink with special char params");
-
-  console.log(twttr.txt.autoLink('http://week.manoramaonline.com/cgi-bin/MMOnline.dll/portal/ep/theWeekContent.do?BV_ID=@@@&contentId=12939975&programId=1073754900'));
   // handle the @ character in the URL and an @mention at the same time
   same(twttr.txt.autoLink(testUrl + " @mention"),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a> @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a>", "Autolink with special char params and mentions");
 });
