@@ -240,6 +240,14 @@ test("twttr.txt.autolink", function() {
   same(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
       "\uD801\uDC00 <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>",
       "Autolink hashtag/mentionURL w/ Supplementary character");
+
+  // handle the @ character in the URL
+  var testUrl = "http://twitter.com?var=@val";
+  same(twttr.txt.autoLink(testUrl),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a>", "Autolink with special char params");
+
+  console.log(twttr.txt.autoLink('http://week.manoramaonline.com/cgi-bin/MMOnline.dll/portal/ep/theWeekContent.do?BV_ID=@@@&contentId=12939975&programId=1073754900'));
+  // handle the @ character in the URL and an @mention at the same time
+  same(twttr.txt.autoLink(testUrl + " @mention"),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a> @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a>", "Autolink with special char params and mentions");
 });
 
 test("twttr.txt.linkTextWithEntity", function() {
