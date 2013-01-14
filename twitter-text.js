@@ -1,14 +1,8 @@
-if (typeof window === "undefined" || window === null) {
-  window = { twttr: {} };
-}
-if (window.twttr == null) {
-  window.twttr = {};
-}
-if (typeof twttr === "undefined" || twttr === null) {
-  twttr = {};
-}
-
 (function() {
+  if (typeof twttr === "undefined" || twttr === null) {
+    var twttr = {};
+  }
+
   twttr.txt = {};
   twttr.txt.regexen = {};
 
@@ -1300,4 +1294,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     module.exports = twttr.txt;
   }
 
-}());
+  if (typeof window != 'undefined') {
+    window.twttr = twttr;
+  }
+})();
