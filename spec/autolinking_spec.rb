@@ -678,6 +678,11 @@ describe Twitter::Autolink do
       linked.should have_autolinked_url('dummy', '#hashtag')
     end
 
+    it "should customize href by cashtag_url_block option" do
+      linked = @linker.auto_link("$CASH", :cashtag_url_block => lambda{|a| "dummy"})
+      linked.should have_autolinked_url('dummy', '$CASH')
+    end
+
     it "should customize href by link_url_block option" do
       linked = @linker.auto_link("http://example.com/", :link_url_block => lambda{|a| "dummy"})
       linked.should have_autolinked_url('dummy', 'http://example.com/')

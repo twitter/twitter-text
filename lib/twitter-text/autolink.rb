@@ -207,7 +207,7 @@ module Twitter
     OPTIONS_NOT_ATTRIBUTES = Set.new([
       :url_class, :list_class, :username_class, :hashtag_class, :cashtag_class,
       :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
-      :username_url_block, :list_url_block, :hashtag_url_block, :link_url_block,
+      :username_url_block, :list_url_block, :hashtag_url_block, :cashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
       :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target,
       :link_attribute_block, :link_text_block
