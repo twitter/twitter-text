@@ -326,6 +326,11 @@ module Twitter
       hash = chars[entity[:indices].first]
       hashtag = entity[:hashtag]
       hashtag = yield(hashtag) if block_given?
+      hashtag_class = options[:hashtag_class]
+
+      if hashtag.match Twitter::Regex::REGEXEN[:rtl_chars]
+        hashtag_class += ' rtl'
+      end
 
       href = if options[:hashtag_url_block]
         options[:hashtag_url_block].call(hashtag)
@@ -334,7 +339,7 @@ module Twitter
       end
 
       html_attrs = {
-        :class => "#{options[:hashtag_class]}",
+        :class => hashtag_class,
         # FIXME As our conformance test, hash in title should be half-width,
         # this should be bug of conformance data.
         :title => "##{hashtag}"
