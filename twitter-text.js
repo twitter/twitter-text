@@ -100,6 +100,7 @@
   twttr.txt.regexen.invalid_chars_group = regexSupplant(INVALID_CHARS.join(""));
   twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
   twttr.txt.regexen.rtl_chars = /[\u0600-\u06FF]|[\u0750-\u077F]|[\u0590-\u05FF]|[\uFE70-\uFEFF]/mg;
+  twttr.txt.regexen.non_bmp_code_pairs = /[\uD800-\uDBFF][\uDC00-\uDFFF]/mg;
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -980,6 +981,10 @@
     twttr.txt.convertUnicodeIndices(text, entities, true);
   };
 
+  twttr.txt.getUnicodeTextLength = function(text) {
+    return text.replace(twttr.txt.regexen.non_bmp_code_pairs, ' ').length;
+  };
+
   twttr.txt.convertUnicodeIndices = function(text, entities, indicesInUTF16) {
     if (entities.length == 0) {
       return;
@@ -1152,15 +1157,19 @@
   ];
 
   // Returns the length of Tweet text with consideration to t.co URL replacement
+  // and chars outside the basic multilingual plane that use 2 UTF16 code points
   twttr.txt.getTweetLength = function(text, options) {
     if (!options) {
       options = {
-          short_url_length: 20,
-          short_url_length_https: 21
+          // These come from https://api.twitter.com/1/help/configuration.json
+          // described by https://dev.twitter.com/docs/api/1/get/help/configuration
+          short_url_length: 22,
+          short_url_length_https: 23
       };
     }
-    var textLength = text.length;
-    var urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
+    var textLength = twttr.txt.getUnicodeTextLength(text),
+        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
+    twttr.txt.modifyIndicesFromUTF16ToUnicode(text, urlsWithIndices);
 
     for (var i = 0; i < urlsWithIndices.length; i++) {
     	// Subtract the length of the original URL
