@@ -6,15 +6,19 @@ tests:
       expected: true
 
     - description: "Valid Tweet: 140 characters"
-      text: "A lie gets halfway around the world before the truth has a chance to get its pants on. -- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
+      text: "A lie gets halfway around the world before the truth has a chance to get its pants on.  Winston Churchill (1874-1965) http://bit.ly/dJpywL"
       expected: true
 
     - description: "Valid Tweet: 140 characters (with accents)"
-      text: "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn. -- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
+      text: "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn.  Winston Churchill (1874-1965) http://bit.ly/dJpywL"
       expected: true
 
     - description: "Valid Tweet: 140 characters (double byte characters)"
       text: "のののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののの"
+      expected: true
+
+    - description: "Valid Tweet: 140 characters (double word characters)"
+      text: "🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱"
       expected: true
 
     - description: "Invalid Tweet: no characters (empty)"
@@ -207,18 +211,30 @@ tests:
       text: "This is a test."
       expected: 15
 
-    - description: "Count a URL starting with http:// as 20 characters"
+    - description: "Count a URL starting with http:// as 22 characters"
       text: "http://test.com"
-      expected: 20
+      expected: 22
 
-    - description: "Count a URL starting with https:// as 21 characters"
+    - description: "Count a URL starting with https:// as 23 characters"
       text: "https://test.com"
-      expected: 21
+      expected: 23
 
-    - description: "Count a URL without protocol as 20 characters"
+    - description: "Count a URL without protocol as 22 characters"
       text: "test.com"
-      expected: 20
+      expected: 22
 
     - description: "Count multiple URLs correctly"
       text: "Test http://test.com test http://test.com test.com test"
-      expected: 77
+      expected: 83
+
+    - description: "Count unicode chars outside the basic multilingual plane (double word)"
+      text: "𐀀􏿿"
+      expected: 2
+
+    - description: "Count unicode chars inside the basic multilingual plane"
+      text: "저찀쯿쿿"
+      expected: 4
+
+    - description: "Count a mix of single byte single word, and double word unicode characters"
+      text: "H🐱☺"
+      expected: 3
