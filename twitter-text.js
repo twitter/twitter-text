@@ -1183,7 +1183,7 @@
 
       // Add 23 characters for URL starting with https://
       // Otherwise add 22 characters
-      if (urlsWithIndices[i].url.toLowerCase().match(twttr.txt.regexen.ursHasHttps)) {
+      if (urlsWithIndices[i].url.toLowerCase().match(twttr.txt.regexen.urlHasHttps)) {
          textLength += options.short_url_length_https;
       } else {
         textLength += options.short_url_length;
