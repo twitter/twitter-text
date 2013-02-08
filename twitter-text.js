@@ -271,6 +271,8 @@
   , 'gi');
 
   twttr.txt.regexen.validTcoUrl = /^https?:\/\/t\.co\/[a-z0-9]+/i;
+  twttr.txt.regexen.urlHasProtocol = /^https?:\/\//i;
+  twttr.txt.regexen.urlHasHttps = /^https:\/\//i;
 
   // cashtag related regex
   twttr.txt.regexen.cashtag = /[a-z]{1,6}(?:[._][a-z]{1,2})?/i;
@@ -501,6 +503,10 @@
     }
 
     var attrs = clone(options.htmlAttrs || {});
+
+    if (!url.match(twttr.txt.regexen.urlHasProtocol)) {
+      url = "http://" + url;
+    }
     attrs.href = url;
 
     if (options.targetBlank) {
@@ -1175,9 +1181,9 @@
     	// Subtract the length of the original URL
       textLength += urlsWithIndices[i].indices[0] - urlsWithIndices[i].indices[1];
 
-      // Add 21 characters for URL starting with https://
-      // Otherwise add 20 characters
-      if (urlsWithIndices[i].url.toLowerCase().match(/^https:\/\//)) {
+      // Add 23 characters for URL starting with https://
+      // Otherwise add 22 characters
+      if (urlsWithIndices[i].url.toLowerCase().match(twttr.txt.regexen.urlHasHttps)) {
          textLength += options.short_url_length_https;
       } else {
         textLength += options.short_url_length;
