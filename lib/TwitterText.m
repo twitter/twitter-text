@@ -283,8 +283,8 @@
 @")"
 
 static const NSInteger MaxTweetLength = 140;
-static const NSInteger HTTPShortURLLength = 21;
-static const NSInteger HTTPSShortURLLength = 22;
+static const NSInteger HTTPShortURLLength = 22;
+static const NSInteger HTTPSShortURLLength = 23;
 
 @implementation TwitterText
 
