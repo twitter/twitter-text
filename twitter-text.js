@@ -1310,6 +1310,12 @@
   }
 
   if (typeof window != 'undefined') {
-    window.twttr = twttr;
+    if (window.twttr) {
+      for (var prop in twttr) {
+        window.twttr[prop] = twttr[prop];
+      }
+    } else {
+      window.twttr = twttr;
+    }
   }
 })();
