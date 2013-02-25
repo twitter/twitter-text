@@ -255,7 +255,7 @@
       ')|(?:@#{validGeneralUrlPathChars}+\/)'+
     ')', 'i');
 
-  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!?\*'@\(\);:&=\+\$\/%#\[\]\-_\.,~@|]/i;
+  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!?\*'@\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
   twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
   twttr.txt.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
