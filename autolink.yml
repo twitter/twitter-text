@@ -686,13 +686,9 @@ tests:
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
       expected: "<a href=\"http://www.flickr.com/photos/29674651@N00/4382024406\">http://www.flickr.com/photos/29674651@N00/4382024406</a> if you know what's good for you."
 
-    - description: "Autolink all does not allow & without ?"
-      text: "Check out: http://example.com/test&@chasesechrist"
-      expected: "Check out: <a href=\"http://example.com/test\">http://example.com/test</a>&@chasesechrist"
-
-    - description: "Correctly handles URL follower directly by @user"
+    - description: "Correctly handles URL followed directly by @user"
       text: "See: http://example.com/@user"
-      expected: "See: <a href=\"http://example.com/\">http://example.com/</a>@<a class=\"tweet-url username\" href=\"https://twitter.com/user\">user</a>"
+      expected: "See: <a href=\"http://example.com/@user\">http://example.com/@user</a>"
 
     - description: "Correctly handles URL with an @user followed by trailing /"
       text: "See: http://example.com/@user/"
