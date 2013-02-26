@@ -96,7 +96,7 @@ public class Regex {
 
   private static final String URL_VALID_PORT_NUMBER = "[0-9]++";
 
-  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&" + LATIN_ACCENTS_CHARS + "]";
+  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&@" + LATIN_ACCENTS_CHARS + "]";
   /** Allow URL paths to contain balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
    *  2. Used in IIS sessions like /S(dfd346)/
@@ -115,7 +115,7 @@ public class Regex {
     ")|(?:@" + URL_VALID_GENERAL_PATH_CHARS + "+/)" +
   ")";
 
-  private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!?\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~\\|]";
+  private static final String URL_VALID_URL_QUERY_CHARS = "[a-z0-9!?\\*'\\(\\);:&=\\+\\$/%#\\[\\]\\-_\\.,~\\|@]";
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
   "(" +                                                            //  $1 total match
