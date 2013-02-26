@@ -488,9 +488,8 @@ describe Twitter::Autolink do
         context "with a username not followed by a /" do
           def original_text; 'http://example.com/@foobar'; end
 
-          it "should link small url and username" do
-            @autolinked_text.should have_autolinked_url('http://example.com/')
-            @autolinked_text.should link_to_screen_name('foobar')
+          it "should link url" do
+            @autolinked_text.should have_autolinked_url('http://example.com/@foobar')
           end
         end
 
