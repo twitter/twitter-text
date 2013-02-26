@@ -220,7 +220,7 @@ module Twitter
 
     REGEXEN[:valid_port_number] = /[0-9]+/
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\.\$\/%#\[\]\-_~&|#{LATIN_ACCENTS}]/io
+    REGEXEN[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\.\$\/%#\[\]\-_~&|@#{LATIN_ACCENTS}]/io
     # Allow URL paths to contain balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
@@ -228,16 +228,15 @@ module Twitter
     # Valid end-of-path chracters (so /foo. does not gobble the period).
     #   1. Allow =&# for empty URL parameters and other URL-join artifacts
     REGEXEN[:valid_url_path_ending_chars] = /[a-z0-9=_#\/\+\-#{LATIN_ACCENTS}]|(?:#{REGEXEN[:valid_url_balanced_parens]})/io
-    # Allow @ in a url, but only in the middle. Catch things like http://example.com/@user/
     REGEXEN[:valid_url_path] = /(?:
       (?:
         #{REGEXEN[:valid_general_url_path_chars]}*
         (?:#{REGEXEN[:valid_url_balanced_parens]} #{REGEXEN[:valid_general_url_path_chars]}*)*
         #{REGEXEN[:valid_url_path_ending_chars]}
-      )|(?:@#{REGEXEN[:valid_general_url_path_chars]}+\/)
+      )|(?:#{REGEXEN[:valid_general_url_path_chars]}+\/)
     )/iox
 
-    REGEXEN[:valid_url_query_chars] = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i
+    REGEXEN[:valid_url_query_chars] = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|@]/i
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/]/i
     REGEXEN[:valid_url] = %r{
       (                                                                                     #   $1 total match

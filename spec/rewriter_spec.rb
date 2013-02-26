@@ -527,9 +527,9 @@ describe Twitter::Rewriter do
       context "with a username not followed by a /" do
         def original_text; "http://example.com/@foobar"; end
 
-        it "should link small url and username" do
-          @block_args.should == ["http://example.com/"]
-          @rewritten_text.should == "[rewritten]@foobar"
+        it "should link url" do
+          @block_args.should == ["http://example.com/@foobar"]
+          @rewritten_text.should == "[rewritten]"
         end
       end
 
