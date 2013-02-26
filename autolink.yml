@@ -690,6 +690,10 @@ tests:
       text: "See: http://example.com/@user"
       expected: "See: <a href=\"http://example.com/@user\">http://example.com/@user</a>"
 
+    - description: "Correctly handles URL params containing @user"
+      text: "See: http://example.com/?@user=@user"
+      expected: "See: <a href=\"http://example.com/?@user=@user\">http://example.com/?@user=@user</a>"
+
     - description: "Correctly handles URL with an @user followed by trailing /"
       text: "See: http://example.com/@user/"
       expected: "See: <a href=\"http://example.com/@user/\">http://example.com/@user/</a>"
