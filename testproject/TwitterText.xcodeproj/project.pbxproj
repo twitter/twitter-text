@@ -12,6 +12,8 @@
 		745569971541CDB1004DE54E /* TwitterText.m in Sources */ = {isa = PBXBuildFile; fileRef = 745569941541CDB1004DE54E /* TwitterText.m */; };
 		745569981541CDB1004DE54E /* TwitterTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 745569961541CDB1004DE54E /* TwitterTextEntity.m */; };
 		7455699D1541CDCA004DE54E /* TwitterTextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7455699B1541CDCA004DE54E /* TwitterTextTests.m */; };
+		74F1474816B89BE50030AFCE /* extract.json in Resources */ = {isa = PBXBuildFile; fileRef = 74F1474616B89BE50030AFCE /* extract.json */; };
+		74F1474916B89BE50030AFCE /* validate.json in Resources */ = {isa = PBXBuildFile; fileRef = 74F1474716B89BE50030AFCE /* validate.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		745569991541CDCA004DE54E /* TwitterTextTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TwitterTextTests-Info.plist"; sourceTree = SOURCE_ROOT; };
 		7455699A1541CDCA004DE54E /* TwitterTextTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextTests.h; sourceTree = SOURCE_ROOT; };
 		7455699B1541CDCA004DE54E /* TwitterTextTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterTextTests.m; sourceTree = SOURCE_ROOT; };
+		74F1474616B89BE50030AFCE /* extract.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = extract.json; path = "../test/json-conformance/extract.json"; sourceTree = "<group>"; };
+		74F1474716B89BE50030AFCE /* validate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = validate.json; path = "../test/json-conformance/validate.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +52,7 @@
 			children = (
 				745569921541CDB1004DE54E /* lib */,
 				741433651540BAD100FC29AD /* testproject */,
+				74F1474416B89BDB0030AFCE /* Resources */,
 				7414335E1540BAD100FC29AD /* Frameworks */,
 				7414335D1540BAD100FC29AD /* Products */,
 			);
@@ -94,6 +99,15 @@
 			);
 			name = lib;
 			path = ../lib;
+			sourceTree = "<group>";
+		};
+		74F1474416B89BDB0030AFCE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				74F1474616B89BE50030AFCE /* extract.json */,
+				74F1474716B89BE50030AFCE /* validate.json */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,6 +162,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74F1474816B89BE50030AFCE /* extract.json in Resources */,
+				74F1474916B89BE50030AFCE /* validate.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
