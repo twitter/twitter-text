@@ -147,7 +147,12 @@ public class Autolink {
     Map<String, String> attrs = new LinkedHashMap<String, String>();
     attrs.put("href", hashtagUrlBase + hashtag);
     attrs.put("title", "#" + hashtag);
-    attrs.put("class", hashtagClass);
+
+    if (Regex.RTL_CHARACTERS.matcher(text).find()) {
+      attrs.put("class", hashtagClass + " rtl");
+    } else {
+      attrs.put("class", hashtagClass);
+    }
 
     linkToTextWithSymbol(entity, hashChar, hashtag, attrs, builder);
   }

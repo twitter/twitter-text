@@ -5,10 +5,11 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
-import org.ho.yaml.Yaml;
+import org.yaml.snakeyaml.Yaml;
 
 import com.twitter.Extractor.Entity;
 
@@ -219,7 +220,8 @@ public class ConformanceTest extends TestCase {
   }
 
   protected List loadConformanceData(File yamlFile, String testType) throws FileNotFoundException {
-    Map fullConfig = (Map) Yaml.load(yamlFile);
+    Yaml yaml = new Yaml();
+    Map fullConfig = (Map) yaml.load(new FileInputStream(yamlFile));
     Map testConfig = (Map)fullConfig.get("tests");
     return (List)testConfig.get(testType);
   }
