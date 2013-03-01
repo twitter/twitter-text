@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "1.5.0"
+  s.version = "1.6.0"
   s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle",
-               "Raffi Krikorian", "J.P. Cummins", "Yoshimasa Niwa", "Keita Fujii"]
+               "Raffi Krikorian", "J.P. Cummins", "Yoshimasa Niwa", "Keita Fujii", "James Koval"]
   s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com",
-             "raffi@twitter.com", "jcummins@twitter.com", "niw@niw.at", "keita@twitter.com"]
+             "raffi@twitter.com", "jcummins@twitter.com", "niw@niw.at", "keita@twitter.com", "jkoval@twitter.com"]
   s.homepage = "http://twitter.com"
   s.description = s.summary = "A gem that provides text handling for Twitter"
 
