@@ -8,8 +8,8 @@ import java.text.Normalizer;
 public class Validator {
   public static final int MAX_TWEET_LENGTH = 140;
 
-  protected int shortUrlLength = 20;
-  protected int shortUrlLengthHttps = 21;
+  protected int shortUrlLength = 22;
+  protected int shortUrlLengthHttps = 23;
 
   private Extractor extractor = new Extractor();
 
