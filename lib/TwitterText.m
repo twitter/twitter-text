@@ -252,7 +252,7 @@
 #define TWUInvalidShortDomain           @"\\A" TWUValidDomainName TWUValidCCTLD @"\\z"
 
 #define TWUValidPortNumber              @"[0-9]+"
-#define TWUValidGeneralURLPathChars     @"[a-zA-Z0-9!\\*';:=+,.$/%#\\[\\]\\-_~&|" TWULatinAccents @"]"
+#define TWUValidGeneralURLPathChars     @"[a-zA-Z0-9!\\*';:=+,.$/%#\\[\\]\\-_~&|@" TWULatinAccents @"]"
 
 #define TWUValidURLBalancedParens       @"\\(" TWUValidGeneralURLPathChars @"+\\)"
 #define TWUValidURLPathEndingChars      @"[a-zA-Z0-9=_#/+\\-" TWULatinAccents @"]|(?:" TWUValidURLBalancedParens @")"
@@ -267,7 +267,7 @@
     @"(?:" TWUValidGeneralURLPathChars @"+/)" \
 @")"
 
-#define TWUValidURLQueryChars           @"[a-zA-Z0-9!?*'\\(\\);:&=+$/%#\\[\\]\\-_\\.,~|]"
+#define TWUValidURLQueryChars           @"[a-zA-Z0-9!?*'\\(\\);:&=+$/%#\\[\\]\\-_\\.,~|@]"
 #define TWUValidURLQueryEndingChars     @"[a-zA-Z0-9_&=#/]"
 
 #define TWUValidURL \
