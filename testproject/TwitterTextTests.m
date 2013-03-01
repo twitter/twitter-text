@@ -13,9 +13,6 @@
 #import "TwitterTextTests.h"
 #import "TwitterText.h"
 
-#define HTTP_SHORT_URL_LENGTH 20
-#define HTTPS_SHORT_URL_LENGTH 21
-
 @implementation TwitterTextTests
 
 - (void)setUp
@@ -320,7 +317,6 @@
             }
         } else {
             STFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
-            NSLog(@"### %@", results);
         }
     }
     
@@ -380,7 +376,7 @@
     for (NSDictionary *testCase in lengths) {
         NSString *text = [testCase objectForKey:@"text"];
         NSInteger expected = [[testCase objectForKey:@"expected"] intValue];
-        NSInteger len = [TwitterText tweetLength:text httpURLLength:HTTP_SHORT_URL_LENGTH httpsURLLength:HTTPS_SHORT_URL_LENGTH];
+        NSInteger len = [TwitterText tweetLength:text];
         STAssertTrue(len == expected, @"Length should be %d (%d)", expected, len);
     }
 }

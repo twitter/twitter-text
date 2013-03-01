@@ -1,287 +1,307 @@
 {
   "tests": {
-    "hashtags": [
-      {
-        "expected": true,
-        "text": "#hashtag",
-        "description": "Valid hashtag: a-z < 20 characters"
-      },
-      {
-        "expected": true,
-        "text": "#1st",
-        "description": "Valid hashtag: number followed by letters"
-      },
-      {
-        "expected": true,
-        "text": "#that1time",
-        "description": "Valid hashtag: letters and numbers mixed"
-      },
-      {
-        "expected": true,
-        "text": "#easyas123",
-        "description": "Valid hashtag: letter followed by numbers"
-      },
-      {
-        "expected": false,
-        "text": "#12345",
-        "description": "Invalid hashtag: all numbers"
-      },
-      {
-        "expected": true,
-        "text": "#ашок",
-        "description": "Valid hashtag: Russian text"
-      },
-      {
-        "expected": true,
-        "text": "#트위터",
-        "description": "Valid hashtag: Korean text"
-      }
-    ],
     "usernames": [
       {
         "expected": true,
-        "text": "@username",
-        "description": "Valid username: a-z < 20 characters"
+        "description": "Valid username: a-z < 20 characters",
+        "text": "@username"
       },
       {
         "expected": true,
-        "text": "@12345",
-        "description": "All numeric username are allowed"
+        "description": "All numeric username are allowed",
+        "text": "@12345"
       },
       {
         "expected": true,
-        "text": "@example_name",
-        "description": "Usernames should allow the _ character"
+        "description": "Usernames should allow the _ character",
+        "text": "@example_name"
       },
       {
         "expected": false,
-        "text": "@example-name",
-        "description": "Usernames SHOULD NOT allow the - character"
+        "description": "Usernames SHOULD NOT allow the - character",
+        "text": "@example-name"
       }
     ],
-    "urls_without_protocol": [
+    "hashtags": [
       {
         "expected": true,
-        "text": "example.com",
-        "description": "Valid url without protocol: domain + gTLD"
+        "description": "Valid hashtag: a-z < 20 characters",
+        "text": "#hashtag"
       },
       {
         "expected": true,
-        "text": "www.example.com",
-        "description": "Valid url without protocol: subdomain + domain + gTLD"
+        "description": "Valid hashtag: number followed by letters",
+        "text": "#1st"
       },
       {
         "expected": true,
-        "text": "t.co",
-        "description": "Valid url without protocol: domain + ccTLD"
+        "description": "Valid hashtag: letters and numbers mixed",
+        "text": "#that1time"
       },
       {
         "expected": true,
-        "text": "foo.co.jp",
-        "description": "Valid url without protocol: subdomain + domain + ccTLD"
-      },
-      {
-        "expected": true,
-        "text": "example.com/path/to/resource?search=foo&lang=en",
-        "description": "Valid url without protocol: domain + path + query"
-      }
-    ],
-    "urls": [
-      {
-        "expected": true,
-        "text": "http://example.com",
-        "description": "Valid url: protocol + domain"
-      },
-      {
-        "expected": true,
-        "text": "https://example.com/path/to/resource?search=foo&lang=en",
-        "description": "Valid url: ssl + domain + path + query"
-      },
-      {
-        "expected": true,
-        "text": "http://twitter.com/#!/twitter",
-        "description": "Valid url: protocol + domain + path + fragment"
-      },
-      {
-        "expected": true,
-        "text": "HTTPS://www.ExaMPLE.COM/index.html",
-        "description": "Valid url: cased protocol and domain"
-      },
-      {
-        "expected": true,
-        "text": "http://user:PASSW0RD@example.com:8080/login.php",
-        "description": "Valid url: port and userinfo"
-      },
-      {
-        "expected": true,
-        "text": "http://sports.yahoo.com/nfl/news;_ylt=Aom0;ylu=XyZ?slug=ap-superbowlnotebook",
-        "description": "Valid url: matrix path parameters"
-      },
-      {
-        "expected": true,
-        "text": "http://192.168.0.1/index.html?src=asdf",
-        "description": "Valid url: ipv4"
-      },
-      {
-        "expected": true,
-        "text": "http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80/index.html",
-        "description": "Valid url: ipv6"
-      },
-      {
-        "expected": true,
-        "text": "http://test_underscore.twitter.com",
-        "description": "Valid url: underscore in subdomain"
-      },
-      {
-        "expected": true,
-        "text": "http://example.com?foo=$bar.;baz?BAZ&c=d-#top/?stories+",
-        "description": "Valid url: sub delims and question marks"
-      },
-      {
-        "expected": true,
-        "text": "http://☃.net/",
-        "description": "Valid unicode url: unicode domain"
+        "description": "Valid hashtag: letter followed by numbers",
+        "text": "#easyas123"
       },
       {
         "expected": false,
-        "text": "ftp://www.example.com/",
-        "description": "Invalid url: invalid scheme"
+        "description": "Invalid hashtag: all numbers",
+        "text": "#12345"
       },
       {
-        "expected": false,
-        "text": "https://user:pass[word]@www.example.com/",
-        "description": "Invalid url: invalid userinfo characters"
+        "expected": true,
+        "description": "Valid hashtag: Russian text",
+        "text": "#ашок"
       },
       {
-        "expected": false,
-        "text": "http://domain-dash_2314352345_dfasd.foo-cow_4352.com",
-        "description": "Invalid url: underscore in domain"
-      },
-      {
-        "expected": false,
-        "text": "http://www.-domain4352.com/",
-        "description": "Invalid url: domain beginning dash"
-      },
-      {
-        "expected": false,
-        "text": "http://www.domain4352-.com/",
-        "description": "Invalid url: domain trailing dash"
-      },
-      {
-        "expected": false,
-        "text": "http://☃-.net/",
-        "description": "Invalid url: unicode domain trailing dash"
-      },
-      {
-        "expected": false,
-        "text": "http://%e2%98%83.net/",
-        "description": "Invalid url: improperly encoded unicode domain"
-      },
-      {
-        "expected": false,
-        "text": "http://256.1.2.3/",
-        "description": "Invalid url: invalid IP"
-      },
-      {
-        "expected": false,
-        "text": "http://en.wikipedia.org/wiki/\"#Punctuation",
-        "description": "Invalid url: invalid char in path"
-      },
-      {
-        "expected": false,
-        "text": "http://example.com/#anchor ",
-        "description": "Invalid url: trailing space"
+        "expected": true,
+        "description": "Valid hashtag: Korean text",
+        "text": "#트위터"
       }
     ],
     "lengths": [
       {
         "expected": 15,
-        "text": "This is a test.",
-        "description": "Count the number of characters"
+        "description": "Count the number of characters",
+        "text": "This is a test."
       },
       {
-        "expected": 20,
-        "text": "http://test.com",
-        "description": "Count a URL starting with http:// as 20 characters"
+        "expected": 22,
+        "description": "Count a URL starting with http:// as 22 characters",
+        "text": "http://test.com"
       },
       {
-        "expected": 21,
-        "text": "https://test.com",
-        "description": "Count a URL starting with https:// as 21 characters"
+        "expected": 23,
+        "description": "Count a URL starting with https:// as 23 characters",
+        "text": "https://test.com"
       },
       {
-        "expected": 20,
-        "text": "test.com",
-        "description": "Count a URL without protocol as 20 characters"
+        "expected": 22,
+        "description": "Count a URL without protocol as 22 characters",
+        "text": "test.com"
       },
       {
-        "expected": 77,
-        "text": "Test http://test.com test http://test.com test.com test",
-        "description": "Count multiple URLs correctly"
+        "expected": 83,
+        "description": "Count multiple URLs correctly",
+        "text": "Test http://test.com test http://test.com test.com test"
+      },
+      {
+        "expected": 2,
+        "description": "Count unicode chars outside the basic multilingual plane (double word)",
+        "text": "𐀀􏿿"
+      },
+      {
+        "expected": 4,
+        "description": "Count unicode chars inside the basic multilingual plane",
+        "text": "저찀쯿쿿"
+      },
+      {
+        "expected": 3,
+        "description": "Count a mix of single byte single word, and double word unicode characters",
+        "text": "H🐱☺"
       }
     ],
     "lists": [
       {
         "expected": true,
-        "text": "@username/list",
-        "description": "Valid list: a-z < 20 characters"
+        "description": "Valid list: a-z < 20 characters",
+        "text": "@username/list"
       },
       {
         "expected": false,
-        "text": "@username",
-        "description": "A username alone SHOULD NOT be considered a valid list"
+        "description": "A username alone SHOULD NOT be considered a valid list",
+        "text": "@username"
       },
       {
         "expected": false,
-        "text": "@username/",
-        "description": "A username followed by a slash SHOULD NOT be considered a valid list"
+        "description": "A username followed by a slash SHOULD NOT be considered a valid list",
+        "text": "@username/"
       },
       {
         "expected": false,
-        "text": " @username/list",
-        "description": "Validation SHOULD NOT allow leading spaces"
+        "description": "Validation SHOULD NOT allow leading spaces",
+        "text": " @username/list"
       },
       {
         "expected": false,
-        "text": "@username/list ",
-        "description": "Validation SHOULD NOT allow trailing spaces"
+        "description": "Validation SHOULD NOT allow trailing spaces",
+        "text": "@username/list "
+      }
+    ],
+    "urls_without_protocol": [
+      {
+        "expected": true,
+        "description": "Valid url without protocol: domain + gTLD",
+        "text": "example.com"
+      },
+      {
+        "expected": true,
+        "description": "Valid url without protocol: subdomain + domain + gTLD",
+        "text": "www.example.com"
+      },
+      {
+        "expected": true,
+        "description": "Valid url without protocol: domain + ccTLD",
+        "text": "t.co"
+      },
+      {
+        "expected": true,
+        "description": "Valid url without protocol: subdomain + domain + ccTLD",
+        "text": "foo.co.jp"
+      },
+      {
+        "expected": true,
+        "description": "Valid url without protocol: domain + path + query",
+        "text": "example.com/path/to/resource?search=foo&lang=en"
       }
     ],
     "tweets": [
       {
         "expected": true,
-        "text": "I am a Tweet",
-        "description": "Valid Tweet: < 20 characters"
+        "description": "Valid Tweet: < 20 characters",
+        "text": "I am a Tweet"
       },
       {
         "expected": true,
-        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. -- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
-        "description": "Valid Tweet: 140 characters"
+        "description": "Valid Tweet: 140 characters",
+        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on.  Winston Churchill (1874-1965) http://bit.ly/dJpywL"
       },
       {
         "expected": true,
-        "text": "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn. -- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
-        "description": "Valid Tweet: 140 characters (with accents)"
+        "description": "Valid Tweet: 140 characters (with accents)",
+        "text": "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn.  Winston Churchill (1874-1965) http://bit.ly/dJpywL"
       },
       {
         "expected": true,
-        "text": "のののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののの",
-        "description": "Valid Tweet: 140 characters (double byte characters)"
+        "description": "Valid Tweet: 140 characters (double byte characters)",
+        "text": "のののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののの"
+      },
+      {
+        "expected": true,
+        "description": "Valid Tweet: 140 characters (double word characters)",
+        "text": "🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱"
       },
       {
         "expected": false,
-        "text": "",
-        "description": "Invalid Tweet: no characters (empty)"
+        "description": "Invalid Tweet: no characters (empty)",
+        "text": ""
       },
       {
         "expected": false,
-        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. --- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
-        "description": "Invalid Tweet: 141 characters"
+        "description": "Invalid Tweet: 141 characters",
+        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. --- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
       },
       {
         "expected": false,
-        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. \n-- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
-        "description": "Invalid Tweet: 141 characters (due to newline)"
+        "description": "Invalid Tweet: 141 characters (due to newline)",
+        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. \n-- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
+      }
+    ],
+    "urls": [
+      {
+        "expected": true,
+        "description": "Valid url: protocol + domain",
+        "text": "http://example.com"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: ssl + domain + path + query",
+        "text": "https://example.com/path/to/resource?search=foo&lang=en"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: protocol + domain + path + fragment",
+        "text": "http://twitter.com/#!/twitter"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: cased protocol and domain",
+        "text": "HTTPS://www.ExaMPLE.COM/index.html"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: port and userinfo",
+        "text": "http://user:PASSW0RD@example.com:8080/login.php"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: matrix path parameters",
+        "text": "http://sports.yahoo.com/nfl/news;_ylt=Aom0;ylu=XyZ?slug=ap-superbowlnotebook"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: ipv4",
+        "text": "http://192.168.0.1/index.html?src=asdf"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: ipv6",
+        "text": "http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80/index.html"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: underscore in subdomain",
+        "text": "http://test_underscore.twitter.com"
+      },
+      {
+        "expected": true,
+        "description": "Valid url: sub delims and question marks",
+        "text": "http://example.com?foo=$bar.;baz?BAZ&c=d-#top/?stories+"
+      },
+      {
+        "expected": true,
+        "description": "Valid unicode url: unicode domain",
+        "text": "http://☃.net/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: invalid scheme",
+        "text": "ftp://www.example.com/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: invalid userinfo characters",
+        "text": "https://user:pass[word]@www.example.com/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: underscore in domain",
+        "text": "http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: domain beginning dash",
+        "text": "http://www.-domain4352.com/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: domain trailing dash",
+        "text": "http://www.domain4352-.com/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: unicode domain trailing dash",
+        "text": "http://☃-.net/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: improperly encoded unicode domain",
+        "text": "http://%e2%98%83.net/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: invalid IP",
+        "text": "http://256.1.2.3/"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: invalid char in path",
+        "text": "http://en.wikipedia.org/wiki/\"#Punctuation"
+      },
+      {
+        "expected": false,
+        "description": "Invalid url: trailing space",
+        "text": "http://example.com/#anchor "
       }
     ]
   }
