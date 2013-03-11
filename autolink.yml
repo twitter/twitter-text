@@ -436,6 +436,10 @@ tests:
       text: "test http://www.example.co.jp"
       expected: "test <a href=\"http://www.example.co.jp\">http://www.example.co.jp</a>"
 
+    - description: "Autolink url with .sx TLD"
+      text: "test http://www.example.sx"
+      expected: "test <a href=\"http://www.example.sx\">http://www.example.sx</a>"
+
     - description: "DO NOT Autolink url containing ! character in the domain"
       text: "badly formatted http://foo!bar.com"
       expected: "badly formatted http://foo!bar.com"
