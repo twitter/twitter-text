@@ -5,6 +5,32 @@
   <artifactId>twitter-text</artifactId>
   <version>1.6.1</version>
 
+  <packaging>jar</packaging>
+  <name>twitter-text</name>
+  <description>Text processing routines for Twitter Tweets</description>
+  <organization><name>com.twitter</name></organization>
+  <url>https://github.com/twitter/twitter-text-java</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/twitter/twitter-text-java</url>
+    <connection>scm:git:git://github.com/twitter/twitter-text-java.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>jakl</id>
+      <name>James Koval</name>
+      <email>james.ross.koval@gmail.com</email>
+      <url>https://twitter.com/jakl</url>
+    </developer>
+  </developers>
+
   <build>
     <directory>out</directory>
     <outputDirectory>build</outputDirectory>
