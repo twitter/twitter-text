@@ -2,6 +2,22 @@
 
 Java port of the twitter-text handling libraries.
 
+## Getting Started
+
+The latest artifacts are published to maven central. 
+
+Bringing twitter-text-java into your project should be as simple as adding the following to your pom.xml:
+
+```xml
+  <dependencies>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>twitter-text</artifactId>
+      <version>1.6.1</version> <!-- or whatever the latest version is -->
+    </dependency>
+  </dependencies>
+```
+
 ## Building
 
 To build, ensure you have the conformance test suite checked out:
