@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 require 'set'
-require 'twitter-text/core_ext/hash'
+require 'twitter-text/hash_helper'
 
 module Twitter
   # A module for including Tweet auto-linking in a class. The primary use of this is for helpers/views so they can auto-link
@@ -48,7 +48,7 @@ module Twitter
 
       # map JSON entity to twitter-text entity
       entities.each do |entity|
-        entity.symbolize_keys!
+        HashHelper.symbolize_keys!(entity)
         # hashtag
         entity[:hashtag] = entity[:text] if entity[:text]
       end
@@ -227,7 +227,7 @@ module Twitter
 
     def url_entities_hash(url_entities)
       (url_entities || {}).inject({}) do |entities, entity|
-        entity = entity.symbolize_keys
+        HashHelper.symbolize_keys!(entity)
         entities[entity[:url]] = entity
         entities
       end
