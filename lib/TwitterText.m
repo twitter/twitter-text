@@ -302,7 +302,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     NSArray *hashtags = [self hashtagsInText:text withURLEntities:urls];
     [results addObjectsFromArray:hashtags];
 
-    NSArray *cashtags = [self cashtagsInText:text withURLEntities:urls];
+    NSArray *cashtags = [self symbolsInText:text withURLEntities:urls];
     [results addObjectsFromArray:cashtags];
 
     NSArray *mentionsAndLists = [self mentionsOrListsInText:text];
@@ -476,7 +476,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)cashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
++ (NSArray*)symbolsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
         return [NSArray array];
@@ -486,10 +486,10 @@ static const NSInteger HTTPSShortURLLength = 23;
     if (checkingURLOverlap) {
         urls = [self URLsInText:text];
     }
-    return [self cashtagsInText:text withURLEntities:urls];
+    return [self symbolsInText:text withURLEntities:urls];
 }
 
-+ (NSArray*)cashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities
++ (NSArray*)symbolsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities
 {
     if (!text.length) {
         return [NSArray array];
@@ -505,19 +505,19 @@ static const NSInteger HTTPSShortURLLength = 23;
             break;
         }
 
-        NSRange cashtagRange = [matchResult rangeAtIndex:1];
+        NSRange symbolRange = [matchResult rangeAtIndex:1];
         BOOL matchOk = YES;
 
         // Check URL overlap
         for (TwitterTextEntity *urlEntity in urlEntities) {
-            if (NSIntersectionRange(urlEntity.range, cashtagRange).length > 0) {
+            if (NSIntersectionRange(urlEntity.range, symbolRange).length > 0) {
                 matchOk = NO;
                 break;
             }
         }
 
         if (matchOk) {
-            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityCashtag range:cashtagRange];
+            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntitySymbol range:symbolRange];
             [results addObject:entity];
         }
 

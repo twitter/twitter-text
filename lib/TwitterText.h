@@ -18,7 +18,7 @@
 + (NSArray*)entitiesInText:(NSString*)text;
 + (NSArray*)URLsInText:(NSString*)text;
 + (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
-+ (NSArray*)cashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
++ (NSArray*)symbolsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
 + (NSArray*)mentionedScreenNamesInText:(NSString*)text;
 + (NSArray*)mentionsOrListsInText:(NSString*)text;
 + (TwitterTextEntity*)repliedScreenNameInText:(NSString*)text;

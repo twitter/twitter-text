@@ -301,7 +301,7 @@
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText cashtagsInText:text checkingURLOverlap:YES];
+        NSArray *results = [TwitterText symbolsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
             NSInteger count = results.count;
             for (NSInteger i=0; i<count; i++) {
@@ -321,13 +321,13 @@
     }
     
     //
-    // Cashtags with indices
+    // Symbols with indices
     //
     for (NSDictionary *testCase in cashtagsWithIndices) {
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
-        NSArray *results = [TwitterText cashtagsInText:text checkingURLOverlap:YES];
+        NSArray *results = [TwitterText symbolsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
             NSInteger count = results.count;
             for (NSInteger i=0; i<count; i++) {

@@ -73,8 +73,8 @@
         case TwitterTextEntityListName:
             typeString = @"ListName";
             break;
-        case TwitterTextEntityCashtag:
-            typeString = @"Cashtag";
+        case TwitterTextEntitySymbol:
+            typeString = @"Symbol";
             break;
     }
     return [NSString stringWithFormat:@"<%@: %@ %@>", NSStringFromClass([self class]), typeString, NSStringFromRange(range)];

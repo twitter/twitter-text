@@ -17,7 +17,7 @@ typedef enum {
     TwitterTextEntityScreenName,
     TwitterTextEntityHashtag,
     TwitterTextEntityListName,
-    TwitterTextEntityCashtag,
+    TwitterTextEntitySymbol,
 } TwitterTextEntityType;
 
 @interface TwitterTextEntity : NSObject
