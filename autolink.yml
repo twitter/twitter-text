@@ -676,6 +676,10 @@ tests:
       text: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
       expected: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
 
+    - description: "Autolink URLs with unicode chars in them"
+      text: "See: http://example.com/tsa-pre✓™ is a link"
+      expected: "See: <a href=\"http://example.com/tsa-pre✓™\">http://example.com/tsa-pre✓™</a> is a link"
+
   cashtags:
     - description: "Autolink a cashtag"
       text: "$STOCK"
