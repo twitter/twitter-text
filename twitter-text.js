@@ -455,7 +455,7 @@
     attrs.href = options.hashtagUrlBase + hashtag;
     attrs.title = "#" + hashtag;
     attrs["class"] = options.hashtagClass;
-    if (hashtag[0].match(twttr.txt.regexen.rtl_chars)){
+    if (hashtag.charAt(0).match(twttr.txt.regexen.rtl_chars)){
       attrs["class"] += " rtl";
     }
     if (options.targetBlank) {
