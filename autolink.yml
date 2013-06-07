@@ -416,6 +416,10 @@ tests:
       text: "text http://msdn.com/S(deadbeef)/page.htm"
       expected: "text <a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
 
+    - description: "Autolink Rdio #music url with double balanced embedded parentheses"
+      text: "text https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/"
+      expected: "text <a href=\"https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/\">https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/</a>"
+
     - description: "Extract valid URL: http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
       text: "text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
       expected: "text <a href=\"http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx\">http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx</a>"
