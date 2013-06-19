@@ -572,7 +572,7 @@ tests:
       text: "foo.edu"
       expected: "foo.edu"
 
-    - description: "Autolink URL without protocol and without www not ending in /.(edu|com|gov|org|net)/"
+    - description: "DO NOT Autolink URL without protocol and without www not ending in /.(edu|com|gov|org|net)/"
       text: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
       expected: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
 
