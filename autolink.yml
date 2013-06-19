@@ -376,8 +376,8 @@ tests:
 
 # Please be careful with changes to this test case - what looks like "á" is really a + U+0301, and many editors will silently convert this to U+00E1.
     - description: "Autolink hashtags with combining diacritics"
-      text: "#táim #hag̃ua"
-      expected: "<a href=\"https://twitter.com/#!/search?q=%23táim\" title=\"#táim\" class=\"tweet-url hashtag\">#táim</a> <a href=\"https://twitter.com/#!/search?q=%23hag̃ua\" title=\"#hag̃ua\" class=\"tweet-url hashtag\">#hag̃ua</a>"
+      text: "#táim #hag̃ua"
+      expected: "<a href=\"https://twitter.com/#!/search?q=%23táim\" title=\"#táim\" class=\"tweet-url hashtag\">#táim</a> <a href=\"https://twitter.com/#!/search?q=%23hag̃ua\" title=\"#hag̃ua\" class=\"tweet-url hashtag\">#hag̃ua</a>"
 
     - description: "Autolink Arabic hashtag"
       text: "Arabic hashtag: #فارسی #لس_آنجلس"
@@ -572,7 +572,7 @@ tests:
       text: "foo.edu"
       expected: "foo.edu"
 
-    - description: "DO NOT Autolink URL without protocol and without www not ending in /.(edu|com|gov|org|net)/"
+    - description: "Autolink URL without protocol and without www not ending in /.(edu|com|gov|org|net)/"
       text: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
       expected: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
 
