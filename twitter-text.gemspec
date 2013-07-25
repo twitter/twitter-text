@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
              "raffi@twitter.com", "jcummins@twitter.com", "niw@niw.at", "keita@twitter.com", "jkoval@twitter.com"]
   s.homepage = "http://twitter.com"
   s.description = s.summary = "A gem that provides text handling for Twitter"
+  s.license = "Apache 2.0"
 
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = true
