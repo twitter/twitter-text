@@ -52,6 +52,18 @@ tests:
       text: "RT@username RT:@mention RT @test"
       expected: ["username", "mention", "test"]
 
+    - description: "Extract mentions after 'rt'"
+      text: "rt@username rt:@mention rt @test"
+      expected: ["username", "mention", "test"]
+
+    - description: "Extract mentions after 'Rt'"
+      text: "Rt@username Rt:@mention Rt @test"
+      expected: ["username", "mention", "test"]
+
+    - description: "Extract mentions after 'rT'"
+      text: "rT@username rT:@mention rT @test"
+      expected: ["username", "mention", "test"]
+
     - description: "DO NOT extract username preceded by !"
       text: "f!@kn"
       expected: []
