@@ -249,7 +249,7 @@ module Twitter
           (\?#{REGEXEN[:valid_url_query_chars]}*#{REGEXEN[:valid_url_query_ending_chars]})? #   $8 Query String
         )
       )
-    }iox;
+    }iox
 
     REGEXEN[:cashtag] = /[a-z]{1,6}(?:[._][a-z]{1,2})?/i
     REGEXEN[:valid_cashtag] = /(^|#{REGEXEN[:spaces]})(\$)(#{REGEXEN[:cashtag]})(?=$|\s|[#{PUNCTUATION_CHARS}])/i
