@@ -9,6 +9,7 @@ end
 $:.push File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'nokogiri'
+require 'json'
 require 'simplecov'
 SimpleCov.start do
   add_group 'Libraries', 'lib'
