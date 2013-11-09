@@ -3,3 +3,5 @@ build
 build/*
 out
 dist
+twitter-text-java.ipr
+twitter-text-java.iws
