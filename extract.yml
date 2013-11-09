@@ -489,8 +489,12 @@ tests:
       text: "long.test.tar.bz2 test.tar.bz2 tar.bz2"
       expected: []
 
-    - description: "DO NOT extract URL followed by @ sign"
+    - description: "DO NOT extract URL with gTLD followed by @ sign"
       text: "john.doe.gov@mail.com"
+      expected: []
+
+    - description: "DO NOT extract URL with ccTLD followed by @ sign"
+      text: "john.doe.jp@mail.com"
       expected: []
 
   urls_with_indices:
