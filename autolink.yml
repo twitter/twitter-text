@@ -416,9 +416,25 @@ tests:
       text: "text http://msdn.com/S(deadbeef)/page.htm"
       expected: "text <a href=\"http://msdn.com/S(deadbeef)/page.htm\">http://msdn.com/S(deadbeef)/page.htm</a>"
 
-    - description: "Autolink Rdio #music url with double balanced embedded parentheses"
+    - description: "Autolink url with embedded parentheses without linking surrounding parentheses"
+      text: "text (URL in parentheses http://msdn.com/S(deadbeef))"
+      expected: "text (URL in parentheses <a href=\"http://msdn.com/S(deadbeef)\">http://msdn.com/S(deadbeef)</a>)"
+
+    - description: "Autolink Rdio #music url with double balanced nested parentheses"
       text: "text https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/"
       expected: "text <a href=\"https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/\">https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/</a>"
+
+    - description: "Autolink Rdio #music url with double balanced nested parentheses without linking surrounding parentheses"
+      text: "text (URL in parentheses https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/)"
+      expected: "text (URL in parentheses <a href=\"https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/\">https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited))/</a>)"
+
+    - description: "Autolink url followed by nested parentheses (without them)"
+      text: "text https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up(URL description with spaces and (parentheses))"
+      expected: "text <a href=\"https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up\">https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up</a>(URL description with spaces and (parentheses))"
+
+    - description: "Autolink url followed by completely unbalanced nested parentheses (without them)"
+      text: "text https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_(Album_Version_(Edited"
+      expected: "text <a href=\"https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_\">https://rdio.com/artist/50_Cent/album/We_Up/track/We_Up_</a>(Album_Version_(Edited"
 
     - description: "Extract valid URL: http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
       text: "text http://msdn.microsoft.com/ja-jp/library/system.net.httpwebrequest(v=VS.100).aspx"
