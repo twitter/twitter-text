@@ -54,7 +54,7 @@ class ConformanceTest < Test::Unit::TestCase
     raise  "No such test suite: #{test_type.to_s}" unless yaml["tests"][test_type.to_s]
 
     yaml["tests"][test_type.to_s].each do |test_info|
-      name = :"test_#{test_type}_#{test_info['description']}"
+      name = :"test_#{test_type} #{test_info['description']}"
       define_method name do
         @test_info = test_info
         instance_eval(&block)
