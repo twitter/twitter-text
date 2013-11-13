@@ -246,10 +246,26 @@
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
   twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~@|&#{latinAccentChars}]/i);
-  // Allow URL paths to contain balanced parens
+  // Allow URL paths to contain up to two nested levels of balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
-  twttr.txt.regexen.validUrlBalancedParens = regexSupplant(/\(#{validGeneralUrlPathChars}+\)/i);
+  //  3. Used in Rdio URLs like /track/We_Up_(Album_Version_(Edited))/
+  twttr.txt.regexen.validUrlBalancedParens = regexSupplant(
+    '\\('                                   +
+      '(?:'                                 +
+        '#{validGeneralUrlPathChars}+'      +
+        '|'                                 +
+        // allow one nested level of balanced parentheses
+        '(?:'                               +
+          '#{validGeneralUrlPathChars}*'    +
+          '\\('                             +
+            '#{validGeneralUrlPathChars}+'  +
+          '\\)'                             +
+          '#{validGeneralUrlPathChars}*'    +
+        ')'                                 +
+      ')'                                   +
+    '\\)'
+  , 'i');
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
   twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/[\+\-a-z0-9=_#\/#{latinAccentChars}]|(?:#{validUrlBalancedParens})/i);
