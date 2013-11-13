@@ -97,12 +97,27 @@ public class Regex {
   private static final String URL_VALID_PORT_NUMBER = "[0-9]++";
 
   private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&@" + LATIN_ACCENTS_CHARS + "]";
-  /** Allow URL paths to contain balanced parens
+  /** Allow URL paths to contain up to two nested levels of balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
    *  2. Used in IIS sessions like /S(dfd346)/
+   *  3. Used in Rdio URLs like /track/We_Up_(Album_Version_(Edited))/
   **/
-  private static final String URL_BALANCED_PARENS = "\\(" + URL_VALID_GENERAL_PATH_CHARS + "+\\)";
-  /** Valid end-of-path chracters (so /foo. does not gobble the period).
+  private static final String URL_BALANCED_PARENS = "\\(" +
+    "(?:" +
+      URL_VALID_GENERAL_PATH_CHARS + "+" +
+      "|" +
+      // allow one nested level of balanced parentheses
+      "(?:" +
+        URL_VALID_GENERAL_PATH_CHARS + "*" +
+        "\\(" +
+          URL_VALID_GENERAL_PATH_CHARS + "+" +
+        "\\)" +
+        URL_VALID_GENERAL_PATH_CHARS + "*" +
+      ")" +
+    ")" +
+  "\\)";
+
+  /** Valid end-of-path characters (so /foo. does not gobble the period).
    *   2. Allow =&# for empty URL parameters and other URL-join artifacts
   **/
   private static final String URL_VALID_PATH_ENDING_CHARS = "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + "]|(?:" + URL_BALANCED_PARENS +")";
