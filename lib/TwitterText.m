@@ -217,7 +217,7 @@
     @"(?:" TWUDomainValidStartEndChars TWUDomainValidMiddleChars @"*)?" TWUDomainValidStartEndChars @"\\." \
 @")"
 
-#define TWUValidGTLD    @"(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^0-9a-z]|$))"
+#define TWUValidGTLD    @"(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^0-9a-z@]|$))"
 #define TWUValidCCTLD \
 @"(?:" \
     @"(?:" \
@@ -233,7 +233,7 @@
         @"tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|" \
         @"zw" \
     @")" \
-    @"(?=[^0-9a-z]|$)" \
+    @"(?=[^0-9a-z@]|$)" \
 @")"
 
 #define TWUValidPunycode                @"(?:xn--[0-9a-z]+)"
