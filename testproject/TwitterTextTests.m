@@ -375,10 +375,46 @@
     
     for (NSDictionary *testCase in lengths) {
         NSString *text = [testCase objectForKey:@"text"];
+        text = [self stringByParsingUnicodeEscapes:text];
         NSInteger expected = [[testCase objectForKey:@"expected"] intValue];
         NSInteger len = [TwitterText tweetLength:text];
-        STAssertTrue(len == expected, @"Length should be %d (%d)", expected, len);
+        STAssertEquals(len, expected, @"Length should be the same");
     }
+}
+
+- (NSString *)stringByParsingUnicodeEscapes:(NSString *)string
+{
+    static NSRegularExpression *regex = nil;
+    if (!regex) {
+        regex = [[NSRegularExpression alloc] initWithPattern:@"\\\\U([0-9a-fA-F]{8}|[0-9a-fA-F]{4})" options:0 error:NULL];
+    }
+
+    NSInteger index = 0;
+    while (index < [string length]) {
+        NSTextCheckingResult *result = [regex firstMatchInString:string options:0 range:NSMakeRange(index, [string length] - index)];
+        if (!result) {
+            break;
+        }
+        NSRange patternRange = result.range;
+        NSRange hexRange = [result rangeAtIndex:1];
+        NSInteger resultLength = 1;
+        if (hexRange.location != NSNotFound) {
+            NSString *hexString = [string substringWithRange:hexRange];
+            long value = strtol([hexString UTF8String], NULL, 16);
+            if (value < 0x10000) {
+                string = [string stringByReplacingCharactersInRange:patternRange withString:[NSString stringWithFormat:@"%C", (UniChar)value]];
+            } else {
+                UniChar surrogates[2];
+                if (CFStringGetSurrogatePairForLongCharacter((UTF32Char)value, surrogates)) {
+                    string = [string stringByReplacingCharactersInRange:patternRange withString:[NSString stringWithCharacters:surrogates length:2]];
+                    resultLength = 2;
+                }
+            }
+        }
+        index = patternRange.location + resultLength;
+    }
+
+    return string;
 }
 
 @end
