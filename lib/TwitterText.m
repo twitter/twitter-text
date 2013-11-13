@@ -254,7 +254,19 @@
 #define TWUValidPortNumber              @"[0-9]+"
 #define TWUValidGeneralURLPathChars     @"[a-zA-Z0-9!\\*';:=+,.$/%#\\[\\]\\-_~&|@" TWULatinAccents @"]"
 
-#define TWUValidURLBalancedParens       @"\\(" TWUValidGeneralURLPathChars @"+\\)"
+#define TWUValidURLBalancedParens \
+@"\\(" \
+    @"(?:" \
+        TWUValidGeneralURLPathChars @"+" \
+        @"|" \
+        @"(?:" \
+            @"\\(" \
+                TWUValidGeneralURLPathChars @"+" \
+            @"\\)" \
+        @")" \
+    @")" \
+@"\\)"
+
 #define TWUValidURLPathEndingChars      @"[a-zA-Z0-9=_#/+\\-" TWULatinAccents @"]|(?:" TWUValidURLBalancedParens @")"
 
 #define TWUValidURLPath \
