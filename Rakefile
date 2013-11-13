@@ -106,6 +106,11 @@ task :package, [:version] => [:pkg] do |t, args|
 
   pkg_file.close
 
+  puts "Minify pkg..."
+  src_file = File.join(File.dirname(__FILE__), "pkg", pkg_name)
+  dst_file = File.join(File.dirname(__FILE__), "pkg", "twitter-text-#{args.version}.min.js")
+  exec('node_modules/uglify-js/bin/uglifyjs ' + src_file + ' -o ' + dst_file);
+
   puts "Done with #{pkg_name}"
 
 end
