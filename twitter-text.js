@@ -676,22 +676,34 @@
   };
 
   twttr.txt.autoLinkWithJSON = function(text, json, options) {
+    // map JSON entity to twitter-text entity
+    if (json.user_mentions) {
+      for (var i = 0; i < json.user_mentions.length; i++) {
+        // this is a @mention
+        json.user_mentions[i].screenName = json.user_mentions[i].screen_name;
+      }
+    }
+    
+    if (json.hashtags) {
+      for (var i = 0; i < json.hashtags.length; i++) {
+        // this is a #hashtag
+        json.hashtags[i].hashtag = json.hashtags[i].text;
+      }
+    }
+    
+    if (json.symbols) {
+      for (var i = 0; i < json.hashtags.length; i++) {
+        // this is a $CASH tag
+        json.symbols[i].cashtag = json.symbols[i].text;
+      }
+    }
+    
     // concatenate all entities
     var entities = [];
     for (var key in json) {
       entities = entities.concat(json[key]);
     }
-    // map JSON entity to twitter-text entity
-    for (var i = 0; i < entities.length; i++) {
-      entity = entities[i];
-      if (entity.screen_name) {
-        // this is @mention
-        entity.screenName = entity.screen_name;
-      } else if (entity.text) {
-        // this is #hashtag
-        entity.hashtag = entity.text;
-      }
-    }
+
     // modify indices to UTF-16
     twttr.txt.modifyIndicesFromUnicodeToUTF16(text, entities);
 
