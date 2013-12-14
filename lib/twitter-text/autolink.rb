@@ -64,7 +64,7 @@ module Twitter
       options[:html_attrs] = extract_html_attrs_from_options!(options)
       options[:html_attrs][:rel] ||= "nofollow" unless options[:suppress_no_follow]
 
-      Twitter::Rewriter.rewrite_entities(text, entities) do |entity, chars|
+      Twitter::Rewriter.rewrite_entities(text.dup, entities) do |entity, chars|
         if entity[:url]
           link_to_url(entity, chars, options, &block)
         elsif entity[:hashtag]
