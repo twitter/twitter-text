@@ -370,8 +370,8 @@ module Twitter
 
     def link_to_screen_name(entity, chars, options = {})
       name  = "#{entity[:screen_name]}#{entity[:list_slug]}"
-      chunk = name
-      chunk = yield(name) if block_given?
+      chunk = name.dup
+      chunk = yield(chunk) if block_given?
       name.downcase!
 
       at = chars[entity[:indices].first]
