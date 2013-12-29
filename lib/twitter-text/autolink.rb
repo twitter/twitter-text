@@ -63,6 +63,7 @@ module Twitter
       options = DEFAULT_OPTIONS.merge(options)
       options[:html_attrs] = extract_html_attrs_from_options!(options)
       options[:html_attrs][:rel] ||= "nofollow" unless options[:suppress_no_follow]
+      options[:html_attrs][:target] = "_blank" if options[:target_blank] == true
 
       Twitter::Rewriter.rewrite_entities(text.dup, entities) do |entity, chars|
         if entity[:url]
@@ -210,7 +211,7 @@ module Twitter
       :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :cashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
-      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target,
+      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target, :target_blank,
       :link_attribute_block, :link_text_block
     ]).freeze
 
