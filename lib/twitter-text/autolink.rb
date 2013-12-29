@@ -99,6 +99,7 @@ module Twitter
     # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
     # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
     # <tt>:url_target</tt>::     the value for <tt>target</tt> attribute on URL links.
+    # <tt>:target_blank</tt>:: adds <tt>target="_blank"</tt> to all auto_linked items username / hashtag / cashtag links / urls
     # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
     # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link(text, options = {}, &block)
