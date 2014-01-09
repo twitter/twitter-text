@@ -225,7 +225,7 @@
         @"limo|management|menu|mil|mobi|museum|name|net|org|photography|photos|plumbing|post|pro|recipes|ruhr|sexy|shoes|singles|support|" \
         @"systems|tattoo|technology|tel|tips|today|travel|uno|ventures|viajes|voyage|xxx)" \
     @")" \
-	@"(?=[^0-9a-z@]|$)" \
+    @"(?=[^0-9a-z@]|$)" \
 @")"
 
 #define TWUValidCCTLD \
