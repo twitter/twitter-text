@@ -60,7 +60,10 @@ public class Regex {
   private static final String URL_VALID_UNICODE_CHARS = "[.[^\\p{Punct}\\s\\p{Z}\\p{InGeneralPunctuation}]]";
 
   private static final String URL_VALID_GTLD =
-      "(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^\\p{Alnum}@]|$))";
+      "(?:(?:academy|aero|asia|bike|biz|buzz|cab|camera|camp|careers|cat|center|clothing|com|company|computer|construction|contractors|coop|" +
+      "diamonds|directory|domains|edu|enterprises|equipment|estate|gallery|gov|graphics|guru|holdings|info|int|jobs|kitchen|land|lighting|" +
+      "limo|management|menu|mil|mobi|museum|name|net|org|photography|photos|plumbing|post|pro|recipes|ruhr|sexy|shoes|singles|support|" +
+      "systems|tattoo|technology|tel|tips|today|travel|uno|ventures|viajes|voyage|xxx)(?=[^\\p{Alnum}@]|$))";
   private static final String URL_VALID_CCTLD =
       "(?:(?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|" +
       "bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|" +
