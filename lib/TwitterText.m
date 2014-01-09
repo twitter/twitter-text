@@ -217,7 +217,17 @@
     @"(?:" TWUDomainValidStartEndChars TWUDomainValidMiddleChars @"*)?" TWUDomainValidStartEndChars @"\\." \
 @")"
 
-#define TWUValidGTLD    @"(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^0-9a-z@]|$))"
+#define TWUValidGTLD \
+@"(?:" \
+    @"(?:" \
+        @"academy|aero|asia|bike|biz|buzz|cab|camera|camp|careers|cat|center|clothing|com|company|computer|construction|contractors|coop|" \
+        @"diamonds|directory|domains|edu|enterprises|equipment|estate|gallery|gov|graphics|guru|holdings|info|int|jobs|kitchen|land|lighting|" \
+        @"limo|management|menu|mil|mobi|museum|name|net|org|photography|photos|plumbing|post|pro|recipes|ruhr|sexy|shoes|singles|support|" \
+        @"systems|tattoo|technology|tel|tips|today|travel|uno|ventures|viajes|voyage|xxx)" \
+    @")" \
+	@"(?=[^0-9a-z@]|$)" \
+@")"
+
 #define TWUValidCCTLD \
 @"(?:" \
     @"(?:" \
