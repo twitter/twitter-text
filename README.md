@@ -1,4 +1,4 @@
-## twitter-text-java [![Build Status](https://secure.travis-ci.org/twitter/twitter-text-java.png)](http://travis-ci.org/twitter/twitter-text-java)
+## twitter-text-java [![Build Status](https://secure.travis-ci.org/twitter/twitter-text-java.png?branch=master)](http://travis-ci.org/twitter/twitter-text-java)
 
 Java port of the twitter-text handling libraries.
 
