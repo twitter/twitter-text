@@ -64,9 +64,9 @@ tests:
       text: "@foo îs in the house"
       expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/foo\">foo</a> îs in the house"
 
-    - description: "Keep display case when linking MixedCase username"
+    - description: "Preserve case when linking a username"
       text: "@MixedCase"
-      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/mixedcase\">MixedCase</a>"
+      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/MixedCase\">MixedCase</a>"
 
   lists:
     - description: "Autolink list preceded by a space"
