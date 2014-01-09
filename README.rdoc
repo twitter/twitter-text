@@ -1,4 +1,4 @@
-== twitter-text {<img src="https://secure.travis-ci.org/twitter/twitter-text-rb.png" />}[http://travis-ci.org/twitter/twitter-text-rb] {<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/twitter/twitter-text-rb]
+== twitter-text {<img src="https://secure.travis-ci.org/twitter/twitter-text-rb.png?branch=master" />}[http://travis-ci.org/twitter/twitter-text-rb] {<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/twitter/twitter-text-rb]
 
 A gem that provides text processing routines for Twitter Tweets. The major
 reason for this is to unify the various auto-linking and extraction of
