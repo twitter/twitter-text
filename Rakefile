@@ -58,7 +58,7 @@ namespace :test do
   end
 
   desc "Run conformance test suite"
-  task :conformance => ['conformance:latest', 'conformance:prepare', 'conformance:run'] do
+  task :conformance => ['conformance:update', 'conformance:prepare', 'conformance:run'] do
   end
 
   desc "Run JavaScript test suite"
