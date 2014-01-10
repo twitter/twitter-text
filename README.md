@@ -1,4 +1,4 @@
-# twitter-text-js
+## twitter-text-js [![Build Status](https://secure.travis-ci.org/twitter/twitter-text-js.png?branch=master)](http://travis-ci.org/twitter/twitter-text-js)
 
 A JavaScript utility that provides text processing routines for Tweets.  This library conforms to a common test suite shared by many other implementations, particularly twitter-text.gem (Ruby).  The library provides autolinking and extraction for URLs, usernames, lists, and hashtags.
 
