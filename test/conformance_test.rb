@@ -3,9 +3,11 @@ require 'nokogiri'
 require 'test/unit'
 require 'yaml'
 
-# Ruby 1.8 encoding check
+# Detect Ruby 1.8 and older to apply necessary encoding fixes
 major, minor, patch = RUBY_VERSION.split('.')
-if major.to_i == 1 && minor.to_i < 9
+OLD_RUBY = major.to_i == 1 && minor.to_i < 9
+
+if OLD_RUBY
   $KCODE='u'
 end
 
@@ -19,9 +21,21 @@ class ConformanceTest < Test::Unit::TestCase
 
   private
 
-  %w(description expected text json hits).each do |key|
+  %w(description expected json hits).each do |key|
     define_method key.to_sym do
       @test_info[key]
+    end
+  end
+
+  if OLD_RUBY
+    def text
+      @test_info['text'].gsub(/\\u([0-9a-f]{8})/i) do
+        [$1.to_i(16)].pack('U*')
+      end
+    end
+  else
+    def text
+      @test_info['text']
     end
   end
 
