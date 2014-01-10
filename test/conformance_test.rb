@@ -67,8 +67,10 @@ class ConformanceTest < Test::Unit::TestCase
     yaml = YAML.load_file(File.join(CONFORMANCE_DIR, file))
     raise  "No such test suite: #{test_type.to_s}" unless yaml["tests"][test_type.to_s]
 
+    file_name = file.split('.').first
+
     yaml["tests"][test_type.to_s].each do |test_info|
-      name = :"test_#{test_type} #{test_info['description']}"
+      name = :"test_#{file_name}_#{test_type} #{test_info['description']}"
       define_method name do
         @test_info = test_info
         instance_eval(&block)
