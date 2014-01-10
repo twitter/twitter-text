@@ -2,12 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8" />
+
   <script src="../lib/jquery-1.4.2.js"></script>
-  <link rel="stylesheet" href="../lib/qunit.css" type="text/css" media="screen" />
-  <script src="../lib/qunit.js"></script>
+
+  <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" type="text/css" media="screen" />
+  <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
 
   <script src="../twitter-text.js"></script>
-
   <script src="../test/conformance.js"></script>
 
   <script>
@@ -148,7 +149,7 @@
             var tester = getTester(suite, section);
             test(section, function() {
               for (var testCase in cases[suite][section]) {
-                same(tester(cases[suite][section][testCase]), cases[suite][section][testCase].expected, cases[suite][section][testCase].description);
+                deepEqual(tester(cases[suite][section][testCase]), cases[suite][section][testCase].expected, cases[suite][section][testCase].description);
               }
             });
           }(section));
