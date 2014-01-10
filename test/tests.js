@@ -16,7 +16,7 @@ test("twttr.txt.htmlEscape", function() {
   ];
 
   for (var i = 0; i < tests.length; i++) {
-    same(twttr.txt.htmlEscape(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
+    deepEqual(twttr.txt.htmlEscape(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
   }
 });
 
@@ -29,34 +29,34 @@ test("twttr.txt.splitTags", function() {
   ];
 
   for (var i = 0; i < tests.length; i++) {
-    same(twttr.txt.splitTags(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
+    deepEqual(twttr.txt.splitTags(tests[i][0]), tests[i][1], tests[i][2] || tests[i][0]);
   }
 });
 
 test("twttr.txt.extract", function() {
   var text = "\uD801\uDC00 #hashtag \uD801\uDC00 #hashtag";
   var extracted = twttr.txt.extractHashtagsWithIndices(text);
-  same(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
+  deepEqual(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
   twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
-  same(extracted, [{hashtag:"hashtag", indices:[2, 10]}, {hashtag:"hashtag", indices:[13, 21]}], "Hashtag w/ Supplementary character, Unicode indices");
+  deepEqual(extracted, [{hashtag:"hashtag", indices:[2, 10]}, {hashtag:"hashtag", indices:[13, 21]}], "Hashtag w/ Supplementary character, Unicode indices");
   twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
-  same(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
+  deepEqual(extracted, [{hashtag:"hashtag", indices:[3, 11]}, {hashtag:"hashtag", indices:[15, 23]}], "Hashtag w/ Supplementary character, UTF-16 indices");
 
   text = "\uD801\uDC00 @mention \uD801\uDC00 @mention";
   extracted = twttr.txt.extractMentionsOrListsWithIndices(text);
-  same(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
+  deepEqual(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
   twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
-  same(extracted, [{screenName:"mention", listSlug:"", indices:[2, 10]}, {screenName:"mention", listSlug:"", indices:[13, 21]}], "Mention w/ Supplementary character");
+  deepEqual(extracted, [{screenName:"mention", listSlug:"", indices:[2, 10]}, {screenName:"mention", listSlug:"", indices:[13, 21]}], "Mention w/ Supplementary character");
   twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
-  same(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
+  deepEqual(extracted, [{screenName:"mention", listSlug:"", indices:[3, 11]}, {screenName:"mention", listSlug:"", indices:[15, 23]}], "Mention w/ Supplementary character, UTF-16 indices");
 
   text = "\uD801\uDC00 http://twitter.com \uD801\uDC00 http://test.com";
   extracted = twttr.txt.extractUrlsWithIndices(text);
-  same(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
+  deepEqual(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
   twttr.txt.modifyIndicesFromUTF16ToUnicode(text, extracted);
-  same(extracted, [{url:"http://twitter.com", indices:[2, 20]}, {url:"http://test.com", indices:[23, 38]}], "URL w/ Supplementary character, Unicode indices");
+  deepEqual(extracted, [{url:"http://twitter.com", indices:[2, 20]}, {url:"http://test.com", indices:[23, 38]}], "URL w/ Supplementary character, Unicode indices");
   twttr.txt.modifyIndicesFromUnicodeToUTF16(text, extracted);
-  same(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
+  deepEqual(extracted, [{url:"http://twitter.com", indices:[3, 21]}, {url:"http://test.com", indices:[25, 40]}], "URL w/ Supplementary character, UTF-16 indices");
 
   var testCases = [
     {text:"abc", indices:[[0,3]], unicode_indices:[[0,3]]},
@@ -88,11 +88,11 @@ test("twttr.txt.extract", function() {
     }
     twttr.txt.modifyIndicesFromUTF16ToUnicode(testCases[i].text, entities);
     for (var j = 0; j < testCases[i].indices.length; j++) {
-      same(entities[j].indices, testCases[i].unicode_indices[j], "Convert UTF16 indices to Unicode indices for text '" + testCases[i].text +"'");
+      deepEqual(entities[j].indices, testCases[i].unicode_indices[j], "Convert UTF16 indices to Unicode indices for text '" + testCases[i].text +"'");
     }
     twttr.txt.modifyIndicesFromUnicodeToUTF16(testCases[i].text, entities);
     for (var j = 0; j < testCases[i].indices.length; j++) {
-      same(entities[j].indices, testCases[i].indices[j], "Convert Unicode indices to UTF16 indices for text '" + testCases[i].text +"'");
+      deepEqual(entities[j].indices, testCases[i].indices[j], "Convert Unicode indices to UTF16 indices for text '" + testCases[i].text +"'");
     }
   }
 });
@@ -104,7 +104,7 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("@tw", { textWithSymbolTag: "b" }).match(/@<a[^>]+><b>tw<\/b><\/a>/), "Apply textWithSymbolTag to @username");
   ok(!twttr.txt.autoLink("@tw", { textWithSymbolTag: "b" }).match(/textWithSymbolTag/i), "Do not include textWithSymbolTag attribute");
   ok(twttr.txt.autoLink("@tw", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<s>@<\/s><a[^>]+><b>tw<\/b><\/a>/), "Apply symbolTag and textWithSymbolTag to @username");
-  same(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }), "<a class=\"tweet-url username\" href=\"https://twitter.com/tw\" data-screen-name=\"tw\" rel=\"nofollow\">@tw</a>",
+  deepEqual(twttr.txt.autoLink("@tw", { usernameIncludeSymbol: true }), "<a class=\"tweet-url username\" href=\"https://twitter.com/tw\" data-screen-name=\"tw\" rel=\"nofollow\">@tw</a>",
       "Include @ in the autolinked username");
   ok(!twttr.txt.autoLink("foo http://example.com", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to URL");
 
@@ -112,7 +112,7 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("@tw/somelist", { symbolTag: "s" }).match(/<s>@<\/s><a[^>]+>tw\/somelist<\/a>/), "Apply symbolTag to list");
   ok(twttr.txt.autoLink("@tw/somelist", { textWithSymbolTag: "b" }).match(/@<a[^>]+><b>tw\/somelist<\/b><\/a>/), "apply textWithSymbolTag to list");
   ok(twttr.txt.autoLink("@tw/somelist", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<s>@<\/s><a[^>]+><b>tw\/somelist<\/b><\/a>/), "apply symbolTag and textWithSymbolTag to list");
-  same(twttr.txt.autoLink("@tw/somelist", { usernameIncludeSymbol: true }), "<a class=\"tweet-url list-slug\" href=\"https://twitter.com/tw/somelist\" rel=\"nofollow\">@tw/somelist</a>",
+  deepEqual(twttr.txt.autoLink("@tw/somelist", { usernameIncludeSymbol: true }), "<a class=\"tweet-url list-slug\" href=\"https://twitter.com/tw/somelist\" rel=\"nofollow\">@tw/somelist</a>",
       "Include @ in the autolinked list");
   ok(twttr.txt.autoLink("foo @tw/somelist", { listClass: 'custom-list' }).match(/custom-list/), "Override listClass");
   ok(!twttr.txt.autoLink("foo @tw/somelist", { usernameClass: 'custom-user' }).match(/custom-user/), "Override usernameClass should not be applied to a List");
@@ -123,15 +123,15 @@ test("twttr.txt.autolink", function() {
   ok(twttr.txt.autoLink("#hi", { symbolTag: "s", textWithSymbolTag: "b" }).match(/<a[^>]+><s>#<\/s><b>hi<\/b><\/a>/), "Apply symbolTag and textWithSymbolTag to hash");
 
   // htmlEscapeNonEntities
-  same(twttr.txt.autoLink("&<>\"'"), "&<>\"'", "Don't escape non-entities by default");
-  same(twttr.txt.autoLink("&<>\"'", { htmlEscapeNonEntities: true } ), "&amp;&lt;&gt;&quot;&#39;", "Escape non-entities");
-  same(twttr.txt.autoLink("& http://twitter.com/?a&b &", { htmlEscapeNonEntities: true }),
+  deepEqual(twttr.txt.autoLink("&<>\"'"), "&<>\"'", "Don't escape non-entities by default");
+  deepEqual(twttr.txt.autoLink("&<>\"'", { htmlEscapeNonEntities: true } ), "&amp;&lt;&gt;&quot;&#39;", "Escape non-entities");
+  deepEqual(twttr.txt.autoLink("& http://twitter.com/?a&b &", { htmlEscapeNonEntities: true }),
       "&amp; <a href=\"http://twitter.com/?a&amp;b\" rel=\"nofollow\">http://twitter.com/?a&amp;b</a> &amp;",
       "Escape non-entity text before and after a link while also escaping the link href and link text");
 
   // test urlClass
-  same(twttr.txt.autoLink("http://twitter.com"), "<a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>", "AutoLink without urlClass");
-  same(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" class=\"testClass\" rel=\"nofollow\">http://twitter.com</a>", "autoLink with urlClass");
+  deepEqual(twttr.txt.autoLink("http://twitter.com"), "<a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>", "AutoLink without urlClass");
+  deepEqual(twttr.txt.autoLink("http://twitter.com", {urlClass: "testClass"}), "<a href=\"http://twitter.com\" class=\"testClass\" rel=\"nofollow\">http://twitter.com</a>", "autoLink with urlClass");
   ok(!twttr.txt.autoLink("#hash @tw", {urlClass: "testClass"}).match(/class=\"testClass\"/), "urlClass won't be used for hashtag and @mention auto-links");
 
   // test urlTarget
@@ -175,7 +175,7 @@ test("twttr.txt.autolink", function() {
   ok(autoLinkResult.match(/<a[^>]+>pre_<s>@<\/s><b>mention<\/b>_post<\/a>/), "linkTextBlock should modify a username link text");
 
   // extractUrlsWithoutProtocol (the default mode of extractEntitiesWithIndices)
-  same(twttr.txt.autoLinkEntities("twitter.com", twttr.txt.extractEntitiesWithIndices("twitter.com")),
+  deepEqual(twttr.txt.autoLinkEntities("twitter.com", twttr.txt.extractEntitiesWithIndices("twitter.com")),
       "<a href=\"http://twitter.com\" rel=\"nofollow\">twitter.com</a>", "AutoLink with extractUrlsWithoutProtocol");
 
   // url entities
@@ -241,15 +241,15 @@ test("twttr.txt.autolink", function() {
     equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid character');
   }
 
-  same(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
+  deepEqual(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
       "\uD801\uDC00 <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>",
       "Autolink hashtag/mentionURL w/ Supplementary character");
 
   // handle the @ character in the URL
   var testUrl = "http://twitter.com?var=@val";
-  same(twttr.txt.autoLink(testUrl),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a>", "Autolink with special char params");
-  // handle the @ character in the URL and an @mention at the same time
-  same(twttr.txt.autoLink(testUrl + " @mention"),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a> @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a>", "Autolink with special char params and mentions");
+  deepEqual(twttr.txt.autoLink(testUrl),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a>", "Autolink with special char params");
+  // handle the @ character in the URL and an @mention at the deepEqual time
+  deepEqual(twttr.txt.autoLink(testUrl + " @mention"),  "<a href=\"" + testUrl + "\" rel=\"nofollow\">" + testUrl + "</a> @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a>", "Autolink with special char params and mentions");
 });
 
 test("twttr.txt.linkTextWithEntity", function() {
@@ -258,7 +258,7 @@ test("twttr.txt.linkTextWithEntity", function() {
     "display_url": "twitter.com",
     "expanded_url": "http://twitter.com/"},
     {invisibleTagAttrs: "class='invisible'"});
-  same(result,
+  deepEqual(result,
       "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>",
       "Entire display_url is in expanded_url");
 
@@ -267,7 +267,7 @@ test("twttr.txt.linkTextWithEntity", function() {
     "display_url": "twitter.com…",
     "expanded_url": "http://twitter.com/abcdefg"},
     {invisibleTagAttrs: "class='invisible'"});
-  same(result,
+  deepEqual(result,
       "<span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span><span class='invisible'>http://</span><span class='js-display-url'>twitter.com</span><span class='invisible'>/abcdefg</span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span>…</span>",
       "display_url ends with …");
 
@@ -276,7 +276,7 @@ test("twttr.txt.linkTextWithEntity", function() {
     "display_url": "…tter.com/abcdefg",
     "expanded_url": "http://twitter.com/abcdefg"},
     {invisibleTagAttrs: "class='invisible'"});
-  same(result,
+  deepEqual(result,
       "<span class='tco-ellipsis'>…<span class='invisible'>&nbsp;</span></span><span class='invisible'>http://twi</span><span class='js-display-url'>tter.com/abcdefg</span><span class='invisible'></span><span class='tco-ellipsis'><span class='invisible'>&nbsp;</span></span>",
       "display_url begins with …");
 
@@ -285,7 +285,7 @@ test("twttr.txt.linkTextWithEntity", function() {
     "display_url": "pic.twitter.com/xyz",
     "expanded_url": "http://twitter.com/foo/statuses/123/photo/1"},
     {invisibleTagAttrs: "class='invisible'"});
-  same(result,
+  deepEqual(result,
       "pic.twitter.com/xyz",
       "display_url and expanded_url are on different domains");
 });
