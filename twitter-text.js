@@ -696,7 +696,7 @@
     }
     
     if (json.symbols) {
-      for (var i = 0; i < json.hashtags.length; i++) {
+      for (var i = 0; i < json.symbols.length; i++) {
         // this is a $CASH tag
         json.symbols[i].cashtag = json.symbols[i].text;
       }
