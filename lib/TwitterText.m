@@ -220,10 +220,14 @@
 #define TWUValidGTLD \
 @"(?:" \
     @"(?:" \
-        @"academy|aero|asia|bike|biz|buzz|cab|camera|camp|careers|cat|center|clothing|com|company|computer|construction|contractors|coop|" \
-        @"diamonds|directory|domains|edu|enterprises|equipment|estate|gallery|gov|graphics|guru|holdings|info|int|jobs|kitchen|land|lighting|" \
-        @"limo|management|menu|mil|mobi|museum|name|net|org|photography|photos|plumbing|post|pro|recipes|ruhr|sexy|shoes|singles|support|" \
-        @"systems|tattoo|technology|tel|tips|today|travel|uno|ventures|viajes|voyage|xxx" \
+        @"academy|aero|agency|arpa|asia|bargains|berlin|bike|biz|blue|boutique|build|builders|buzz|cab|camera|camp|careers|cat|catering|" \
+        @"center|ceo|cheap|cleaning|clothing|club|codes|coffee|com|community|company|computer|construction|contractors|cool|coop|cruises|" \
+        @"dance|dating|democrat|diamonds|directory|domains|edu|education|email|enterprises|equipment|estate|events|expert|exposed|farm|" \
+        @"flights|florist|gallery|gift|glass|gov|graphics|guitars|guru|holdings|holiday|house|immobilien|info|institute|int|international|" \
+        @"jobs|kaufen|kim|kitchen|kiwi|land|lighting|limo|link|luxury|management|marketing|menu|mil|mobi|moda|monash|museum|nagoya|name|net|" \
+        @"ninja|onl|org|partners|photo|photography|photos|pics|pink|plumbing|post|pro|properties|recipes|red|rentals|repair|report|rich|ruhr|" \
+        @"sexy|shiksha|shoes|singles|social|solar|solutions|support|systems|tattoo|technology|tel|tienda|tips|today|tokyo|tools|training|" \
+        @"travel|uno|ventures|viajes|voting|voyage|wang|watch|wed|wien|works|xxx|zone" \
     @")" \
     @"(?=[^0-9a-z@]|$)" \
 @")"
