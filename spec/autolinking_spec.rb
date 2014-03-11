@@ -742,6 +742,16 @@ describe Twitter::Autolink do
       auto_linked.should_not match(/<a[^>]+username[^>]+target[^>]+>/)
       auto_linked.should match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/)
     end
+
+    it "should apply target='_blank' only to auto-linked URLs when :target_blank is set to true" do
+      auto_linked = @linker.auto_link("#hashtag @mention http://test.com/", {:target_blank => true})
+      auto_linked.should have_autolinked_hashtag('#hashtag')
+      auto_linked.should link_to_screen_name('mention')
+      auto_linked.should have_autolinked_url('http://test.com/')
+      auto_linked.should match(/<a[^>]+hashtag[^>]+target=\"_blank\"[^>]*>/)
+      auto_linked.should match(/<a[^>]+username[^>]+target=\"_blank\"[^>]*>/)
+      auto_linked.should match(/<a[^>]+test.com[^>]+target=\"_blank\"[^>]*>/)
+    end
   end
 
   describe "link_url_with_entity" do

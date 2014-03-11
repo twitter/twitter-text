@@ -63,6 +63,7 @@ module Twitter
       options = DEFAULT_OPTIONS.merge(options)
       options[:html_attrs] = extract_html_attrs_from_options!(options)
       options[:html_attrs][:rel] ||= "nofollow" unless options[:suppress_no_follow]
+      options[:html_attrs][:target] = "_blank" if options[:target_blank] == true
 
       Twitter::Rewriter.rewrite_entities(text.dup, entities) do |entity, chars|
         if entity[:url]
@@ -98,6 +99,7 @@ module Twitter
     # <tt>:symbol_tag</tt>::          tag to apply around symbol (@, #, $) in username / hashtag / cashtag links
     # <tt>:text_with_symbol_tag</tt>::          tag to apply around text part in username / hashtag / cashtag links
     # <tt>:url_target</tt>::     the value for <tt>target</tt> attribute on URL links.
+    # <tt>:target_blank</tt>:: adds <tt>target="_blank"</tt> to all auto_linked items username / hashtag / cashtag links / urls
     # <tt>:link_attribute_block</tt>::     function to modify the attributes of a link based on the entity. called with |entity, attributes| params, and should modify the attributes hash.
     # <tt>:link_text_block</tt>::     function to modify the text of a link based on the entity. called with |entity, text| params, and should return a modified text.
     def auto_link(text, options = {}, &block)
@@ -210,7 +212,7 @@ module Twitter
       :username_url_base, :list_url_base, :hashtag_url_base, :cashtag_url_base,
       :username_url_block, :list_url_block, :hashtag_url_block, :cashtag_url_block, :link_url_block,
       :username_include_symbol, :suppress_lists, :suppress_no_follow, :url_entities,
-      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target,
+      :invisible_tag_attrs, :symbol_tag, :text_with_symbol_tag, :url_target, :target_blank,
       :link_attribute_block, :link_text_block
     ]).freeze
 
