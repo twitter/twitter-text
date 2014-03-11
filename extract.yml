@@ -309,7 +309,7 @@ tests:
       expected: ["foo.com", "foo.net", "foo.org", "foo.edu", "foo.gov"]
 
     - description: "Extract URLs without protocol not on (com|org|edu|gov|net) domains"
-      text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp"
+      text: "foo.baz foo.co.jp www.foo.baz www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp"
       expected: ["foo.co.jp", "www.foo.co.uk"]
 
     - description: "Extract URLs without protocol on ccTLD with slash"
