@@ -43,6 +43,9 @@ public class RegexTest extends TestCase {
 
   public void testValidURL() {
     assertCaptureCount(8, Regex.VALID_URL, "http://example.com");
+    assertCaptureCount(8, Regex.VALID_URL, "http://はじめよう.みんな");
+    assertCaptureCount(8, Regex.VALID_URL, "http://はじめよう.香港");
+    assertCaptureCount(8, Regex.VALID_URL, "http://はじめよう.الجزائر");
   }
 
   public void testValidURLDoesNotCrashOnLongPaths() {
@@ -86,7 +89,7 @@ public class RegexTest extends TestCase {
         Regex.VALID_URL.matcher("t.co").matches());
 
     assertFalse("Should not match a URL with invalid gTLD.",
-        Regex.VALID_URL.matcher("www.foo.bar").find());
+        Regex.VALID_URL.matcher("www.foo.baz").find());
 
     assertTrue("Match a short URL with ccTLD and '/' but without protocol.",
         Regex.VALID_URL.matcher("t.co/blahblah").matches());
