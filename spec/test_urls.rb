@@ -32,7 +32,10 @@ module TestUrls
     "WWW.FOOBAR.COM",
     "www.foobar.co.jp",
     "http://t.co",
-    "t.co/nwcLTFF"
+    "t.co/nwcLTFF",
+    "http://foobar.みんな",
+    "http://foobar.中国",
+    "http://foobar.پاکستان"
   ] unless defined?(TestUrls::VALID)
 
   INVALID = [
