@@ -582,6 +582,16 @@ tests:
         - url: "http://xn--ls8h.XN--ls8h.la/"
           indices: [5, 33]
 
+    - description: "Extract URLs with IDN(not encoded)"
+      text: "test http://foobar.みんな/ http://foobar.中国/ http://foobar.پاکستان/ "
+      expected:
+        - url: "http://foobar.みんな/"
+          indices: [5, 23]
+        - url: "http://foobar.中国/"
+          indices: [24, 41]
+        - url: "http://foobar.پاکستان/"
+          indices: [42, 64]
+
   hashtags:
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
