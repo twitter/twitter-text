@@ -11,7 +11,8 @@ if OLD_RUBY
   $KCODE='u'
 end
 
-require File.expand_path('../../lib/twitter-text', __FILE__)
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'twitter-text'
 
 class ConformanceTest < Test::Unit::TestCase
   include Twitter::Extractor
