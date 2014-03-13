@@ -81,6 +81,29 @@
            <outputDirectory>dist/lib</outputDirectory>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <id>submodule-update</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>git</executable>
+          <arguments>
+            <argument>submodule</argument>
+            <argument>update</argument>
+            <argument>--init</argument>
+            <argument>--recursive</argument>
+          </arguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
