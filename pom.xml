@@ -20,7 +20,7 @@
   </licenses>
   <scm>
     <url>https://github.com/twitter/twitter-text-java</url>
-    <connection>scm:git:git://github.com/twitter/twitter-text-java.git</connection>
+    <connection>scm:git:git@github.com:twitter/twitter-text-java.git</connection>
   </scm>
   <developers>
     <developer>
