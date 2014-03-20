@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-
-$KCODE = 'u'
+# encoding: utf-8
 
 require 'yaml'
 require 'rubygems'
