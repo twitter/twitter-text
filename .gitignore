@@ -3,5 +3,5 @@
 *.mode1v3
 build/
 xcuserdata/
-xcshareddata/
+project.xcworkspace
 
