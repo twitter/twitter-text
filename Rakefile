@@ -39,7 +39,7 @@ namespace :test do
 
     desc "Objective-C conformance test suite"
     task :run => [:convert_tests] do
-      system("cd testproject/ && xcodebuild TEST_AFTER_BUILD=YES")
+      system("cd testproject/ && xcodebuild test -scheme TwitterTextTests")
     end
   end
 
