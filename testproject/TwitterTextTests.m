@@ -216,8 +216,8 @@
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedUrl = [expectedDic objectForKey:@"url"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
-                int expectedStart = [[expectedIndices objectAtIndex:0] intValue];
-                int expectedEnd = [[expectedIndices objectAtIndex:1] intValue];
+                NSInteger expectedStart = [[expectedIndices objectAtIndex:0] integerValue];
+                NSInteger expectedEnd = [[expectedIndices objectAtIndex:1] integerValue];
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -274,8 +274,8 @@
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedHashtag = [expectedDic objectForKey:@"hashtag"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
-                int expectedStart = [[expectedIndices objectAtIndex:0] intValue];
-                int expectedEnd = [[expectedIndices objectAtIndex:1] intValue];
+                NSInteger expectedStart = [[expectedIndices objectAtIndex:0] integerValue];
+                NSInteger expectedEnd = [[expectedIndices objectAtIndex:1] integerValue];
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
