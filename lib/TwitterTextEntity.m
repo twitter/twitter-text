@@ -14,15 +14,12 @@
 
 @implementation TwitterTextEntity
 
-@synthesize type;
-@synthesize range;
-
 - (id)initWithType:(TwitterTextEntityType)aType range:(NSRange)aRange
 {
     self = [super init];
     if (self) {
-        type = aType;
-        range = aRange;
+        _type = aType;
+        _range = aRange;
     }
     return self;
 }
@@ -38,8 +35,8 @@
 
 - (NSComparisonResult)compare:(TwitterTextEntity*)right
 {
-    NSInteger leftLocation = range.location;
-    NSInteger leftLength = range.length;
+    NSInteger leftLocation = _range.location;
+    NSInteger leftLength = _range.length;
     NSRange rightRange = right.range;
     NSInteger rightLocation = rightRange.location;
     NSInteger rightLength = rightRange.length;
@@ -60,7 +57,7 @@
 - (NSString*)description
 {
     NSString *typeString = nil;
-    switch (type) {
+    switch (_type) {
         case TwitterTextEntityURL:
             typeString = @"URL";
             break;
@@ -77,7 +74,7 @@
             typeString = @"Symbol";
             break;
     }
-    return [NSString stringWithFormat:@"<%@: %@ %@>", NSStringFromClass([self class]), typeString, NSStringFromRange(range)];
+    return [NSString stringWithFormat:@"<%@: %@ %@>", NSStringFromClass([self class]), typeString, NSStringFromRange(_range)];
 }
 
 @end
