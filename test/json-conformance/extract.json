@@ -1,270 +1,5 @@
 {
   "tests": {
-    "hashtags_with_indices": [
-      {
-        "text": "#hashtag here",
-        "expected": [
-          {
-            "indices": [
-              0,
-              8
-            ],
-            "hashtag": "hashtag"
-          }
-        ],
-        "description": "Extract a hastag at the start"
-      },
-      {
-        "text": "test a #hashtag",
-        "expected": [
-          {
-            "indices": [
-              7,
-              15
-            ],
-            "hashtag": "hashtag"
-          }
-        ],
-        "description": "Extract a hastag at the end"
-      },
-      {
-        "text": "test a #hashtag in a string",
-        "expected": [
-          {
-            "indices": [
-              7,
-              15
-            ],
-            "hashtag": "hashtag"
-          }
-        ],
-        "description": "Extract a hastag in the middle"
-      },
-      {
-        "text": "#123 a #hashtag in a string",
-        "expected": [
-          {
-            "indices": [
-              7,
-              15
-            ],
-            "hashtag": "hashtag"
-          }
-        ],
-        "description": "Extract only a valid hashtag"
-      },
-      {
-        "text": "会議中 #hashtag 会議中",
-        "expected": [
-          {
-            "indices": [
-              4,
-              12
-            ],
-            "hashtag": "hashtag"
-          }
-        ],
-        "description": "Extract a hashtag in a string of multi-byte characters"
-      },
-      {
-        "text": "One #two three #four",
-        "expected": [
-          {
-            "indices": [
-              4,
-              8
-            ],
-            "hashtag": "two"
-          },
-          {
-            "indices": [
-              15,
-              20
-            ],
-            "hashtag": "four"
-          }
-        ],
-        "description": "Extract multiple valid hashtags"
-      },
-      {
-        "text": "Hashtags in #русский!",
-        "expected": [
-          {
-            "indices": [
-              12,
-              20
-            ],
-            "hashtag": "русский"
-          }
-        ],
-        "description": "Extract a non-latin hashtag"
-      },
-      {
-        "text": "Hashtags in #中文, #日本語, #한국말, and #русский! Try it out!",
-        "expected": [
-          {
-            "indices": [
-              12,
-              15
-            ],
-            "hashtag": "中文"
-          },
-          {
-            "indices": [
-              17,
-              21
-            ],
-            "hashtag": "日本語"
-          },
-          {
-            "indices": [
-              23,
-              27
-            ],
-            "hashtag": "한국말"
-          },
-          {
-            "indices": [
-              33,
-              41
-            ],
-            "hashtag": "русский"
-          }
-        ],
-        "description": "Extract multiple non-latin hashtags"
-      }
-    ],
-    "cashtags": [
-      {
-        "text": "Example cashtags: $TEST $Stock   $symbol",
-        "expected": [
-          "TEST",
-          "Stock",
-          "symbol"
-        ],
-        "description": "Extract cashtags"
-      },
-      {
-        "text": "Example cashtags: $TEST.T $test.tt $Stock_X $symbol_ab",
-        "expected": [
-          "TEST.T",
-          "test.tt",
-          "Stock_X",
-          "symbol_ab"
-        ],
-        "description": "Extract cashtags with . or _"
-      },
-      {
-        "text": "$123 $test123 $TE123ST",
-        "expected": [
-
-        ],
-        "description": "Do not extract cashtags if they contain numbers"
-      },
-      {
-        "text": "$ストック $株",
-        "expected": [
-
-        ],
-        "description": "Do not extract cashtags with non-ASCII characters"
-      },
-      {
-        "text": "$ $. $- $@ $! $() $+",
-        "expected": [
-
-        ],
-        "description": "Do not extract cashtags with punctuations"
-      },
-      {
-        "text": "$TEST. $TEST_",
-        "expected": [
-          "TEST",
-          "TEST"
-        ],
-        "description": "Do not include trailing . or _"
-      },
-      {
-        "text": "$OK$NG$BAD text$NO .$NG $$NG",
-        "expected": [
-          "OK"
-        ],
-        "description": "Do not extract cashtags if there is no space before $"
-      },
-      {
-        "text": "$CashtagMustBeLessThanSixCharacter",
-        "expected": [
-
-        ],
-        "description": "Do not extract too long cashtags"
-      }
-    ],
-    "replies": [
-      {
-        "text": "@username reply",
-        "expected": "username",
-        "description": "Extract reply at the begining of a tweet"
-      },
-      {
-        "text": " @username reply",
-        "expected": "username",
-        "description": "Extract reply preceded by only a space"
-      },
-      {
-        "text": "　@username reply",
-        "expected": "username",
-        "description": "Extract reply preceded by only a full-width space (U+3000)"
-      },
-      {
-        "text": "a @username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by text"
-      },
-      {
-        "text": ".@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by ."
-      },
-      {
-        "text": "/@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by /"
-      },
-      {
-        "text": "_@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by _"
-      },
-      {
-        "text": "-@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by -"
-      },
-      {
-        "text": "+@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by +"
-      },
-      {
-        "text": "#@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by #"
-      },
-      {
-        "text": "!@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by !"
-      },
-      {
-        "text": "@@username mention, not a reply",
-        "expected": null,
-        "description": "DO NOT Extract reply when preceded by @"
-      },
-      {
-        "text": "@http://twitter.com",
-        "expected": null,
-        "description": "DO NOT Extract reply when followed by URL"
-      }
-    ],
     "urls": [
       {
         "text": "http://example.com",
@@ -801,17 +536,84 @@
         "description": "DO NOT extract URL with ccTLD followed by @ sign"
       }
     ],
+    "replies": [
+      {
+        "text": "@username reply",
+        "expected": "username",
+        "description": "Extract reply at the begining of a tweet"
+      },
+      {
+        "text": " @username reply",
+        "expected": "username",
+        "description": "Extract reply preceded by only a space"
+      },
+      {
+        "text": "　@username reply",
+        "expected": "username",
+        "description": "Extract reply preceded by only a full-width space (U+3000)"
+      },
+      {
+        "text": "a @username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by text"
+      },
+      {
+        "text": ".@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by ."
+      },
+      {
+        "text": "/@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by /"
+      },
+      {
+        "text": "_@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by _"
+      },
+      {
+        "text": "-@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by -"
+      },
+      {
+        "text": "+@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by +"
+      },
+      {
+        "text": "#@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by #"
+      },
+      {
+        "text": "!@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by !"
+      },
+      {
+        "text": "@@username mention, not a reply",
+        "expected": null,
+        "description": "DO NOT Extract reply when preceded by @"
+      },
+      {
+        "text": "@http://twitter.com",
+        "expected": null,
+        "description": "DO NOT Extract reply when followed by URL"
+      }
+    ],
     "mentions_or_lists_with_indices": [
       {
         "text": "@username yo!",
         "expected": [
           {
-            "screen_name": "username",
+            "list_slug": "",
             "indices": [
               0,
               9
             ],
-            "list_slug": ""
+            "screen_name": "username"
           }
         ],
         "description": "Extract a mention"
@@ -820,12 +622,12 @@
         "text": "@username/list-name is a great list!",
         "expected": [
           {
-            "screen_name": "username",
+            "list_slug": "/list-name",
             "indices": [
               0,
               19
             ],
-            "list_slug": "/list-name"
+            "screen_name": "username"
           }
         ],
         "description": "Extract a list"
@@ -834,20 +636,20 @@
         "text": "Hey @username, check out out @otheruser/list_name-01!",
         "expected": [
           {
-            "screen_name": "username",
+            "list_slug": "",
             "indices": [
               4,
               13
             ],
-            "list_slug": ""
+            "screen_name": "username"
           },
           {
-            "screen_name": "otheruser",
+            "list_slug": "/list_name-01",
             "indices": [
               29,
               52
             ],
-            "list_slug": "/list_name-01"
+            "screen_name": "otheruser"
           }
         ],
         "description": "Extract a mention and list"
@@ -856,12 +658,12 @@
         "text": "の@username/list_name-01に到着を待っている",
         "expected": [
           {
-            "screen_name": "username",
+            "list_slug": "/list_name-01",
             "indices": [
               1,
               23
             ],
-            "list_slug": "/list_name-01"
+            "screen_name": "username"
           }
         ],
         "description": "Extract a list in the middle of a Japanese tweet"
@@ -870,447 +672,15 @@
         "text": "@username/7list-name is a great list!",
         "expected": [
           {
-            "screen_name": "username",
+            "list_slug": "",
             "indices": [
               0,
               9
             ],
-            "list_slug": ""
+            "screen_name": "username"
           }
         ],
         "description": "DO NOT extract a list with slug that starts with a number"
-      }
-    ],
-    "mentions": [
-      {
-        "text": "@username reply",
-        "expected": [
-          "username"
-        ],
-        "description": "Extract mention at the begining of a tweet"
-      },
-      {
-        "text": "mention @username",
-        "expected": [
-          "username"
-        ],
-        "description": "Extract mention at the end of a tweet"
-      },
-      {
-        "text": "mention @username in the middle",
-        "expected": [
-          "username"
-        ],
-        "description": "Extract mention in the middle of a tweet"
-      },
-      {
-        "text": "mention @user_name",
-        "expected": [
-          "user_name"
-        ],
-        "description": "Extract mention of username with underscore"
-      },
-      {
-        "text": "mention @12345",
-        "expected": [
-          "12345"
-        ],
-        "description": "Extract mention of all numeric username"
-      },
-      {
-        "text": "mention @username1 @username2",
-        "expected": [
-          "username1",
-          "username2"
-        ],
-        "description": "Extract mention or multiple usernames"
-      },
-      {
-        "text": "の@usernameに到着を待っている",
-        "expected": [
-          "username"
-        ],
-        "description": "Extract mention in the middle of a Japanese tweet"
-      },
-      {
-        "text": "Current Status: @_@ (cc: @username)",
-        "expected": [
-          "username"
-        ],
-        "description": "DO NOT extract username ending in @"
-      },
-      {
-        "text": "@aliceìnheiro something something",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username followed by accented latin characters"
-      },
-      {
-        "text": "@username email me @test@example.com",
-        "expected": [
-          "username"
-        ],
-        "description": "Extract lone metion but not @user@user (too close to an email)"
-      },
-      {
-        "text": "@http://twitter.com",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract 'http' in '@http://' as username"
-      },
-      {
-        "text": "@username\n@mention",
-        "expected": [
-          "username",
-          "mention"
-        ],
-        "description": "Extract mentions before newline"
-      },
-      {
-        "text": "RT@username RT:@mention RT @test",
-        "expected": [
-          "username",
-          "mention",
-          "test"
-        ],
-        "description": "Extract mentions after 'RT'"
-      },
-      {
-        "text": "rt@username rt:@mention rt @test",
-        "expected": [
-          "username",
-          "mention",
-          "test"
-        ],
-        "description": "Extract mentions after 'rt'"
-      },
-      {
-        "text": "Rt@username Rt:@mention Rt @test",
-        "expected": [
-          "username",
-          "mention",
-          "test"
-        ],
-        "description": "Extract mentions after 'Rt'"
-      },
-      {
-        "text": "rT@username rT:@mention rT @test",
-        "expected": [
-          "username",
-          "mention",
-          "test"
-        ],
-        "description": "Extract mentions after 'rT'"
-      },
-      {
-        "text": "f!@kn",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username preceded by !"
-      },
-      {
-        "text": "f@@kn",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username preceded by @"
-      },
-      {
-        "text": "f#@kn",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username preceded by #"
-      },
-      {
-        "text": "f$@kn",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username preceded by $"
-      },
-      {
-        "text": "f%@kn",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username preceded by %"
-      },
-      {
-        "text": "f&@kn",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username preceded by &"
-      },
-      {
-        "text": "f*@kn",
-        "expected": [
-
-        ],
-        "description": "DO NOT extract username preceded by *"
-      }
-    ],
-    "urls_with_indices": [
-      {
-        "text": "text http://google.com",
-        "expected": [
-          {
-            "indices": [
-              5,
-              22
-            ],
-            "url": "http://google.com"
-          }
-        ],
-        "description": "Extract a URL"
-      },
-      {
-        "text": "皆さん見てください！ http://google.com",
-        "expected": [
-          {
-            "indices": [
-              11,
-              28
-            ],
-            "url": "http://google.com"
-          }
-        ],
-        "description": "Extract a URL from a Japanese tweet"
-      },
-      {
-        "text": "t.co/abcde bit.ly/abcde",
-        "expected": [
-          {
-            "indices": [
-              0,
-              10
-            ],
-            "url": "t.co/abcde"
-          },
-          {
-            "indices": [
-              11,
-              23
-            ],
-            "url": "bit.ly/abcde"
-          }
-        ],
-        "description": "Extract URLs without protocol on ccTLD with slash"
-      },
-      {
-        "text": "twitter.comこれは日本語です。example.com中国語t.co/abcde한국twitter.com example2.comテストtwitter.com/abcde",
-        "expected": [
-          {
-            "indices": [
-              0,
-              11
-            ],
-            "url": "twitter.com"
-          },
-          {
-            "indices": [
-              20,
-              31
-            ],
-            "url": "example.com"
-          },
-          {
-            "indices": [
-              34,
-              44
-            ],
-            "url": "t.co/abcde"
-          },
-          {
-            "indices": [
-              46,
-              57
-            ],
-            "url": "twitter.com"
-          },
-          {
-            "indices": [
-              58,
-              70
-            ],
-            "url": "example2.com"
-          },
-          {
-            "indices": [
-              73,
-              90
-            ],
-            "url": "twitter.com/abcde"
-          }
-        ],
-        "description": "Extract URLs without protocol surrounded by CJK characters"
-      },
-      {
-        "text": "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde",
-        "expected": [
-          {
-            "indices": [
-              0,
-              19
-            ],
-            "url": "http://twitter.com/"
-          },
-          {
-            "indices": [
-              28,
-              39
-            ],
-            "url": "example.com"
-          },
-          {
-            "indices": [
-              42,
-              59
-            ],
-            "url": "http://t.co/abcde"
-          },
-          {
-            "indices": [
-              61,
-              72
-            ],
-            "url": "twitter.com"
-          },
-          {
-            "indices": [
-              75,
-              87
-            ],
-            "url": "example2.com"
-          },
-          {
-            "indices": [
-              90,
-              114
-            ],
-            "url": "http://twitter.com/abcde"
-          }
-        ],
-        "description": "Extract URLs with and without protocol surrounded by CJK characters"
-      },
-      {
-        "text": "http://t.co/pbY2NfTZ's http://t.co/2vYHpAc5; http://t.co/ulYGBYSo: http://t.co/8MkmHU0k+c http://t.co/TKLp64dY.x http://t.co/8t7G3ddS#a http://t.co/FNkPfmii-",
-        "expected": [
-          {
-            "indices": [
-              0,
-              20
-            ],
-            "url": "http://t.co/pbY2NfTZ"
-          },
-          {
-            "indices": [
-              23,
-              43
-            ],
-            "url": "http://t.co/2vYHpAc5"
-          },
-          {
-            "indices": [
-              45,
-              65
-            ],
-            "url": "http://t.co/ulYGBYSo"
-          },
-          {
-            "indices": [
-              67,
-              87
-            ],
-            "url": "http://t.co/8MkmHU0k"
-          },
-          {
-            "indices": [
-              90,
-              110
-            ],
-            "url": "http://t.co/TKLp64dY"
-          },
-          {
-            "indices": [
-              113,
-              133
-            ],
-            "url": "http://t.co/8t7G3ddS"
-          },
-          {
-            "indices": [
-              136,
-              156
-            ],
-            "url": "http://t.co/FNkPfmii"
-          }
-        ],
-        "description": "Extract t.co URLs skipping trailing characters and adjusting indices correctly"
-      },
-      {
-        "text": "http://t.co http://t.co",
-        "expected": [
-          {
-            "indices": [
-              0,
-              11
-            ],
-            "url": "http://t.co"
-          },
-          {
-            "indices": [
-              12,
-              23
-            ],
-            "url": "http://t.co"
-          }
-        ],
-        "description": "Extract correct indices for duplicate instances of the same URL"
-      },
-      {
-        "text": "test http://xn--ls8h.XN--ls8h.la/",
-        "expected": [
-          {
-            "indices": [
-              5,
-              33
-            ],
-            "url": "http://xn--ls8h.XN--ls8h.la/"
-          }
-        ],
-        "description": "Extract I18N URL"
-      },
-      {
-        "text": "test http://foobar.みんな/ http://foobar.中国/ http://foobar.پاکستان/ ",
-        "expected": [
-          {
-            "indices": [
-              5,
-              23
-            ],
-            "url": "http://foobar.みんな/"
-          },
-          {
-            "indices": [
-              24,
-              41
-            ],
-            "url": "http://foobar.中国/"
-          },
-          {
-            "indices": [
-              42,
-              64
-            ],
-            "url": "http://foobar.پاکستان/"
-          }
-        ],
-        "description": "Extract URLs with IDN(not encoded)"
       }
     ],
     "mentions_with_indices": [
@@ -1318,11 +688,11 @@
         "text": "@username yo!",
         "expected": [
           {
-            "screen_name": "username",
             "indices": [
               0,
               9
-            ]
+            ],
+            "screen_name": "username"
           }
         ],
         "description": "Extract a mention at the start"
@@ -1331,11 +701,11 @@
         "text": "username @username",
         "expected": [
           {
-            "screen_name": "username",
             "indices": [
               9,
               18
-            ]
+            ],
+            "screen_name": "username"
           }
         ],
         "description": "Extract a mention that has the same thing mentioned at the start"
@@ -1344,14 +714,148 @@
         "text": "の@usernameに到着を待っている",
         "expected": [
           {
-            "screen_name": "username",
             "indices": [
               1,
               10
-            ]
+            ],
+            "screen_name": "username"
           }
         ],
         "description": "Extract a mention in the middle of a Japanese tweet"
+      }
+    ],
+    "hashtags_with_indices": [
+      {
+        "text": "#hashtag here",
+        "expected": [
+          {
+            "hashtag": "hashtag",
+            "indices": [
+              0,
+              8
+            ]
+          }
+        ],
+        "description": "Extract a hastag at the start"
+      },
+      {
+        "text": "test a #hashtag",
+        "expected": [
+          {
+            "hashtag": "hashtag",
+            "indices": [
+              7,
+              15
+            ]
+          }
+        ],
+        "description": "Extract a hastag at the end"
+      },
+      {
+        "text": "test a #hashtag in a string",
+        "expected": [
+          {
+            "hashtag": "hashtag",
+            "indices": [
+              7,
+              15
+            ]
+          }
+        ],
+        "description": "Extract a hastag in the middle"
+      },
+      {
+        "text": "#123 a #hashtag in a string",
+        "expected": [
+          {
+            "hashtag": "hashtag",
+            "indices": [
+              7,
+              15
+            ]
+          }
+        ],
+        "description": "Extract only a valid hashtag"
+      },
+      {
+        "text": "会議中 #hashtag 会議中",
+        "expected": [
+          {
+            "hashtag": "hashtag",
+            "indices": [
+              4,
+              12
+            ]
+          }
+        ],
+        "description": "Extract a hashtag in a string of multi-byte characters"
+      },
+      {
+        "text": "One #two three #four",
+        "expected": [
+          {
+            "hashtag": "two",
+            "indices": [
+              4,
+              8
+            ]
+          },
+          {
+            "hashtag": "four",
+            "indices": [
+              15,
+              20
+            ]
+          }
+        ],
+        "description": "Extract multiple valid hashtags"
+      },
+      {
+        "text": "Hashtags in #русский!",
+        "expected": [
+          {
+            "hashtag": "русский",
+            "indices": [
+              12,
+              20
+            ]
+          }
+        ],
+        "description": "Extract a non-latin hashtag"
+      },
+      {
+        "text": "Hashtags in #中文, #日本語, #한국말, and #русский! Try it out!",
+        "expected": [
+          {
+            "hashtag": "中文",
+            "indices": [
+              12,
+              15
+            ]
+          },
+          {
+            "hashtag": "日本語",
+            "indices": [
+              17,
+              21
+            ]
+          },
+          {
+            "hashtag": "한국말",
+            "indices": [
+              23,
+              27
+            ]
+          },
+          {
+            "hashtag": "русский",
+            "indices": [
+              33,
+              41
+            ]
+          }
+        ],
+        "description": "Extract multiple non-latin hashtags"
       }
     ],
     "hashtags": [
@@ -1730,23 +1234,519 @@
         "description": "Extract Arabic hashtags with Zero-Width Non-Joiner"
       }
     ],
+    "urls_with_indices": [
+      {
+        "text": "text http://google.com",
+        "expected": [
+          {
+            "indices": [
+              5,
+              22
+            ],
+            "url": "http://google.com"
+          }
+        ],
+        "description": "Extract a URL"
+      },
+      {
+        "text": "皆さん見てください！ http://google.com",
+        "expected": [
+          {
+            "indices": [
+              11,
+              28
+            ],
+            "url": "http://google.com"
+          }
+        ],
+        "description": "Extract a URL from a Japanese tweet"
+      },
+      {
+        "text": "t.co/abcde bit.ly/abcde",
+        "expected": [
+          {
+            "indices": [
+              0,
+              10
+            ],
+            "url": "t.co/abcde"
+          },
+          {
+            "indices": [
+              11,
+              23
+            ],
+            "url": "bit.ly/abcde"
+          }
+        ],
+        "description": "Extract URLs without protocol on ccTLD with slash"
+      },
+      {
+        "text": "twitter.comこれは日本語です。example.com中国語t.co/abcde한국twitter.com example2.comテストtwitter.com/abcde",
+        "expected": [
+          {
+            "indices": [
+              0,
+              11
+            ],
+            "url": "twitter.com"
+          },
+          {
+            "indices": [
+              20,
+              31
+            ],
+            "url": "example.com"
+          },
+          {
+            "indices": [
+              34,
+              44
+            ],
+            "url": "t.co/abcde"
+          },
+          {
+            "indices": [
+              46,
+              57
+            ],
+            "url": "twitter.com"
+          },
+          {
+            "indices": [
+              58,
+              70
+            ],
+            "url": "example2.com"
+          },
+          {
+            "indices": [
+              73,
+              90
+            ],
+            "url": "twitter.com/abcde"
+          }
+        ],
+        "description": "Extract URLs without protocol surrounded by CJK characters"
+      },
+      {
+        "text": "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde",
+        "expected": [
+          {
+            "indices": [
+              0,
+              19
+            ],
+            "url": "http://twitter.com/"
+          },
+          {
+            "indices": [
+              28,
+              39
+            ],
+            "url": "example.com"
+          },
+          {
+            "indices": [
+              42,
+              59
+            ],
+            "url": "http://t.co/abcde"
+          },
+          {
+            "indices": [
+              61,
+              72
+            ],
+            "url": "twitter.com"
+          },
+          {
+            "indices": [
+              75,
+              87
+            ],
+            "url": "example2.com"
+          },
+          {
+            "indices": [
+              90,
+              114
+            ],
+            "url": "http://twitter.com/abcde"
+          }
+        ],
+        "description": "Extract URLs with and without protocol surrounded by CJK characters"
+      },
+      {
+        "text": "http://t.co/pbY2NfTZ's http://t.co/2vYHpAc5; http://t.co/ulYGBYSo: http://t.co/8MkmHU0k+c http://t.co/TKLp64dY.x http://t.co/8t7G3ddS#a http://t.co/FNkPfmii-",
+        "expected": [
+          {
+            "indices": [
+              0,
+              20
+            ],
+            "url": "http://t.co/pbY2NfTZ"
+          },
+          {
+            "indices": [
+              23,
+              43
+            ],
+            "url": "http://t.co/2vYHpAc5"
+          },
+          {
+            "indices": [
+              45,
+              65
+            ],
+            "url": "http://t.co/ulYGBYSo"
+          },
+          {
+            "indices": [
+              67,
+              87
+            ],
+            "url": "http://t.co/8MkmHU0k"
+          },
+          {
+            "indices": [
+              90,
+              110
+            ],
+            "url": "http://t.co/TKLp64dY"
+          },
+          {
+            "indices": [
+              113,
+              133
+            ],
+            "url": "http://t.co/8t7G3ddS"
+          },
+          {
+            "indices": [
+              136,
+              156
+            ],
+            "url": "http://t.co/FNkPfmii"
+          }
+        ],
+        "description": "Extract t.co URLs skipping trailing characters and adjusting indices correctly"
+      },
+      {
+        "text": "http://t.co http://t.co",
+        "expected": [
+          {
+            "indices": [
+              0,
+              11
+            ],
+            "url": "http://t.co"
+          },
+          {
+            "indices": [
+              12,
+              23
+            ],
+            "url": "http://t.co"
+          }
+        ],
+        "description": "Extract correct indices for duplicate instances of the same URL"
+      },
+      {
+        "text": "test http://xn--ls8h.XN--ls8h.la/",
+        "expected": [
+          {
+            "indices": [
+              5,
+              33
+            ],
+            "url": "http://xn--ls8h.XN--ls8h.la/"
+          }
+        ],
+        "description": "Extract I18N URL"
+      },
+      {
+        "text": "test http://foobar.みんな/ http://foobar.中国/ http://foobar.پاکستان/ ",
+        "expected": [
+          {
+            "indices": [
+              5,
+              23
+            ],
+            "url": "http://foobar.みんな/"
+          },
+          {
+            "indices": [
+              24,
+              41
+            ],
+            "url": "http://foobar.中国/"
+          },
+          {
+            "indices": [
+              42,
+              64
+            ],
+            "url": "http://foobar.پاکستان/"
+          }
+        ],
+        "description": "Extract URLs with IDN(not encoded)"
+      }
+    ],
+    "cashtags": [
+      {
+        "text": "Example cashtags: $TEST $Stock   $symbol",
+        "expected": [
+          "TEST",
+          "Stock",
+          "symbol"
+        ],
+        "description": "Extract cashtags"
+      },
+      {
+        "text": "Example cashtags: $TEST.T $test.tt $Stock_X $symbol_ab",
+        "expected": [
+          "TEST.T",
+          "test.tt",
+          "Stock_X",
+          "symbol_ab"
+        ],
+        "description": "Extract cashtags with . or _"
+      },
+      {
+        "text": "$123 $test123 $TE123ST",
+        "expected": [
+
+        ],
+        "description": "Do not extract cashtags if they contain numbers"
+      },
+      {
+        "text": "$ストック $株",
+        "expected": [
+
+        ],
+        "description": "Do not extract cashtags with non-ASCII characters"
+      },
+      {
+        "text": "$ $. $- $@ $! $() $+",
+        "expected": [
+
+        ],
+        "description": "Do not extract cashtags with punctuations"
+      },
+      {
+        "text": "$TEST. $TEST_",
+        "expected": [
+          "TEST",
+          "TEST"
+        ],
+        "description": "Do not include trailing . or _"
+      },
+      {
+        "text": "$OK$NG$BAD text$NO .$NG $$NG",
+        "expected": [
+          "OK"
+        ],
+        "description": "Do not extract cashtags if there is no space before $"
+      },
+      {
+        "text": "$CashtagMustBeLessThanSixCharacter",
+        "expected": [
+
+        ],
+        "description": "Do not extract too long cashtags"
+      }
+    ],
+    "mentions": [
+      {
+        "text": "@username reply",
+        "expected": [
+          "username"
+        ],
+        "description": "Extract mention at the begining of a tweet"
+      },
+      {
+        "text": "mention @username",
+        "expected": [
+          "username"
+        ],
+        "description": "Extract mention at the end of a tweet"
+      },
+      {
+        "text": "mention @username in the middle",
+        "expected": [
+          "username"
+        ],
+        "description": "Extract mention in the middle of a tweet"
+      },
+      {
+        "text": "mention @user_name",
+        "expected": [
+          "user_name"
+        ],
+        "description": "Extract mention of username with underscore"
+      },
+      {
+        "text": "mention @12345",
+        "expected": [
+          "12345"
+        ],
+        "description": "Extract mention of all numeric username"
+      },
+      {
+        "text": "mention @username1 @username2",
+        "expected": [
+          "username1",
+          "username2"
+        ],
+        "description": "Extract mention or multiple usernames"
+      },
+      {
+        "text": "の@usernameに到着を待っている",
+        "expected": [
+          "username"
+        ],
+        "description": "Extract mention in the middle of a Japanese tweet"
+      },
+      {
+        "text": "Current Status: @_@ (cc: @username)",
+        "expected": [
+          "username"
+        ],
+        "description": "DO NOT extract username ending in @"
+      },
+      {
+        "text": "@aliceìnheiro something something",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username followed by accented latin characters"
+      },
+      {
+        "text": "@username email me @test@example.com",
+        "expected": [
+          "username"
+        ],
+        "description": "Extract lone metion but not @user@user (too close to an email)"
+      },
+      {
+        "text": "@http://twitter.com",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract 'http' in '@http://' as username"
+      },
+      {
+        "text": "@username\n@mention",
+        "expected": [
+          "username",
+          "mention"
+        ],
+        "description": "Extract mentions before newline"
+      },
+      {
+        "text": "RT@username RT:@mention RT @test",
+        "expected": [
+          "username",
+          "mention",
+          "test"
+        ],
+        "description": "Extract mentions after 'RT'"
+      },
+      {
+        "text": "rt@username rt:@mention rt @test",
+        "expected": [
+          "username",
+          "mention",
+          "test"
+        ],
+        "description": "Extract mentions after 'rt'"
+      },
+      {
+        "text": "Rt@username Rt:@mention Rt @test",
+        "expected": [
+          "username",
+          "mention",
+          "test"
+        ],
+        "description": "Extract mentions after 'Rt'"
+      },
+      {
+        "text": "rT@username rT:@mention rT @test",
+        "expected": [
+          "username",
+          "mention",
+          "test"
+        ],
+        "description": "Extract mentions after 'rT'"
+      },
+      {
+        "text": "f!@kn",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username preceded by !"
+      },
+      {
+        "text": "f@@kn",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username preceded by @"
+      },
+      {
+        "text": "f#@kn",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username preceded by #"
+      },
+      {
+        "text": "f$@kn",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username preceded by $"
+      },
+      {
+        "text": "f%@kn",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username preceded by %"
+      },
+      {
+        "text": "f&@kn",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username preceded by &"
+      },
+      {
+        "text": "f*@kn",
+        "expected": [
+
+        ],
+        "description": "DO NOT extract username preceded by *"
+      }
+    ],
     "cashtags_with_indices": [
       {
         "text": "Example: $TEST $symbol test",
         "expected": [
           {
-            "cashtag": "TEST",
             "indices": [
               9,
               14
-            ]
+            ],
+            "cashtag": "TEST"
           },
           {
-            "cashtag": "symbol",
             "indices": [
               15,
               22
-            ]
+            ],
+            "cashtag": "symbol"
           }
         ],
         "description": "Extract cashtags"
@@ -1755,18 +1755,18 @@
         "text": "Example: $TEST.T test $symbol_ab end",
         "expected": [
           {
-            "cashtag": "TEST.T",
             "indices": [
               9,
               16
-            ]
+            ],
+            "cashtag": "TEST.T"
           },
           {
-            "cashtag": "symbol_ab",
             "indices": [
               22,
               32
-            ]
+            ],
+            "cashtag": "symbol_ab"
           }
         ],
         "description": "Extract cashtags with . or _"
