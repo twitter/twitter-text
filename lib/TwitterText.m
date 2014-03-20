@@ -660,7 +660,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     [string autorelease];
 #endif
 
-    int urlLengthOffset = 0;
+    NSInteger urlLengthOffset = 0;
     NSArray *urlEntities = [self URLsInText:text];
     for (NSInteger i=urlEntities.count-1; i>=0; i--) {
         TwitterTextEntity *entity = [urlEntities objectAtIndex:i];
@@ -682,7 +682,7 @@ static const NSInteger HTTPSShortURLLength = 23;
         UniChar buffer[len];
         [string getCharacters:buffer range:NSMakeRange(0, len)];
 
-        for (int i=0; i<len; i++) {
+        for (NSInteger i=0; i<len; i++) {
             UniChar c = buffer[i];
             if (CFStringIsSurrogateHighCharacter(c)) {
                 if (i+1 < len) {
