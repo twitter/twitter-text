@@ -102,8 +102,8 @@
     NSArray *urlsWithIndices = [tests objectForKey:@"urls_with_indices"];
     NSArray *hashtags = [tests objectForKey:@"hashtags"];
     NSArray *hashtagsWithIndices = [tests objectForKey:@"hashtags_with_indices"];
-    NSArray *cashtags = [tests objectForKey:@"cashtags"];
-    NSArray *cashtagsWithIndices = [tests objectForKey:@"cashtags_with_indices"];
+    NSArray *symbols = [tests objectForKey:@"cashtags"];
+    NSArray *symbolsWithIndices = [tests objectForKey:@"cashtags_with_indices"];
     
     //
     // Mentions
@@ -361,10 +361,9 @@
     }
     
     //
-    // Cashtag
+    // Symbols
     //
-    
-    for (NSDictionary *testCase in cashtags) {
+    for (NSDictionary *testCase in symbols) {
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
@@ -394,7 +393,7 @@
     //
     // Symbols with indices
     //
-    for (NSDictionary *testCase in cashtagsWithIndices) {
+    for (NSDictionary *testCase in symbolsWithIndices) {
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
         
@@ -403,7 +402,7 @@
             NSInteger count = results.count;
             for (NSInteger i=0; i<count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
-                NSString *expectedCashtag = [expectedDic objectForKey:@"cashtag"];
+                NSString *expectedSymbol = [expectedDic objectForKey:@"cashtag"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
                 int expectedStart = [[expectedIndices objectAtIndex:0] intValue];
                 int expectedEnd = [[expectedIndices objectAtIndex:1] intValue];
@@ -416,7 +415,7 @@
                 r.length--;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedCashtag, actualText, @"%@", testCase);
+                STAssertEqualObjects(expectedSymbol, actualText, @"%@", testCase);
                 STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {

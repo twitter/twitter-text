@@ -150,13 +150,13 @@
 #define TWUEndHashTagMatch      @"\\A(?:[#＃]|://)"
 
 //
-// Cashtag
+// Symbol
 //
 
-#define TWUCashtag          @"[a-z]{1,6}(?:[._][a-z]{1,2})?"
-#define TWUValidCashtag \
+#define TWUSymbol               @"[a-z]{1,6}(?:[._][a-z]{1,2})?"
+#define TWUValidSymbol \
     @"(?:^|[" TWUUnicodeSpaces @"])" \
-    @"(\\$" TWUCashtag @")" \
+    @"(\\$" TWUSymbol @")" \
     @"(?=$|\\s|[" TWUPunctuationChars @"])"
 
 //
@@ -337,8 +337,8 @@ static const NSInteger HTTPSShortURLLength = 23;
     NSArray *hashtags = [self hashtagsInText:text withURLEntities:urls];
     [results addObjectsFromArray:hashtags];
 
-    NSArray *cashtags = [self symbolsInText:text withURLEntities:urls];
-    [results addObjectsFromArray:cashtags];
+    NSArray *symbols = [self symbolsInText:text withURLEntities:urls];
+    [results addObjectsFromArray:symbols];
 
     NSArray *mentionsAndLists = [self mentionsOrListsInText:text];
     NSMutableArray *addingItems = [NSMutableArray array];
@@ -553,7 +553,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     NSInteger position = 0;
 
     while (1) {
-        NSTextCheckingResult *matchResult = [[self validCashtagRegexp] firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
+        NSTextCheckingResult *matchResult = [[self validSymbolRegexp] firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
         if (!matchResult || matchResult.numberOfRanges < 2) {
             break;
         }
@@ -805,14 +805,14 @@ static const NSInteger HTTPSShortURLLength = 23;
     return endHashtagRegexp;
 }
 
-+ (NSRegularExpression*)validCashtagRegexp
++ (NSRegularExpression*)validSymbolRegexp
 {
-    static NSRegularExpression *validCashtagRegexp;
+    static NSRegularExpression *validSymbolRegexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validCashtagRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidCashtag options:NSRegularExpressionCaseInsensitive error:NULL];
+        validSymbolRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidSymbol options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validCashtagRegexp;
+    return validSymbolRegexp;
 }
 
 + (NSRegularExpression*)validMentionOrListRegexp
