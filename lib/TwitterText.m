@@ -233,7 +233,6 @@
         @"travel|uno|vacations|ventures|viajes|villas|vision|vote|voting|voto|voyage|wang|watch|wed|wien|wiki|works|" \
         @"xxx|xyz|zone|дети|онлайн|орг|сайт|بازار|شبكة|みんな|中信|中文网|公司|公益|在线|我爱你|政务|游戏|移动|网络|集团|삼성" \
     @")" \
-    @"(?=[^0-9a-z@]|$)" \
 @")"
 
 #define TWUValidCCTLD \
@@ -250,20 +249,27 @@
         @"भारत|বাংলা|ভারত|ਭਾਰਤ|ભારત|இந்தியா|இலங்கை|சிங்கப்பூர்|భారత్|ලංකා|ไทย|გე|中国|中國|台湾|台灣|新加坡|" \
         @"香港|한국" \
     @")" \
-    @"(?=[^0-9a-z@]|$)" \
 @")"
 
 #define TWUValidPunycode                @"(?:xn--[0-9a-z]+)"
 
-#define TWUValidDomain \
+#define TWUSimplifiedValidTLDChars      TWUDomainValidStartEndChars
+#define TWUSimplifiedValidTLD           TWUSimplifiedValidTLDChars @"{2,}"
+
+#define TWUSimplifiedValidDomain \
 @"(?:" \
+    TWUValidSubdomain @"*" TWUValidDomainName TWUSimplifiedValidTLD \
+@")"
+
+#define TWUURLDomainForValidation \
+@"\\A(?:" \
     TWUValidSubdomain @"*" TWUValidDomainName \
     @"(?:" TWUValidGTLD @"|" TWUValidCCTLD @"|" TWUValidPunycode @")" \
-@")"
+@")\\z"
 
 #define TWUValidASCIIDomain \
     @"(?:[a-zA-Z0-9\\-_" TWULatinAccents @"]+\\.)+" \
-    @"(?:" TWUValidGTLD @"|" TWUValidCCTLD @"|" TWUValidPunycode @")" \
+    @"(?:" TWUValidGTLD @"|" TWUValidCCTLD @"|" TWUValidPunycode @")(?=[^0-9a-z@]|$)"
 
 #define TWUValidTCOURL                  @"https?://t\\.co/[a-zA-Z0-9]+"
 #define TWUInvalidShortDomain           @"\\A" TWUValidDomainName TWUValidCCTLD @"\\z"
@@ -299,12 +305,12 @@
 #define TWUValidURLQueryChars           @"[a-zA-Z0-9!?*'\\(\\);:&=+$/%#\\[\\]\\-_\\.,~|@]"
 #define TWUValidURLQueryEndingChars     @"[a-zA-Z0-9_&=#/]"
 
-#define TWUValidURL \
+#define TWUSimplifiedValidURL \
 @"(" \
     @"(" TWUValidURLPrecedingChars @")" \
     @"(" \
         @"(https?://)?" \
-        @"(" TWUValidDomain @")" \
+        @"(" TWUSimplifiedValidDomain @")" \
         @"(?::(" TWUValidPortNumber @"))?" \
         @"(/" TWUValidURLPath @"*)?" \
         @"(\\?" TWUValidURLQueryChars @"*" TWUValidURLQueryEndingChars @")?" \
@@ -370,7 +376,11 @@ static const NSInteger HTTPSShortURLLength = 23;
 
     while (1) {
         position = NSMaxRange(allRange);
-        NSTextCheckingResult *urlResult = [[self validURLRegexp] firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
+        if (len <= position) {
+            break;
+        }
+
+        NSTextCheckingResult *urlResult = [[self simplifiedValidURLRegexp] firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
         if (!urlResult || urlResult.numberOfRanges < 9) {
             break;
         }
@@ -398,7 +408,12 @@ static const NSInteger HTTPSShortURLLength = 23;
             BOOL lastInvalidShortResult = NO;
 
             while (domainStart < domainEnd) {
-                NSTextCheckingResult *asciiResult = [[self validASCIIDomainRegexp] firstMatchInString:text options:0 range:NSMakeRange(domainStart, domainEnd - domainStart)];
+                // Include succeeding character for validation
+                NSInteger checkingDomainLength = domainEnd - domainStart;
+                if (domainStart + checkingDomainLength < len) {
+                    checkingDomainLength++;
+                }
+                NSTextCheckingResult *asciiResult = [[self validASCIIDomainRegexp] firstMatchInString:text options:0 range:NSMakeRange(domainStart, checkingDomainLength)];
                 if (!asciiResult) {
                     break;
                 }
@@ -429,11 +444,20 @@ static const NSInteger HTTPSShortURLLength = 23;
                 lastEntity.range = entityRange;
             }
 
+            // Adjust next position
+            allRange = lastEntity.range;
+
         } else {
             // In the case of t.co URLs, don't allow additional path characters
             NSRange tcoRange = [[self validTCOURLRegexp] rangeOfFirstMatchInString:text options:0 range:urlRange];
             if (tcoRange.location != NSNotFound) {
                 urlRange.length = tcoRange.length;
+            } else {
+                // Validate domain with precise pattern
+                NSRange validationResult = [[self URLRegexpForValidation] rangeOfFirstMatchInString:text options:0 range:domainRange];
+                if (validationResult.location == NSNotFound) {
+                    continue;
+                }
             }
 
             TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange];
@@ -711,14 +735,24 @@ static const NSInteger HTTPSShortURLLength = 23;
 
 #pragma mark - Regular Expressions and CharacterSet
 
-+ (NSRegularExpression*)validURLRegexp
++ (NSRegularExpression*)simplifiedValidURLRegexp
 {
-    static NSRegularExpression *validURLRegexp;
+    static NSRegularExpression *simplifiedValidURLRegexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validURLRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidURL options:NSRegularExpressionCaseInsensitive error:NULL];
+        simplifiedValidURLRegexp = [[NSRegularExpression alloc] initWithPattern:TWUSimplifiedValidURL options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validURLRegexp;
+    return simplifiedValidURLRegexp;
+}
+
++ (NSRegularExpression*)URLRegexpForValidation
+{
+    static NSRegularExpression *URLRegexpForValidation;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        URLRegexpForValidation = [[NSRegularExpression alloc] initWithPattern:TWUURLDomainForValidation options:NSRegularExpressionCaseInsensitive error:NULL];
+    });
+    return URLRegexpForValidation;
 }
 
 + (NSRegularExpression*)validASCIIDomainRegexp
@@ -822,6 +856,16 @@ static const NSInteger HTTPSShortURLLength = 23;
 #endif
     });
     return invalidURLWithoutProtocolPrecedingCharSet;
+}
+
++ (NSRegularExpression*)validDomainSucceedingCharRegexp
+{
+    static NSRegularExpression *endMentionRegexp;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        endMentionRegexp = [[NSRegularExpression alloc] initWithPattern:TWUEndMentionMatch options:NSRegularExpressionCaseInsensitive error:NULL];
+    });
+    return endMentionRegexp;
 }
 
 @end
