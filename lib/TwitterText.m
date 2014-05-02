@@ -12,6 +12,8 @@
 
 #import "TwitterText.h"
 
+#pragma mark - Regular Expressions
+
 //
 // These regular expressions are ported from twitter-text-rb on Apr 24 2012.
 //
@@ -317,11 +319,15 @@
     @")" \
 @")"
 
+#pragma mark - Constants
+
 static const NSInteger MaxTweetLength = 140;
 static const NSInteger HTTPShortURLLength = 22;
 static const NSInteger HTTPSShortURLLength = 23;
 
 @implementation TwitterText
+
+#pragma mark - Public Methods
 
 + (NSArray*)entitiesInText:(NSString*)text
 {
@@ -733,139 +739,139 @@ static const NSInteger HTTPSShortURLLength = 23;
     return MaxTweetLength - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
 }
 
-#pragma mark - Regular Expressions and CharacterSet
+#pragma mark - Private Methods
 
 + (NSRegularExpression*)simplifiedValidURLRegexp
 {
-    static NSRegularExpression *simplifiedValidURLRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        simplifiedValidURLRegexp = [[NSRegularExpression alloc] initWithPattern:TWUSimplifiedValidURL options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUSimplifiedValidURL options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return simplifiedValidURLRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)URLRegexpForValidation
 {
-    static NSRegularExpression *URLRegexpForValidation;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        URLRegexpForValidation = [[NSRegularExpression alloc] initWithPattern:TWUURLDomainForValidation options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUURLDomainForValidation options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return URLRegexpForValidation;
+    return regexp;
 }
 
 + (NSRegularExpression*)validASCIIDomainRegexp
 {
-    static NSRegularExpression *validASCIIDomainRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validASCIIDomainRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidASCIIDomain options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUValidASCIIDomain options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validASCIIDomainRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)invalidShortDomainRegexp
 {
-    static NSRegularExpression *invalidShortDomainRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        invalidShortDomainRegexp = [[NSRegularExpression alloc] initWithPattern:TWUInvalidShortDomain options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUInvalidShortDomain options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return invalidShortDomainRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)validTCOURLRegexp
 {
-    static NSRegularExpression *validTCOURLRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validTCOURLRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidTCOURL options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUValidTCOURL options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validTCOURLRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)validHashtagRegexp
 {
-    static NSRegularExpression *validHashtagRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validHashtagRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidHashtag options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUValidHashtag options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validHashtagRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)endHashtagRegexp
 {
-    static NSRegularExpression *endHashtagRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        endHashtagRegexp = [[NSRegularExpression alloc] initWithPattern:TWUEndHashTagMatch options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUEndHashTagMatch options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return endHashtagRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)validSymbolRegexp
 {
-    static NSRegularExpression *validSymbolRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validSymbolRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidSymbol options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUValidSymbol options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validSymbolRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)validMentionOrListRegexp
 {
-    static NSRegularExpression *validMentionOrListRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validMentionOrListRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidMentionOrList options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUValidMentionOrList options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validMentionOrListRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)validReplyRegexp
 {
-    static NSRegularExpression *validReplyRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        validReplyRegexp = [[NSRegularExpression alloc] initWithPattern:TWUValidReply options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUValidReply options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return validReplyRegexp;
+    return regexp;
 }
 
 + (NSRegularExpression*)endMentionRegexp
 {
-    static NSRegularExpression *endMentionRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        endMentionRegexp = [[NSRegularExpression alloc] initWithPattern:TWUEndMentionMatch options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUEndMentionMatch options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return endMentionRegexp;
+    return regexp;
 }
 
 + (NSCharacterSet*)invalidURLWithoutProtocolPrecedingCharSet
 {
-    static NSCharacterSet *invalidURLWithoutProtocolPrecedingCharSet;
+    static NSCharacterSet *charSet;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        invalidURLWithoutProtocolPrecedingCharSet = [NSCharacterSet characterSetWithCharactersInString:@"-_./"];
+        charSet = [NSCharacterSet characterSetWithCharactersInString:@"-_./"];
 #if !__has_feature(objc_arc)
-        [invalidURLWithoutProtocolPrecedingCharSet retain];
+        [charSet retain];
 #endif
     });
-    return invalidURLWithoutProtocolPrecedingCharSet;
+    return charSet;
 }
 
 + (NSRegularExpression*)validDomainSucceedingCharRegexp
 {
-    static NSRegularExpression *endMentionRegexp;
+    static NSRegularExpression *regexp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        endMentionRegexp = [[NSRegularExpression alloc] initWithPattern:TWUEndMentionMatch options:NSRegularExpressionCaseInsensitive error:NULL];
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUEndMentionMatch options:NSRegularExpressionCaseInsensitive error:NULL];
     });
-    return endMentionRegexp;
+    return regexp;
 }
 
 @end
