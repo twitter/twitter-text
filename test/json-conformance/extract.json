@@ -550,7 +550,7 @@
       },
       {
         "description": "Extract URLs without protocol not on (com|org|edu|gov|net) domains",
-        "text": "foo.baz foo.co.jp www.foo.baz www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp",
+        "text": "foo.baz foo.co.jp www.xxxxxxx.baz www.foo.co.uk wwwww.xxxxxxx foo.comm foo.somecom foo.govedu foo.jp",
         "expected": [
           "foo.co.jp",
           "www.foo.co.uk"
