@@ -345,8 +345,12 @@ tests:
       expected: ["http://twitter.com/", "example.com", "http://t.co/abcde", "twitter.com", "example2.com", "http://twitter.com/abcde"]
 
     - description: "DO NOT extract short URLs without protocol on ccTLD domains without path"
-      text: "twitter.jp日本語t.co中国語foo.jp t.co foo.jp"
+      text: "twitter.jp日本語it.so中国語foo.jp it.so foo.jp"
       expected: []
+
+    - description: "Extract some (tv|co) short URLs without protocol on ccTLD domains without path"
+      text: "MLB.tv vine.co twitch.tv t.co"
+      expected: ["MLB.tv", "vine.co", "twitch.tv", "t.co"]
 
     - description: "Extract URLs beginning with a non-breaking space (U+00A0)"
       text: "@user Try http:// example.com/path"
@@ -478,8 +482,8 @@ tests:
       expected: ["http://t.co/ulYGBYSo"]
 
     - description: "Extract URL before newline"
-      text: "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nt.co\nt.co/abcde"
-      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co/abcde"]
+      text: "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nit.so\nit.so/abcde"
+      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "it.so/abcde"]
 
     - description: "DO NOT extract URL if preceded by $"
       text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
