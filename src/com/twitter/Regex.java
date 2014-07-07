@@ -94,7 +94,7 @@ public class Regex {
       "台灣|新加坡|香港|한국" +
       ")(?=[^\\p{Alnum}@]|$))";
   private static final String URL_PUNYCODE = "(?:xn--[0-9a-z]+)";
-  private static final String SPECIAL_URL_VALID_CCTLD = "(?:(?:" + "tv|co" + ")(?=[^\\p{Alnum}@]|$))";
+  private static final String SPECIAL_URL_VALID_CCTLD = "(?:(?:" + "co|tv" + ")(?=[^\\p{Alnum}@]|$))";
 
   private static final String URL_VALID_DOMAIN =
     "(?:" +                                                   // subdomains + domain + TLD
