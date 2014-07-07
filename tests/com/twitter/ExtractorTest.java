@@ -353,6 +353,21 @@ public class ExtractorTest extends TestCase {
    }
   }
 
+  public void testUrlWithSpecialCCTLDWithoutProtocol() {
+    String text = "MLB.tv vine.co";
+    assertList("Failed to extract URLs without protocol",
+        new String[]{"MLB.tv", "vine.co"}, extractor.extractURLs(text));
+
+    List<Extractor.Entity> extracted = extractor.extractURLsWithIndices(text);
+    assertEquals(extracted.get(0).getStart().intValue(), 0);
+    assertEquals(extracted.get(0).getEnd().intValue(), 6);
+    assertEquals(extracted.get(1).getStart().intValue(), 7);
+    assertEquals(extracted.get(1).getEnd().intValue(), 14);
+
+    extractor.setExtractURLWithoutProtocol(false);
+    assertTrue("Should not extract URLs w/o protocol", extractor.extractURLs(text).isEmpty());
+  }
+
   /**
    * Helper method for asserting that the List of extracted Strings match the expected values.
    *

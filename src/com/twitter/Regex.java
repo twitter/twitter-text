@@ -94,15 +94,16 @@ public class Regex {
       "台灣|新加坡|香港|한국" +
       ")(?=[^\\p{Alnum}@]|$))";
   private static final String URL_PUNYCODE = "(?:xn--[0-9a-z]+)";
+  private static final String SPECIAL_URL_VALID_CCTLD = "(?:(?:" + "tv|co" + ")(?=[^\\p{Alnum}@]|$))";
 
   private static final String URL_VALID_DOMAIN =
     "(?:" +                                                   // subdomains + domain + TLD
         URL_VALID_SUBDOMAIN + "+" + URL_VALID_DOMAIN_NAME +   // e.g. www.twitter.com, foo.co.jp, bar.co.uk
         "(?:" + URL_VALID_GTLD + "|" + URL_VALID_CCTLD + "|" + URL_PUNYCODE + ")" +
       ")" +
-    "|(?:" +                                                  // domain + gTLD
+    "|(?:" +                                                  // domain + gTLD + some ccTLD
       URL_VALID_DOMAIN_NAME +                                 // e.g. twitter.com
-      "(?:" + URL_VALID_GTLD + "|" + URL_PUNYCODE + ")" +
+      "(?:" + URL_VALID_GTLD + "|" + URL_PUNYCODE + "|" + SPECIAL_URL_VALID_CCTLD + ")" +
     ")" +
     "|(?:" + "(?<=https?://)" +
       "(?:" +
