@@ -169,7 +169,7 @@ public class Extractor {
    * @return List of usernames referenced (without the leading @ sign)
    */
   public List<String> extractMentionedScreennames(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return Collections.emptyList();
     }
 
@@ -197,7 +197,7 @@ public class Extractor {
   }
 
   public List<Entity> extractMentionsOrListsWithIndices(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return Collections.emptyList();
     }
 
@@ -266,7 +266,7 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<String> extractURLs(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return Collections.emptyList();
     }
 
@@ -284,7 +284,7 @@ public class Extractor {
    * @return List of URLs referenced.
    */
   public List<Entity> extractURLsWithIndices(String text) {
-    if (text == null || text.isEmpty()
+    if (text == null || text.length() == 0
         || (extractURLWithoutProtocol ? text.indexOf('.') : text.indexOf(':')) == -1) {
       // Performance optimization.
       // If text doesn't contain '.' or ':' at all, text doesn't contain URL,
@@ -329,7 +329,7 @@ public class Extractor {
    * @return List of hashtags referenced (without the leading # sign)
    */
   public List<String> extractHashtags(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return Collections.emptyList();
     }
 
@@ -359,7 +359,7 @@ public class Extractor {
    * @return List of hashtags referenced (without the leading # sign)
    */
   private List<Entity> extractHashtagsWithIndices(String text, boolean checkUrlOverlap) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return Collections.emptyList();
     }
 
@@ -415,7 +415,7 @@ public class Extractor {
    * @return List of cashtags referenced (without the leading $ sign)
    */
   public List<String> extractCashtags(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return Collections.emptyList();
     }
 
@@ -434,7 +434,7 @@ public class Extractor {
    * @return List of cashtags referenced (without the leading $ sign)
    */
   public List<Entity> extractCashtagsWithIndices(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return Collections.emptyList();
     }
 
