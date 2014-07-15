@@ -86,7 +86,7 @@ public class RegexTest extends TestCase {
         Regex.VALID_URL.matcher("http://t.co").matches());
 
     assertFalse("Should not match a short URL with ccTLD without protocol.",
-        Regex.VALID_URL.matcher("t.co").matches());
+        Regex.VALID_URL.matcher("it.so").matches());
 
     assertFalse("Should not match a URL with invalid gTLD.",
         Regex.VALID_URL.matcher("www.xxxxxxx.baz").find());
