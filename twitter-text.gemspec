@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "nokogiri", "~> 1.5.10"
   s.add_development_dependency "rake"
   s.add_development_dependency "rdoc"
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec", "~> 2.14.0"
   s.add_development_dependency "simplecov"
   s.add_runtime_dependency     "unf", "~> 0.1.0"
 
