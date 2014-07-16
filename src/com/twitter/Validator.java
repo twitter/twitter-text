@@ -26,7 +26,7 @@ public class Validator {
   }
 
   public boolean isValidTweet(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null || text.length() == 0) {
       return false;
     }
 

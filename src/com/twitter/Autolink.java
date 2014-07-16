@@ -125,9 +125,9 @@ public class Autolink {
   }
 
   public void linkToTextWithSymbol(Entity entity, CharSequence symbol, CharSequence text, Map<String, String> attributes, StringBuilder builder) {
-    CharSequence taggedSymbol = symbolTag == null || symbolTag.isEmpty() ? symbol : String.format("<%s>%s</%s>", symbolTag, symbol, symbolTag);
+    CharSequence taggedSymbol = symbolTag == null || symbolTag.length() == 0 ? symbol : String.format("<%s>%s</%s>", symbolTag, symbol, symbolTag);
     text = escapeHTML(text);
-    CharSequence taggedText = textWithSymbolTag == null || textWithSymbolTag.isEmpty() ? text : String.format("<%s>%s</%s>", textWithSymbolTag, text, textWithSymbolTag);
+    CharSequence taggedText = textWithSymbolTag == null || textWithSymbolTag.length() == 0 ? text : String.format("<%s>%s</%s>", textWithSymbolTag, text, textWithSymbolTag);
 
     boolean includeSymbol = usernameIncludeSymbol || !Regex.AT_SIGNS.matcher(symbol).matches();
 
@@ -257,10 +257,10 @@ public class Autolink {
     if (urlClass != null) {
       attrs.put("class", urlClass);
     }
-    if (urlClass != null && !urlClass.isEmpty()) {
+    if (urlClass != null && urlClass.length() != 0) {
       attrs.put("class", urlClass);
     }
-    if (urlTarget != null && !urlTarget.isEmpty()) {
+    if (urlTarget != null && urlTarget.length() != 0) {
       attrs.put("target", urlTarget);
     }
     linkToText(entity, linkText, attrs, builder);
