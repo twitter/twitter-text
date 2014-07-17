@@ -261,6 +261,13 @@
 
 #define TWUValidPunycode                @"(?:xn--[0-9a-z]+)"
 
+#define TWUValidSpecialCCTLD \
+@"(?:" \
+    @"(?:" \
+        @"co|tv" \
+    @")" \
+@")"
+
 #define TWUSimplifiedValidTLDChars      TWUDomainValidStartEndChars
 #define TWUSimplifiedValidTLD           TWUSimplifiedValidTLDChars @"{2,}"
 
@@ -281,6 +288,7 @@
 
 #define TWUValidTCOURL                  @"https?://t\\.co/[a-zA-Z0-9]+"
 #define TWUInvalidShortDomain           @"\\A" TWUValidDomainName TWUValidCCTLD @"\\z"
+#define TWUValidSpecialShortDomain      @"\\A" TWUValidDomainName TWUValidSpecialCCTLD @"\\z"
 
 #define TWUValidPortNumber              @"[0-9]+"
 #define TWUValidGeneralURLPathChars     @"[a-zA-Z0-9!\\*';:=+,.$/%#\\[\\]\\-_~&|@" TWULatinAccents @"]"
@@ -402,6 +410,7 @@ static const NSInteger HTTPSShortURLLength = 23;
         NSRange urlRange = [urlResult rangeAtIndex:3];
         NSRange protocolRange = [urlResult rangeAtIndex:4];
         NSRange domainRange = [urlResult rangeAtIndex:5];
+        NSRange pathRange = [urlResult rangeAtIndex:7];
 
         // If protocol is missing and domain contains non-ASCII characters,
         // extract ASCII-only domains.
@@ -417,7 +426,6 @@ static const NSInteger HTTPSShortURLLength = 23;
             NSInteger domainStart = domainRange.location;
             NSInteger domainEnd = NSMaxRange(domainRange);
             TwitterTextEntity *lastEntity = nil;
-            BOOL lastInvalidShortResult = NO;
 
             while (domainStart < domainEnd) {
                 // Include succeeding character for validation
@@ -434,8 +442,8 @@ static const NSInteger HTTPSShortURLLength = 23;
                 lastEntity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange];
 
                 NSTextCheckingResult *invalidShortResult = [[self invalidShortDomainRegexp] firstMatchInString:text options:0 range:urlRange];
-                lastInvalidShortResult = (invalidShortResult != nil);
-                if (!lastInvalidShortResult) {
+                NSTextCheckingResult *validSpecialShortResult = [[self validSpecialShortDomainRegexp] firstMatchInString:text options:0 range:urlRange];
+                if (pathRange.location != NSNotFound || validSpecialShortResult != nil || invalidShortResult == nil) {
                     [results addObject:lastEntity];
                 }
 
@@ -446,11 +454,7 @@ static const NSInteger HTTPSShortURLLength = 23;
                 continue;
             }
 
-            NSRange pathRange = [urlResult rangeAtIndex:7];
             if (pathRange.location != NSNotFound && NSMaxRange(lastEntity.range) == pathRange.location) {
-                if (lastInvalidShortResult) {
-                    [results addObject:lastEntity];
-                }
                 NSRange entityRange = lastEntity.range;
                 entityRange.length += pathRange.length;
                 lastEntity.range = entityRange;
@@ -783,6 +787,16 @@ static const NSInteger HTTPSShortURLLength = 23;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         regexp = [[NSRegularExpression alloc] initWithPattern:TWUInvalidShortDomain options:NSRegularExpressionCaseInsensitive error:NULL];
+    });
+    return regexp;
+}
+
++ (NSRegularExpression*)validSpecialShortDomainRegexp
+{
+    static NSRegularExpression *regexp;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        regexp = [[NSRegularExpression alloc] initWithPattern:TWUValidSpecialShortDomain options:NSRegularExpressionCaseInsensitive error:NULL];
     });
     return regexp;
 }

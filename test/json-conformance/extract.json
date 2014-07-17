@@ -628,9 +628,19 @@
       },
       {
         "description": "DO NOT extract short URLs without protocol on ccTLD domains without path",
-        "text": "twitter.jp日本語t.co中国語foo.jp t.co foo.jp",
+        "text": "twitter.jp日本語it.so中国語foo.jp it.so foo.jp",
         "expected": [
 
+        ]
+      },
+      {
+        "description": "Extract some (tv|co) short URLs without protocol on ccTLD domains without path",
+        "text": "MLB.tv vine.co twitch.tv t.co",
+        "expected": [
+          "MLB.tv",
+          "vine.co",
+          "twitch.tv",
+          "t.co"
         ]
       },
       {
@@ -859,13 +869,13 @@
       },
       {
         "description": "Extract URL before newline",
-        "text": "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nt.co\nt.co/abcde",
+        "text": "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nit.so\nit.so/abcde",
         "expected": [
           "http://twitter.com",
           "http://example.com",
           "http://example.com/path",
           "example.com/path",
-          "t.co/abcde"
+          "it.so/abcde"
         ]
       },
       {
