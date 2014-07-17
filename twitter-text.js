@@ -263,9 +263,12 @@
     'پاکستان|भारत|বাংলা|ভারত|ਭਾਰਤ|ભારત|இந்தியா|இலங்கை|சிங்கப்பூர்|భారత్|ලංකා|ไทย|გე|中国|中國|台湾|台灣|新加坡|香港|한국' +
     ')(?=[^0-9a-zA-Z@]|$))'));
   twttr.txt.regexen.validPunycode = regexSupplant(/(?:xn--[0-9a-z]+)/);
+  twttr.txt.regexen.validSpecialCCTLD = regexSupplant(RegExp(
+    '(?:(?:co|tv)(?=[^0-9a-zA-Z@]|$))'));
   twttr.txt.regexen.validDomain = regexSupplant(/(?:#{validSubdomain}*#{validDomainName}(?:#{validGTLD}|#{validCCTLD}|#{validPunycode}))/);
   twttr.txt.regexen.validAsciiDomain = regexSupplant(/(?:(?:[\-a-z0-9#{latinAccentChars}]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
   twttr.txt.regexen.invalidShortDomain = regexSupplant(/^#{validDomainName}#{validCCTLD}$/i);
+  twttr.txt.regexen.validSpecialShortDomain = regexSupplant(/^#{validDomainName}#{validSpecialCCTLD}$/i);
 
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
@@ -890,7 +893,6 @@
     if (!options) {
       options = {extractUrlsWithoutProtocol: true};
     }
-
     if (!text || (options.extractUrlsWithoutProtocol ? !text.match(/\./) : !text.match(/:/))) {
       return [];
     }
@@ -910,7 +912,6 @@
           continue;
         }
         var lastUrl = null,
-            lastUrlInvalidMatch = false,
             asciiEndPosition = 0;
         domain.replace(twttr.txt.regexen.validAsciiDomain, function(asciiDomain) {
           var asciiStartPosition = domain.indexOf(asciiDomain, asciiEndPosition);
@@ -919,8 +920,9 @@
             url: asciiDomain,
             indices: [startPosition + asciiStartPosition, startPosition + asciiEndPosition]
           };
-          lastUrlInvalidMatch = asciiDomain.match(twttr.txt.regexen.invalidShortDomain);
-          if (!lastUrlInvalidMatch) {
+          if (path
+              || asciiDomain.match(twttr.txt.regexen.validSpecialShortDomain)
+              || !asciiDomain.match(twttr.txt.regexen.invalidShortDomain)) {
             urls.push(lastUrl);
           }
         });
@@ -932,9 +934,6 @@
 
         // lastUrl only contains domain. Need to add path and query if they exist.
         if (path) {
-          if (lastUrlInvalidMatch) {
-            urls.push(lastUrl);
-          }
           lastUrl.url = url.replace(domain, lastUrl.url);
           lastUrl.indices[1] = endPosition;
         }
