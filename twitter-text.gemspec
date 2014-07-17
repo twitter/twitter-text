@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake"
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec", "~> 2.14.0"
-  s.add_development_dependency "simplecov"
+  s.add_development_dependency "simplecov", "~> 0.8.0"
   s.add_runtime_dependency     "unf", "~> 0.1.0"
 
   s.files         = `git ls-files`.split("\n")
