@@ -189,35 +189,42 @@ module Twitter
 
     REGEXEN[:valid_gTLD] = %r{
       (?:
-        (?:academy|actor|aero|agency|arpa|asia|bar|bargains|berlin|best|bid|bike|biz|blue|boutique|build|builders|
-        buzz|cab|camera|camp|cards|careers|cat|catering|center|ceo|cheap|christmas|cleaning|clothing|club|codes|
-        coffee|com|community|company|computer|construction|contractors|cool|coop|cruises|dance|dating|democrat|
-        diamonds|directory|domains|edu|education|email|enterprises|equipment|estate|events|expert|exposed|farm|fish|
-        flights|florist|foundation|futbol|gallery|gift|glass|gov|graphics|guitars|guru|holdings|holiday|house|
-        immobilien|industries|info|institute|int|international|jobs|kaufen|kim|kitchen|kiwi|koeln|kred|land|lighting|
-        limo|link|luxury|management|mango|marketing|menu|mil|mobi|moda|monash|museum|nagoya|name|net|neustar|ninja|
-        okinawa|onl|org|partners|parts|photo|photography|photos|pics|pink|plumbing|post|pro|productions|properties|
-        pub|qpon|recipes|red|rentals|repair|report|reviews|rich|ruhr|sexy|shiksha|shoes|singles|social|solar|
-        solutions|supplies|supply|support|systems|tattoo|technology|tel|tienda|tips|today|tokyo|tools|training|
-        travel|uno|vacations|ventures|viajes|villas|vision|vote|voting|voto|voyage|wang|watch|wed|wien|wiki|works|
-        xxx|xyz|zone|дети|онлайн|орг|сайт|بازار|شبكة|みんな|中信|中文网|公司|公益|在线|我爱你|政务|游戏|移动|网络|集团|삼성)
-        (?=[^0-9a-z@]|$)
+        (?:
+        academy|accountants|actor|aero|agency|airforce|archi|arpa|asia|associates|axa|bar|bargains|bayern|berlin|best|
+        bid|bike|biz|black|blackfriday|blue|boutique|build|builders|buzz|cab|camera|camp|capital|cards|care|career|
+        careers|cash|cat|catering|center|ceo|cheap|christmas|citic|claims|cleaning|clinic|clothing|club|codes|coffee|
+        college|cologne|com|community|company|computer|construction|contractors|cooking|cool|coop|country|credit|
+        creditcard|cruises|dance|dating|democrat|dental|desi|diamonds|digital|directory|discount|domains|edu|education|
+        email|engineering|enterprises|equipment|estate|eus|events|exchange|expert|exposed|fail|farm|feedback|finance|
+        financial|fish|fishing|fitness|flights|florist|foo|foundation|frogans|fund|furniture|futbol|gal|gallery|gift|
+        glass|globo|gmo|gop|gov|graphics|gratis|gripe|guitars|guru|haus|holdings|holiday|horse|house|immobilien|
+        industries|info|institute|insure|int|international|investments|jetzt|jobs|kaufen|kim|kitchen|kiwi|koeln|kred|
+        land|lease|lighting|limited|limo|link|london|luxury|management|mango|marketing|media|meet|menu|miami|mil|mobi|
+        moda|moe|monash|moscow|museum|nagoya|name|net|neustar|ninja|nyc|okinawa|onl|org|paris|partners|parts|photo|
+        photography|photos|pics|pictures|pink|plumbing|post|pro|productions|properties|pub|qpon|quebec|recipes|red|
+        reisen|ren|rentals|repair|report|rest|reviews|rich|rocks|rodeo|ruhr|ryukyu|saarland|schule|services|sexy|
+        shiksha|shoes|singles|social|sohu|solar|solutions|soy|supplies|supply|support|surgery|systems|tattoo|tax|
+        technology|tel|tienda|tips|today|tokyo|tools|town|toys|trade|training|travel|university|uno|vacations|vegas|
+        ventures|viajes|villas|vision|vodka|vote|voting|voto|voyage|wang|watch|webcam|wed|wien|wiki|works|wtc|wtf|xxx|
+        xyz|yokohama|zone|дети|москва|онлайн|орг|сайт|بازار|شبكة|संगठन|みんな|世界|中信|中文网|公司|公益|商城|在线|我爱你|政务|机构|游戏|移动|组织机构|
+        网址|网络|集团|삼성
+        )(?=[^0-9a-z@]|$)
       )
     }ix
 
     REGEXEN[:valid_ccTLD] = %r{
       (?:
-        (?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bl|bm|bn|bo|bq|br|bs|
-        bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|
-        et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|
-        im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|
-        me|mf|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|
-        pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|
-        sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|um|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|
-        ye|yt|za|zm|zw|мон|рф|срб|укр|қаз|الاردن|الجزائر|السعودية|المغرب|امارات|ایران|بھارت|تونس|سودان|سورية|عمان|فلسطين|قطر|مصر|مليسيا|پاکستان|
-        भारत|বাংলা|ভারত|ਭਾਰਤ|ભારત|இந்தியா|இலங்கை|சிங்கப்பூர்|భారత్|ලංකා|ไทย|გე|中国|中國|台湾|台灣|新加坡|
-        香港|한국)
-        (?=[^0-9a-z@]|$)
+        (?:
+        ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bl|bm|bn|bo|bq|br|bs|bt|bv|bw|
+        by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|
+        fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|
+        is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mf|mg|mh|mk|ml|
+        mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|
+        ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|
+        tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|um|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw|мкд|мон|рф|
+        срб|укр|қаз|الاردن|الجزائر|السعودية|المغرب|امارات|ایران|بھارت|تونس|سودان|سورية|عمان|فلسطين|قطر|مصر|مليسيا|
+        پاکستان|भारत|বাংলা|ভারত|ਭਾਰਤ|ભારત|இந்தியா|இலங்கை|சிங்கப்பூர்|భారత్|ලංකා|ไทย|გე|中国|中國|台湾|台灣|新加坡|香港|한국
+        )(?=[^0-9a-z@]|$)
       )
     }ix
     REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/i
