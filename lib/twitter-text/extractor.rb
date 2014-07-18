@@ -201,15 +201,17 @@ module Twitter
         if !protocol
           next if !options[:extract_url_without_protocol] || before =~ Twitter::Regex[:invalid_url_without_protocol_preceding_chars]
           last_url = nil
-          last_url_invalid_match = nil
           domain.scan(Twitter::Regex[:valid_ascii_domain]) do |ascii_domain|
             last_url = {
               :url => ascii_domain,
               :indices => [start_position + $~.char_begin(0),
                            start_position + $~.char_end(0)]
             }
-            last_url_invalid_match = ascii_domain =~ Twitter::Regex[:invalid_short_domain]
-            urls << last_url unless last_url_invalid_match
+            if path ||
+                ascii_domain =~ Twitter::Regex[:valid_special_short_domain] ||
+                ascii_domain !~ Twitter::Regex[:invalid_short_domain]
+              urls << last_url
+            end
           end
 
           # no ASCII-only domain found. Skip the entire URL
@@ -218,7 +220,6 @@ module Twitter
           # last_url only contains domain. Need to add path and query if they exist.
           if path
             # last_url was not added. Add it to urls here.
-            urls << last_url if last_url_invalid_match
             last_url[:url] = url.sub(domain, last_url[:url])
             last_url[:indices][1] = end_position
           end
