@@ -239,7 +239,7 @@
         @"soy|supplies|supply|support|surgery|systems|tattoo|tax|technology|tel|tienda|tips|today|tokyo|tools|town|" \
         @"toys|trade|training|travel|university|uno|vacations|vegas|ventures|viajes|villas|vision|vodka|vote|voting|" \
         @"voto|voyage|wang|watch|webcam|wed|wien|wiki|works|wtc|wtf|xxx|xyz|yokohama|zone|дети|москва|онлайн|орг|" \
-        @"сайт|بازار|شبكة|संगठन|みんな|世界|中信|中文网|公司|公益|商城|在线|我爱你|政务|机构|游戏|移动|组织机构|网址|网络|集团|삼성|" \
+        @"сайт|بازار|شبكة|संगठन|みんな|世界|中信|中文网|公司|公益|商城|在线|我爱你|政务|机构|游戏|移动|组织机构|网址|网络|集团|삼성" \
     @")" \
 @")"
 
@@ -255,7 +255,7 @@
         @"ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|um|us|uy|uz|va|vc|ve|vg|" \
         @"vi|vn|vu|wf|ws|ye|yt|za|zm|zw|мкд|мон|рф|срб|укр|қаз|الاردن|الجزائر|السعودية|المغرب|امارات|ایران|بھارت|" \
         @"تونس|سودان|سورية|عمان|فلسطين|قطر|مصر|مليسيا|پاکستان|भारत|বাংলা|ভারত|ਭਾਰਤ|ભારત|இந்தியா|இலங்கை|சிங்கப்பூர்|" \
-        @"భారత్|ලංකා|ไทย|გე|中国|中國|台湾|台灣|新加坡|香港|한국|" \
+        @"భారత్|ලංකා|ไทย|გე|中国|中國|台湾|台灣|新加坡|香港|한국" \
     @")" \
 @")"
 
