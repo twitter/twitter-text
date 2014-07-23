@@ -46,6 +46,7 @@ public class RegexTest extends TestCase {
     assertCaptureCount(8, Regex.VALID_URL, "http://はじめよう.みんな");
     assertCaptureCount(8, Regex.VALID_URL, "http://はじめよう.香港");
     assertCaptureCount(8, Regex.VALID_URL, "http://はじめよう.الجزائر");
+    assertCaptureCount(8, Regex.VALID_URL, "http://test.scot");
   }
 
   public void testValidURLDoesNotCrashOnLongPaths() {
