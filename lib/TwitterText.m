@@ -222,24 +222,29 @@
 #define TWUValidGTLD \
 @"(?:" \
     @"(?:" \
-        @"academy|accountants|actor|aero|agency|airforce|archi|arpa|asia|associates|axa|bar|bargains|bayern|berlin|" \
-        @"best|bid|bike|biz|black|blackfriday|blue|boutique|build|builders|buzz|cab|camera|camp|capital|cards|care|" \
-        @"career|careers|cash|cat|catering|center|ceo|cheap|christmas|citic|claims|cleaning|clinic|clothing|club|" \
-        @"codes|coffee|college|cologne|com|community|company|computer|construction|contractors|cooking|cool|coop|" \
-        @"country|credit|creditcard|cruises|dance|dating|democrat|dental|desi|diamonds|digital|directory|discount|" \
-        @"domains|edu|education|email|engineering|enterprises|equipment|estate|eus|events|exchange|expert|exposed|" \
-        @"fail|farm|feedback|finance|financial|fish|fishing|fitness|flights|florist|foo|foundation|frogans|fund|" \
-        @"furniture|futbol|gal|gallery|gift|glass|globo|gmo|gop|gov|graphics|gratis|gripe|guitars|guru|haus|holdings|" \
-        @"holiday|horse|house|immobilien|industries|info|institute|insure|int|international|investments|jetzt|jobs|" \
-        @"kaufen|kim|kitchen|kiwi|koeln|kred|land|lease|lighting|limited|limo|link|london|luxury|management|mango|" \
-        @"marketing|media|meet|menu|miami|mil|mobi|moda|moe|monash|moscow|museum|nagoya|name|net|neustar|ninja|nyc|" \
-        @"okinawa|onl|org|paris|partners|parts|photo|photography|photos|pics|pictures|pink|plumbing|post|pro|" \
-        @"productions|properties|pub|qpon|quebec|recipes|red|reisen|ren|rentals|repair|report|rest|reviews|rich|" \
-        @"rocks|rodeo|ruhr|ryukyu|saarland|schule|services|sexy|shiksha|shoes|singles|social|sohu|solar|solutions|" \
-        @"soy|supplies|supply|support|surgery|systems|tattoo|tax|technology|tel|tienda|tips|today|tokyo|tools|town|" \
-        @"toys|trade|training|travel|university|uno|vacations|vegas|ventures|viajes|villas|vision|vodka|vote|voting|" \
-        @"voto|voyage|wang|watch|webcam|wed|wien|wiki|works|wtc|wtf|xxx|xyz|yokohama|zone|дети|москва|онлайн|орг|" \
-        @"сайт|بازار|شبكة|संगठन|みんな|世界|中信|中文网|公司|公益|商城|在线|我爱你|政务|机构|游戏|移动|组织机构|网址|网络|集团|삼성" \
+        @"academy|accountants|active|actor|aero|agency|airforce|archi|army|arpa|asia|associates|attorney|audio|" \
+        @"autos|axa|bar|bargains|bayern|beer|berlin|best|bid|bike|bio|biz|black|blackfriday|blue|bmw|boutique|" \
+        @"brussels|build|builders|buzz|bzh|cab|camera|camp|cancerresearch|capetown|capital|cards|care|career|" \
+        @"careers|cash|cat|catering|center|ceo|cheap|christmas|church|citic|claims|cleaning|clinic|clothing|club|" \
+        @"codes|coffee|college|cologne|com|community|company|computer|condos|construction|consulting|contractors|" \
+        @"cooking|cool|coop|country|credit|creditcard|cruises|cuisinella|dance|dating|degree|democrat|dental|" \
+        @"dentist|desi|diamonds|digital|direct|directory|discount|dnp|domains|durban|edu|education|email|engineer|" \
+        @"engineering|enterprises|equipment|estate|eus|events|exchange|expert|exposed|fail|farm|feedback|finance|" \
+        @"financial|fish|fishing|fitness|flights|florist|foo|foundation|frogans|fund|furniture|futbol|gal|gallery|" \
+        @"gift|gives|glass|global|globo|gmo|gop|gov|graphics|gratis|green|gripe|guide|guitars|guru|hamburg|haus|" \
+        @"hiphop|hiv|holdings|holiday|homes|horse|host|house|immobilien|industries|info|ink|institute|insure|int|" \
+        @"international|investments|jetzt|jobs|joburg|juegos|kaufen|kim|kitchen|kiwi|koeln|kred|land|lawyer|lease|" \
+        @"lgbt|life|lighting|limited|limo|link|loans|london|lotto|luxe|luxury|maison|management|mango|market|" \
+        @"marketing|media|meet|menu|miami|mil|mini|mobi|moda|moe|monash|mortgage|moscow|motorcycles|museum|nagoya|" \
+        @"name|navy|net|neustar|nhk|ninja|nyc|okinawa|onl|org|organic|ovh|paris|partners|parts|photo|photography|" \
+        @"photos|physio|pics|pictures|pink|place|plumbing|post|press|pro|productions|properties|pub|qpon|quebec|" \
+        @"recipes|red|rehab|reise|reisen|ren|rentals|repair|report|republican|rest|reviews|rich|rio|rocks|rodeo|" \
+        @"ruhr|ryukyu|saarland|schmidt|schule|scot|services|sexy|shiksha|shoes|singles|social|software|sohu|solar|" \
+        @"solutions|soy|space|spiegel|supplies|supply|support|surf|surgery|suzuki|systems|tattoo|tax|technology|" \
+        @"tel|tienda|tips|tirol|today|tokyo|tools|town|toys|trade|training|travel|university|uno|vacations|vegas|" \
+        @"ventures|versicherung|vet|viajes|villas|vision|vlaanderen|vodka|vote|voting|voto|voyage|wang|watch|" \
+        @"webcam|website|wed|wien|wiki|works|wtc|wtf|xxx|xyz|yachts|yokohama|zone|дети|москва|онлайн|орг|сайт|" \
+        @"بازار|شبكة|موقع|संगठन|みんな|世界|中信|中文网|公司|公益|商城|商标|在线|我爱你|政务|机构|游戏|移动|组织机构|网址|网络|集团|삼성" \
     @")" \
 @")"
 
