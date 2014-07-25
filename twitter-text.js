@@ -1371,6 +1371,10 @@
     module.exports = twttr.txt;
   }
 
+  if (typeof define == 'function' && define.amd) {
+    define([], twttr.txt);
+  }
+
   if (typeof window != 'undefined') {
     if (window.twttr) {
       for (var prop in twttr) {
