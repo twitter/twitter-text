@@ -22,7 +22,7 @@ module Twitter
           [from].pack('U')
         end
       end
-   end
+    end
 
     # Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
     # to access both the list of characters and a pattern suitible for use with String#split
