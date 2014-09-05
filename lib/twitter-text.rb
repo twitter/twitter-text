@@ -1,4 +1,4 @@
-major, minor, patch = RUBY_VERSION.split('.')
+major, minor, _patch = RUBY_VERSION.split('.')
 
 $RUBY_1_9 = if major.to_i == 1 && minor.to_i < 9
   # Ruby 1.8 KCODE check. Not needed on 1.9 and later.

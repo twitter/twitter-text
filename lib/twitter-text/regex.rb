@@ -22,7 +22,7 @@ module Twitter
           [from].pack('U')
         end
       end
-   end
+    end
 
     # Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
     # to access both the list of characters and a pattern suitible for use with String#split
@@ -51,7 +51,7 @@ module Twitter
     ].map{|cp| [cp].pack('U') }.freeze
     REGEXEN[:invalid_control_characters] = /[#{INVALID_CHARACTERS.join('')}]/o
 
-    major, minor, patch = RUBY_VERSION.split('.')
+    major, minor, _patch = RUBY_VERSION.split('.')
     if major.to_i >= 2 || major.to_i == 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && ["jruby", "rbx"].include?(RUBY_ENGINE))
       REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
     else

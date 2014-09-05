@@ -8,8 +8,8 @@ module Twitter
       entities = entities.sort_by{|entity| entity[:indices].first}
 
       result = []
-      last_index = entities.inject(0) do |last_index, entity|
-        result << chars[last_index...entity[:indices].first]
+      last_index = entities.inject(0) do |index, entity|
+        result << chars[index...entity[:indices].first]
         result << yield(entity, chars)
         entity[:indices].last
       end

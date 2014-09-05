@@ -75,8 +75,8 @@ module Twitter
         if chunk_cursor < chunk_chars.length
           result << chunk_chars[chunk_cursor..-1]
         end
-        (chunk_index+1).upto(chunks.length-1).each do |index|
-          result << (index.even? ? chunks[index] : "<#{chunks[index]}>")
+        (chunk_index+1).upto(chunks.length-1).each do |i|
+          result << (i.even? ? chunks[i] : "<#{chunks[i]}>")
         end
       end
 
