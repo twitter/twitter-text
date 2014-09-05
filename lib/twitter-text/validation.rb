@@ -49,7 +49,7 @@ module Twitter
       begin
         return :too_long if tweet_length(text) > MAX_LENGTH
         return :invalid_characters if Twitter::Regex::INVALID_CHARACTERS.any?{|invalid_char| text.include?(invalid_char) }
-      rescue ArgumentError => e
+      rescue ArgumentError
         # non-Unicode value.
         return :invalid_characters
       end
