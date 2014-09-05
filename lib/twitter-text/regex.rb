@@ -51,7 +51,7 @@ module Twitter
     ].map{|cp| [cp].pack('U') }.freeze
     REGEXEN[:invalid_control_characters] = /[#{INVALID_CHARACTERS.join('')}]/o
 
-    major, minor, patch = RUBY_VERSION.split('.')
+    major, minor, _patch = RUBY_VERSION.split('.')
     if major.to_i >= 2 || major.to_i == 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && ["jruby", "rbx"].include?(RUBY_ENGINE))
       REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
     else
