@@ -188,7 +188,6 @@ module Twitter
     def extract_urls_with_indices(text, options = {:extract_url_without_protocol => true}) # :yields: url, start, end
       return [] unless text && (options[:extract_url_without_protocol] ? text.index(".") : text.index(":"))
       urls = []
-      position = 0
 
       text.to_s.scan(Twitter::Regex[:valid_url]) do |all, before, url, protocol, domain, port, path, query|
         valid_url_match_data = $~
