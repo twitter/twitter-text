@@ -145,8 +145,8 @@
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedText = [expectedDic objectForKey:@"screen_name"];
                 NSArray *indices = [expectedDic objectForKey:@"indices"];
-                NSInteger expectedStart = [[indices objectAtIndex:0] intValue];
-                NSInteger expectedEnd = [[indices objectAtIndex:1] intValue];
+                NSInteger expectedStart = [[indices objectAtIndex:0] integerValue];
+                NSInteger expectedEnd = [[indices objectAtIndex:1] integerValue];
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -183,8 +183,8 @@
                     expectedText = [expectedText stringByAppendingString:expectedListSlug];
                 }
                 NSArray *indices = [expectedDic objectForKey:@"indices"];
-                NSInteger expectedStart = [[indices objectAtIndex:0] intValue];
-                NSInteger expectedEnd = [[indices objectAtIndex:1] intValue];
+                NSInteger expectedStart = [[indices objectAtIndex:0] integerValue];
+                NSInteger expectedEnd = [[indices objectAtIndex:1] integerValue];
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -402,8 +402,8 @@
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedSymbol = [expectedDic objectForKey:@"cashtag"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
-                int expectedStart = [[expectedIndices objectAtIndex:0] intValue];
-                int expectedEnd = [[expectedIndices objectAtIndex:1] intValue];
+                NSInteger expectedStart = [[expectedIndices objectAtIndex:0] integerValue];
+                NSInteger expectedEnd = [[expectedIndices objectAtIndex:1] integerValue];
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -446,7 +446,7 @@
     for (NSDictionary *testCase in lengths) {
         NSString *text = [testCase objectForKey:@"text"];
         text = [self stringByParsingUnicodeEscapes:text];
-        NSInteger expected = [[testCase objectForKey:@"expected"] intValue];
+        NSInteger expected = [[testCase objectForKey:@"expected"] integerValue];
         NSInteger len = [TwitterText tweetLength:text];
         XCTAssertEqual(len, expected, @"Length should be the same");
     }
