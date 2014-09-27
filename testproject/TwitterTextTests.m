@@ -460,8 +460,8 @@
     }
 
     NSInteger index = 0;
-    while (index < [string length]) {
-        NSTextCheckingResult *result = [regex firstMatchInString:string options:0 range:NSMakeRange(index, [string length] - index)];
+    while (index < (NSInteger)string.length) {
+        NSTextCheckingResult *result = [regex firstMatchInString:string options:0 range:NSMakeRange(index, string.length - index)];
         if (!result) {
             break;
         }

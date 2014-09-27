@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7414336F1540BAD100FC29AD"
-               BuildableName = "TwitterTextTests.octest"
+               BuildableName = "TwitterTextTests.xctest"
                BlueprintName = "TwitterTextTests"
                ReferencedContainer = "container:TwitterText.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7414336F1540BAD100FC29AD"
-               BuildableName = "TwitterTextTests.octest"
+               BuildableName = "TwitterTextTests.xctest"
                BlueprintName = "TwitterTextTests"
                ReferencedContainer = "container:TwitterText.xcodeproj">
             </BuildableReference>
