@@ -14,17 +14,17 @@
 
 @implementation TwitterTextEntity
 
-- (id)initWithType:(TwitterTextEntityType)aType range:(NSRange)aRange
+- (instancetype)initWithType:(TwitterTextEntityType)type range:(NSRange)range
 {
     self = [super init];
     if (self) {
-        _type = aType;
-        _range = aRange;
+        _type = type;
+        _range = range;
     }
     return self;
 }
 
-+ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range
++ (instancetype)entityWithType:(TwitterTextEntityType)type range:(NSRange)range
 {
     TwitterTextEntity *entity = [[self alloc] initWithType:type range:range];
 #if !__has_feature(objc_arc)
@@ -33,7 +33,7 @@
     return entity;
 }
 
-- (NSComparisonResult)compare:(TwitterTextEntity*)right
+- (NSComparisonResult)compare:(TwitterTextEntity *)right
 {
     NSInteger leftLocation = _range.location;
     NSInteger leftLength = _range.length;
@@ -54,7 +54,7 @@
     }
 }
 
-- (NSString*)description
+- (NSString *)description
 {
     NSString *typeString = nil;
     switch (_type) {

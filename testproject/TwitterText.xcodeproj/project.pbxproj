@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		741433721540BAD100FC29AD /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 741433711540BAD100FC29AD /* SenTestingKit.framework */; };
 		741433731540BAD100FC29AD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7414335F1540BAD100FC29AD /* Cocoa.framework */; };
 		745569971541CDB1004DE54E /* TwitterText.m in Sources */ = {isa = PBXBuildFile; fileRef = 745569941541CDB1004DE54E /* TwitterText.m */; };
 		745569981541CDB1004DE54E /* TwitterTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 745569961541CDB1004DE54E /* TwitterTextEntity.m */; };
@@ -21,8 +20,7 @@
 		741433621540BAD100FC29AD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		741433641540BAD100FC29AD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		741433671540BAD100FC29AD /* TwitterText-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TwitterText-Prefix.pch"; sourceTree = "<group>"; };
-		741433701540BAD100FC29AD /* TwitterTextTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwitterTextTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		741433711540BAD100FC29AD /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		741433701540BAD100FC29AD /* TwitterTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwitterTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		745569931541CDB1004DE54E /* TwitterText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterText.h; sourceTree = "<group>"; };
 		745569941541CDB1004DE54E /* TwitterText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterText.m; sourceTree = "<group>"; };
 		745569951541CDB1004DE54E /* TwitterTextEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextEntity.h; sourceTree = "<group>"; };
@@ -39,7 +37,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				741433721540BAD100FC29AD /* SenTestingKit.framework in Frameworks */,
 				741433731540BAD100FC29AD /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -61,7 +58,7 @@
 		7414335D1540BAD100FC29AD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				741433701540BAD100FC29AD /* TwitterTextTests.octest */,
+				741433701540BAD100FC29AD /* TwitterTextTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,7 +69,6 @@
 				741433641540BAD100FC29AD /* Foundation.framework */,
 				741433621540BAD100FC29AD /* AppKit.framework */,
 				7414335F1540BAD100FC29AD /* Cocoa.framework */,
-				741433711540BAD100FC29AD /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -128,8 +124,8 @@
 			);
 			name = TwitterTextTests;
 			productName = TwitterTextTests;
-			productReference = 741433701540BAD100FC29AD /* TwitterTextTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 741433701540BAD100FC29AD /* TwitterTextTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -137,7 +133,7 @@
 		741433531540BAD100FC29AD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastTestingUpgradeCheck = 0510;
+				LastTestingUpgradeCheck = 0600;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Twitter, Inc.";
 			};
@@ -271,12 +267,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TwitterText-Prefix.pch";
 				INFOPLIST_FILE = "TwitterTextTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -284,12 +279,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TwitterText-Prefix.pch";
 				INFOPLIST_FILE = "TwitterTextTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};

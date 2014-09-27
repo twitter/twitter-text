@@ -10,8 +10,8 @@
 //  http://www.apache.org/licenses/LICENSE-2.0
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface TwitterTextTests : SenTestCase
+@interface TwitterTextTests : XCTestCase
 
 @end

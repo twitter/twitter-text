@@ -348,7 +348,7 @@ static const NSInteger HTTPSShortURLLength = 23;
 
 #pragma mark - Public Methods
 
-+ (NSArray*)entitiesInText:(NSString*)text
++ (NSArray *)entitiesInText:(NSString *)text
 {
     if (!text.length) {
         return [NSArray array];
@@ -388,7 +388,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)URLsInText:(NSString*)text
++ (NSArray *)URLsInText:(NSString *)text
 {
     if (!text.length) {
         return [NSArray array];
@@ -489,7 +489,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
++ (NSArray *)hashtagsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
         return [NSArray array];
@@ -502,7 +502,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return [self hashtagsInText:text withURLEntities:urls];
 }
 
-+ (NSArray*)hashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities
++ (NSArray *)hashtagsInText:(NSString *)text withURLEntities:(NSArray *)urlEntities
 {
     if (!text.length) {
         return [NSArray array];
@@ -550,7 +550,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)symbolsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
++ (NSArray *)symbolsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
         return [NSArray array];
@@ -563,7 +563,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return [self symbolsInText:text withURLEntities:urls];
 }
 
-+ (NSArray*)symbolsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities
++ (NSArray *)symbolsInText:(NSString *)text withURLEntities:(NSArray *)urlEntities
 {
     if (!text.length) {
         return [NSArray array];
@@ -601,7 +601,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)mentionedScreenNamesInText:(NSString*)text
++ (NSArray *)mentionedScreenNamesInText:(NSString *)text
 {
     if (!text.length) {
         return [NSArray array];
@@ -619,7 +619,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)mentionsOrListsInText:(NSString*)text
++ (NSArray *)mentionsOrListsInText:(NSString *)text
 {
     if (!text.length) {
         return [NSArray array];
@@ -662,7 +662,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (TwitterTextEntity*)repliedScreenNameInText:(NSString*)text
++ (TwitterTextEntity *)repliedScreenNameInText:(NSString *)text
 {
     if (!text.length) {
         return nil;
@@ -686,12 +686,12 @@ static const NSInteger HTTPSShortURLLength = 23;
     return [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:replyRange];
 }
 
-+ (NSInteger)tweetLength:(NSString*)text
++ (NSInteger)tweetLength:(NSString *)text
 {
     return [self tweetLength:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (NSInteger)tweetLength:(NSString*)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
++ (NSInteger)tweetLength:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
 {
     text = [text precomposedStringWithCanonicalMapping];
 
@@ -744,12 +744,12 @@ static const NSInteger HTTPSShortURLLength = 23;
     return charCount;
 }
 
-+ (NSInteger)remainingCharacterCount:(NSString*)text
++ (NSInteger)remainingCharacterCount:(NSString *)text
 {
     return [self remainingCharacterCount:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (NSInteger)remainingCharacterCount:(NSString*)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
++ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
 {
     return MaxTweetLength - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
 }

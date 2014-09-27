@@ -12,19 +12,19 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, TwitterTextEntityType) {
     TwitterTextEntityURL,
     TwitterTextEntityScreenName,
     TwitterTextEntityHashtag,
     TwitterTextEntityListName,
     TwitterTextEntitySymbol,
-} TwitterTextEntityType;
+};
 
 @interface TwitterTextEntity : NSObject
 
 @property (nonatomic) TwitterTextEntityType type;
 @property (nonatomic) NSRange range;
 
-+ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range;
++ (instancetype)entityWithType:(TwitterTextEntityType)type range:(NSRange)range;
 
 @end

@@ -29,10 +29,10 @@
 {
     NSString *text = @"jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp";
     NSArray *entities = [TwitterText entitiesInText:text];
-    STAssertEquals(entities.count, (NSUInteger)1, nil);
+    XCTAssertEqual(entities.count, (NSUInteger)1);
     if (entities.count >= 1) {
         TwitterTextEntity *entity = [entities objectAtIndex:0];
-        STAssertEquals(entity.range, NSMakeRange(0, text.length), nil);
+        XCTAssertEqualObjects(NSStringFromRange(entity.range), NSStringFromRange(NSMakeRange(0, text.length)));
     }
 }
 
@@ -40,10 +40,10 @@
 {
     NSString *text = @"テスト test.みんなです";
     NSArray *entities = [TwitterText entitiesInText:text];
-    STAssertEquals(entities.count, (NSUInteger)1, nil);
+    XCTAssertEqual(entities.count, (NSUInteger)1);
     if (entities.count >= 1) {
         TwitterTextEntity *entity = [entities objectAtIndex:0];
-        STAssertEquals(entity.range, NSMakeRange(4, 8), nil);
+        XCTAssertEqualObjects(NSStringFromRange(entity.range), NSStringFromRange(NSMakeRange(4, 8)));
     }
 }
 
@@ -51,21 +51,21 @@
 {
     NSString *text = @"テスト test.みんなabc";
     NSArray *entities = [TwitterText entitiesInText:text];
-    STAssertEquals(entities.count, (NSUInteger)0, nil);
+    XCTAssertEqual(entities.count, (NSUInteger)0);
 }
 
 - (void)testDomainFollowedByJapaneseCharacters
 {
     NSString *text = @"example.comてすとですtwitter.みんなです.comcast.com";
     NSArray *entities = [TwitterText entitiesInText:text];
-    STAssertEquals(entities.count, (NSUInteger)3, nil);
+    XCTAssertEqual(entities.count, (NSUInteger)3);
     if (entities.count >= 3) {
         TwitterTextEntity *firstEntity = [entities objectAtIndex:0];
-        STAssertEquals(firstEntity.range, NSMakeRange(0, 11), nil);
+        XCTAssertEqualObjects(NSStringFromRange(firstEntity.range), NSStringFromRange(NSMakeRange(0, 11)));
         TwitterTextEntity *secondEntity = [entities objectAtIndex:1];
-        STAssertEquals(secondEntity.range, NSMakeRange(16, 11), nil);
+        XCTAssertEqualObjects(NSStringFromRange(secondEntity.range), NSStringFromRange(NSMakeRange(16, 11)));
         TwitterTextEntity *thirdEntity = [entities objectAtIndex:2];
-        STAssertEquals(thirdEntity.range, NSMakeRange(30, 11), nil);
+        XCTAssertEqualObjects(NSStringFromRange(thirdEntity.range), NSStringFromRange(NSMakeRange(30, 11)));
     }
 }
 
@@ -73,7 +73,7 @@
 {
     NSString *text = @"test http://example.comだよね.comtest/hogehoge";
     NSArray *entities = [TwitterText entitiesInText:text];
-    STAssertEquals(entities.count, (NSUInteger)0, nil);
+    XCTAssertEqual(entities.count, (NSUInteger)0);
 }
 
 - (void)testExtract
@@ -81,14 +81,12 @@
     NSString *fileName = @"../test/json-conformance/extract.json";
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
-        NSString *error = [NSString stringWithFormat:@"No test data: %@", fileName];
-        STFail(error);
+        XCTFail(@"No test data: %@", fileName);
         return;
     }
     NSDictionary *rootDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
     if (!rootDic) {
-        NSString *error = [NSString stringWithFormat:@"Invalid test data: %@", fileName];
-        STFail(error);
+        XCTFail(@"Invalid test data: %@", fileName);
         return;
     }
     
@@ -125,10 +123,10 @@
                 actualRange.length--;
                 NSString *actualText = [text substringWithRange:actualRange];
                 
-                STAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
             }
         } else {
-            STFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
         }
     }
     
@@ -158,11 +156,11 @@
                 r.length--;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedText, actualText, @"%@", testCase);
-                STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+                XCTAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
-            STFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
         }
     }
     
@@ -196,11 +194,11 @@
                 r.length--;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedText, actualText, @"%@", testCase);
-                STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+                XCTAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
-            STFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
         }
     }
 
@@ -220,9 +218,9 @@
             NSRange range = result.range;
             NSString *actual = [text substringWithRange:range];
             if (expected == nil) {
-                STAssertNil(actual, @"%@\n%@", actual, testCase);
+                XCTAssertNil(actual, @"%@\n%@", actual, testCase);
             } else {
-                STAssertEqualObjects(expected, actual, @"%@", testCase);
+                XCTAssertEqualObjects(expected, actual, @"%@", testCase);
             }
         }
     }
@@ -245,14 +243,14 @@
                 NSRange r = entity.range;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
             }
         } else {
             NSMutableArray *resultTexts = [NSMutableArray array];
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            STFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
         }
     }
     
@@ -279,15 +277,15 @@
                 NSRange actualRange = entity.range;
                 NSString *actualText = [text substringWithRange:actualRange];
                 
-                STAssertEqualObjects(expectedUrl, actualText, @"%@", testCase);
-                STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
+                XCTAssertEqualObjects(expectedUrl, actualText, @"%@", testCase);
+                XCTAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
             NSMutableArray *resultTexts = [NSMutableArray array];
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            STFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
         }
     }
     
@@ -311,14 +309,14 @@
                 r.length--;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
             }
         } else {
             NSMutableArray *resultTexts = [NSMutableArray array];
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            STFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
         }
     }
     
@@ -348,15 +346,15 @@
                 r.length--;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedHashtag, actualText, @"%@", testCase);
-                STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
+                XCTAssertEqualObjects(expectedHashtag, actualText, @"%@", testCase);
+                XCTAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
             NSMutableArray *resultTexts = [NSMutableArray array];
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            STFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
         }
     }
     
@@ -379,14 +377,14 @@
                 r.length--;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
             }
         } else {
             NSMutableArray *resultTexts = [NSMutableArray array];
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            STFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
         }
     }
     
@@ -415,15 +413,15 @@
                 r.length--;
                 NSString *actualText = [text substringWithRange:r];
                 
-                STAssertEqualObjects(expectedSymbol, actualText, @"%@", testCase);
-                STAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
+                XCTAssertEqualObjects(expectedSymbol, actualText, @"%@", testCase);
+                XCTAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
             NSMutableArray *resultTexts = [NSMutableArray array];
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            STFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
         }
     }
 }
@@ -433,14 +431,12 @@
     NSString *fileName = @"../test/json-conformance/validate.json";
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
-        NSString *error = [NSString stringWithFormat:@"No test data: %@", fileName];
-        STFail(error);
+        XCTFail(@"No test data: %@", fileName);
         return;
     }
     NSDictionary *rootDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
     if (!rootDic) {
-        NSString *error = [NSString stringWithFormat:@"Invalid test data: %@", fileName];
-        STFail(error);
+        XCTFail(@"Invalid test data: %@", fileName);
         return;
     }
     
@@ -452,7 +448,7 @@
         text = [self stringByParsingUnicodeEscapes:text];
         NSInteger expected = [[testCase objectForKey:@"expected"] intValue];
         NSInteger len = [TwitterText tweetLength:text];
-        STAssertEquals(len, expected, @"Length should be the same");
+        XCTAssertEqual(len, expected, @"Length should be the same");
     }
 }
 

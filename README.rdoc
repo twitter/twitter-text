@@ -6,7 +6,7 @@ This library supports OS X 10.7+ and iOS 4+, both ARC and non-ARC environments.
 
 == Set up Xcode
 
-Make sure Xcode 4.3+ is already installed. Install the Command Line Tools in Xcode.
+Make sure Xcode 5+ is already installed. Install the Command Line Tools in Xcode.
 
   Preferences -> Downloads -> Command Line Tools
 
