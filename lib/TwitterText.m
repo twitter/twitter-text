@@ -693,6 +693,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 
 + (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
 {
+    // Use Unicode Normalization Form Canonical Composition to calculate tweet text length
     text = [text precomposedStringWithCanonicalMapping];
 
     if (!text.length) {
@@ -722,16 +723,16 @@ static const NSUInteger HTTPSShortURLLength = 23;
     NSUInteger len = string.length;
     NSUInteger charCount = len + urlLengthOffset;
 
+    // Adjust count for surrogate pair characters
     if (len > 0) {
-        // Adjust count for non-BMP characters
         UniChar buffer[len];
         [string getCharacters:buffer range:NSMakeRange(0, len)];
 
         for (NSUInteger i = 0; i < len; i++) {
             UniChar c = buffer[i];
             if (CFStringIsSurrogateHighCharacter(c)) {
-                if (i+1 < len) {
-                    UniChar d = buffer[i+1];
+                if (i + 1 < len) {
+                    UniChar d = buffer[i + 1];
                     if (CFStringIsSurrogateLowCharacter(d)) {
                         charCount--;
                         i++;
