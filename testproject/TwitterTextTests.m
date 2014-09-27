@@ -79,6 +79,9 @@
 - (void)testExtract
 {
     NSString *sourceFilePath = [[NSString alloc] initWithCString:__FILE__ encoding:NSUTF8StringEncoding];
+#if !__has_feature(objc_arc)
+    [sourceFilePath autorelease];
+#endif
     sourceFilePath = [[sourceFilePath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
     NSString *baseFileName = @"test/json-conformance/extract.json";
     NSString *fileName = [sourceFilePath stringByAppendingPathComponent:baseFileName];
