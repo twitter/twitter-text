@@ -340,9 +340,9 @@
 
 #pragma mark - Constants
 
-static const NSInteger MaxTweetLength = 140;
-static const NSInteger HTTPShortURLLength = 22;
-static const NSInteger HTTPSShortURLLength = 23;
+static const NSUInteger MaxTweetLength = 140;
+static const NSUInteger HTTPShortURLLength = 22;
+static const NSUInteger HTTPSShortURLLength = 23;
 
 @implementation TwitterText
 
@@ -395,8 +395,8 @@ static const NSInteger HTTPSShortURLLength = 23;
     }
 
     NSMutableArray *results = [NSMutableArray array];
-    NSInteger len = text.length;
-    NSInteger position = 0;
+    NSUInteger len = text.length;
+    NSUInteger position = 0;
     NSRange allRange = NSMakeRange(0, 0);
 
     while (1) {
@@ -428,13 +428,13 @@ static const NSInteger HTTPSShortURLLength = 23;
                 }
             }
 
-            NSInteger domainStart = domainRange.location;
-            NSInteger domainEnd = NSMaxRange(domainRange);
+            NSUInteger domainStart = domainRange.location;
+            NSUInteger domainEnd = NSMaxRange(domainRange);
             TwitterTextEntity *lastEntity = nil;
 
             while (domainStart < domainEnd) {
                 // Include succeeding character for validation
-                NSInteger checkingDomainLength = domainEnd - domainStart;
+                NSUInteger checkingDomainLength = domainEnd - domainStart;
                 if (domainStart + checkingDomainLength < len) {
                     checkingDomainLength++;
                 }
@@ -509,8 +509,8 @@ static const NSInteger HTTPSShortURLLength = 23;
     }
 
     NSMutableArray *results = [NSMutableArray array];
-    NSInteger len = text.length;
-    NSInteger position = 0;
+    NSUInteger len = text.length;
+    NSUInteger position = 0;
 
     while (1) {
         NSTextCheckingResult *matchResult = [[self validHashtagRegexp] firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
@@ -530,7 +530,7 @@ static const NSInteger HTTPSShortURLLength = 23;
         }
 
         if (matchOk) {
-            NSInteger afterStart = NSMaxRange(hashtagRange);
+            NSUInteger afterStart = NSMaxRange(hashtagRange);
             if (afterStart < len) {
                 NSRange endMatchRange = [[self endHashtagRegexp] rangeOfFirstMatchInString:text options:0 range:NSMakeRange(afterStart, len - afterStart)];
                 if (endMatchRange.location != NSNotFound) {
@@ -570,8 +570,8 @@ static const NSInteger HTTPSShortURLLength = 23;
     }
 
     NSMutableArray *results = [NSMutableArray array];
-    NSInteger len = text.length;
-    NSInteger position = 0;
+    NSUInteger len = text.length;
+    NSUInteger position = 0;
 
     while (1) {
         NSTextCheckingResult *matchResult = [[self validSymbolRegexp] firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
@@ -626,8 +626,8 @@ static const NSInteger HTTPSShortURLLength = 23;
     }
 
     NSMutableArray *results = [NSMutableArray array];
-    NSInteger len = text.length;
-    NSInteger position = 0;
+    NSUInteger len = text.length;
+    NSUInteger position = 0;
 
     while (1) {
         NSTextCheckingResult *matchResult = [[self validMentionOrListRegexp] firstMatchInString:text options:NSMatchingWithoutAnchoringBounds range:NSMakeRange(position, len - position)];
@@ -636,7 +636,7 @@ static const NSInteger HTTPSShortURLLength = 23;
         }
 
         NSRange allRange = matchResult.range;
-        NSInteger end = NSMaxRange(allRange);
+        NSUInteger end = NSMaxRange(allRange);
 
         NSRange endMentionRange = [[self endMentionRegexp] rangeOfFirstMatchInString:text options:0 range:NSMakeRange(end, len - end)];
         if (endMentionRange.location == NSNotFound) {
@@ -668,7 +668,7 @@ static const NSInteger HTTPSShortURLLength = 23;
         return nil;
     }
 
-    NSInteger len = text.length;
+    NSUInteger len = text.length;
 
     NSTextCheckingResult *matchResult = [[self validReplyRegexp] firstMatchInString:text options:(NSMatchingWithoutAnchoringBounds | NSMatchingAnchored) range:NSMakeRange(0, len)];
     if (!matchResult || matchResult.numberOfRanges < 2) {
@@ -676,7 +676,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     }
 
     NSRange replyRange = [matchResult rangeAtIndex:1];
-    NSInteger replyEnd = NSMaxRange(replyRange);
+    NSUInteger replyEnd = NSMaxRange(replyRange);
 
     NSRange endMentionRange = [[self endMentionRegexp] rangeOfFirstMatchInString:text options:0 range:NSMakeRange(replyEnd, len - replyEnd)];
     if (endMentionRange.location != NSNotFound) {
@@ -686,12 +686,12 @@ static const NSInteger HTTPSShortURLLength = 23;
     return [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:replyRange];
 }
 
-+ (NSInteger)tweetLength:(NSString *)text
++ (NSUInteger)tweetLength:(NSString *)text
 {
     return [self tweetLength:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (NSInteger)tweetLength:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
++ (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
 {
     text = [text precomposedStringWithCanonicalMapping];
 
@@ -705,10 +705,10 @@ static const NSInteger HTTPSShortURLLength = 23;
     [string autorelease];
 #endif
 
-    NSInteger urlLengthOffset = 0;
+    NSUInteger urlLengthOffset = 0;
     NSArray *urlEntities = [self URLsInText:text];
-    for (NSInteger i=urlEntities.count-1; i>=0; i--) {
-        TwitterTextEntity *entity = [urlEntities objectAtIndex:i];
+    for (NSInteger i = (NSInteger)urlEntities.count - 1; i >= 0; i--) {
+        TwitterTextEntity *entity = [urlEntities objectAtIndex:(NSUInteger)i];
         NSRange urlRange = entity.range;
         NSString *url = [string substringWithRange:urlRange];
         if ([url rangeOfString:@"https" options:(NSCaseInsensitiveSearch | NSAnchoredSearch)].location == 0) {
@@ -719,15 +719,15 @@ static const NSInteger HTTPSShortURLLength = 23;
         [string deleteCharactersInRange:urlRange];
     }
 
-    NSInteger len = string.length;
-    NSInteger charCount = len + urlLengthOffset;
+    NSUInteger len = string.length;
+    NSUInteger charCount = len + urlLengthOffset;
 
     if (len > 0) {
         // Adjust count for non-BMP characters
         UniChar buffer[len];
         [string getCharacters:buffer range:NSMakeRange(0, len)];
 
-        for (NSInteger i=0; i<len; i++) {
+        for (NSUInteger i = 0; i < len; i++) {
             UniChar c = buffer[i];
             if (CFStringIsSurrogateHighCharacter(c)) {
                 if (i+1 < len) {
@@ -744,12 +744,12 @@ static const NSInteger HTTPSShortURLLength = 23;
     return charCount;
 }
 
-+ (NSInteger)remainingCharacterCount:(NSString *)text
++ (NSUInteger)remainingCharacterCount:(NSString *)text
 {
     return [self remainingCharacterCount:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
++ (NSUInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
 {
     return MaxTweetLength - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
 }

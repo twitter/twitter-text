@@ -116,8 +116,8 @@
         
         NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -143,13 +143,16 @@
         
         NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedText = [expectedDic objectForKey:@"screen_name"];
                 NSArray *indices = [expectedDic objectForKey:@"indices"];
-                NSInteger expectedStart = [[indices objectAtIndex:0] integerValue];
-                NSInteger expectedEnd = [[indices objectAtIndex:1] integerValue];
+                NSUInteger expectedStart = [[indices objectAtIndex:0] unsignedIntegerValue];
+                NSUInteger expectedEnd = [[indices objectAtIndex:1] unsignedIntegerValue];
+                if (expectedEnd < expectedStart) {
+                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -177,8 +180,8 @@
         
         NSArray *results = [TwitterText mentionsOrListsInText:text];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedText = [expectedDic objectForKey:@"screen_name"];
                 NSString *expectedListSlug = [expectedDic objectForKey:@"list_slug"];
@@ -186,8 +189,11 @@
                     expectedText = [expectedText stringByAppendingString:expectedListSlug];
                 }
                 NSArray *indices = [expectedDic objectForKey:@"indices"];
-                NSInteger expectedStart = [[indices objectAtIndex:0] integerValue];
-                NSInteger expectedEnd = [[indices objectAtIndex:1] integerValue];
+                NSUInteger expectedStart = [[indices objectAtIndex:0] unsignedIntegerValue];
+                NSUInteger expectedEnd = [[indices objectAtIndex:1] unsignedIntegerValue];
+                if (expectedEnd < expectedStart) {
+                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -238,8 +244,8 @@
 
         NSArray *results = [TwitterText URLsInText:text];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -267,13 +273,16 @@
         
         NSArray *results = [TwitterText URLsInText:text];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedUrl = [expectedDic objectForKey:@"url"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
-                NSInteger expectedStart = [[expectedIndices objectAtIndex:0] integerValue];
-                NSInteger expectedEnd = [[expectedIndices objectAtIndex:1] integerValue];
+                NSUInteger expectedStart = [[expectedIndices objectAtIndex:0] unsignedIntegerValue];
+                NSUInteger expectedEnd = [[expectedIndices objectAtIndex:1] unsignedIntegerValue];
+                if (expectedEnd < expectedStart) {
+                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -302,8 +311,8 @@
         
         NSArray *results = [TwitterText hashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -333,13 +342,16 @@
         
         NSArray *results = [TwitterText hashtagsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedHashtag = [expectedDic objectForKey:@"hashtag"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
-                NSInteger expectedStart = [[expectedIndices objectAtIndex:0] integerValue];
-                NSInteger expectedEnd = [[expectedIndices objectAtIndex:1] integerValue];
+                NSUInteger expectedStart = [[expectedIndices objectAtIndex:0] unsignedIntegerValue];
+                NSUInteger expectedEnd = [[expectedIndices objectAtIndex:1] unsignedIntegerValue];
+                if (expectedEnd < expectedStart) {
+                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -370,8 +382,8 @@
         
         NSArray *results = [TwitterText symbolsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSString *expectedText = [expected objectAtIndex:i];
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -400,13 +412,16 @@
         
         NSArray *results = [TwitterText symbolsInText:text checkingURLOverlap:YES];
         if (results.count == expected.count) {
-            NSInteger count = results.count;
-            for (NSInteger i=0; i<count; i++) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
                 NSDictionary *expectedDic = [expected objectAtIndex:i];
                 NSString *expectedSymbol = [expectedDic objectForKey:@"cashtag"];
                 NSArray *expectedIndices = [expectedDic objectForKey:@"indices"];
-                NSInteger expectedStart = [[expectedIndices objectAtIndex:0] integerValue];
-                NSInteger expectedEnd = [[expectedIndices objectAtIndex:1] integerValue];
+                NSUInteger expectedStart = [[expectedIndices objectAtIndex:0] unsignedIntegerValue];
+                NSUInteger expectedEnd = [[expectedIndices objectAtIndex:1] unsignedIntegerValue];
+                if (expectedEnd < expectedStart) {
+                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
                 
                 TwitterTextEntity *entity = [results objectAtIndex:i];
@@ -449,8 +464,8 @@
     for (NSDictionary *testCase in lengths) {
         NSString *text = [testCase objectForKey:@"text"];
         text = [self stringByParsingUnicodeEscapes:text];
-        NSInteger expected = [[testCase objectForKey:@"expected"] integerValue];
-        NSInteger len = [TwitterText tweetLength:text];
+        NSUInteger expected = [[testCase objectForKey:@"expected"] unsignedIntegerValue];
+        NSUInteger len = [TwitterText tweetLength:text];
         XCTAssertEqual(len, expected, @"Length should be the same");
     }
 }
@@ -462,15 +477,15 @@
         regex = [[NSRegularExpression alloc] initWithPattern:@"\\\\U([0-9a-fA-F]{8}|[0-9a-fA-F]{4})" options:0 error:NULL];
     }
 
-    NSInteger index = 0;
-    while (index < (NSInteger)string.length) {
+    NSUInteger index = 0;
+    while (index < string.length) {
         NSTextCheckingResult *result = [regex firstMatchInString:string options:0 range:NSMakeRange(index, string.length - index)];
         if (!result) {
             break;
         }
         NSRange patternRange = result.range;
         NSRange hexRange = [result rangeAtIndex:1];
-        NSInteger resultLength = 1;
+        NSUInteger resultLength = 1;
         if (hexRange.location != NSNotFound) {
             NSString *hexString = [string substringWithRange:hexRange];
             long value = strtol([hexString UTF8String], NULL, 16);

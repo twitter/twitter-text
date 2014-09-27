@@ -35,11 +35,11 @@
 
 - (NSComparisonResult)compare:(TwitterTextEntity *)right
 {
-    NSInteger leftLocation = _range.location;
-    NSInteger leftLength = _range.length;
+    NSUInteger leftLocation = _range.location;
+    NSUInteger leftLength = _range.length;
     NSRange rightRange = right.range;
-    NSInteger rightLocation = rightRange.location;
-    NSInteger rightLength = rightRange.length;
+    NSUInteger rightLocation = rightRange.location;
+    NSUInteger rightLength = rightRange.length;
     
     if (leftLocation < rightLocation) {
         return NSOrderedAscending;
