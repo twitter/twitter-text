@@ -78,7 +78,10 @@
 
 - (void)testExtract
 {
-    NSString *fileName = @"../test/json-conformance/extract.json";
+    NSString *sourceFilePath = [[NSString alloc] initWithCString:__FILE__ encoding:NSUTF8StringEncoding];
+    sourceFilePath = [[sourceFilePath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+    NSString *baseFileName = @"test/json-conformance/extract.json";
+    NSString *fileName = [sourceFilePath stringByAppendingPathComponent:baseFileName];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
         XCTFail(@"No test data: %@", fileName);
