@@ -215,7 +215,7 @@
     }
 
     //
-    // Reply
+    // Replies
     //
     
     for (NSDictionary *testCase in replies) {
@@ -238,7 +238,7 @@
     }
 
     //
-    // URL
+    // URLs
     //
     
     for (NSDictionary *testCase in urls) {
@@ -267,7 +267,7 @@
     }
     
     //
-    // URL with indices
+    // URLs with indices
     //
     
     for (NSDictionary *testCase in urlsWithIndices) {
@@ -305,7 +305,7 @@
     }
     
     //
-    // Hashtag
+    // Hashtags
     //
     
     for (NSDictionary *testCase in hashtags) {
