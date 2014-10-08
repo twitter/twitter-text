@@ -691,6 +691,11 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return [self tweetLength:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
++ (NSCharacterSet *)validHashtagBoundaryCharacterSet
+{
+    return [NSCharacterSet characterSetWithCharactersInString:TWUHashtagBoundary];
+}
+
 + (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
 {
     // Use Unicode Normalization Form Canonical Composition to calculate tweet text length

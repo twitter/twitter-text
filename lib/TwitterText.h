@@ -23,6 +23,8 @@
 + (NSArray *)mentionsOrListsInText:(NSString *)text;
 + (TwitterTextEntity *)repliedScreenNameInText:(NSString *)text;
 
++ (NSCharacterSet *)validHashtagBoundaryCharacterSet;
+
 + (NSUInteger)tweetLength:(NSString *)text;
 + (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength;
 
