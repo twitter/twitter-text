@@ -25,6 +25,40 @@
     [super tearDown];
 }
 
+- (void)testHashtagBoundary
+{
+    NSCharacterSet *set = [TwitterText validHashtagBoundaryCharacterSet];
+    XCTAssertTrue(set != nil);
+    XCTAssertFalse([set characterIsMember:'a']);
+    XCTAssertFalse([set characterIsMember:'m']);
+    XCTAssertFalse([set characterIsMember:'z']);
+    XCTAssertFalse([set characterIsMember:'A']);
+    XCTAssertFalse([set characterIsMember:'M']);
+    XCTAssertFalse([set characterIsMember:'Z']);
+    XCTAssertFalse([set characterIsMember:'0']);
+    XCTAssertFalse([set characterIsMember:'5']);
+    XCTAssertFalse([set characterIsMember:'9']);
+    XCTAssertFalse([set characterIsMember:'_']);
+    XCTAssertFalse([set characterIsMember:'&']);
+    XCTAssertTrue([set characterIsMember:' ']);
+    XCTAssertTrue([set characterIsMember:'#']);
+    XCTAssertTrue([set characterIsMember:'@']);
+    XCTAssertTrue([set characterIsMember:',']);
+    XCTAssertTrue([set characterIsMember:'=']);
+    XCTAssertTrue([set characterIsMember:[@"　" characterAtIndex:0]]);
+    XCTAssertTrue([set characterIsMember:[@"\u00BF" characterAtIndex:0]]);
+    XCTAssertFalse([set characterIsMember:[@"\u00C0" characterAtIndex:0]]);
+    XCTAssertFalse([set characterIsMember:[@"\u00D6" characterAtIndex:0]]);
+    XCTAssertTrue([set characterIsMember:[@"\u00D7" characterAtIndex:0]]);
+    XCTAssertFalse([set characterIsMember:[@"\u00E0" characterAtIndex:0]]);
+
+    NSString *validLongCharacterString = @"\U0001FFFF";
+    XCTAssertTrue([set longCharacterIsMember:CFStringGetLongCharacterForSurrogatePair([validLongCharacterString characterAtIndex:0], [validLongCharacterString characterAtIndex:1])]);
+
+    NSString *invalidLongCharacterString = @"\U00020000";
+    XCTAssertFalse([set longCharacterIsMember:CFStringGetLongCharacterForSurrogatePair([invalidLongCharacterString characterAtIndex:0], [invalidLongCharacterString characterAtIndex:1])]);
+}
+
 - (void)testLongDomain
 {
     NSString *text = @"jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp.jp";

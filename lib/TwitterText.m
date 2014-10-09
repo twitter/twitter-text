@@ -139,11 +139,15 @@
     TWUCJKHashtagCharacters \
 @"]"
 
+#define TWUHashtagBoundaryInvalidChars \
+@"a-z0-9&_" \
+TWULatinAccents \
+TWUNonLatinHashtagChars \
+TWUCJKHashtagCharacters
+
 #define TWUHashtagBoundary \
-@"^|$|[^&a-z0-9_" \
-    TWULatinAccents \
-    TWUNonLatinHashtagChars \
-    TWUCJKHashtagCharacters \
+@"^|$|[^" \
+    TWUHashtagBoundaryInvalidChars \
 @"]"
 
 #define TWUValidHashtag \
@@ -691,9 +695,177 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return [self tweetLength:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
+static NSInteger hexValueForCharacter(unichar character)
+{
+    if ('0' <= character && character <= '9') {
+        return (NSInteger)(character - '0');
+    } else if ('a' <= character && character <= 'z') {
+        return (NSInteger)(character - 'a' + 10);
+    } else if ('A' <= character && character <= 'Z') {
+        return (NSInteger)(character - 'A' + 10);
+    } else {
+        return -1;
+    }
+}
+
+static NSInteger nextTokenValue(NSString *string, NSUInteger startLocation, NSUInteger *pLength)
+{
+    NSUInteger len = string.length;
+    if (len <= startLocation) {
+        return -1;
+    }
+
+    unichar currentChar = [string characterAtIndex:startLocation];
+    if (currentChar == '\\') {
+        if (startLocation + 1 < len) {
+            startLocation++;
+            unichar nextChar = [string characterAtIndex:startLocation];
+            if (nextChar == 'u') {
+                if (startLocation + 4 < len) {
+                    startLocation++;
+                    // 4 hex digits
+                    NSUInteger value = 0;
+                    for (NSUInteger index = 0; index < 4; index++) {
+                        unichar sequenceChar = [string characterAtIndex:startLocation + index];
+                        if (!isalnum((int)sequenceChar)) {
+                            return -1;
+                        }
+                        value <<= 4;
+                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
+                        value |= (NSUInteger)parsedValue;
+                    }
+                    if (pLength) {
+                        *pLength = 6;
+                    }
+                    return (NSInteger)value;
+                }
+            } else if (nextChar == 'U') {
+                if (startLocation + 8 < len) {
+                    startLocation++;
+                    // 8 hex digits
+                    NSUInteger value = 0;
+                    for (NSUInteger index = 0; index < 8; index++) {
+                        unichar sequenceChar = [string characterAtIndex:startLocation + index];
+                        if (!isalnum((int)sequenceChar)) {
+                            return -1;
+                        }
+                        value <<= 4;
+                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
+                        value |= (NSUInteger)parsedValue;
+                    }
+                    if (pLength) {
+                        *pLength = 10;
+                    }
+                    return (NSInteger)value;
+                }
+            } else {
+                // Normal escape
+                if (pLength) {
+                    *pLength = 2;
+                }
+                return (NSInteger)nextChar;
+            }
+        }
+        return -1;
+    } else if (CFStringIsSurrogateHighCharacter(currentChar)) {
+        if (startLocation + 1 < len) {
+            startLocation++;
+            unichar nextChar = [string characterAtIndex:startLocation];
+            if (CFStringIsSurrogateLowCharacter(nextChar)) {
+                // Surrogate pair character
+                if (pLength) {
+                    *pLength = 2;
+                }
+                return CFStringGetLongCharacterForSurrogatePair(currentChar, nextChar);
+            }
+        }
+        return -1;
+    } else {
+        // Normal character
+        if (pLength) {
+            *pLength = 1;
+        }
+        return (NSInteger)currentChar;
+    }
+}
+
 + (NSCharacterSet *)validHashtagBoundaryCharacterSet
 {
-    return [NSCharacterSet characterSetWithCharactersInString:TWUHashtagBoundary];
+    NSMutableCharacterSet *set = [NSMutableCharacterSet characterSetWithRange:NSMakeRange(0, 0)];
+    NSString *invalidChars = TWUHashtagBoundaryInvalidChars;
+    if ([invalidChars rangeOfString:@"a-z"].location != NSNotFound && [invalidChars rangeOfString:@"A-Z"].location == NSNotFound) {
+        invalidChars = [invalidChars stringByAppendingString:@"A-Z"];
+    }
+
+    NSUInteger len = invalidChars.length;
+    if (!len) {
+        return nil;
+    }
+
+    BOOL inRange = NO;
+    NSNumber *pendingValue = nil;
+
+    NSUInteger offset = 0;
+    NSUInteger parsedLength = 0;
+    while (offset < len) {
+        NSInteger value = nextTokenValue(invalidChars, offset, &parsedLength);
+        if (value == -1) {
+            // Parse error
+            return nil;
+        }
+
+        NSNumber *currentValue = nil;
+
+        if (value == '-' && parsedLength == 1) {
+            if (offset == 0) {
+                currentValue = @('-');
+            } else if (!pendingValue) {
+                // Found invalid '-'
+                return nil;
+            } else if (!inRange) {
+                inRange = YES;
+            } else {
+                // Found sequence "--"
+                return nil;
+            }
+        } else {
+            currentValue = @(value);
+        }
+
+        if (currentValue) {
+            if (inRange) {
+                // Found range
+                if (pendingValue) {
+                    NSInteger start = [pendingValue integerValue];
+                    if (start <= value) {
+                        [set addCharactersInRange:NSMakeRange((NSUInteger)start, (NSUInteger)(value - start + 1))];
+                    }
+                }
+                pendingValue = nil;
+                inRange = NO;
+            } else {
+                // Found indivisual character
+                if (pendingValue) {
+                    [set addCharactersInRange:NSMakeRange((NSUInteger)[pendingValue integerValue], 1)];
+                }
+                pendingValue = currentValue;
+            }
+        }
+
+        offset += parsedLength;
+    }
+
+    if (inRange) {
+        // Found '-' in the end
+        return nil;
+    }
+
+    // Found indivisual character
+    if (pendingValue) {
+        [set addCharactersInRange:NSMakeRange((NSUInteger)[pendingValue integerValue], 1)];
+    }
+
+    return [set invertedSet];
 }
 
 + (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
