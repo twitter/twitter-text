@@ -792,7 +792,7 @@ static NSInteger nextTokenValue(NSString *string, NSUInteger startLocation, NSUI
     }
 }
 
-+ (NSCharacterSet *)validHashtagBoundaryCharacterSet
+static NSCharacterSet *validHashtagBoundaryCharacterSet()
 {
     NSMutableCharacterSet *set = [NSMutableCharacterSet characterSetWithRange:NSMakeRange(0, 0)];
     NSString *invalidChars = TWUHashtagBoundaryInvalidChars;
@@ -869,6 +869,19 @@ static NSInteger nextTokenValue(NSString *string, NSUInteger startLocation, NSUI
     }
 
     return [set invertedSet];
+}
+
++ (NSCharacterSet *)validHashtagBoundaryCharacterSet
+{
+    static NSCharacterSet *charSet = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        charSet = validHashtagBoundaryCharacterSet();
+#if !__has_feature(objc_arc)
+        [charSet retain];
+#endif
+    });
+    return charSet;
 }
 
 + (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
