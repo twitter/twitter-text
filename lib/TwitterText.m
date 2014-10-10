@@ -708,6 +708,27 @@ static NSInteger hexValueForCharacter(unichar character)
     }
 }
 
+static NSInteger hexDigitValue(NSString *string, NSUInteger startLocation, NSUInteger length)
+{
+    if (string.length < startLocation + length) {
+        return -1;
+    }
+
+    NSUInteger value = 0;
+    for (NSUInteger index = 0; index < length; index++) {
+        unichar sequenceChar = [string characterAtIndex:startLocation + index];
+        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
+        if (parsedValue == -1) {
+            // Invalid hex digit
+            return -1;
+        }
+        value <<= 4;
+        value |= (NSUInteger)parsedValue;
+    }
+
+    return (NSInteger)value;
+}
+
 static NSInteger nextTokenValue(NSString *string, NSUInteger startLocation, NSUInteger *pLength)
 {
     NSUInteger len = string.length;
@@ -724,46 +745,26 @@ static NSInteger nextTokenValue(NSString *string, NSUInteger startLocation, NSUI
                 if (startLocation + 4 < len) {
                     startLocation++;
                     // 4 hex digits
-                    NSUInteger value = 0;
-                    for (NSUInteger index = 0; index < 4; index++) {
-                        unichar sequenceChar = [string characterAtIndex:startLocation + index];
-                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
-                        if (parsedValue == -1) {
-                            // Invalid hex digit
-                            return -1;
-                        }
-                        value <<= 4;
-                        value |= (NSUInteger)parsedValue;
-                    }
+                    NSInteger value = hexDigitValue(string, startLocation, 4);
                     if (pLength) {
-                        *pLength = 6;
+                        *pLength = 2 + 4;
                     }
-                    return (NSInteger)value;
+                    return value;
                 }
             } else if (nextChar == 'U') {
                 if (startLocation + 8 < len) {
                     startLocation++;
                     // 8 hex digits
-                    NSUInteger value = 0;
-                    for (NSUInteger index = 0; index < 8; index++) {
-                        unichar sequenceChar = [string characterAtIndex:startLocation + index];
-                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
-                        if (parsedValue == -1) {
-                            // Invalid hex digit
-                            return -1;
-                        }
-                        value <<= 4;
-                        value |= (NSUInteger)parsedValue;
-                    }
+                    NSInteger value = hexDigitValue(string, startLocation, 8);
                     if (pLength) {
-                        *pLength = 10;
+                        *pLength = 2 + 8;
                     }
-                    return (NSInteger)value;
+                    return value;
                 }
             } else {
                 // Normal escape
                 if (pLength) {
-                    *pLength = 2;
+                    *pLength = 1 + 1;
                 }
                 return (NSInteger)nextChar;
             }
