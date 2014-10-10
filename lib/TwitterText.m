@@ -727,11 +727,12 @@ static NSInteger nextTokenValue(NSString *string, NSUInteger startLocation, NSUI
                     NSUInteger value = 0;
                     for (NSUInteger index = 0; index < 4; index++) {
                         unichar sequenceChar = [string characterAtIndex:startLocation + index];
-                        if (!isalnum((int)sequenceChar)) {
+                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
+                        if (parsedValue == -1) {
+                            // Invalid hex digit
                             return -1;
                         }
                         value <<= 4;
-                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
                         value |= (NSUInteger)parsedValue;
                     }
                     if (pLength) {
@@ -746,11 +747,12 @@ static NSInteger nextTokenValue(NSString *string, NSUInteger startLocation, NSUI
                     NSUInteger value = 0;
                     for (NSUInteger index = 0; index < 8; index++) {
                         unichar sequenceChar = [string characterAtIndex:startLocation + index];
-                        if (!isalnum((int)sequenceChar)) {
+                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
+                        if (parsedValue == -1) {
+                            // Invalid hex digit
                             return -1;
                         }
                         value <<= 4;
-                        NSInteger parsedValue = hexValueForCharacter(sequenceChar);
                         value |= (NSUInteger)parsedValue;
                     }
                     if (pLength) {
