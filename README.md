@@ -36,7 +36,7 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
             }
         ]});
 
-See [Tweet Entities](https://dev.twitter.com/docs/tweet-entities) for more info getting url entities from Twitter's API.
+See [Tweet Entities](https://dev.twitter.com/overview/api/entities-in-twitter-objects) for more info getting url entities from Twitter's API.
 
 
 ## Usernames
