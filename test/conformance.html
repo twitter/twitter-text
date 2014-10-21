@@ -135,6 +135,10 @@
                 return twttr.txt.getTweetLength(test.text);
               };
           }
+        case "tlds":
+          return function(test) {
+            return twttr.txt.extractUrls(test.text);
+          };
       }
 
     }
