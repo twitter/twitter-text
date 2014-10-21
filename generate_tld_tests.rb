@@ -14,7 +14,7 @@ yml.each do |type, tlds|
     test_yml['tests'][type].push(
       'description' => "#{tld} is a valid #{type} tld",
       'text' => "https://twitter.#{tld}",
-      'expected' => true,
+      'expected' => ["https://twitter.#{tld}"],
     )
   end
 end
