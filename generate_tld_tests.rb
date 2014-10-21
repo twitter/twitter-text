@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
-require 'yaml'
+# Generate the test file tlds.yml to ensure all tlds in tld_lib.yml are valid
 
-`./get_tlds.rb`
+require 'yaml'
 
 test_yml = { 'tests' => { } }
 
-path = File.join(File.dirname(__FILE__), 'tlds.yml')
+path = File.join(File.dirname(__FILE__), 'tld_lib.yml')
 yml = YAML.load_file(path)
 yml.each do |type, tlds|
   test_yml['tests'][type] = []

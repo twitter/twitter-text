@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# Generates tld_lib.yml which can be reused in each twitter-text-library
+
 require 'open-uri'
 require 'nokogiri'
 require 'yaml'
@@ -29,6 +31,6 @@ types.each do |name, regex|
   yml[name] = select_tld(tlds, regex)
 end
 
-File.open('tlds.yml', 'w') do |file|
+File.open('tld_lib.yml', 'w') do |file|
   file.write(yml.to_yaml)
 end
