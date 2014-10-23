@@ -25,8 +25,8 @@ namespace :test do
 
     desc "Change conformance test data to the lastest version"
     task :latest => ['conformance:update'] do
-      current_dir = repo_path
-      submodule_dir = repo_path("test", "twitter-text-conformance")
+      current_dir = File.dirname(__FILE__)
+      submodule_dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
       version_before = conformance_version(submodule_dir)
       system("cd #{submodule_dir} && git pull origin master") || raise("Failed to pull submodule version")
       system("cd #{current_dir}")
@@ -59,18 +59,6 @@ namespace :doc do
   end
 end
 
-namespace :tlds do
-  desc "Import tlds from conformance"
-  task :import do
-    tld_yml = repo_path("test", "twitter-text-conformance", "tld_lib.yml")
-    cp(tld_yml, repo_path("lib", "twitter-text"))
-  end
-end
-
 desc "Run cruise control build"
 task :cruise => [:spec, 'test:conformance'] do
-end
-
-def repo_path(*path)
-  File.join(File.dirname(__FILE__), *path)
 end

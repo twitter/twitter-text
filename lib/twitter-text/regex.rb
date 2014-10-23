@@ -24,7 +24,12 @@ module Twitter
       end
     end
 
-    TLDS = YAML.load_file(File.join(File.dirname(__FILE__), 'tld_lib.yml'))
+    TLDS = YAML.load_file(
+      File.join(
+        File.expand_path('../..', __FILE__), # project root
+        'test', 'twitter-text-conformance', 'tld_lib.yml'
+      )
+    )
 
     # Space is more than %20, U+3000 for example is the full-width space used with Kanji. Provide a short-hand
     # to access both the list of characters and a pattern suitible for use with String#split
