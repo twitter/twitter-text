@@ -124,7 +124,8 @@ namespace :tlds do
       ' ' * indent + quote + tlds.join('|')
     end
 
-    YAML.load_file(repo_path('test', 'twitter-text-conformance', 'tld_lib.yml')).each do |type, tlds|
+    tld_yml = repo_path('test', 'twitter-text-conformance', 'tld_lib.yml')
+    YAML.load_file(tld_yml).each do |type, tlds|
       tld_line = []
       lines = []
       puts '# ' + type
