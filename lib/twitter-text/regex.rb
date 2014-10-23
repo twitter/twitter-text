@@ -6,6 +6,8 @@ module Twitter
   # used throughout the <tt>Twitter</tt> classes. Special care has been taken to make
   # sure these reular expressions work with Tweets in all languages.
   class Regex
+    require 'yaml'
+
     REGEXEN = {} # :nodoc:
 
     def self.regex_range(from, to = nil) # :nodoc:
@@ -26,7 +28,7 @@ module Twitter
 
     TLDS = YAML.load_file(
       File.join(
-        File.expand_path('../..', __FILE__), # project root
+        File.expand_path('../../..', __FILE__), # project root
         'test', 'twitter-text-conformance', 'tld_lib.yml'
       )
     )
