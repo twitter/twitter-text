@@ -1,0 +1,64 @@
+require 'open-uri'
+require 'nokogiri'
+require 'yaml'
+
+namespace :tlds do
+  desc 'Grab tlds from iana and save to tld_lib.yml'
+  task :iana_update do
+    doc = Nokogiri::HTML(open('http://www.iana.org/domains/root/db'))
+    tlds = []
+    types = {
+      'country' => /country-code/,
+      'generic' => /generic|sponsored|infrastructure|generic-restricted/,
+    }
+
+    doc.css('table#tld-table tr').each do |tr|
+      info = tr.css('td')
+      next if info.empty?
+
+      tlds << {
+        domain: info[0].text.gsub('.', ''),
+        type: info[1].text
+      }
+    end
+
+    def select_tld(tlds, type)
+      tlds.select {|i| i[:type] =~ type}.map {|i| i[:domain]}.sort
+    end
+
+    yml = {}
+    types.each do |name, regex|
+      yml[name] = select_tld(tlds, regex)
+    end
+
+    File.open(repo_path('tld_lib.yml'), 'w') do |file|
+      file.write(yml.to_yaml)
+    end
+  end
+
+  desc 'Update tests from tld_lib.yml'
+  task :generate_tests do
+    test_yml = { 'tests' => { } }
+
+    path = repo_path('tld_lib.yml')
+    yml = YAML.load_file(path)
+    yml.each do |type, tlds|
+      test_yml['tests'][type] = []
+      tlds.each do |tld|
+        test_yml['tests'][type].push(
+          'description' => "#{tld} is a valid #{type} tld",
+          'text' => "https://twitter.#{tld}",
+          'expected' => ["https://twitter.#{tld}"],
+        )
+      end
+    end
+
+    File.open('tlds.yml', 'w') do |file|
+      file.write(test_yml.to_yaml)
+    end
+  end
+end
+
+def repo_path(*path)
+  File.join(File.dirname(__FILE__), *path)
+end

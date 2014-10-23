@@ -1686,6 +1686,10 @@ tests:
     text: https://twitter.email
     expected:
     - https://twitter.email
+  - description: emerck is a valid generic tld
+    text: https://twitter.emerck
+    expected:
+    - https://twitter.emerck
   - description: engineer is a valid generic tld
     text: https://twitter.engineer
     expected:
@@ -2606,6 +2610,10 @@ tests:
     text: https://twitter.systems
     expected:
     - https://twitter.systems
+  - description: taipei is a valid generic tld
+    text: https://twitter.taipei
+    expected:
+    - https://twitter.taipei
   - description: tatar is a valid generic tld
     text: https://twitter.tatar
     expected:
