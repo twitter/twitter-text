@@ -107,6 +107,14 @@ class ConformanceTest < Test::Unit::TestCase
     end
   end
 
+  def_conformance_test("tlds.yml", :generic) do
+    assert_equal expected, extract_urls(text), description
+  end
+
+  def_conformance_test("tlds.yml", :country) do
+    assert_equal expected, extract_urls(text), description
+  end
+
   def_conformance_test("extract.yml", :urls_with_indices) do
     e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
     assert_equal e, extract_urls_with_indices(text), description
