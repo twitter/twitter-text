@@ -20,8 +20,8 @@ namespace :test do
 
     desc "Change conformance test data to the lastest version"
     task :latest => ['conformance:update'] do
-      current_dir = File.dirname(__FILE__)
-      submodule_dir = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance")
+      current_dir = repo_path
+      submodule_dir = repo_path("test", "twitter-text-conformance")
       version_before = conformance_version(submodule_dir)
       system("cd #{submodule_dir} && git pull origin master") || raise("Failed to pull submodule version")
       system("cd #{current_dir}")
@@ -36,14 +36,14 @@ namespace :test do
 
     desc "Prepare JS conformance test suite"
     task :prepare do
-      test_files = ['autolink', 'extract', 'hit_highlighting', 'validate']
+      test_files = ['autolink', 'extract', 'hit_highlighting', 'validate', 'tlds']
       r = {}
 
-      f = File.open(File.join(File.dirname(__FILE__), "test", "conformance.js"), "w")
+      f = File.open(repo_path("test", "conformance.js"), "w")
       f.write("var cases = {};")
 
       test_files.each do |test_file|
-        path = File.join(File.dirname(__FILE__), "test", "twitter-text-conformance", test_file + ".yml")
+        path = repo_path("test", "twitter-text-conformance", test_file + ".yml")
         yml = YAML.load_file(path)
         f.write("cases.#{test_file} = #{yml['tests'].to_json};")
       end
@@ -81,7 +81,7 @@ task :package, [:version] => [:pkg] do |t, args|
   pkg_name = "twitter-text-#{args.version}.js"
   puts "Building #{pkg_name}..."
 
-  pkg_file = File.open(File.join(File.dirname(__FILE__), "pkg", pkg_name), "w")
+  pkg_file = File.open(repo_path("pkg", pkg_name), "w")
 
   puts "Writing header..."
   header_comment = <<-COMMENT
@@ -100,17 +100,48 @@ task :package, [:version] => [:pkg] do |t, args|
   pkg_file.write(header_comment)
 
   puts "Writing library..."
-  js_file = File.open(File.join(File.dirname(__FILE__), "twitter-text.js"), "r")
+  js_file = File.open(repo_path("twitter-text.js"), "r")
   pkg_file.write(js_file.read)
   js_file.close
 
   pkg_file.close
 
   puts "Minify pkg..."
-  src_file = File.join(File.dirname(__FILE__), "pkg", pkg_name)
-  dst_file = File.join(File.dirname(__FILE__), "pkg", "twitter-text-#{args.version}.min.js")
+  src_file = repo_path("pkg", pkg_name)
+  dst_file = repo_path("pkg", "twitter-text-#{args.version}.min.js")
   exec('node_modules/uglify-js/bin/uglifyjs ' + src_file + ' -o ' + dst_file);
 
   puts "Done with #{pkg_name}"
 
+end
+
+namespace :tlds do
+  desc "Print tlds to include in twitter-text.js, based on conformance"
+  task :print do
+    def line_js(tlds)
+      quote = "'"
+      indent = 4
+      ' ' * indent + quote + tlds.join('|')
+    end
+
+    tld_yml = repo_path('test', 'twitter-text-conformance', 'tld_lib.yml')
+    YAML.load_file(tld_yml).each do |type, tlds|
+      tld_line = []
+      lines = []
+      puts '# ' + type
+      tlds.each do |tld|
+        tld_line << tld
+        if line_js(tld_line).length >= 80
+          lines << line_js(tld_line)
+          tld_line = []
+        end
+      end
+      lines << line_js(tld_line) if tld_line.length > 0
+      puts lines.join("|' +\n") + "' +\n"
+    end
+  end
+end
+
+def repo_path(*path)
+  File.join(File.dirname(__FILE__), *path)
 end
