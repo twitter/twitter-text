@@ -83,6 +83,26 @@ public class ConformanceTest extends TestCase {
     }
   }
 
+  public void testCountryTldsExtractor() throws Exception {
+    File yamlFile = new File(conformanceDir, "tlds.yml");
+    List testCases = loadConformanceData(yamlFile, "country");
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
+                   extractor.extractURLs((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
+  public void testGenericTldsExtractor() throws Exception {
+    File yamlFile = new File(conformanceDir, "tlds.yml");
+    List testCases = loadConformanceData(yamlFile, "generic");
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
+                   extractor.extractURLs((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
   public void testCashtagsExtractor() throws Exception {
     File yamlFile = new File(conformanceDir, "extract.yml");
     List testCases = loadConformanceData(yamlFile, "cashtags");

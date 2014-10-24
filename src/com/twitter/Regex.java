@@ -1,9 +1,43 @@
 
 package com.twitter;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.*;
+import org.yaml.snakeyaml.Yaml;
 
 public class Regex {
+  private static String join(Collection<?> col, String delim) {
+    StringBuilder sb = new StringBuilder();
+    Iterator<?> iter = col.iterator();
+    if (iter.hasNext())
+        sb.append(iter.next().toString());
+    while (iter.hasNext()) {
+        sb.append(delim);
+        sb.append(iter.next().toString());
+    }
+    return sb.toString();
+  }
+
+  private static final Yaml yaml = new Yaml();
+  private static final Map tlds = (Map)yaml.load(
+    ClassLoader.getSystemResourceAsStream("tld_lib.yml")
+  );
+  private static final List gTlds = (List)tlds.get("generic");
+  private static final List cTlds = (List)tlds.get("country");
+  private static final String URL_VALID_GTLD =
+    "(?:(?:" +
+    join(gTlds, "|") +
+    ")(?=[^\\p{Alnum}@]|$))";
+  private static final String URL_VALID_CCTLD =
+    "(?:(?:" +
+    join(cTlds, "|") +
+    ")(?=[^\\p{Alnum}@]|$))";
+
   private static final String UNICODE_SPACES = "[" +
     "\\u0009-\\u000d" +     //  # White_Space # Cc   [5] <control-0009>..<control-000D>
     "\\u0020" +             // White_Space # Zs       SPACE
@@ -58,50 +92,6 @@ public class Regex {
   private static final String URL_VALID_DOMAIN_NAME = "(?:(?:" + URL_VALID_CHARS + "[" + URL_VALID_CHARS + "\\-]*)?" + URL_VALID_CHARS + "\\.)";
   /* Any non-space, non-punctuation characters. \p{Z} = any kind of whitespace or invisible separator. */
   private static final String URL_VALID_UNICODE_CHARS = "[.[^\\p{Punct}\\s\\p{Z}\\p{InGeneralPunctuation}]]";
-
-  private static final String URL_VALID_GTLD =
-      "(?:(?:" +
-      "academy|accountants|active|actor|aero|agency|airforce|allfinanz|alsace|archi|army|arpa|asia|associates|" +
-      "attorney|auction|audio|autos|axa|bar|bargains|bayern|beer|berlin|best|bid|bike|bio|biz|black|blackfriday|blue|" +
-      "bmw|bnpparibas|boo|boutique|brussels|budapest|build|builders|business|buzz|bzh|cab|cal|camera|camp|" +
-      "cancerresearch|capetown|capital|caravan|cards|care|career|careers|casa|cash|cat|catering|center|ceo|cern|" +
-      "channel|cheap|christmas|chrome|church|citic|city|claims|cleaning|click|clinic|clothing|club|codes|coffee|" +
-      "college|cologne|com|community|company|computer|condos|construction|consulting|contractors|cooking|cool|coop|" +
-      "country|credit|creditcard|cruises|cuisinella|cymru|dad|dance|dating|day|deals|degree|democrat|dental|dentist|" +
-      "desi|diamonds|diet|digital|direct|directory|discount|dnp|domains|durban|dvag|eat|edu|education|email|engineer|" +
-      "engineering|enterprises|equipment|esq|estate|eus|events|exchange|expert|exposed|fail|farm|feedback|finance|" +
-      "financial|fish|fishing|fitness|flights|florist|fly|foo|forsale|foundation|frl|frogans|fund|furniture|futbol|" +
-      "gal|gallery|gbiz|gent|gift|gifts|gives|glass|gle|global|globo|gmail|gmo|gmx|google|gop|gov|graphics|gratis|" +
-      "green|gripe|guide|guitars|guru|hamburg|haus|healthcare|help|here|hiphop|hiv|holdings|holiday|homes|horse|host|" +
-      "hosting|house|how|ibm|immo|immobilien|industries|info|ing|ink|institute|insure|int|international|investments|" +
-      "jetzt|jobs|joburg|juegos|kaufen|kim|kitchen|kiwi|koeln|krd|kred|lacaixa|land|lawyer|lease|lgbt|life|lighting|" +
-      "limited|limo|link|loans|london|lotto|ltda|luxe|luxury|maison|management|mango|market|marketing|media|meet|" +
-      "melbourne|meme|menu|miami|mil|mini|mobi|moda|moe|monash|mortgage|moscow|motorcycles|mov|museum|nagoya|name|" +
-      "navy|net|network|neustar|new|nexus|ngo|nhk|ninja|nra|nrw|nyc|okinawa|ong|onl|ooo|org|organic|otsuka|ovh|paris|" +
-      "partners|parts|pharmacy|photo|photography|photos|physio|pics|pictures|pink|pizza|place|plumbing|pohl|post|" +
-      "praxi|press|pro|prod|productions|prof|properties|property|pub|qpon|quebec|realtor|recipes|red|rehab|reise|" +
-      "reisen|ren|rentals|repair|report|republican|rest|restaurant|reviews|rich|rio|rocks|rodeo|rsvp|ruhr|ryukyu|" +
-      "saarland|sarl|sca|scb|schmidt|schule|scot|services|sexy|shiksha|shoes|singles|social|software|sohu|solar|" +
-      "solutions|soy|space|spiegel|supplies|supply|support|surf|surgery|suzuki|systems|tatar|tattoo|tax|technology|" +
-      "tel|tienda|tips|tirol|today|tokyo|tools|top|town|toys|trade|training|travel|tui|university|uno|uol|vacations|" +
-      "vegas|ventures|vermögensberater|vermögensberatung|versicherung|vet|viajes|villas|vision|vlaanderen|vodka|vote|" +
-      "voting|voto|voyage|wales|wang|watch|webcam|website|wed|whoswho|wien|wiki|williamhill|wme|work|works|world|wtc|" +
-      "wtf|xxx|xyz|yachts|yandex|yokohama|youtube|zip|zone|дети|москва|онлайн|орг|рус|сайт|بازار|شبكة|موقع|संगठन|みんな|" +
-      "世界|中信|中文网|企业|佛山|公司|公益|商城|商标|在线|广东|我爱你|手机|政务|机构|游戏|移动|组织机构|网址|网络|集团|삼성" +
-      ")(?=[^\\p{Alnum}@]|$))";
-  private static final String URL_VALID_CCTLD =
-      "(?:(?:" +
-      "ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bl|bm|bn|bo|bq|br|bs|bt|bv|" +
-      "bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|" +
-      "fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|" +
-      "io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mf|" +
-      "mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|" +
-      "pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|" +
-      "sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|um|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|" +
-      "za|zm|zw|бел|мкд|мон|рф|срб|укр|қаз|الاردن|الجزائر|السعودية|المغرب|امارات|ایران|بھارت|تونس|سودان|سورية|عراق|" +
-      "عمان|فلسطين|قطر|مصر|مليسيا|پاکستان|भारत|বাংলা|ভারত|ਭਾਰਤ|ભારત|இந்தியா|இலங்கை|சிங்கப்பூர்|భారత్|ලංකා|ไทย|გე|中国|" +
-      "中國|台湾|台灣|新加坡|香港|한국" +
-      ")(?=[^\\p{Alnum}@]|$))";
   private static final String URL_PUNYCODE = "(?:xn--[0-9a-z]+)";
   private static final String SPECIAL_URL_VALID_CCTLD = "(?:(?:" + "co|tv" + ")(?=[^\\p{Alnum}@]|$))";
 

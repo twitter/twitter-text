@@ -36,6 +36,14 @@
     <outputDirectory>build</outputDirectory>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>tests</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>test-data/twitter-text-conformance</directory>
+        <includes>
+          <include>tld_lib.yml</include>
+        </includes>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -160,6 +168,14 @@
     <profile>
       <id>sonatype-oss-release</id>
       <build>
+        <resources>
+          <resource>
+            <directory>test-data/twitter-text-conformance</directory>
+            <includes>
+              <include>tld_lib.yml</include>
+            </includes>
+          </resource>
+        </resources>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
