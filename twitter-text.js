@@ -241,7 +241,7 @@
     'com|community|company|computer|condos|construction|consulting|contractors|cooking|' +
     'cool|coop|country|credit|creditcard|crs|cruises|cuisinella|cymru|dad|dance|dating|' +
     'day|deals|degree|democrat|dental|dentist|desi|diamonds|diet|digital|direct|directory|' +
-    'discount|dnp|domains|durban|dvag|eat|edu|education|email|engineer|engineering|' +
+    'discount|dnp|domains|durban|dvag|eat|edu|education|email|emerck|engineer|engineering|' +
     'enterprises|equipment|esq|estate|eus|events|exchange|expert|exposed|fail|farm|' +
     'feedback|finance|financial|fish|fishing|fitness|flights|florist|flsmidth|fly|' +
     'foo|forsale|foundation|frl|frogans|fund|furniture|futbol|gal|gallery|gbiz|gent|' +
@@ -260,9 +260,9 @@
     'recipes|red|rehab|reise|reisen|ren|rentals|repair|report|republican|rest|restaurant|' +
     'reviews|rich|rio|rip|rocks|rodeo|rsvp|ruhr|ryukyu|saarland|sarl|sca|scb|schmidt|' +
     'schule|scot|services|sexy|shiksha|shoes|singles|social|software|sohu|solar|solutions|' +
-    'soy|space|spiegel|supplies|supply|support|surf|surgery|suzuki|systems|tatar|' +
-    'tattoo|tax|technology|tel|tienda|tips|tirol|today|tokyo|tools|top|town|toys|' +
-    'trade|training|travel|tui|university|uno|uol|vacations|vegas|ventures|vermögensberater|' +
+    'soy|space|spiegel|supplies|supply|support|surf|surgery|suzuki|systems|taipei|' +
+    'tatar|tattoo|tax|technology|tel|tienda|tips|tirol|today|tokyo|tools|top|town|' +
+    'toys|trade|training|travel|tui|university|uno|uol|vacations|vegas|ventures|vermögensberater|' +
     'vermögensberatung|versicherung|vet|viajes|villas|vision|vlaanderen|vodka|vote|' +
     'voting|voto|voyage|wales|wang|watch|webcam|website|wed|wedding|whoswho|wien|' +
     'wiki|williamhill|wme|work|works|world|wtc|wtf|xxx|xyz|yachts|yandex|yoga|yokohama|' +
