@@ -507,6 +507,82 @@
     }
 }
 
+- (void)testTlds
+{
+    NSString *fileName = @"../test/json-conformance/tlds.json";
+    NSData *data = [NSData dataWithContentsOfFile:fileName];
+    if (!data) {
+        XCTFail(@"No test data: %@", fileName);
+        return;
+    }
+    NSDictionary *rootDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    if (!rootDic) {
+        XCTFail(@"Invalid test data: %@", fileName);
+        return;
+    }
+    
+    NSDictionary *tests = [rootDic objectForKey:@"tests"];
+    
+    NSArray *country = [tests objectForKey:@"country"];
+    NSArray *generic = [tests objectForKey:@"generic"];
+    
+    //
+    // URLs with ccTLD
+    //
+    for (NSDictionary *testCase in country) {
+        NSString *text = [testCase objectForKey:@"text"];
+        NSArray *expected = [testCase objectForKey:@"expected"];
+        
+        NSArray *results = [TwitterText URLsInText:text];
+        if (results.count == expected.count) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
+                NSString *expectedText = [expected objectAtIndex:i];
+                
+                TwitterTextEntity *entity = [results objectAtIndex:i];
+                NSRange r = entity.range;
+                NSString *actualText = [text substringWithRange:r];
+                
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+            }
+        } else {
+            NSMutableArray *resultTexts = [NSMutableArray array];
+            for (TwitterTextEntity *entity in results) {
+                [resultTexts addObject:[text substringWithRange:entity.range]];
+            }
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+        }
+    }
+    
+    //
+    // URLs with gTLD
+    //
+    for (NSDictionary *testCase in generic) {
+        NSString *text = [testCase objectForKey:@"text"];
+        NSArray *expected = [testCase objectForKey:@"expected"];
+        
+        NSArray *results = [TwitterText URLsInText:text];
+        if (results.count == expected.count) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
+                NSString *expectedText = [expected objectAtIndex:i];
+                
+                TwitterTextEntity *entity = [results objectAtIndex:i];
+                NSRange r = entity.range;
+                NSString *actualText = [text substringWithRange:r];
+                
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+            }
+        } else {
+            NSMutableArray *resultTexts = [NSMutableArray array];
+            for (TwitterTextEntity *entity in results) {
+                [resultTexts addObject:[text substringWithRange:entity.range]];
+            }
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+        }
+    }
+}
+
 - (NSString *)stringByParsingUnicodeEscapes:(NSString *)string
 {
     static NSRegularExpression *regex = nil;
