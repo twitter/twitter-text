@@ -11,6 +11,7 @@ OUTPUT_PATH = 'json-conformance/'
 FILES = [
   'extract.yml',
   'validate.yml',
+  'tlds.yml',
 ]
 
 FILES.each do |filename|

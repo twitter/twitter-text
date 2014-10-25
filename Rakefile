@@ -6,6 +6,29 @@ def conformance_version(dir)
   Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
 end
 
+def format_tlds(tlds, max_length = 100)
+  tlds_group = tlds.each_with_object([[]]) do |tld, o|
+    if (o.last + [tld]).join('|').size > max_length
+      o << []
+    end
+    o.last << tld
+  end
+  tlds_group.map do |tlds|
+    "        @\"" + tlds.join('|') + "|\" \\\n"
+  end.join('').sub(/\|[^|]*\Z/) {|m| m[1..-1]}.sub(/\n\Z/, '')
+end
+
+def replace_tlds(source_code, name, tlds)
+  source_code.sub(/#{Regexp.quote('#define ' + name)}.*?#{Regexp.quote('@")"')}\n/m, <<-D)
+#define #{name} \\
+@"(?:" \\
+    @"(?:" \\
+#{tlds}
+    @")" \\
+@")"
+  D
+end
+
 namespace :test do
   namespace :conformance do
     desc "Update conformance testing data"
@@ -45,6 +68,20 @@ namespace :test do
 
   desc "Run conformance test suite"
   task :conformance => ['conformance:latest', 'conformance:run'] do
+  end
+
+  desc "Update TLDs"
+  task :update_tlds do
+    require 'yaml'
+    tlds = YAML.load_file('test/twitter-text-conformance/tld_lib.yml')
+    cctlds = format_tlds(tlds["country"])
+    gtlds = format_tlds(tlds["generic"])
+    twitter_text_m = File.read('lib/TwitterText.m')
+    twitter_text_m = replace_tlds(twitter_text_m, 'TWUValidCCTLD', cctlds)
+    twitter_text_m = replace_tlds(twitter_text_m, 'TWUValidGTLD', gtlds)
+    File.open('lib/TwitterText.m', 'w') do |file|
+      file.write twitter_text_m
+    end
   end
 
   desc "Clean build and tests"
