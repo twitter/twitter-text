@@ -229,7 +229,7 @@
   twttr.txt.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
   twttr.txt.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
   twttr.txt.regexen.validDomainName = regexSupplant(/(?:(?:#{validDomainChars}(?:-|#{validDomainChars})*)?#{validDomainChars}\.)/);
-        twttr.txt.regexen.validGTLD = regexSupplant(RegExp(
+  twttr.txt.regexen.validGTLD = regexSupplant(RegExp(
     '(?:(?:' +
     'abogado|academy|accountants|active|actor|aero|agency|airforce|allfinanz|alsace|archi|army|arpa|' +
     'asia|associates|attorney|auction|audio|autos|axa|band|bar|bargains|bayern|beer|berlin|best|bid|' +
@@ -264,7 +264,7 @@
     'youtube|zip|zone|дети|москва|онлайн|орг|рус|сайт|بازار|شبكة|موقع|संगठन|みんな|世界|中信|中文网|企业|佛山|公司|' +
     '公益|商城|商标|在线|广东|我爱你|手机|政务|机构|游戏|移动|组织机构|网址|网络|集团|삼성' +
     ')(?=[^0-9a-zA-Z@]|$))'));
-        twttr.txt.regexen.validCCTLD = regexSupplant(RegExp(
+  twttr.txt.regexen.validCCTLD = regexSupplant(RegExp(
     '(?:(?:' +
     'ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bl|bm|bn|bo|bq|' +
     'br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|' +

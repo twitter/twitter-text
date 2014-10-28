@@ -156,11 +156,11 @@ end
 def replace_tlds!(source_code, name, tlds)
   start = Regexp.quote("twttr.txt.regexen.#{name} =")
   source_code.sub!(/#{start}.*?;\n/m, <<-D)
-  twttr.txt.regexen.#{name} = regexSupplant(RegExp(
+twttr.txt.regexen.#{name} = regexSupplant(RegExp(
     '(?:(?:' +
 #{tlds}
     ')(?=[^0-9a-zA-Z@]|$))'));
-  D
+D
 end
 
 def repo_path(*path)
