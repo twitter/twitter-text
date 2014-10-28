@@ -116,30 +116,51 @@ task :package, [:version] => [:pkg] do |t, args|
 end
 
 namespace :tlds do
-  desc "Print tlds to include in twitter-text.js, based on conformance"
-  task :print do
-    def line_js(tlds)
-      quote = "'"
-      indent = 4
-      ' ' * indent + quote + tlds.join('|')
-    end
-
+  desc "Update tlds in twitter-text.js based on conformance tld_lib.yml"
+  task :update do
     tld_yml = repo_path('test', 'twitter-text-conformance', 'tld_lib.yml')
-    YAML.load_file(tld_yml).each do |type, tlds|
-      tld_line = []
-      lines = []
-      puts '# ' + type
-      tlds.each do |tld|
-        tld_line << tld
-        if line_js(tld_line).length >= 80
-          lines << line_js(tld_line)
-          tld_line = []
-        end
-      end
-      lines << line_js(tld_line) if tld_line.length > 0
-      puts lines.join("|' +\n") + "' +\n"
+    tlds = YAML.load_file(tld_yml)
+    cctlds = format_tlds(tlds['country'], 100)
+    gtlds = format_tlds(tlds['generic'], 100)
+
+    twitter_text_js = File.read(repo_path('twitter-text.js'))
+    replace_tlds!(twitter_text_js, 'validGTLD', gtlds)
+    replace_tlds!(twitter_text_js, 'validCCTLD', cctlds)
+    File.open(repo_path('twitter-text.js'), 'w') do |file|
+      file.write(twitter_text_js)
     end
   end
+end
+
+def format_tlds(tlds, line_length)
+  tld_line = []
+  lines = []
+  tlds.each do |tld|
+    if line_js(tld_line + [tld]).length > line_length
+      lines << line_js(tld_line)
+      tld_line = [tld]
+    else
+      tld_line << tld
+    end
+  end
+  lines << line_js(tld_line) if tld_line.length > 0
+  lines.join("|' +\n") + "' +"
+end
+
+def line_js(tlds)
+  quote = "'"
+  indent = 4
+  ' ' * indent + quote + tlds.join('|')
+end
+
+def replace_tlds!(source_code, name, tlds)
+  start = Regexp.quote("twttr.txt.regexen.#{name} =")
+  source_code.sub!(/#{start}.*?;\n/m, <<-D)
+twttr.txt.regexen.#{name} = regexSupplant(RegExp(
+    '(?:(?:' +
+#{tlds}
+    ')(?=[^0-9a-zA-Z@]|$))'));
+D
 end
 
 def repo_path(*path)
