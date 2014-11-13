@@ -25,6 +25,11 @@
     [super tearDown];
 }
 
+- (void)testRemainingCountForLongTweet
+{
+    XCTAssertEqual([TwitterText remainingCharacterCount:@"123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" httpURLLength:22 httpsURLLength:23], (NSInteger)-10);
+}
+
 - (void)testHashtagBoundary
 {
     NSCharacterSet *set = [TwitterText validHashtagBoundaryCharacterSet];
