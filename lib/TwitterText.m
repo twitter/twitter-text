@@ -945,12 +945,12 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
     return charCount;
 }
 
-+ (NSUInteger)remainingCharacterCount:(NSString *)text
++ (NSInteger)remainingCharacterCount:(NSString *)text
 {
     return [self remainingCharacterCount:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (NSUInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
++ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
 {
     return MaxTweetLength - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
 }

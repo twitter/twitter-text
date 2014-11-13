@@ -28,7 +28,7 @@
 + (NSUInteger)tweetLength:(NSString *)text;
 + (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength;
 
-+ (NSUInteger)remainingCharacterCount:(NSString *)text;
-+ (NSUInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength;
++ (NSInteger)remainingCharacterCount:(NSString *)text;
++ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength;
 
 @end
