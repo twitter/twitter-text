@@ -812,6 +812,13 @@
         ]
       },
       {
+        "description": "DO NOT extract URLs without protocol with a trailing dash in the domain regardless of CJK and path",
+        "text": "tw-.com t-.co tw-.com/home t-.co/home ルtw-.comルt-.coルtw-.com/homeルt-.co/homeル",
+        "expected": [
+
+        ]
+      },
+      {
         "description": "Extract URL with interior hyphen, subdomain, and numbers",
         "text": "www.123-hyphenated-url.com",
         "expected": [
