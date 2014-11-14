@@ -1,0 +1,240 @@
+
+tests:
+  tweets:
+    - description: "Valid Tweet: < 20 characters"
+      text: "I am a Tweet"
+      expected: true
+
+    - description: "Valid Tweet: 140 characters"
+      text: "A lie gets halfway around the world before the truth has a chance to get its pants on.  Winston Churchill (1874-1965) http://bit.ly/dJpywL"
+      expected: true
+
+    - description: "Valid Tweet: 140 characters (with accents)"
+      text: "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn.  Winston Churchill (1874-1965) http://bit.ly/dJpywL"
+      expected: true
+
+    - description: "Valid Tweet: 140 characters (double byte characters)"
+      text: "のののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののの"
+      expected: true
+
+    - description: "Valid Tweet: 140 characters (double word characters)"
+      text: "\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431\U0001f431"
+      expected: true
+
+    - description: "Invalid Tweet: no characters (empty)"
+      text: ""
+      expected: false
+
+    - description: "Invalid Tweet: 141 characters"
+      text: "A lie gets halfway around the world before the truth has a chance to get its pants on. --- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
+      expected: false
+
+    - description: "Invalid Tweet: 141 characters (due to newline)"
+      text: "A lie gets halfway around the world before the truth has a chance to get its pants on. \n-- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
+      expected: false
+
+  usernames:
+    - description: "Valid username: a-z < 20 characters"
+      text: "@username"
+      expected: true
+
+    - description: "All numeric username are allowed"
+      text: "@12345"
+      expected: true
+
+    - description: "Usernames should allow the _ character"
+      text: "@example_name"
+      expected: true
+
+    - description: "Usernames SHOULD NOT allow the - character"
+      text: "@example-name"
+      expected: false
+
+  lists:
+    - description: "Valid list: a-z < 20 characters"
+      text: "@username/list"
+      expected: true
+
+    - description: "A username alone SHOULD NOT be considered a valid list"
+      text: "@username"
+      expected: false
+
+    - description: "A username followed by a slash SHOULD NOT be considered a valid list"
+      text: "@username/"
+      expected: false
+
+    - description: "Validation SHOULD NOT allow leading spaces"
+      text: " @username/list"
+      expected: false
+
+    - description: "Validation SHOULD NOT allow trailing spaces"
+      text: "@username/list "
+      expected: false
+
+  hashtags:
+    - description: "Valid hashtag: a-z < 20 characters"
+      text: "#hashtag"
+      expected: true
+
+    - description: "Valid hashtag: number followed by letters"
+      text: "#1st"
+      expected: true
+
+    - description: "Valid hashtag: letters and numbers mixed"
+      text: "#that1time"
+      expected: true
+
+    - description: "Valid hashtag: letter followed by numbers"
+      text: "#easyas123"
+      expected: true
+
+    - description: "Invalid hashtag: all numbers"
+      text: "#12345"
+      expected: false
+
+    - description: "Valid hashtag: Russian text"
+      text: "#ашок"
+      expected: true
+
+    - description: "Valid hashtag: Korean text"
+      text: "#트위터"
+      expected: true
+
+  urls:
+    - description: "Valid url: protocol + domain"
+      text: "http://example.com"
+      expected: true
+
+    - description: "Valid url: ssl + domain + path + query"
+      text: "https://example.com/path/to/resource?search=foo&lang=en"
+      expected: true
+
+    - description: "Valid url: protocol + domain + path + fragment"
+      text: "http://twitter.com/#!/twitter"
+      expected: true
+
+    - description: "Valid url: cased protocol and domain"
+      text: "HTTPS://www.ExaMPLE.COM/index.html"
+      expected: true
+
+    - description: "Valid url: port and userinfo"
+      text: "http://user:PASSW0RD@example.com:8080/login.php"
+      expected: true
+
+    - description: "Valid url: matrix path parameters"
+      text: "http://sports.yahoo.com/nfl/news;_ylt=Aom0;ylu=XyZ?slug=ap-superbowlnotebook"
+      expected: true
+
+    - description: "Valid url: ipv4"
+      text: "http://192.168.0.1/index.html?src=asdf"
+      expected: true
+
+    - description: "Valid url: ipv6"
+      text: "http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80/index.html"
+      expected: true
+
+    - description: "Valid url: underscore in subdomain"
+      text: "http://test_underscore.twitter.com"
+      expected: true
+
+    - description: "Valid url: sub delims and question marks"
+      text: "http://example.com?foo=$bar.;baz?BAZ&c=d-#top/?stories+"
+      expected: true
+
+    - description: "Valid unicode url: unicode domain"
+      text: "http://☃.net/"
+      expected: true
+
+    - description: "Invalid url: invalid scheme"
+      text: "ftp://www.example.com/"
+      expected: false
+
+    - description: "Invalid url: invalid userinfo characters"
+      text: "https://user:pass[word]@www.example.com/"
+      expected: false
+
+    - description: "Invalid url: underscore in domain"
+      text: "http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
+      expected: false
+
+    - description: "Invalid url: domain beginning dash"
+      text: "http://www.-domain4352.com/"
+      expected: false
+
+    - description: "Invalid url: domain trailing dash"
+      text: "http://www.domain4352-.com/"
+      expected: false
+
+    - description: "Invalid url: unicode domain trailing dash"
+      text: "http://☃-.net/"
+      expected: false
+
+    - description: "Invalid url: improperly encoded unicode domain"
+      text: "http://%e2%98%83.net/"
+      expected: false
+
+    - description: "Invalid url: invalid IP"
+      text: "http://256.1.2.3/"
+      expected: false
+
+    - description: "Invalid url: invalid char in path"
+      text: "http://en.wikipedia.org/wiki/\"#Punctuation"
+      expected: false
+
+    - description: "Invalid url: trailing space"
+      text: "http://example.com/#anchor "
+      expected: false
+
+  urls_without_protocol:
+    - description: "Valid url without protocol: domain + gTLD"
+      text: "example.com"
+      expected: true
+
+    - description: "Valid url without protocol: subdomain + domain + gTLD"
+      text: "www.example.com"
+      expected: true
+
+    - description: "Valid url without protocol: domain + ccTLD"
+      text: "t.co"
+      expected: true
+
+    - description: "Valid url without protocol: subdomain + domain + ccTLD"
+      text: "foo.co.jp"
+      expected: true
+
+    - description: "Valid url without protocol: domain + path + query"
+      text: "example.com/path/to/resource?search=foo&lang=en"
+      expected: true
+
+  lengths:
+    - description: "Count the number of characters"
+      text: "This is a test."
+      expected: 15
+
+    - description: "Count a URL starting with http:// as 22 characters"
+      text: "http://test.com"
+      expected: 22
+
+    - description: "Count a URL starting with https:// as 23 characters"
+      text: "https://test.com"
+      expected: 23
+
+    - description: "Count a URL without protocol as 22 characters"
+      text: "test.com"
+      expected: 22
+
+    - description: "Count multiple URLs correctly"
+      text: "Test http://test.com test http://test.com test.com test"
+      expected: 83
+
+    - description: "Count unicode chars outside the basic multilingual plane (double word)"
+      text: "\U00010000\U0010ffff"
+      expected: 2
+
+    - description: "Count unicode chars inside the basic multilingual plane"
+      text: "저찀쯿쿿"
+      expected: 4
+
+    - description: "Count a mix of single byte single word, and double word unicode characters"
+      text: "H\U0001f431☺"
+      expected: 3

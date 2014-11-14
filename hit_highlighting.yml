@@ -1,0 +1,73 @@
+
+tests:
+  plain_text:
+    - description: "Highlight the beginning of a string"
+      text: "this is a test"
+      hits: [ [0, 4] ]
+      expected: "<em>this</em> is a test"
+
+    - description: "Highlight the middle of a string"
+      text: "this is a test"
+      hits: [ [5, 7] ]
+      expected: "this <em>is</em> a test"
+
+    - description: "Highlight the end of a string"
+      text: "this is a test"
+      hits: [ [10, 14] ]
+      expected: "this is a <em>test</em>"
+
+    - description: "Highlight multiple terms"
+      text: "this is a test"
+      hits: [ [0, 4], [10, 14] ]
+      expected: "<em>this</em> is a <em>test</em>"
+
+    - description: "DO NOT highlight with empty hits"
+      text: "this is a test"
+      hits: []
+      expected: "this is a test"
+
+    - description: "Highlight within Japanese text"
+      text: "東京の天気"
+      hits: [ [0, 2] ]
+      expected: "<em>東京</em>の天気"
+
+  with_links:
+    - description: "Highlight after a link (offset does not include markup)"
+      text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
+      hits: [ [10, 14] ]
+      expected: "@<a href=\"http://twitter.com/username\">username</a> <em>this</em> is an example"
+
+    - description: "Highlight anchor text of a link (offset does not include markup)"
+      text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
+      hits: [ [1, 9] ]
+      expected: "@<a href=\"http://twitter.com/username\"><em>username</em></a> this is an example"
+
+    - description: "Highlight around a link (offset does not include markup)"
+      text: "@<a href=\"http://twitter.com/username\">username</a> this is an example"
+      hits: [ [0, 14] ]
+      expected: "<em>@<a href=\"http://twitter.com/username\">username</a> this</em> is an example"
+
+    - description: "Highlight touching tags"
+      text: "<a>foo</a><a>foo</a>"
+      hits: [ [3, 6] ]
+      expected: "<a>foo</a><a><em>foo</em></a>"
+
+    - description: "Highlight two links"
+      text: "foo <a>bar</a> <a>baz</a>"
+      hits: [ [4, 7], [8, 11] ]
+      expected: "foo <a><em>bar</em></a> <a><em>baz</em></a>"
+
+    - description: "Highlight non-link then link not at end"
+      text: "foo bar <a>baz</a> something else"
+      hits: [ [4, 7], [8, 11] ]
+      expected: "foo <em>bar</em> <a><em>baz</em></a> something else"
+
+    - description: "Highlight non-link then link at end"
+      text: "foo bar <a>baz</a>"
+      hits: [ [4, 7], [8, 11] ]
+      expected: "foo <em>bar</em> <a><em>baz</em></a>"
+
+    - description: "Highlight mention at end"
+      text: "something via @<a href=\"http://twitter.com/twitter\">twitter</a>"
+      hits: [ [14, 22] ]
+      expected: "something via <em>@<a href=\"http://twitter.com/twitter\">twitter</a></em>"
