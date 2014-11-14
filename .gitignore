@@ -1,0 +1,9 @@
+.DS_Store
+build
+build/*
+out
+dist
+twitter-text.iml
+Twitter-text-java.iml
+twitter-text-java.ipr
+twitter-text-java.iws
