@@ -299,7 +299,7 @@ TWUCJKHashtagCharacters
 @")\\z"
 
 #define TWUValidASCIIDomain \
-    @"(?:[a-zA-Z][a-zA-Z0-9\\-_" TWULatinAccents @"]*\\.)+" \
+    @"(?:[a-zA-Z0-9][a-zA-Z0-9\\-_" TWULatinAccents @"]*\\.)+" \
     @"(?:" TWUValidGTLD @"|" TWUValidCCTLD @"|" TWUValidPunycode @")(?=[^0-9a-z@]|$)"
 
 #define TWUValidTCOURL                  @"https?://t\\.co/[a-zA-Z0-9]+"
