@@ -70,23 +70,23 @@ namespace :test do
   task :conformance => ['conformance:latest', 'conformance:run'] do
   end
 
-  desc "Update TLDs"
-  task :update_tlds do
-    require 'yaml'
-    tlds = YAML.load_file('test/twitter-text-conformance/tld_lib.yml')
-    cctlds = format_tlds(tlds["country"])
-    gtlds = format_tlds(tlds["generic"])
-    twitter_text_m = File.read('lib/TwitterText.m')
-    twitter_text_m = replace_tlds(twitter_text_m, 'TWUValidCCTLD', cctlds)
-    twitter_text_m = replace_tlds(twitter_text_m, 'TWUValidGTLD', gtlds)
-    File.open('lib/TwitterText.m', 'w') do |file|
-      file.write twitter_text_m
-    end
-  end
-
   desc "Clean build and tests"
   task :clean do
     system("rm -rf testproject/build")
     system("rm -rf test/json-conformance")
+  end
+end
+
+desc "Update TLDs"
+task :update_tlds do
+  require 'yaml'
+  tlds = YAML.load_file('test/twitter-text-conformance/tld_lib.yml')
+  cctlds = format_tlds(tlds["country"])
+  gtlds = format_tlds(tlds["generic"])
+  twitter_text_m = File.read('lib/TwitterText.m')
+  twitter_text_m = replace_tlds(twitter_text_m, 'TWUValidCCTLD', cctlds)
+  twitter_text_m = replace_tlds(twitter_text_m, 'TWUValidGTLD', gtlds)
+  File.open('lib/TwitterText.m', 'w') do |file|
+    file.write twitter_text_m
   end
 end
