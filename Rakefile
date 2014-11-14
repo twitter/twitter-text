@@ -14,7 +14,7 @@ def format_tlds(tlds, max_length = 100)
     o.last << tld
   end
   tlds_group.map do |tlds|
-    "        @\"" + tlds.join('|') + "|\" \\\n"
+    "    @\"" + tlds.join('|') + "|\" \\\n"
   end.join('').sub(/\|[^|]*\Z/) {|m| m[1..-1]}.sub(/\n\Z/, '')
 end
 
@@ -22,9 +22,7 @@ def replace_tlds(source_code, name, tlds)
   source_code.sub(/#{Regexp.quote('#define ' + name)}.*?#{Regexp.quote('@")"')}\n/m, <<-D)
 #define #{name} \\
 @"(?:" \\
-    @"(?:" \\
 #{tlds}
-    @")" \\
 @")"
   D
 end
