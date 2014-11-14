@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+
+  <script src="../lib/jquery-1.4.2.js"></script>
+
+  <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" type="text/css" media="screen" />
+  <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+
+  <script src="../twitter-text.js"></script>
+  <script src="../test/conformance.js"></script>
+
+  <script>
+    function getTester(suite, section) {
+      switch (suite) {
+        case "autolink":
+          switch (section) {
+            case "urls":
+              return function(test) {
+                return twttr.txt.autoLinkUrlsCustom(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "hashtags":
+              return function(test) {
+                return twttr.txt.autoLinkHashtags(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "usernames":
+              return function(test) {
+                return twttr.txt.autoLinkUsernamesOrLists(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "lists":
+              return function(test) {
+                return twttr.txt.autoLinkUsernamesOrLists(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "cashtags":
+              return function(test) {
+                return twttr.txt.autoLinkCashtags(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "all":
+              return function(test) {
+                return twttr.txt.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+              };
+            case "json":
+              return function(test) {
+                return twttr.txt.autoLinkWithJSON(test.text, JSON.parse(test.json), {suppressNoFollow: true, suppressDataScreenName: true});
+              }
+          }
+        case "extract":
+          switch (section) {
+            case "mentions":
+              return function(test) {
+                return twttr.txt.extractMentions(test.text);
+              };
+            case "mentions_with_indices":
+              return function(test) {
+                var results = twttr.txt.extractMentionsWithIndices(test.text);
+                return $.map(results, function(res) {
+                  res['screen_name'] = res.screenName;
+                  delete res.screenName
+                  return res
+                });
+              };
+            case "mentions_or_lists_with_indices":
+              return function(test) {
+                var results = twttr.txt.extractMentionsOrListsWithIndices(test.text);
+                return $.map(results, function(res) {
+                  res['screen_name'] = res.screenName;
+                  res['list_slug'] = res.listSlug;
+                  delete res.screenName;
+                  delete res.listSlug;
+                  return res;
+                });
+              };
+            case "replies":
+              return function(test) {
+                return twttr.txt.extractReplies(test.text);
+              };
+            case "urls":
+              return function(test) {
+                return twttr.txt.extractUrls(test.text);
+              };
+            case "urls_with_indices":
+              return function(test) {
+                return twttr.txt.extractUrlsWithIndices(test.text);
+              };
+            case "hashtags":
+              return function(test) {
+                return twttr.txt.extractHashtags(test.text);
+              };
+            case "hashtags_with_indices":
+              return function(test) {
+                return twttr.txt.extractHashtagsWithIndices(test.text);
+              };
+            case "cashtags":
+              return function(test) {
+                return twttr.txt.extractCashtags(test.text);
+              };
+            case "cashtags_with_indices":
+              return function(test) {
+                return twttr.txt.extractCashtagsWithIndices(test.text);
+              };
+          }
+        case "hit_highlighting":
+          return function(test) {
+            return twttr.txt.hitHighlight(test.text, test.hits);
+          };
+        case "validate":
+          switch (section) {
+            case "tweets":
+              return function(test) {
+                return twttr.txt.isValidTweetText(test.text);
+              };
+            case "usernames":
+              return function(test) {
+                return twttr.txt.isValidUsername(test.text);
+              };
+            case "lists":
+              return function(test) {
+                return twttr.txt.isValidList(test.text);
+              };
+            case "hashtags":
+              return function(test) {
+                return twttr.txt.isValidHashtag(test.text);
+              };
+            case "urls":
+              return function(test) {
+                return twttr.txt.isValidUrl(test.text);
+              };
+            case "urls_without_protocol":
+              return function(test) {
+                return twttr.txt.isValidUrl(test.text, true, false);
+              };
+            case "lengths":
+              return function(test) {
+                return twttr.txt.getTweetLength(test.text);
+              };
+          }
+        case "tlds":
+          return function(test) {
+            return twttr.txt.extractUrls(test.text);
+          };
+      }
+
+    }
+
+
+    for (var suite in cases) {
+      (function(suite) {
+        module(suite);
+
+        for (var section in cases[suite]) {
+          (function(section) {
+            var tester = getTester(suite, section);
+            test(section, function() {
+              for (var testCase in cases[suite][section]) {
+                deepEqual(tester(cases[suite][section][testCase]), cases[suite][section][testCase].expected, cases[suite][section][testCase].description);
+              }
+            });
+          }(section));
+        }
+      }(suite));
+
+    }
+  </script>
+
+</head>
+<body>
+  <h1 id="qunit-header">Twitter Text Conformance Suite</h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+</body>
+</html>
