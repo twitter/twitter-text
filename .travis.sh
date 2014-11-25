@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
 
+set -e
+
+cd $TWITTER_TEXT_DIR
+
 case $TWITTER_TEXT_DIR in
   rb)
-    cd rb
-    gem update --system
-    gem --version
     bundle
-    rake
+    bundle exec rake
     ;;
   java)
-    cd java
-    git submodule update --init
     mvn test
     ;;
   js)
-    cd js
     npm install -g grunt-cli
     npm install
     rake test:conformance:prepare
