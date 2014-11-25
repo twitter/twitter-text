@@ -5,6 +5,7 @@ case $TWITTER_TEXT_DIR in
     cd rb
     gem update --system
     gem --version
+    bundle
     rake
     ;;
   java)
