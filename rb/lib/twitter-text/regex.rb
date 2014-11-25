@@ -29,7 +29,7 @@ module Twitter
     TLDS = YAML.load_file(
       File.join(
         File.expand_path('../../..', __FILE__), # project root
-        'test', 'twitter-text-conformance', 'tld_lib.yml'
+        'lib', 'assets', 'tld_lib.yml'
       )
     )
 

@@ -66,7 +66,7 @@
           <systemProperties>
             <property>
               <name>conformance.dir</name>
-              <value>test-data/twitter-text-conformance</value>
+              <value>../conformance</value>
             </property>
           </systemProperties>
         </configuration>
@@ -90,29 +90,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-          <execution>
-            <id>submodule-update</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <executable>git</executable>
-          <arguments>
-            <argument>submodule</argument>
-            <argument>update</argument>
-            <argument>--init</argument>
-            <argument>--recursive</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.6</version>
         <executions>
@@ -126,7 +103,7 @@
               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>test-data/twitter-text-conformance</directory>
+                  <directory>../conformance</directory>
                   <includes>
                     <include>tld_lib.yml</include>
                   </includes>

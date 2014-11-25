@@ -62,7 +62,7 @@ class ConformanceTest < Test::Unit::TestCase
     element.attribute_nodes.map{|attr| [attr.name, attr.value]}.sort
   end
 
-  CONFORMANCE_DIR = ENV['CONFORMANCE_DIR'] || File.expand_path("../twitter-text-conformance", __FILE__)
+  CONFORMANCE_DIR = ENV['CONFORMANCE_DIR'] || File.expand_path("../../../conformance", __FILE__)
 
   def self.def_conformance_test(file, test_type, &block)
     yaml = YAML.load_file(File.join(CONFORMANCE_DIR, file))
