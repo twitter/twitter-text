@@ -5,6 +5,7 @@ Bundler::GemHelper.install_tasks
 task :default => ['spec', 'test:conformance']
 task :test => :spec
 
+require 'rubygems'
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
 
