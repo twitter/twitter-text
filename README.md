@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jakl/twitter-text.svg?branch=master)](https://travis-ci.org/jakl/twitter-text)
+
 twitter-text
 ============
 
