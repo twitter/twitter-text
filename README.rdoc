@@ -1,0 +1,39 @@
+== twitter-text-objc
+
+Objective-C port of the twitter-text handling libraries.
+
+This library supports OS X 10.7+ and iOS 4+, both ARC and non-ARC environments.
+
+== Set up Xcode
+
+Make sure Xcode 5+ is already installed. Install the Command Line Tools in Xcode.
+
+  Preferences -> Downloads -> Command Line Tools
+
+Run the following command, so that we can use xcodebuild:
+
+  sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
+== Tests
+
+To run the Conformance test suite, simply run rake:
+
+  rake
+
+Once you ran rake, you can run the tests in Xcode. Open testproject/TwitterText.xcodeproj with Xcode and hit Cmd+U.
+
+== Issues
+
+Have a bug? Please create an issue here on GitHub!
+
+https://github.com/twitter/twitter-text-objc/issues
+
+== Authors
+
+* Satoshi Nakagawa https://github.com/psychs
+
+== License
+
+Copyright 2012-2014 Twitter, Inc and other contributors
+
+Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
