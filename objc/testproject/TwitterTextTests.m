@@ -30,42 +30,6 @@
     XCTAssertEqual([TwitterText remainingCharacterCount:@"123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" httpURLLength:22 httpsURLLength:23], (NSInteger)-10);
 }
 
-- (void)testMentionInEmailAddress
-{
-    NSArray *entities = [TwitterText entitiesInText:@"support@twitter.com"];
-    XCTAssertEqual(entities.count, (NSUInteger)0);
-}
-
-- (void)testUnofficialRT
-{
-    NSArray *entities = [TwitterText entitiesInText:@"RT:@username"];
-    XCTAssertEqual(entities.count, (NSUInteger)1);
-    if (entities.count > 0) {
-        TwitterTextEntity *entity = [entities firstObject];
-        XCTAssertEqual(NSStringFromRange(entity.range), NSStringFromRange(NSMakeRange(3, 9)));
-    }
-}
-
-- (void)testUnofficialRTInBeginning
-{
-    NSArray *entities = [TwitterText entitiesInText:@"RT@username"];
-    XCTAssertEqual(entities.count, (NSUInteger)1);
-    if (entities.count > 0) {
-        TwitterTextEntity *entity = [entities firstObject];
-        XCTAssertEqual(NSStringFromRange(entity.range), NSStringFromRange(NSMakeRange(2, 9)));
-    }
-}
-
-- (void)testUnofficialRTWithPrecedingSpaces
-{
-    NSArray *entities = [TwitterText entitiesInText:@"  RT@username"];
-    XCTAssertEqual(entities.count, (NSUInteger)1);
-    if (entities.count > 0) {
-        TwitterTextEntity *entity = [entities firstObject];
-        XCTAssertEqual(NSStringFromRange(entity.range), NSStringFromRange(NSMakeRange(4, 9)));
-    }
-}
-
 - (void)testHashtagBoundary
 {
     NSCharacterSet *set = [TwitterText validHashtagBoundaryCharacterSet];
