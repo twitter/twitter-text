@@ -162,7 +162,9 @@
   addCharsToCharClass(nonLatinHashtagChars, 0xFF21, 0xFF3A); //  - Latin (full-width)
   addCharsToCharClass(nonLatinHashtagChars, 0xFF41, 0xFF5A); // /
   addCharsToCharClass(nonLatinHashtagChars, 0x3041, 0x3096); // Hiragana
+  addCharsToCharClass(nonLatinHashtagChars, 0x3100, 0x312F); // Bopomofo
   addCharsToCharClass(nonLatinHashtagChars, 0x3099, 0x309E); // Hiragana voicing and iteration mark
+
   addCharsToCharClass(nonLatinHashtagChars, 0x3400, 0x4DBF); // Kanji (CJK Extension A)
   addCharsToCharClass(nonLatinHashtagChars, 0x4E00, 0x9FFF); // Kanji (Unified)
   // -- Disabled as it breaks the Regex.
