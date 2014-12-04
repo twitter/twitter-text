@@ -33,10 +33,8 @@ If you are creating a new twitter-text library in a different programming langua
 
 ## Submitting new conformance tests
 
- * You can fork the github.com repository at https://github.com/twitter/twitter-text-conformance
-   * Add your new tests and send a pull request.
-
- * You can open an issue on github.com at https://github.com/twitter/twitter-text-conformance/issues
+ * You can [fork the github repository](https://github.com/twitter/twitter-text) to add tests and send a pull request
+ * You can [open an issue on github](https://github.com/twitter/twitter-text/issues)
    * Please be sure to provide example input and output as well as a brief description of the problem.
 
 ## Changelog
@@ -71,7 +69,7 @@ If you are creating a new twitter-text library in a different programming langua
     * [FIX] Japanese autolink including ideographic iteration mark
     * [FIX] Add hashtag extraction with indices test for new language hashtags
     * [FIX] Add hashtag extraction with indices test for multiple latin hashtags
-  
+
   * v1.4.2 - 2011-07-08 [ Git tag v1.4.2 ]
     * [FIX] Additional Japanese hashtag autolinking tests
 
@@ -95,17 +93,17 @@ If you are creating a new twitter-text library in a different programming langua
 
   * v1.0.0 - 2010-01-21 - [ Git tag v1.0.0 (retroactively) ]
     * Initial version
-    
+
 ## Copyright and License
 
      Copyright 2011 Twitter, Inc.
-     
+
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this work except in compliance with the License.
      You may obtain a copy of the License in the LICENSE file, or at:
-     
+
           http://www.apache.org/licenses/LICENSE-2.0
-     
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.

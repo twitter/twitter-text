@@ -1,4 +1,4 @@
-## twitter-text-js [![Build Status](https://secure.travis-ci.org/twitter/twitter-text-js.png?branch=master)](http://travis-ci.org/twitter/twitter-text-js)
+## twitter-text-js
 
 A JavaScript utility that provides text processing routines for Tweets.  This library conforms to a common test suite shared by many other implementations, particularly twitter-text.gem (Ruby).  The library provides autolinking and extraction for URLs, usernames, lists, and hashtags.
 
@@ -82,7 +82,7 @@ to work against text that has been auto-linked already.
 
 ### Conformance
 
-The main test suite is twitter-text-conformance.  This is set up as a git submodule that is automatically updated at each run.  Tests are run in your browser, using QUnit.  To run the conformance suite, from the project root, run:
+The main test suite is twitter-text-conformance. Tests are run in your browser, using QUnit.  To run the conformance suite, from the project root, run:
 
     rake test:conformance
 
@@ -106,7 +106,7 @@ This will make a new file at `pkg/twitter-text-1.1.0.js`.
 
 ## Reporting Bugs
 
-Please direct bug reports to the [twitter-text-js issue tracker on GitHub](http://github.com/bcherry/twitter-text-js/issues)
+Please direct bug reports to the [twitter-text issue tracker on GitHub](http://github.com/bcherry/twitter-text/issues)
 
 ## Copyright and License
 
