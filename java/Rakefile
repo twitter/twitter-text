@@ -3,11 +3,6 @@ require 'yaml'
 require 'json'
 require 'date'
 
-def conformance_version(dir)
-  require 'digest'
-  Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
-end
-
 namespace :test do
   namespace :conformance do
     desc "Run conformance test suite"

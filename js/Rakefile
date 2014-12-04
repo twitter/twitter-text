@@ -4,10 +4,6 @@ require 'json'
 require 'date'
 require 'digest'
 
-def conformance_version(dir)
-  Dir[File.join(dir, '*')].inject(Digest::SHA1.new){|digest, file| digest.update(Digest::SHA1.file(file).hexdigest) }
-end
-
 namespace :test do
   namespace :conformance do
     desc "Prepare JS conformance test suite"

@@ -805,27 +805,6 @@
         ]
       },
       {
-        "description": "DO NOT extract URL with leading hyphen inside CJK text",
-        "text": "ル-twpf.jpル",
-        "expected": [
-
-        ]
-      },
-      {
-        "description": "DO NOT extract URLs without protocol with a trailing dash in the domain regardless of CJK and path",
-        "text": "tw-.com t-.co tw-.com/home t-.co/home ルtw-.comルt-.coルtw-.com/homeルt-.co/homeル",
-        "expected": [
-
-        ]
-      },
-      {
-        "description": "Extract URL with interior hyphen, subdomain, and numbers",
-        "text": "www.123-hyphenated-url.com",
-        "expected": [
-          "www.123-hyphenated-url.com"
-        ]
-      },
-      {
         "description": "Extract a URL with '?' in fragment",
         "text": "http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata",
         "expected": [

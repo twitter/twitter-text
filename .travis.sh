@@ -18,4 +18,7 @@ case $TWITTER_TEXT_DIR in
     rake test:conformance:prepare
     grunt qunit && node test/node_tests.js
     ;;
+  objc)
+    rake
+    ;;
 esac
