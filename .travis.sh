@@ -10,7 +10,7 @@ case $TWITTER_TEXT_DIR in
     bundle exec rake
     ;;
   java)
-    mvn test
+    JAVA_HOME=${JAVA_HOME-`/usr/libexec/java_home`} mvn test
     ;;
   js)
     npm install -g grunt-cli
