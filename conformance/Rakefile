@@ -31,6 +31,8 @@ namespace :tlds do
       yml[name] = select_tld(tlds, regex)
     end
 
+    yml["generic"] << "onion"
+
     File.open(repo_path('tld_lib.yml'), 'w') do |file|
       file.write(yml.to_yaml)
     end

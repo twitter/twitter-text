@@ -90,7 +90,7 @@ end
 namespace :tlds do
   desc "Update tlds in twitter-text.js based on conformance tld_lib.yml"
   task :update do
-    tld_yml = repo_path('test', 'twitter-text-conformance', 'tld_lib.yml')
+    tld_yml = repo_path('..', 'conformance', 'tld_lib.yml')
     tlds = YAML.load_file(tld_yml)
     cctlds = format_tlds(tlds['country'], 100)
     gtlds = format_tlds(tlds['generic'], 100)
