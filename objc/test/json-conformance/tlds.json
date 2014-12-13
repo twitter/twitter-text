@@ -1836,6 +1836,13 @@
         ]
       },
       {
+        "description": "հայ is a valid country tld",
+        "text": "https://twitter.հայ",
+        "expected": [
+          "https://twitter.հայ"
+        ]
+      },
+      {
         "description": "الاردن is a valid country tld",
         "text": "https://twitter.الاردن",
         "expected": [
@@ -2125,6 +2132,13 @@
         ]
       },
       {
+        "description": "adult is a valid generic tld",
+        "text": "https://twitter.adult",
+        "expected": [
+          "https://twitter.adult"
+        ]
+      },
+      {
         "description": "aero is a valid generic tld",
         "text": "https://twitter.aero",
         "expected": [
@@ -2157,6 +2171,20 @@
         "text": "https://twitter.alsace",
         "expected": [
           "https://twitter.alsace"
+        ]
+      },
+      {
+        "description": "android is a valid generic tld",
+        "text": "https://twitter.android",
+        "expected": [
+          "https://twitter.android"
+        ]
+      },
+      {
+        "description": "aquarelle is a valid generic tld",
+        "text": "https://twitter.aquarelle",
+        "expected": [
+          "https://twitter.aquarelle"
         ]
       },
       {
@@ -2318,6 +2346,13 @@
         "text": "https://twitter.blackfriday",
         "expected": [
           "https://twitter.blackfriday"
+        ]
+      },
+      {
+        "description": "bloomberg is a valid generic tld",
+        "text": "https://twitter.bloomberg",
+        "expected": [
+          "https://twitter.bloomberg"
         ]
       },
       {
@@ -2489,6 +2524,13 @@
         ]
       },
       {
+        "description": "cartier is a valid generic tld",
+        "text": "https://twitter.cartier",
+        "expected": [
+          "https://twitter.cartier"
+        ]
+      },
+      {
         "description": "casa is a valid generic tld",
         "text": "https://twitter.casa",
         "expected": [
@@ -2629,6 +2671,13 @@
         ]
       },
       {
+        "description": "coach is a valid generic tld",
+        "text": "https://twitter.coach",
+        "expected": [
+          "https://twitter.coach"
+        ]
+      },
+      {
         "description": "codes is a valid generic tld",
         "text": "https://twitter.codes",
         "expected": [
@@ -2755,6 +2804,13 @@
         ]
       },
       {
+        "description": "cricket is a valid generic tld",
+        "text": "https://twitter.cricket",
+        "expected": [
+          "https://twitter.cricket"
+        ]
+      },
+      {
         "description": "crs is a valid generic tld",
         "text": "https://twitter.crs",
         "expected": [
@@ -2822,6 +2878,13 @@
         "text": "https://twitter.degree",
         "expected": [
           "https://twitter.degree"
+        ]
+      },
+      {
+        "description": "delivery is a valid generic tld",
+        "text": "https://twitter.delivery",
+        "expected": [
+          "https://twitter.delivery"
         ]
       },
       {
@@ -2958,6 +3021,13 @@
         ]
       },
       {
+        "description": "energy is a valid generic tld",
+        "text": "https://twitter.energy",
+        "expected": [
+          "https://twitter.energy"
+        ]
+      },
+      {
         "description": "engineer is a valid generic tld",
         "text": "https://twitter.engineer",
         "expected": [
@@ -3000,6 +3070,13 @@
         ]
       },
       {
+        "description": "eurovision is a valid generic tld",
+        "text": "https://twitter.eurovision",
+        "expected": [
+          "https://twitter.eurovision"
+        ]
+      },
+      {
         "description": "eus is a valid generic tld",
         "text": "https://twitter.eus",
         "expected": [
@@ -3011,6 +3088,13 @@
         "text": "https://twitter.events",
         "expected": [
           "https://twitter.events"
+        ]
+      },
+      {
+        "description": "everbank is a valid generic tld",
+        "text": "https://twitter.everbank",
+        "expected": [
+          "https://twitter.everbank"
         ]
       },
       {
@@ -3049,6 +3133,13 @@
         ]
       },
       {
+        "description": "fashion is a valid generic tld",
+        "text": "https://twitter.fashion",
+        "expected": [
+          "https://twitter.fashion"
+        ]
+      },
+      {
         "description": "feedback is a valid generic tld",
         "text": "https://twitter.feedback",
         "expected": [
@@ -3067,6 +3158,13 @@
         "text": "https://twitter.financial",
         "expected": [
           "https://twitter.financial"
+        ]
+      },
+      {
+        "description": "firmdale is a valid generic tld",
+        "text": "https://twitter.firmdale",
+        "expected": [
+          "https://twitter.firmdale"
         ]
       },
       {
@@ -3532,6 +3630,13 @@
         ]
       },
       {
+        "description": "irish is a valid generic tld",
+        "text": "https://twitter.irish",
+        "expected": [
+          "https://twitter.irish"
+        ]
+      },
+      {
         "description": "jetzt is a valid generic tld",
         "text": "https://twitter.jetzt",
         "expected": [
@@ -3623,6 +3728,13 @@
         ]
       },
       {
+        "description": "latrobe is a valid generic tld",
+        "text": "https://twitter.latrobe",
+        "expected": [
+          "https://twitter.latrobe"
+        ]
+      },
+      {
         "description": "lawyer is a valid generic tld",
         "text": "https://twitter.lawyer",
         "expected": [
@@ -3630,10 +3742,24 @@
         ]
       },
       {
+        "description": "lds is a valid generic tld",
+        "text": "https://twitter.lds",
+        "expected": [
+          "https://twitter.lds"
+        ]
+      },
+      {
         "description": "lease is a valid generic tld",
         "text": "https://twitter.lease",
         "expected": [
           "https://twitter.lease"
+        ]
+      },
+      {
+        "description": "legal is a valid generic tld",
+        "text": "https://twitter.legal",
+        "expected": [
+          "https://twitter.legal"
         ]
       },
       {
@@ -3721,6 +3847,13 @@
         ]
       },
       {
+        "description": "madrid is a valid generic tld",
+        "text": "https://twitter.madrid",
+        "expected": [
+          "https://twitter.madrid"
+        ]
+      },
+      {
         "description": "maison is a valid generic tld",
         "text": "https://twitter.maison",
         "expected": [
@@ -3784,6 +3917,13 @@
         ]
       },
       {
+        "description": "memorial is a valid generic tld",
+        "text": "https://twitter.memorial",
+        "expected": [
+          "https://twitter.memorial"
+        ]
+      },
+      {
         "description": "menu is a valid generic tld",
         "text": "https://twitter.menu",
         "expected": [
@@ -3837,6 +3977,20 @@
         "text": "https://twitter.monash",
         "expected": [
           "https://twitter.monash"
+        ]
+      },
+      {
+        "description": "money is a valid generic tld",
+        "text": "https://twitter.money",
+        "expected": [
+          "https://twitter.money"
+        ]
+      },
+      {
+        "description": "mormon is a valid generic tld",
+        "text": "https://twitter.mormon",
+        "expected": [
+          "https://twitter.mormon"
         ]
       },
       {
@@ -4050,6 +4204,13 @@
         ]
       },
       {
+        "description": "party is a valid generic tld",
+        "text": "https://twitter.party",
+        "expected": [
+          "https://twitter.party"
+        ]
+      },
+      {
         "description": "pharmacy is a valid generic tld",
         "text": "https://twitter.pharmacy",
         "expected": [
@@ -4138,6 +4299,13 @@
         "text": "https://twitter.poker",
         "expected": [
           "https://twitter.poker"
+        ]
+      },
+      {
+        "description": "porn is a valid generic tld",
+        "text": "https://twitter.porn",
+        "expected": [
+          "https://twitter.porn"
         ]
       },
       {
@@ -4267,6 +4435,13 @@
         ]
       },
       {
+        "description": "reit is a valid generic tld",
+        "text": "https://twitter.reit",
+        "expected": [
+          "https://twitter.reit"
+        ]
+      },
+      {
         "description": "ren is a valid generic tld",
         "text": "https://twitter.ren",
         "expected": [
@@ -4386,6 +4561,13 @@
         ]
       },
       {
+        "description": "samsung is a valid generic tld",
+        "text": "https://twitter.samsung",
+        "expected": [
+          "https://twitter.samsung"
+        ]
+      },
+      {
         "description": "sarl is a valid generic tld",
         "text": "https://twitter.sarl",
         "expected": [
@@ -4418,6 +4600,13 @@
         "text": "https://twitter.schule",
         "expected": [
           "https://twitter.schule"
+        ]
+      },
+      {
+        "description": "science is a valid generic tld",
+        "text": "https://twitter.science",
+        "expected": [
+          "https://twitter.science"
         ]
       },
       {
@@ -4561,6 +4750,13 @@
         ]
       },
       {
+        "description": "sydney is a valid generic tld",
+        "text": "https://twitter.sydney",
+        "expected": [
+          "https://twitter.sydney"
+        ]
+      },
+      {
         "description": "systems is a valid generic tld",
         "text": "https://twitter.systems",
         "expected": [
@@ -4691,6 +4887,13 @@
         "text": "https://twitter.travel",
         "expected": [
           "https://twitter.travel"
+        ]
+      },
+      {
+        "description": "trust is a valid generic tld",
+        "text": "https://twitter.trust",
+        "expected": [
+          "https://twitter.trust"
         ]
       },
       {
@@ -5093,6 +5296,13 @@
         ]
       },
       {
+        "description": "グーグル is a valid generic tld",
+        "text": "https://twitter.グーグル",
+        "expected": [
+          "https://twitter.グーグル"
+        ]
+      },
+      {
         "description": "世界 is a valid generic tld",
         "text": "https://twitter.世界",
         "expected": [
@@ -5128,6 +5338,13 @@
         ]
       },
       {
+        "description": "八卦 is a valid generic tld",
+        "text": "https://twitter.八卦",
+        "expected": [
+          "https://twitter.八卦"
+        ]
+      },
+      {
         "description": "公司 is a valid generic tld",
         "text": "https://twitter.公司",
         "expected": [
@@ -5146,6 +5363,13 @@
         "text": "https://twitter.商城",
         "expected": [
           "https://twitter.商城"
+        ]
+      },
+      {
+        "description": "商店 is a valid generic tld",
+        "text": "https://twitter.商店",
+        "expected": [
+          "https://twitter.商店"
         ]
       },
       {
@@ -5226,10 +5450,24 @@
         ]
       },
       {
+        "description": "网店 is a valid generic tld",
+        "text": "https://twitter.网店",
+        "expected": [
+          "https://twitter.网店"
+        ]
+      },
+      {
         "description": "网络 is a valid generic tld",
         "text": "https://twitter.网络",
         "expected": [
           "https://twitter.网络"
+        ]
+      },
+      {
+        "description": "谷歌 is a valid generic tld",
+        "text": "https://twitter.谷歌",
+        "expected": [
+          "https://twitter.谷歌"
         ]
       },
       {
@@ -5244,6 +5482,13 @@
         "text": "https://twitter.삼성",
         "expected": [
           "https://twitter.삼성"
+        ]
+      },
+      {
+        "description": "onion is a valid generic tld",
+        "text": "https://twitter.onion",
+        "expected": [
+          "https://twitter.onion"
         ]
       }
     ]

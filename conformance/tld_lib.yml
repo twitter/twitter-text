@@ -262,6 +262,7 @@ country:
 - "срб"
 - "укр"
 - "қаз"
+- "հայ"
 - "الاردن"
 - "الجزائر"
 - "السعودية"
@@ -304,11 +305,14 @@ generic:
 - accountants
 - active
 - actor
+- adult
 - aero
 - agency
 - airforce
 - allfinanz
 - alsace
+- android
+- aquarelle
 - archi
 - army
 - arpa
@@ -332,6 +336,7 @@ generic:
 - biz
 - black
 - blackfriday
+- bloomberg
 - blue
 - bmw
 - bnpparibas
@@ -356,6 +361,7 @@ generic:
 - care
 - career
 - careers
+- cartier
 - casa
 - cash
 - cat
@@ -376,6 +382,7 @@ generic:
 - clinic
 - clothing
 - club
+- coach
 - codes
 - coffee
 - college
@@ -394,6 +401,7 @@ generic:
 - country
 - credit
 - creditcard
+- cricket
 - crs
 - cruises
 - cuisinella
@@ -404,6 +412,7 @@ generic:
 - day
 - deals
 - degree
+- delivery
 - democrat
 - dental
 - dentist
@@ -423,22 +432,27 @@ generic:
 - education
 - email
 - emerck
+- energy
 - engineer
 - engineering
 - enterprises
 - equipment
 - esq
 - estate
+- eurovision
 - eus
 - events
+- everbank
 - exchange
 - expert
 - exposed
 - fail
 - farm
+- fashion
 - feedback
 - finance
 - financial
+- firmdale
 - fish
 - fishing
 - fitness
@@ -505,6 +519,7 @@ generic:
 - int
 - international
 - investments
+- irish
 - jetzt
 - jobs
 - joburg
@@ -518,8 +533,11 @@ generic:
 - kred
 - lacaixa
 - land
+- latrobe
 - lawyer
+- lds
 - lease
+- legal
 - lgbt
 - life
 - lighting
@@ -532,6 +550,7 @@ generic:
 - ltda
 - luxe
 - luxury
+- madrid
 - maison
 - management
 - mango
@@ -541,6 +560,7 @@ generic:
 - meet
 - melbourne
 - meme
+- memorial
 - menu
 - miami
 - mil
@@ -549,6 +569,8 @@ generic:
 - moda
 - moe
 - monash
+- money
+- mormon
 - mortgage
 - moscow
 - motorcycles
@@ -579,6 +601,7 @@ generic:
 - paris
 - partners
 - parts
+- party
 - pharmacy
 - photo
 - photography
@@ -592,6 +615,7 @@ generic:
 - plumbing
 - pohl
 - poker
+- porn
 - post
 - praxi
 - press
@@ -610,6 +634,7 @@ generic:
 - rehab
 - reise
 - reisen
+- reit
 - ren
 - rentals
 - repair
@@ -627,11 +652,13 @@ generic:
 - ruhr
 - ryukyu
 - saarland
+- samsung
 - sarl
 - sca
 - scb
 - schmidt
 - schule
+- science
 - scot
 - services
 - sexy
@@ -652,6 +679,7 @@ generic:
 - surf
 - surgery
 - suzuki
+- sydney
 - systems
 - taipei
 - tatar
@@ -671,6 +699,7 @@ generic:
 - trade
 - training
 - travel
+- trust
 - tui
 - university
 - uno
@@ -728,14 +757,17 @@ generic:
 - "موقع"
 - "संगठन"
 - "みんな"
+- "グーグル"
 - "世界"
 - "中信"
 - "中文网"
 - "企业"
 - "佛山"
+- "八卦"
 - "公司"
 - "公益"
 - "商城"
+- "商店"
 - "商标"
 - "在线"
 - "广东"
@@ -747,6 +779,9 @@ generic:
 - "移动"
 - "组织机构"
 - "网址"
+- "网店"
 - "网络"
+- "谷歌"
 - "集团"
 - "삼성"
+- onion
