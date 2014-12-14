@@ -1399,13 +1399,13 @@
       },
       {
         "description": "Hashtag with ideographic iteration mark",
-        "text": "#云々 #学問のすゝめ #いすゞ #各〻 #〃",
+        "text": "#云々 #学問のすゝめ #いすゞ #各〻 #各〃",
         "expected": [
           "云々",
           "学問のすゝめ",
           "いすゞ",
           "各〻",
-          "〃"
+          "各〃"
         ]
       },
       {
@@ -1539,6 +1539,84 @@
         "expected": [
           "أي‌بي‌إم",
           "می‌خواهم"
+        ]
+      },
+      {
+        "description": "Extract Amharic hashtag",
+        "text": "የአላህ መልእክተኛ ሰለላሁ ዓለይሂ ወሰለም #ኢትዮሙስሊምስ",
+        "expected": [
+          "ኢትዮሙስሊምስ"
+        ]
+      },
+      {
+        "description": "Extract Arabic and Persian hashtags with numbers",
+        "text": "#۳۴۵هشتگ #هشتگ۶۷۸ #ســـلام_عليكم_٤٠٦",
+        "expected": [
+          "۳۴۵هشتگ",
+          "هشتگ۶۷۸",
+          "ســـلام_عليكم_٤٠٦"
+        ]
+      },
+      {
+        "description": "Extract Hindi hashtags",
+        "text": "#महात्मा #महात्मा_१२३४ #१२३४ गांधी",
+        "expected": [
+          "महात्मा",
+          "महात्मा_१२३४"
+        ]
+      },
+      {
+        "description": "Extract Indic script hashtags",
+        "text": "#বাংলা #ગુજરાતી #ಕನ್ನಡ #മലയാളം #ଓଡ଼ିଆ #ਪੰਜਾਬੀ #සිංහල #தமிழ் #తెలుగు",
+        "expected": [
+          "বাংলা",
+          "ગુજરાતી",
+          "ಕನ್ನಡ",
+          "മലയാളം",
+          "ଓଡ଼ିଆ",
+          "ਪੰਜਾਬੀ",
+          "සිංහල",
+          "தமிழ்",
+          "తెలుగు"
+        ]
+      },
+      {
+        "description": "Extract Tibetan hashtags",
+        "text": "#བོད་སྐད་ #བོད་སྐད།",
+        "expected": [
+          "བོད་སྐད་",
+          "བོད་སྐད།"
+        ]
+      },
+      {
+        "description": "Extract Khmer, Burmese, Laotian hashtags",
+        "text": "#មហាត្មះគន្ធី #မြင့်မြတ်သော #ຊີວະສາດ",
+        "expected": [
+          "មហាត្មះគន្ធី",
+          "မြင့်မြတ်သော",
+          "ຊີວະສາດ"
+        ]
+      },
+      {
+        "description": "Extract Greek hashtag",
+        "text": "#Μαχάτμα_Γκάντι ήταν Ινδός πολιτικός",
+        "expected": [
+          "Μαχάτμα_Γκάντι"
+        ]
+      },
+      {
+        "description": "Extract Armenian and Georgian hashtags",
+        "text": "#Մահաթմա #მაჰათმა",
+        "expected": [
+          "Մահաթմա",
+          "მაჰათმა"
+        ]
+      },
+      {
+        "description": "DO NOT extract hashtags without a letter",
+        "text": "#_ #1_2 #122 #〃",
+        "expected": [
+
         ]
       }
     ],
