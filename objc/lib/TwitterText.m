@@ -60,8 +60,9 @@
 #define TWUCtrlChars                                    @"\\x00-\\x1F\\x7F"
 
 #define TWHashtagAlpha                          @"[\\p{L}\\p{M}]"
-#define TWUHashtagAlphanumeric                  @"[_\\p{L}\\p{M}\\p{Nd}\\u200c\\ua67e\\u05be\\u05f3\\u05f4\\u309b\\u309c\\u30a0\\u30fb\\u3003\\u0f0b\\u0f0c\\u0f0d]"
-#define TWUHashtagBoundaryInvalidChars          @"&_\\p{L}\\p{M}\\p{Nd}\\u200c\\ua67e\\u05be\\u05f3\\u05f4\\u309b\\u309c\\u30a0\\u30fb\\u3003\\u0f0b\\u0f0c\\u0f0d"        
+#define TWHashtagSpecialChars                   @"_\\u200c\\ua67e\\u05be\\u05f3\\u05f4\\u309b\\u309c\\u30a0\\u30fb\\u3003\\u0f0b\\u0f0c\\u0f0d"
+#define TWUHashtagAlphanumeric                  @"[\\p{L}\\p{M}\\p{Nd}" TWHashtagSpecialChars @"]"
+#define TWUHashtagBoundaryInvalidChars          @"&\\p{L}\\p{M}\\p{Nd}" TWHashtagSpecialChars
 
 #define TWUHashtagBoundary \
 @"^|$|[^" \
@@ -618,7 +619,7 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
 {
     NSMutableCharacterSet *set = [NSMutableCharacterSet letterCharacterSet];
     [set formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
-    [set formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"&_\\u200c\\ua67e\\u05be\\u05f3\\u05f4\\u309b\\u309c\\u30a0\\u30fb\\u3003\\u0f0b\\u0f0c\\u0f0d"]];
+    [set formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString: TWHashtagSpecialChars @"&"]];
     return [set invertedSet];
 }
 
