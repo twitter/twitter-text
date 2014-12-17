@@ -617,6 +617,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 
 static NSCharacterSet *validHashtagBoundaryCharacterSet()
 {
+    // Generate equivalent character set matched by TWUHashtagBoundaryInvalidChars regex and invert
     NSMutableCharacterSet *set = [NSMutableCharacterSet letterCharacterSet];
     [set formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
     [set formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString: TWHashtagSpecialChars @"&"]];
