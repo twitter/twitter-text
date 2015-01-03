@@ -113,7 +113,7 @@ module Twitter
     end
 
     def clean_tweet_text(text)
-      text.dup.to_nfc
+      text.dup.to_nfc.gsub("\r\n", "\n")
     end
   end
 end
