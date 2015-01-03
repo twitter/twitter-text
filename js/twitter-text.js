@@ -1288,12 +1288,19 @@
       return "too_long";
     }
 
-    for (var i = 0; i < INVALID_CHARACTERS.length; i++) {
-      if (text.indexOf(INVALID_CHARACTERS[i]) >= 0) {
-        return "invalid_characters";
-      }
+    if (twttr.txt.hasInvalidCharacters(text)) {
+      return "invalid_characters";
     }
 
+    return false;
+  };
+
+  twttr.txt.hasInvalidCharacters = function(text) {
+    for (var i = 0; i < INVALID_CHARACTERS.length; i++) {
+      if (text.indexOf(INVALID_CHARACTERS[i]) >= 0) {
+        return true;
+      }
+    }
     return false;
   };
 
