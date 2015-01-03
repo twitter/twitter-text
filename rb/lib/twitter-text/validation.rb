@@ -25,9 +25,11 @@ module Twitter
     def tweet_length(text, options = {})
       options = DEFAULT_TCO_URL_LENGTHS.merge(options)
 
-      length = text.to_nfc.unpack("U*").length
+      clean_text = clean_tweet_text(text)
 
-      Twitter::Extractor.extract_urls_with_indices(text) do |url, start_position, end_position|
+      length = clean_text.unpack("U*").length
+
+      Twitter::Extractor.extract_urls_with_indices(clean_text) do |url, start_position, end_position|
         length += start_position - end_position
         length += url.downcase =~ /^https:\/\// ? options[:short_url_length_https] : options[:short_url_length]
       end
@@ -108,6 +110,10 @@ module Twitter
       return (string && string.match(regex) && $~.to_s == string) unless optional
 
       !(string && (!string.match(regex) || $~.to_s != string))
+    end
+
+    def clean_tweet_text(text)
+      text.dup.to_nfc
     end
   end
 end
