@@ -38,6 +38,12 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 
 See [Tweet Entities](https://dev.twitter.com/overview/api/entities-in-twitter-objects) for more info getting url entities from Twitter's API.
 
+## Remaining character count example
+
+    var tweet = "This is a test tweet":
+    var remainingCharacters = 140 - twttr.txt.getTweetLength(tweet);
+    
+`getTweetLength` returns the computed length of a tweet after taking into consideration t.co URL shortening and non UTF-16 characters
 
 ## Usernames
 
