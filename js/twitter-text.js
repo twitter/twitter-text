@@ -1,4 +1,4 @@
-(function() {
+(function(__global__) {
   if (typeof twttr === "undefined" || twttr === null) {
     var twttr = {};
   }
@@ -1396,13 +1396,13 @@
     define([], twttr.txt);
   }
 
-  if (typeof window != 'undefined') {
-    if (window.twttr) {
-      for (var prop in twttr) {
-        window.twttr[prop] = twttr[prop];
-      }
-    } else {
-      window.twttr = twttr;
+
+  if (__global__.twttr) {
+    for (var prop in twttr) {
+      __global__.twttr[prop] = twttr[prop];
     }
+  } else {
+    __global__.twttr = twttr;
   }
-})();
+
+})(this);
