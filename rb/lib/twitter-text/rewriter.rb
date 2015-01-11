@@ -5,13 +5,17 @@ module Twitter
       chars = text.to_s.to_char_a
 
       # sort by start index
-      entities = entities.sort_by{|entity| entity[:indices].first}
+      entities = entities.sort_by do |entity|
+        indices = entity.respond_to?(:indices) ? entity.indices : entity[:indices]
+        indices.first
+      end
 
       result = []
       last_index = entities.inject(0) do |index, entity|
-        result << chars[index...entity[:indices].first]
+        indices = entity.respond_to?(:indices) ? entity.indices : entity[:indices]
+        result << chars[index...indices.first]
         result << yield(entity, chars)
-        entity[:indices].last
+        indices.last
       end
       result << chars[last_index..-1]
 
