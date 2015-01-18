@@ -1,3 +1,5 @@
+{rdoc-image:https://img.shields.io/cocoapods/v/twitter-text-objc.svg}[http://cocoapods.org/?q=twitter-text-objc]
+
 == twitter-text-objc
 
 Objective-C port of the twitter-text handling libraries.
