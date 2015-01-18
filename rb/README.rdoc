@@ -1,3 +1,5 @@
+{rdoc-image:https://img.shields.io/gem/v/twitter-text.svg}[https://rubygems.org/gems/twitter-text]
+
 == twitter-text
 
 A gem that provides text processing routines for Twitter Tweets. The major

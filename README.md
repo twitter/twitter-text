@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/twitter/twitter-text.svg?branch=master)](https://travis-ci.org/twitter/twitter-text)
+[![Build Status](https://img.shields.io/travis/twitter/twitter-text/master.svg)](https://travis-ci.org/twitter/twitter-text) [![Maven Central](https://img.shields.io/maven-central/v/com.twitter/twitter-text.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.twitter%22%20AND%20a%3A%22twitter-text%22) [![Gem](https://img.shields.io/gem/v/twitter-text.svg)](https://rubygems.org/gems/twitter-text) [![npm](https://img.shields.io/npm/v/twitter-text.svg)](https://www.npmjs.com/package/twitter-text) [![CocoaPods](https://img.shields.io/cocoapods/v/twitter-text-objc.svg)](http://cocoapods.org/?q=twitter-text-objc)
 
 twitter-text
 ============

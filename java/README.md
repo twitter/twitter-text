@@ -1,3 +1,5 @@
+[![Maven Central](https://img.shields.io/maven-central/v/com.twitter/twitter-text.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.twitter%22%20AND%20a%3A%22twitter-text%22)
+
 ## twitter-text-java
 
 Java port of the twitter-text handling libraries.
