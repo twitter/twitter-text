@@ -36,6 +36,28 @@ namespace :tlds do
     File.open(repo_path('tld_lib.yml'), 'w') do |file|
       file.write(yml.to_yaml)
     end
+
+    File.open(repo_path("TldLists.java"), 'w') do |file|
+      file.write(<<-EOF
+package com.twitter;
+
+import java.util.Arrays;
+import java.util.List;
+
+// auto generated!
+
+public class TldLists {
+  public static final List<String> gTlds = Arrays.asList(
+#{yml["generic"].sort.map {|el| "    \"#{el}\""}.join(",\n")}
+  );
+
+  public static final List<String> cTlds = Arrays.asList(
+#{yml["country"].sort.map {|el| "    \"#{el}\""}.join(",\n")}
+  );
+}
+EOF
+      )
+    end
   end
 
   desc 'Update tests from tld_lib.yml'

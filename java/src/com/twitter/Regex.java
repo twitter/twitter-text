@@ -1,14 +1,9 @@
 
 package com.twitter;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.*;
-import org.yaml.snakeyaml.Yaml;
+import java.util.regex.Pattern;
 
 public class Regex {
   private static String join(Collection<?> col, String delim) {
@@ -23,19 +18,13 @@ public class Regex {
     return sb.toString();
   }
 
-  private static final Yaml yaml = new Yaml();
-  private static final Map tlds = (Map)yaml.load(
-    ClassLoader.getSystemResourceAsStream("tld_lib.yml")
-  );
-  private static final List gTlds = (List)tlds.get("generic");
-  private static final List cTlds = (List)tlds.get("country");
   private static final String URL_VALID_GTLD =
     "(?:(?:" +
-    join(gTlds, "|") +
+    join(TldLists.gTlds, "|") +
     ")(?=[^\\p{Alnum}@]|$))";
   private static final String URL_VALID_CCTLD =
     "(?:(?:" +
-    join(cTlds, "|") +
+    join(TldLists.cTlds, "|") +
     ")(?=[^\\p{Alnum}@]|$))";
 
   private static final String UNICODE_SPACES = "[" +
