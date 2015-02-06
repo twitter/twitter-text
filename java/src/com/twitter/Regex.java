@@ -1,4 +1,3 @@
-
 package com.twitter;
 
 import java.util.Collection;
@@ -6,25 +5,14 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 public class Regex {
-  private static String join(Collection<?> col, String delim) {
-    StringBuilder sb = new StringBuilder();
-    Iterator<?> iter = col.iterator();
-    if (iter.hasNext())
-        sb.append(iter.next().toString());
-    while (iter.hasNext()) {
-        sb.append(delim);
-        sb.append(iter.next().toString());
-    }
-    return sb.toString();
-  }
 
   private static final String URL_VALID_GTLD =
     "(?:(?:" +
-    join(TldLists.gTlds, "|") +
+    join(TldLists.GTLDS, "|") +
     ")(?=[^\\p{Alnum}@]|$))";
   private static final String URL_VALID_CCTLD =
     "(?:(?:" +
-    join(TldLists.cTlds, "|") +
+    join(TldLists.CTLDS, "|") +
     ")(?=[^\\p{Alnum}@]|$))";
 
   private static final String UNICODE_SPACES = "[" +
@@ -42,7 +30,7 @@ public class Regex {
     "\\u3000" +              // White_Space # Zs       IDEOGRAPHIC SPACE
   "]";
 
-  private static String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff" + // Latin-1
+  private static final String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff" + // Latin-1
                                               "\\u0100-\\u024f" + // Latin Extended A and B
                                               "\\u0253\\u0254\\u0256\\u0257\\u0259\\u025b\\u0263\\u0268\\u026f\\u0272\\u0289\\u028b" + // IPA Extensions
                                               "\\u02bb" + // Hawaiian
@@ -65,8 +53,8 @@ public class Regex {
                                                       "\\u0f0c" + // TIBETAN MARK DELIMITER TSHEG BSTAR
                                                       "\\u0f0d";  // TIBETAN MARK SHAD
   private static final String HASHTAG_ALPHA_NUMERIC_CHARS = HASHTAG_ALPHA_CHARS + HASHTAG_NUMERALS + HASHTAG_SPECIAL_CHARS;
-  private static final String HASHTAG_ALPHA = "[" + HASHTAG_ALPHA_CHARS +"]";
-  private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS +"]";
+  private static final String HASHTAG_ALPHA = "[" + HASHTAG_ALPHA_CHARS + "]";
+  private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS + "]";
 
   /* URL related hash regex collection */
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^A-Z0-9@＠$#＃\u202A-\u202E]|^)";
@@ -127,7 +115,7 @@ public class Regex {
   /** Valid end-of-path characters (so /foo. does not gobble the period).
    *   2. Allow =&# for empty URL parameters and other URL-join artifacts
   **/
-  private static final String URL_VALID_PATH_ENDING_CHARS = "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + "]|(?:" + URL_BALANCED_PARENS +")";
+  private static final String URL_VALID_PATH_ENDING_CHARS = "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + "]|(?:" + URL_BALANCED_PARENS + ")";
 
   private static final String URL_VALID_PATH = "(?:" +
     "(?:" +
@@ -145,7 +133,7 @@ public class Regex {
     "(" +                                                          //  $3 URL
       "(https?://)?" +                                             //  $4 Protocol (optional)
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
-      "(?::(" + URL_VALID_PORT_NUMBER +"))?" +                     //  $6 Port number (optional)
+      "(?::(" + URL_VALID_PORT_NUMBER + "))?" +                     //  $6 Port number (optional)
       "(/" +
         URL_VALID_PATH + "*+" +
       ")?" +                                                       //  $7 URL Path and anchor
@@ -154,8 +142,7 @@ public class Regex {
     ")" +
   ")";
 
-  private static String AT_SIGNS_CHARS = "@\uFF20";
-
+  private static final String AT_SIGNS_CHARS = "@\uFF20";
   private static final String DOLLAR_SIGN_CHAR = "\\$";
   private static final String CASHTAG = "[a-z]{1,6}(?:[._][a-z]{1,2})?";
 
@@ -193,8 +180,22 @@ public class Regex {
   public static final Pattern VALID_TCO_URL = Pattern.compile("^https?:\\/\\/t\\.co\\/[a-z0-9]+", Pattern.CASE_INSENSITIVE);
   public static final Pattern INVALID_URL_WITHOUT_PROTOCOL_MATCH_BEGIN = Pattern.compile("[-_./]$");
 
-  public static final Pattern VALID_CASHTAG = Pattern.compile("(^|" + UNICODE_SPACES + ")(" + DOLLAR_SIGN_CHAR + ")(" + CASHTAG + ")" +"(?=$|\\s|\\p{Punct})", Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_CASHTAG = Pattern.compile("(^|" + UNICODE_SPACES + ")(" + DOLLAR_SIGN_CHAR + ")(" + CASHTAG + ")" + "(?=$|\\s|\\p{Punct})", Pattern.CASE_INSENSITIVE);
   public static final int VALID_CASHTAG_GROUP_BEFORE = 1;
   public static final int VALID_CASHTAG_GROUP_DOLLAR = 2;
   public static final int VALID_CASHTAG_GROUP_CASHTAG = 3;
+
+  public static final Pattern VALID_DOMAIN = Pattern.compile(URL_VALID_DOMAIN, Pattern.CASE_INSENSITIVE);
+
+  private static String join(Collection<?> col, String delim) {
+    final StringBuilder sb = new StringBuilder();
+    final Iterator<?> iter = col.iterator();
+    if (iter.hasNext())
+      sb.append(iter.next().toString());
+    while (iter.hasNext()) {
+      sb.append(delim);
+      sb.append(iter.next().toString());
+    }
+    return sb.toString();
+  }
 }

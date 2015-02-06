@@ -47,11 +47,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TldLists {
-  public static final List<String> gTlds = Arrays.asList(
+  public static final List<String> GTLDS = Arrays.asList(
 #{yml["generic"].sort.map {|el| "    \"#{el}\""}.join(",\n")}
   );
 
-  public static final List<String> cTlds = Arrays.asList(
+  public static final List<String> CTLDS = Arrays.asList(
 #{yml["country"].sort.map {|el| "    \"#{el}\""}.join(",\n")}
   );
 }
