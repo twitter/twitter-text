@@ -36,7 +36,7 @@ public class Regex {
                                               "\\u02bb" + // Hawaiian
                                               "\\u0300-\\u036f" + // Combining diacritics
                                               "\\u1e00-\\u1eff"; // Latin Extended Additional (mostly for Vietnamese)
-  private static final String HASHTAG_ALPHA_CHARS = "\\p{L}\\p{M}";
+  private static final String HASHTAG_LETTERS = "\\p{L}\\p{M}";
   private static final String HASHTAG_NUMERALS = "\\p{Nd}";
   private static final String HASHTAG_SPECIAL_CHARS = "_" + //underscore
                                                       "\\u200c" + // ZERO WIDTH NON-JOINER (ZWNJ)
@@ -52,9 +52,9 @@ public class Regex {
                                                       "\\u0f0b" + // TIBETAN MARK INTERSYLLABIC TSHEG
                                                       "\\u0f0c" + // TIBETAN MARK DELIMITER TSHEG BSTAR
                                                       "\\u0f0d";  // TIBETAN MARK SHAD
-  private static final String HASHTAG_ALPHA_NUMERIC_CHARS = HASHTAG_ALPHA_CHARS + HASHTAG_NUMERALS + HASHTAG_SPECIAL_CHARS;
-  private static final String HASHTAG_ALPHA = "[" + HASHTAG_ALPHA_CHARS + "]";
-  private static final String HASHTAG_ALPHA_NUMERIC = "[" + HASHTAG_ALPHA_NUMERIC_CHARS + "]";
+  private static final String HASHTAG_LETTERS_NUMERALS_CHARS = HASHTAG_LETTERS + HASHTAG_NUMERALS + HASHTAG_SPECIAL_CHARS;
+  private static final String HASHTAG_LETTERS_SET = "[" + HASHTAG_LETTERS + "]";
+  private static final String HASHTAG_LETTERS_NUMERALS_SET = "[" + HASHTAG_LETTERS_NUMERALS_CHARS + "]";
 
   /* URL related hash regex collection */
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^A-Z0-9@＠$#＃\u202A-\u202E]|^)";
@@ -148,7 +148,7 @@ public class Regex {
 
   /* Begin public constants */
 
-  public static final Pattern VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_ALPHA_NUMERIC_CHARS + "])(#|\uFF03)(" + HASHTAG_ALPHA_NUMERIC + "*" + HASHTAG_ALPHA + HASHTAG_ALPHA_NUMERIC + "*)", Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS_CHARS + "])(#|\uFF03)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
   public static final int VALID_HASHTAG_GROUP_BEFORE = 1;
   public static final int VALID_HASHTAG_GROUP_HASH = 2;
   public static final int VALID_HASHTAG_GROUP_TAG = 3;
