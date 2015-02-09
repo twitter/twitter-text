@@ -52,9 +52,9 @@ public class Regex {
                                                       "\\u0f0b" + // TIBETAN MARK INTERSYLLABIC TSHEG
                                                       "\\u0f0c" + // TIBETAN MARK DELIMITER TSHEG BSTAR
                                                       "\\u0f0d";  // TIBETAN MARK SHAD
-  private static final String HASHTAG_LETTERS_NUMERALS_CHARS = HASHTAG_LETTERS + HASHTAG_NUMERALS + HASHTAG_SPECIAL_CHARS;
+  private static final String HASHTAG_LETTERS_NUMERALS = HASHTAG_LETTERS + HASHTAG_NUMERALS + HASHTAG_SPECIAL_CHARS;
   private static final String HASHTAG_LETTERS_SET = "[" + HASHTAG_LETTERS + "]";
-  private static final String HASHTAG_LETTERS_NUMERALS_SET = "[" + HASHTAG_LETTERS_NUMERALS_CHARS + "]";
+  private static final String HASHTAG_LETTERS_NUMERALS_SET = "[" + HASHTAG_LETTERS_NUMERALS + "]";
 
   /* URL related hash regex collection */
   private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^A-Z0-9@＠$#＃\u202A-\u202E]|^)";
@@ -148,7 +148,7 @@ public class Regex {
 
   /* Begin public constants */
 
-  public static final Pattern VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS_CHARS + "])(#|\uFF03)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS + "])(#|\uFF03)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
   public static final int VALID_HASHTAG_GROUP_BEFORE = 1;
   public static final int VALID_HASHTAG_GROUP_HASH = 2;
   public static final int VALID_HASHTAG_GROUP_TAG = 3;
