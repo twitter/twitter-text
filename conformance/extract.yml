@@ -777,9 +777,13 @@ tests:
       text: "#ผู้เริ่ม #การเมือง #รายละเอียด #นักท่องเที่ยว #ของขวัญ #สนามบิน #เดินทาง #ประธาน"
       expected: ["ผู้เริ่ม", "การเมือง", "รายละเอียด", "นักท่องเที่ยว", "ของขวัญ", "สนามบิน", "เดินทาง", "ประธาน"]
 
-    - description: "Extract Arabic hashtags with Zero-Width Non-Joiner"
+    - description: "Extract Arabic hashtags with Zero-Width Non-Joiner (U+200C)"
       text: "#أي‌بي‌إم #می‌خواهم"
       expected: ["أي‌بي‌إم", "می‌خواهم"]
+
+    - description: "Extract Sinhala hashtag with Zero-Width Joiner (U+200D)"
+      text: "#ශ්‍රීලංකා"
+      expected: [#ශ්‍රීලංකා"]
 
     - description: "Extract Amharic hashtag"
       text: "የአላህ መልእክተኛ ሰለላሁ ዓለይሂ ወሰለም #ኢትዮሙስሊምስ"
