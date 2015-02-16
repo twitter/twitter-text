@@ -332,7 +332,7 @@ module Twitter
       hashtag_class = options[:hashtag_class]
 
       if hashtag.match Twitter::Regex::REGEXEN[:rtl_chars]
-        hashtag_class += ' rtl'
+        (hashtag_class ||= '') << ' rtl'
       end
 
       href = if options[:hashtag_url_block]
