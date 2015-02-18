@@ -27,7 +27,7 @@ public class Regex {
     "\\u2029" +             // White_Space # Zp       PARAGRAPH SEPARATOR
     "\\u202F" +             // White_Space # Zs       NARROW NO-BREAK SPACE
     "\\u205F" +             // White_Space # Zs       MEDIUM MATHEMATICAL SPACE
-    "\\u3000" +              // White_Space # Zs       IDEOGRAPHIC SPACE
+    "\\u3000" +             // White_Space # Zs       IDEOGRAPHIC SPACE
   "]";
 
   private static final String LATIN_ACCENTS_CHARS = "\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u00ff" + // Latin-1
@@ -40,6 +40,7 @@ public class Regex {
   private static final String HASHTAG_NUMERALS = "\\p{Nd}";
   private static final String HASHTAG_SPECIAL_CHARS = "_" + //underscore
                                                       "\\u200c" + // ZERO WIDTH NON-JOINER (ZWNJ)
+                                                      "\\u200d" + // ZERO WIDTH JOINER (ZWJ)
                                                       "\\ua67e" + // CYRILLIC KAVYKA
                                                       "\\u05be" + // HEBREW PUNCTUATION MAQAF
                                                       "\\u05f3" + // HEBREW PUNCTUATION GERESH
