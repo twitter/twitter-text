@@ -40,7 +40,7 @@ public class Regex {
   private static final String HASHTAG_NUMERALS = "\\p{Nd}";
   private static final String HASHTAG_SPECIAL_CHARS = "_" + //underscore
                                                       "\\u200c" + // ZERO WIDTH NON-JOINER (ZWNJ)
-                                                      "\\u200d" + // ZERO WIDTH JOINDER (ZWJ)
+                                                      "\\u200d" + // ZERO WIDTH JOINER (ZWJ)
                                                       "\\ua67e" + // CYRILLIC KAVYKA
                                                       "\\u05be" + // HEBREW PUNCTUATION MAQAF
                                                       "\\u05f3" + // HEBREW PUNCTUATION GERESH
