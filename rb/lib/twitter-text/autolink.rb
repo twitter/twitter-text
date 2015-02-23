@@ -329,7 +329,7 @@ module Twitter
       hash = chars[entity[:indices].first]
       hashtag = entity[:hashtag]
       hashtag = yield(hashtag) if block_given?
-      hashtag_class = options[:hashtag_class]
+      hashtag_class = options[:hashtag_class].to_s
 
       if hashtag.match Twitter::Regex::REGEXEN[:rtl_chars]
         hashtag_class += ' rtl'
