@@ -40,10 +40,17 @@ describe Twitter::Extractor do
         @extractor.extract_mentioned_screen_names("の@aliceに到着を待っている").should == ["alice"]
       end
 
-      it "should ignore mentions preceded by !, @, #, $, %, & or *" do
-        invalid_chars = ['!', '@', '#', '$', '%', '&', '*']
+      it "should ignore mentions preceded by !, #, $, %, & or *" do
+        invalid_chars = ['!', '#', '$', '%', '&', '*']
         invalid_chars.each do |c|
           @extractor.extract_mentioned_screen_names("f#{c}@kn").should == []
+        end
+      end
+
+      it "should accept mentions preceded by @ or ＠" do
+        valid_chars = ['@', '＠']
+        valid_chars.each do |c|
+          @extractor.extract_mentioned_screen_names("f#{c}@kn").should == ['kn']
         end
       end
     end

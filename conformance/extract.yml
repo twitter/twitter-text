@@ -70,7 +70,7 @@ tests:
 
     - description: "DO NOT extract username preceded by @"
       text: "f@@kn"
-      expected: []
+      expected: ['kn']
 
     - description: "DO NOT extract username preceded by #"
       text: "f#@kn"

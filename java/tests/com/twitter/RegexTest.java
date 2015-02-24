@@ -113,8 +113,15 @@ public class RegexTest extends TestCase {
     assertCaptureCount(4, Regex.VALID_MENTION_OR_LIST, "sample @user mention");
   }
 
+  public void testValidMentions() {
+    char[] valid_chars = new char[]{'@'};
+    for (char c : valid_chars) {
+      assertTrue("Failed to capture a mention preceded by " + c, Regex.VALID_MENTION_OR_LIST.matcher("f" + c + "@kn").find());
+    }
+  }
+
   public void testInvalidMentions() {
-    char[] invalid_chars = new char[]{'!', '@', '#', '$', '%', '&', '*'};
+    char[] invalid_chars = new char[]{'!', '#', '$', '%', '&', '*'};
     for (char c : invalid_chars) {
       assertFalse("Failed to ignore a mention preceded by " + c, Regex.VALID_MENTION_OR_LIST.matcher("f" + c + "@kn").find());
     }

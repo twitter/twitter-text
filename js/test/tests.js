@@ -293,11 +293,20 @@ test("twttr.txt.linkTextWithEntity", function() {
 });
 
 test("twttr.txt.extractMentionsOrListsWithIndices", function() {
-  var invalid_chars = ['!', '@', '#', '$', '%', '&', '*'];
+  var invalid_chars = ['!', '#', '$', '%', '&', '*'];
 
   for (var i = 0; i < invalid_chars.length; i++) {
     c = invalid_chars[i];
     equal(twttr.txt.extractMentionsOrListsWithIndices("f" + c + "@kn").length, 0, "Should not extract mention if preceded by " + c);
+  }
+});
+
+test("twttr.txt.extractMentionsOrListsWithIndices", function() {
+  var valid_chars = ['@'];
+
+  for (var i = 0; i < valid_chars.length; i++) {
+    c = valid_chars[i];
+    equal(twttr.txt.extractMentionsOrListsWithIndices("f" + c + "@kn").length, 1, "Should not extract mention if preceded by " + c);
   }
 });
 
