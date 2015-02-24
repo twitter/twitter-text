@@ -58,7 +58,9 @@ public class Regex {
   private static final String HASHTAG_LETTERS_NUMERALS_SET = "[" + HASHTAG_LETTERS_NUMERALS + "]";
 
   /* URL related hash regex collection */
-  private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^A-Z0-9@＠$#＃\u202A-\u202E]|^)";
+  private static final String PRECEDING_CHARS = "A-Z0-9@＠$#＃\u202A-\u202E";
+  private static final String URL_VALID_PRECEDING_CHARS = "(?:[^" + PRECEDING_CHARS + "]|^)";
+  private static final String URL_INVALID_PRECEDING_CHARS = "(?<![" + PRECEDING_CHARS + "])";
 
   private static final String URL_VALID_CHARS = "[\\p{Alnum}" + LATIN_ACCENTS_CHARS + "]";
   private static final String URL_VALID_SUBDOMAIN = "(?>(?:" + URL_VALID_CHARS + "[" + URL_VALID_CHARS + "\\-_]*)?" + URL_VALID_CHARS + "\\.)";
@@ -130,11 +132,11 @@ public class Regex {
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
   "(" +                                                            //  $1 total match
-    "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceeding chracter
+    "(" + URL_VALID_PRECEDING_CHARS + ")" +                        //  $2 Preceding character
     "(" +                                                          //  $3 URL
       "(https?://)?" +                                             //  $4 Protocol (optional)
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
-      "(?::(" + URL_VALID_PORT_NUMBER + "))?" +                     //  $6 Port number (optional)
+      "(?::(" + URL_VALID_PORT_NUMBER + "))?" +                    //  $6 Port number (optional)
       "(/" +
         URL_VALID_PATH + "*+" +
       ")?" +                                                       //  $7 URL Path and anchor
@@ -142,6 +144,21 @@ public class Regex {
               URL_VALID_URL_QUERY_ENDING_CHARS + ")?" +
     ")" +
   ")";
+
+  private static final String VALID_URL_ONLY_PATTERN_STRING =
+      "(" +                                                            //  $1 total match
+          "(" + URL_INVALID_PRECEDING_CHARS + ")" +                    //  $2 Preceding character
+          "(" +                                                        //  $3 URL
+          "(https?://)?" +                                             //  $4 Protocol (optional)
+          "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
+          "(?::(" + URL_VALID_PORT_NUMBER + "))?" +                    //  $6 Port number (optional)
+          "(/" +
+          URL_VALID_PATH + "*+" +
+          ")?" +                                                       //  $7 URL Path and anchor
+          "(\\?" + URL_VALID_URL_QUERY_CHARS + "*" +                   //  $8 Query String
+          URL_VALID_URL_QUERY_ENDING_CHARS + ")?" +
+          ")" +
+          ")";
 
   private static final String AT_SIGNS_CHARS = "@\uFF20";
   private static final String DOLLAR_SIGN_CHAR = "\\$";
@@ -168,7 +185,9 @@ public class Regex {
 
   public static final Pattern INVALID_MENTION_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
 
+  @Deprecated
   public static final Pattern VALID_URL = Pattern.compile(VALID_URL_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_URL_ONLY = Pattern.compile(VALID_URL_ONLY_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
   public static final int VALID_URL_GROUP_ALL          = 1;
   public static final int VALID_URL_GROUP_BEFORE       = 2;
   public static final int VALID_URL_GROUP_URL          = 3;
