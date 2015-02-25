@@ -168,6 +168,17 @@ public class Regex {
 
   public static final Pattern INVALID_MENTION_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
 
+  /**
+   * Regex to extract URL (it also includes the text preceding the url).
+   *
+   * This regex does not reflect its name and {@link Regex#VALID_URL_GROUP_URL} match
+   * should be checked in order to match a valid url. This is not ideal, but the behavior is
+   * being kept to ensure backwards compatibility. Ideally this regex should be
+   * implemented with a negative lookbehind as opposed to a negated character class
+   * but lack of JS support increases maint overhead if the logic is different by
+   * platform.
+   */
+
   public static final Pattern VALID_URL = Pattern.compile(VALID_URL_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
   public static final int VALID_URL_GROUP_ALL          = 1;
   public static final int VALID_URL_GROUP_BEFORE       = 2;
