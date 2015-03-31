@@ -114,7 +114,7 @@ This will make a new file at `pkg/twitter-text-1.1.0.js`.
 
 ## Reporting Bugs
 
-Please direct bug reports to the [twitter-text issue tracker on GitHub](http://github.com/bcherry/twitter-text/issues)
+Please direct bug reports to the [twitter-text issue tracker on GitHub](https://github.com/twitter/twitter-text/issues)
 
 ## Copyright and License
 
