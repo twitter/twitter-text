@@ -52,7 +52,7 @@ public class Regex {
                                                       "\\u3003" + // DITTO MARK
                                                       "\\u0f0b" + // TIBETAN MARK INTERSYLLABIC TSHEG
                                                       "\\u0f0c" + // TIBETAN MARK DELIMITER TSHEG BSTAR
-                                                      "\\u0f0d";  // TIBETAN MARK SHAD
+                                                      "\\u00b7";  // MIDDLE DOT
   private static final String HASHTAG_LETTERS_NUMERALS = HASHTAG_LETTERS + HASHTAG_NUMERALS + HASHTAG_SPECIAL_CHARS;
   private static final String HASHTAG_LETTERS_SET = "[" + HASHTAG_LETTERS + "]";
   private static final String HASHTAG_LETTERS_NUMERALS_SET = "[" + HASHTAG_LETTERS_NUMERALS + "]";

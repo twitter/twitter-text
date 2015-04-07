@@ -806,8 +806,8 @@ tests:
       expected: ["বাংলা","ગુજરાતી","ಕನ್ನಡ","മലയാളം","ଓଡ଼ିଆ","ਪੰਜਾਬੀ","සිංහල","தமிழ்","తెలుగు"]
 
     - description: "Extract Tibetan hashtags"
-      text: "#བོད་སྐད་ #བོད་སྐད།"
-      expected: ["བོད་སྐད་","བོད་སྐད།"]
+      text: "#བོད་སྐད་ #བོད་སྐད"
+      expected: ["བོད་སྐད་","བོད་སྐད"]
 
     - description: "Extract Khmer, Burmese, Laotian hashtags"
       text: "#មហាត្មះគន្ធី #မြင့်မြတ်သော #ຊີວະສາດ"
@@ -820,6 +820,10 @@ tests:
     - description: "Extract Armenian and Georgian hashtags"
       text: "#Մահաթմա #მაჰათმა"
       expected: ["Մահաթմա","მაჰათმა"]
+
+    - description: "Extract hashtag with middle dot"
+      text: "#il·lusió"
+      expected: ["il·lusió"]
 
     - description: "DO NOT extract hashtags without a letter"
       text: "#_ #1_2 #122 #〃"
