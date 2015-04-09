@@ -161,7 +161,7 @@
   twttr.txt.regexen.validDomainName = regexSupplant(/(?:(?:#{validDomainChars}(?:-|#{validDomainChars})*)?#{validDomainChars}\.)/);
   twttr.txt.regexen.validGTLD = regexSupplant(RegExp(
     '(?:(?:' +
-    'abogado|academy|accountants|active|actor|adult|aero|agency|airforce|allfinanz|alsace|android|' +
+    'abogado|academy|accountants|active|actor|adult|aero|agency|airforce|allfinanz|alsace|amsterdam|android|' +
     'aquarelle|archi|army|arpa|asia|associates|attorney|auction|audio|autos|axa|band|bar|bargains|' +
     'bayern|beer|berlin|best|bid|bike|bio|biz|black|blackfriday|bloomberg|blue|bmw|bnpparibas|boo|' +
     'boutique|brussels|budapest|build|builders|business|buzz|bzh|cab|cal|camera|camp|cancerresearch|' +
