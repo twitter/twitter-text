@@ -149,24 +149,24 @@ public class Regex {
 
   /* Begin public constants */
 
-  public static final Pattern VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS + "])(#|\uFF03)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_HASHTAG;
   public static final int VALID_HASHTAG_GROUP_BEFORE = 1;
   public static final int VALID_HASHTAG_GROUP_HASH = 2;
   public static final int VALID_HASHTAG_GROUP_TAG = 3;
-  public static final Pattern INVALID_HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
-  public static final Pattern RTL_CHARACTERS = Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
+  public static final Pattern INVALID_HASHTAG_MATCH_END;
+  public static final Pattern RTL_CHARACTERS;
 
-  public static final Pattern AT_SIGNS = Pattern.compile("[" + AT_SIGNS_CHARS + "]");
-  public static final Pattern VALID_MENTION_OR_LIST = Pattern.compile("([^a-z0-9_!#$%&*" + AT_SIGNS_CHARS + "]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
+  public static final Pattern AT_SIGNS;
+  public static final Pattern VALID_MENTION_OR_LIST;
   public static final int VALID_MENTION_OR_LIST_GROUP_BEFORE = 1;
   public static final int VALID_MENTION_OR_LIST_GROUP_AT = 2;
   public static final int VALID_MENTION_OR_LIST_GROUP_USERNAME = 3;
   public static final int VALID_MENTION_OR_LIST_GROUP_LIST = 4;
 
-  public static final Pattern VALID_REPLY = Pattern.compile("^(?:" + UNICODE_SPACES + ")*" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_REPLY;
   public static final int VALID_REPLY_GROUP_USERNAME = 1;
 
-  public static final Pattern INVALID_MENTION_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
+  public static final Pattern INVALID_MENTION_MATCH_END;
 
   /**
    * Regex to extract URL (it also includes the text preceding the url).
@@ -179,7 +179,7 @@ public class Regex {
    * platform.
    */
 
-  public static final Pattern VALID_URL = Pattern.compile(VALID_URL_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_URL;
   public static final int VALID_URL_GROUP_ALL          = 1;
   public static final int VALID_URL_GROUP_BEFORE       = 2;
   public static final int VALID_URL_GROUP_URL          = 3;
@@ -189,15 +189,34 @@ public class Regex {
   public static final int VALID_URL_GROUP_PATH         = 7;
   public static final int VALID_URL_GROUP_QUERY_STRING = 8;
 
-  public static final Pattern VALID_TCO_URL = Pattern.compile("^https?:\\/\\/t\\.co\\/[a-z0-9]+", Pattern.CASE_INSENSITIVE);
-  public static final Pattern INVALID_URL_WITHOUT_PROTOCOL_MATCH_BEGIN = Pattern.compile("[-_./]$");
+  public static final Pattern VALID_TCO_URL;
+  public static final Pattern INVALID_URL_WITHOUT_PROTOCOL_MATCH_BEGIN;
 
-  public static final Pattern VALID_CASHTAG = Pattern.compile("(^|" + UNICODE_SPACES + ")(" + DOLLAR_SIGN_CHAR + ")(" + CASHTAG + ")" + "(?=$|\\s|\\p{Punct})", Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_CASHTAG;
   public static final int VALID_CASHTAG_GROUP_BEFORE = 1;
   public static final int VALID_CASHTAG_GROUP_DOLLAR = 2;
   public static final int VALID_CASHTAG_GROUP_CASHTAG = 3;
 
-  public static final Pattern VALID_DOMAIN = Pattern.compile(URL_VALID_DOMAIN, Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALID_DOMAIN;
+
+  // initializing in a static synchronized block, there appears to be thread safety issues with Pattern.compile in android
+  static {
+    synchronized(Regex.class) {
+      VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS + "])(#|\uFF03)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
+      INVALID_HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
+      RTL_CHARACTERS = Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
+      AT_SIGNS = Pattern.compile("[" + AT_SIGNS_CHARS + "]");
+      VALID_MENTION_OR_LIST = Pattern.compile("([^a-z0-9_!#$%&*" + AT_SIGNS_CHARS + "]|^|RT:?)(" + AT_SIGNS + "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
+      VALID_REPLY = Pattern.compile("^(?:" + UNICODE_SPACES + ")*" + AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
+      INVALID_MENTION_MATCH_END = Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
+      INVALID_URL_WITHOUT_PROTOCOL_MATCH_BEGIN = Pattern.compile("[-_./]$");
+
+      VALID_URL = Pattern.compile(VALID_URL_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
+      VALID_TCO_URL = Pattern.compile("^https?:\\/\\/t\\.co\\/[a-z0-9]+", Pattern.CASE_INSENSITIVE);
+      VALID_CASHTAG = Pattern.compile("(^|" + UNICODE_SPACES + ")(" + DOLLAR_SIGN_CHAR + ")(" + CASHTAG + ")" + "(?=$|\\s|\\p{Punct})", Pattern.CASE_INSENSITIVE);
+      VALID_DOMAIN = Pattern.compile(URL_VALID_DOMAIN, Pattern.CASE_INSENSITIVE);
+    }
+  }
 
   private static String join(Collection<?> col, String delim) {
     final StringBuilder sb = new StringBuilder();
