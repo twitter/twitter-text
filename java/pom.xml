@@ -256,11 +256,6 @@
       <version>1.12</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0.21</version>
-    </dependency>
 
   </dependencies>
 </project>
