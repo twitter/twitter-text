@@ -1,0 +1,11 @@
+{
+  "name": "twitter-text-js",
+  "version": "1.12.0",
+  "main": "js/twitter-text.js",
+  "ignore": [
+    "conformance/*",
+    "java/*",
+    "objc/*",
+    "rb/*"
+  ]
+}
