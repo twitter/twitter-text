@@ -114,7 +114,7 @@ module Twitter
     # Used in Extractor for final filtering
     REGEXEN[:end_hashtag_match] = /\A(?:[#＃]|:\/\/)/o
 
-    REGEXEN[:valid_mention_preceding_chars] = /(?:[^a-zA-Z0-9_!#\$%&*@＠]|^|[rR][tT]:?)/o
+    REGEXEN[:valid_mention_preceding_chars] = /(?:[^a-zA-Z0-9_!#\$%&*@＠]|^|(?:^|[^a-zA-Z0-9_+~.-])[rR][tT]:?)/o
     REGEXEN[:at_signs] = /[@＠]/
     REGEXEN[:valid_mention_or_list] = /
       (#{REGEXEN[:valid_mention_preceding_chars]})  # $1: Preceeding character
