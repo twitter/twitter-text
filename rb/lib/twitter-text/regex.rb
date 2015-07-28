@@ -208,7 +208,7 @@ module Twitter
     )/iox
 
     REGEXEN[:valid_url_query_chars] = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|@]/i
-    REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/]/i
+    REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/\-]/i
     REGEXEN[:valid_url] = %r{
       (                                                                                     #   $1 total match
         (#{REGEXEN[:valid_url_preceding_chars]})                                            #   $2 Preceeding chracter
