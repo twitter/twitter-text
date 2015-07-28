@@ -35,7 +35,8 @@ module TestUrls
     "t.co/nwcLTFF",
     "http://foobar.みんな",
     "http://foobar.中国",
-    "http://foobar.پاکستان"
+    "http://foobar.پاکستان",
+    "https://www.youtube.com/playlist?list=PL0ZPu8XSRTB7wZzn0mLHMvyzVFeRxbWn-"
   ] unless defined?(TestUrls::VALID)
 
   INVALID = [
