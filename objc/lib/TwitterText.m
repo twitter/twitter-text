@@ -247,7 +247,7 @@
     @")" \
 @"\\)"
 
-#define TWUValidURLPathEndingChars      @"[a-zA-Z0-9=_#/+\\-" TWULatinAccents @"]|(?:" TWUValidURLBalancedParens @")"
+#define TWUValidURLPathEndingChars      @"[-a-zA-Z0-9=_#/+\\-" TWULatinAccents @"]|(?:" TWUValidURLBalancedParens @")"
 
 #define TWUValidURLPath \
 @"(?:" \
