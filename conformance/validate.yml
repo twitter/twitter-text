@@ -145,6 +145,10 @@ tests:
       text: "http://☃.net/"
       expected: true
 
+    - description: "Valid url: trailing hyphen"
+      text: "https://www.youtube.com/playlist?list=PL0ZPu8XSRTB7wZzn0mLHMvyzVFeRxbWn-"
+      expected: true
+
     - description: "Invalid url: invalid scheme"
       text: "ftp://www.example.com/"
       expected: false
