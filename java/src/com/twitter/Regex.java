@@ -116,7 +116,7 @@ public class Regex {
   /** Valid end-of-path characters (so /foo. does not gobble the period).
    *   2. Allow =&# for empty URL parameters and other URL-join artifacts
   **/
-  private static final String URL_VALID_PATH_ENDING_CHARS = "[-a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + "]|(?:" + URL_BALANCED_PARENS + ")";
+  private static final String URL_VALID_PATH_ENDING_CHARS = "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + "]|(?:" + URL_BALANCED_PARENS + ")";
 
   private static final String URL_VALID_PATH = "(?:" +
     "(?:" +
