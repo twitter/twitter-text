@@ -47,10 +47,12 @@ module Twitter
       entities = json.values().flatten()
 
       # map JSON entity to twitter-text entity
-      entities.each do |entity|
-        HashHelper.symbolize_keys!(entity)
+      # be careful not to alter arguments received
+      entities.map! do |entity|
+        entity = HashHelper.symbolize_keys(entity)
         # hashtag
         entity[:hashtag] = entity[:text] if entity[:text]
+        entity
       end
 
       auto_link_entities(text, entities, options)
@@ -229,8 +231,8 @@ module Twitter
 
     def url_entities_hash(url_entities)
       (url_entities || {}).inject({}) do |entities, entity|
-        HashHelper.symbolize_keys!(entity)
-        entities[entity[:url]] = entity
+        # be careful not to alter arguments received
+        entities[entity[:url]] = HashHelper.symbolize_keys(entity)
         entities
       end
     end

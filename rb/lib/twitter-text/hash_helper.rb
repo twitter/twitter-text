@@ -6,7 +6,7 @@ module Twitter
     #   { 'name' => 'Rob', 'years' => '28' }.symbolize_keys
     #   #=> { :name => "Rob", :years => "28" }
     def self.symbolize_keys(hash)
-      hash.dup.symbolize_keys!
+      symbolize_keys!(hash.dup)
     end
 
     # Destructively convert all keys to symbols, as long as they respond
