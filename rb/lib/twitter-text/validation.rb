@@ -5,9 +5,9 @@ module Twitter
     MAX_LENGTH = 140
 
     DEFAULT_TCO_URL_LENGTHS = {
-      :short_url_length => 22,
+      :short_url_length => 23,
       :short_url_length_https => 23,
-      :characters_reserved_per_media => 22
+      :characters_reserved_per_media => 23
     }.freeze
 
     # Returns the length of the string as it would be displayed. This is equivilent to the length of the Unicode NFC
