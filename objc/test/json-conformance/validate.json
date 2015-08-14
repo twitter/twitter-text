@@ -8,12 +8,12 @@
       },
       {
         "description": "Valid Tweet: 140 characters",
-        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on.  Winston Churchill (1874-1965) http://bit.ly/dJpywL",
+        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. Winston Churchill (1874-1965) https://bit.ly/dJpywL",
         "expected": true
       },
       {
         "description": "Valid Tweet: 140 characters (with accents)",
-        "text": "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn.  Winston Churchill (1874-1965) http://bit.ly/dJpywL",
+        "text": "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn. Winston Churchill (1874-1965) https://bit.ly/dJpywL",
         "expected": true
       },
       {
@@ -33,12 +33,12 @@
       },
       {
         "description": "Invalid Tweet: 141 characters",
-        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. --- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
+        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. -- Winston Churchill (1874-1965) https://bit.ly/dJpywL",
         "expected": false
       },
       {
         "description": "Invalid Tweet: 141 characters (due to newline)",
-        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. \n-- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
+        "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. \n- Winston Churchill (1874-1965) https://bit.ly/dJpywL",
         "expected": false
       }
     ],
@@ -185,6 +185,11 @@
         "expected": true
       },
       {
+        "description": "Valid url: trailing hyphen",
+        "text": "https://www.youtube.com/playlist?list=PL0ZPu8XSRTB7wZzn0mLHMvyzVFeRxbWn-",
+        "expected": true
+      },
+      {
         "description": "Invalid url: invalid scheme",
         "text": "ftp://www.example.com/",
         "expected": false
@@ -269,9 +274,9 @@
         "expected": 15
       },
       {
-        "description": "Count a URL starting with http:// as 22 characters",
+        "description": "Count a URL starting with http:// as 23 characters",
         "text": "http://test.com",
-        "expected": 22
+        "expected": 23
       },
       {
         "description": "Count a URL starting with https:// as 23 characters",
@@ -279,14 +284,14 @@
         "expected": 23
       },
       {
-        "description": "Count a URL without protocol as 22 characters",
+        "description": "Count a URL without protocol as 23 characters",
         "text": "test.com",
-        "expected": 22
+        "expected": 23
       },
       {
         "description": "Count multiple URLs correctly",
-        "text": "Test http://test.com test http://test.com test.com test",
-        "expected": 83
+        "text": "Test https://test.com test https://test.com test.com test",
+        "expected": 86
       },
       {
         "description": "Count unicode chars outside the basic multilingual plane (double word)",
