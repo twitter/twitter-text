@@ -232,7 +232,8 @@ module Twitter
     def url_entities_hash(url_entities)
       (url_entities || {}).inject({}) do |entities, entity|
         # be careful not to alter arguments received
-        entities[entity[:url]] = HashHelper.symbolize_keys(entity)
+        _entity = HashHelper.symbolize_keys(entity)
+        entities[_entity[:url]] = _entity
         entities
       end
     end
