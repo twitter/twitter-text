@@ -277,7 +277,7 @@
 #pragma mark - Constants
 
 static const NSUInteger MaxTweetLength = 140;
-static const NSUInteger HTTPShortURLLength = 22;
+static const NSUInteger HTTPShortURLLength = 23;
 static const NSUInteger HTTPSShortURLLength = 23;
 
 @implementation TwitterText

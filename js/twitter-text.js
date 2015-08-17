@@ -1193,7 +1193,7 @@
       options = {
           // These come from https://api.twitter.com/1/help/configuration.json
           // described by https://dev.twitter.com/docs/api/1/get/help/configuration
-          short_url_length: 22,
+          short_url_length: 23,
           short_url_length_https: 23
       };
     }
@@ -1206,7 +1206,7 @@
       textLength += urlsWithIndices[i].indices[0] - urlsWithIndices[i].indices[1];
 
       // Add 23 characters for URL starting with https://
-      // Otherwise add 22 characters
+      // http:// URLs still use https://t.co so they are 23 characters as well
       if (urlsWithIndices[i].url.toLowerCase().match(twttr.txt.regexen.urlHasHttps)) {
          textLength += options.short_url_length_https;
       } else {
