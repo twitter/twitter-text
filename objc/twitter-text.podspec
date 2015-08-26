@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   name = "twitter-text"
-  version = "1.12.0"
+  version = "1.13.0"
   url = "https://github.com/twitter/#{name}"
   git_url = "#{url}.git"
   tag = "v#{version}"
