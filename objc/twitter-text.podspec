@@ -9,6 +9,11 @@ Pod::Spec.new do |s|
   s.version = version
   s.license = { :type => "Apache License, Version 2.0" }
   s.summary = "Objective-C port of the twitter-text handling libraries."
+  s.description      = <<-DESC
+  Twitter text is a library responsible for:
+    Determining the quantity of characters in a tweet
+    Identifying and linking any url, @username, #hashtag, or $cashtag entities
+                       DESC
   s.homepage = "#{url}/tree/#{tag}/objc"
   s.source = { :git => "#{url}.git", :tag => tag }
   s.source_files = "objc/lib/**/*.{h,m}"
