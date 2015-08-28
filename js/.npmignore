@@ -1,0 +1,8 @@
+tags
+pkg/
+lib/
+test/
+tmp/
+chalkboard
+Rakefile
+Gruntfile.js
