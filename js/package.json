@@ -3,6 +3,9 @@
   "description": "official twitter text linkification",
   "version": "1.13.2",
   "main": "./twitter-text.js",
+  "files": [
+    "twitter-text.js"
+  ],
   "homepage": "https://github.com/twitter/twitter-text-js",
   "author": "Twitter Inc.",
   "repository": {
