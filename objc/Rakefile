@@ -11,6 +11,7 @@ namespace :test do
     desc "Objective-C conformance test suite"
     task :run => [:convert_tests] do
       system("xctool test -scheme TwitterTextTests -project testproject/TwitterText.xcodeproj")
+      abort if $?.exitstatus != 0 # Return a non-zero exit code when tests fail. Exit code is 0 when tests succeed.
     end
 
     desc "Convert testing data from YAML to JSON"
