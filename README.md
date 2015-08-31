@@ -1,4 +1,4 @@
-[![Build Status](https://img.shields.io/travis/twitter/twitter-text/master.svg)](https://travis-ci.org/twitter/twitter-text) [![Maven Central](https://img.shields.io/maven-central/v/com.twitter/twitter-text.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.twitter%22%20AND%20a%3A%22twitter-text%22) [![Gem](https://img.shields.io/gem/v/twitter-text.svg)](https://rubygems.org/gems/twitter-text) [![npm](https://img.shields.io/npm/v/twitter-text.svg)](https://www.npmjs.com/package/twitter-text) [![CocoaPods](https://img.shields.io/cocoapods/v/twitter-text-objc.svg)](http://cocoapods.org/?q=twitter-text-objc)
+[![Build Status](https://img.shields.io/travis/twitter/twitter-text/master.svg)](https://travis-ci.org/twitter/twitter-text) [![Maven Central](https://img.shields.io/maven-central/v/com.twitter/twitter-text.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.twitter%22%20AND%20a%3A%22twitter-text%22) [![Gem](https://img.shields.io/gem/v/twitter-text.svg)](https://rubygems.org/gems/twitter-text) [![npm](https://img.shields.io/npm/v/twitter-text.svg)](https://www.npmjs.com/package/twitter-text) [![CocoaPods](https://img.shields.io/cocoapods/v/twitter-text.svg)](http://cocoapods.org/?q=twitter-text) [![Bower](https://img.shields.io/bower/v/twitter-text.svg)](http://bower.io/search/?q=twitter-text)
 
 twitter-text
 ============
@@ -12,18 +12,6 @@ This repo is a collection of libraries and conformance tests to standardize pars
 * [Objective C](objc)
 
 
-Previous Repos
-==============
-
-This mono-repo is composed of the following individual deprecated repos:
-
-* [Conformance](https://github.com/twitter/twitter-text-conformance)
-* [Java](https://github.com/twitter/twitter-text-java)
-* [Ruby](https://github.com/twitter/twitter-text-rb)
-* [Javascript](https://github.com/twitter/twitter-text-js)
-* [Objective C](https://github.com/twitter/twitter-text-objc)
-
-    
 ## Copyright and License
 
 Copyright 2014 Twitter, Inc and other contributors
