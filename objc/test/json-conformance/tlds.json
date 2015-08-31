@@ -2160,6 +2160,13 @@
         ]
       },
       {
+        "description": "aco is a valid generic tld",
+        "text": "https://twitter.aco",
+        "expected": [
+          "https://twitter.aco"
+        ]
+      },
+      {
         "description": "active is a valid generic tld",
         "text": "https://twitter.active",
         "expected": [
@@ -5037,6 +5044,13 @@
         ]
       },
       {
+        "description": "mom is a valid generic tld",
+        "text": "https://twitter.mom",
+        "expected": [
+          "https://twitter.mom"
+        ]
+      },
+      {
         "description": "monash is a valid generic tld",
         "text": "https://twitter.monash",
         "expected": [
@@ -7288,6 +7302,13 @@
         "text": "https://twitter.政府",
         "expected": [
           "https://twitter.政府"
+        ]
+      },
+      {
+        "description": "新闻 is a valid generic tld",
+        "text": "https://twitter.新闻",
+        "expected": [
+          "https://twitter.新闻"
         ]
       },
       {

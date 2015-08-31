@@ -517,6 +517,13 @@
         ]
       },
       {
+        "description": "DO NOT extract invalid URL with invalid preceding character: (http://twitter.com",
+        "text": "(http://twitter.com",
+        "expected": [
+          "http://twitter.com"
+        ]
+      },
+      {
         "description": "Extract a very long hyphenated sub-domain URL (single letter hyphens)",
         "text": "text http://word-and-a-number-8-ftw.domain.com/",
         "expected": [
@@ -1549,6 +1556,13 @@
         ]
       },
       {
+        "description": "Extract Sinhala hashtag with Zero-Width Joiner (U+200D)",
+        "text": "#ශ්‍රීලංකා",
+        "expected": [
+          "ශ්‍රීලංකා"
+        ]
+      },
+      {
         "description": "Extract Arabic and Persian hashtags with numbers",
         "text": "#۳۴۵هشتگ #هشتگ۶۷۸ #ســـلام_عليكم_٤٠٦",
         "expected": [
@@ -1582,10 +1596,10 @@
       },
       {
         "description": "Extract Tibetan hashtags",
-        "text": "#བོད་སྐད་ #བོད་སྐད།",
+        "text": "#བོད་སྐད་ #བོད་སྐད",
         "expected": [
           "བོད་སྐད་",
-          "བོད་སྐད།"
+          "བོད་སྐད"
         ]
       },
       {
@@ -1610,6 +1624,13 @@
         "expected": [
           "Մահաթմա",
           "მაჰათმა"
+        ]
+      },
+      {
+        "description": "Extract hashtag with middle dot",
+        "text": "#il·lusió",
+        "expected": [
+          "il·lusió"
         ]
       },
       {
