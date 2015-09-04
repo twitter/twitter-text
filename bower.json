@@ -1,6 +1,5 @@
 {
   "name": "twitter-text-js",
-  "version": "1.13.0",
   "main": "js/twitter-text.js",
   "ignore": [
     "conformance/*",
