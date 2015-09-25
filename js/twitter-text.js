@@ -238,7 +238,8 @@
 
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~@|&#{latinAccentChars}]/i);
+  twttr.txt.regexen.cyrillicLettersAndMarks = regexSupplant("\u0400-\u04FF");
+  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z#{cyrillicLettersAndMarks}0-9!\*';:=\+,\.\$\/%#\[\]\-_~@\|&#{latinAccentChars}]/i);
   // Allow URL paths to contain up to two nested levels of balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
@@ -261,7 +262,7 @@
   , 'i');
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
-  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/[\+\-a-z0-9=_#\/#{latinAccentChars}]|(?:#{validUrlBalancedParens})/i);
+  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/[\+\-a-z#{cyrillicLettersAndMarks}0-9=_#\/#{latinAccentChars}]|(?:#{validUrlBalancedParens})/i);
   // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user/
   twttr.txt.regexen.validUrlPath = regexSupplant('(?:' +
     '(?:' +
@@ -295,7 +296,7 @@
   twttr.txt.regexen.validCashtag = regexSupplant('(^|#{spaces})(\\$)(#{cashtag})(?=$|\\s|[#{punct}])', 'gi');
 
   // These URL validation pattern strings are based on the ABNF from RFC 3986
-  twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
+  twttr.txt.regexen.validateUrlUnreserved = /[a-z\u0400-\u04FF0-9\-._~]/i;
   twttr.txt.regexen.validateUrlPctEncoded = /(?:%[0-9a-f]{2})/i;
   twttr.txt.regexen.validateUrlSubDelims = /[!$&'()*+,;=]/i;
   twttr.txt.regexen.validateUrlPchar = regexSupplant('(?:' +
@@ -1202,7 +1203,7 @@
     twttr.txt.modifyIndicesFromUTF16ToUnicode(text, urlsWithIndices);
 
     for (var i = 0; i < urlsWithIndices.length; i++) {
-    	// Subtract the length of the original URL
+      // Subtract the length of the original URL
       textLength += urlsWithIndices[i].indices[0] - urlsWithIndices[i].indices[1];
 
       // Add 23 characters for URL starting with https://

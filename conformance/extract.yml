@@ -348,6 +348,10 @@ tests:
       text: "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde"
       expected: ["http://twitter.com/", "example.com", "http://t.co/abcde", "twitter.com", "example2.com", "http://twitter.com/abcde"]
 
+    - description: "Extract URLs with protocol and path containing Cyrillic characters"
+      text: "Go to http://twitter.com/Русские_слова"
+      expected: ["http://twitter.com/Русские_слова"]
+
     - description: "DO NOT extract short URLs without protocol on ccTLD domains without path"
       text: "twitter.jp日本語it.so中国語foo.jp it.so foo.jp"
       expected: []

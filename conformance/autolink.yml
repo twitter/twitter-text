@@ -696,6 +696,10 @@ tests:
       text: "See: http://example.com/café"
       expected: "See: <a href=\"http://example.com/café\">http://example.com/café</a>"
 
+    - description: "Autolink URL should link paths containing Cyrillic characters"
+      text: "Go to http://example.com/Русские_слова maybe?"
+      expected: "Go to <a href=\"http://example.com/Русские_слова\">http://example.com/Русские_слова</a> maybe?"
+
     - description: "Autolink URL should not link URL without protocol"
       text: "See: www.twitter.com or twitter.com/twitter"
       expected: "See: www.twitter.com or twitter.com/twitter"
