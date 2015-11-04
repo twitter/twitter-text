@@ -108,7 +108,7 @@ module Twitter
     HASHTAG_ALPHANUMERIC = /[\p{L}\p{M}\p{Nd}_\u200c\u200d\u0482\ua673\ua67e\u05be\u05f3\u05f4\u309b\u309c\u30a0\u30fb\u3003\u0f0b\u0f0c\u00b7]/
     HASHTAG_BOUNDARY = /\A|\z|[^&\p{L}\p{M}\p{Nd}_\u200c\u200d\u0482\ua673\ua67e\u05be\u05f3\u05f4\u309b\u309c\u30a0\u30fb\u3003\u0f0b\u0f0c\u00b7]/
 
-    HASHTAG = /(#{HASHTAG_BOUNDARY})(#|＃)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
+    HASHTAG = /(#{HASHTAG_BOUNDARY})(#|＃)(?!\ufe0f|\u20e3)(#{HASHTAG_ALPHANUMERIC}*#{HASHTAG_ALPHA}#{HASHTAG_ALPHANUMERIC}*)/io
 
     REGEXEN[:valid_hashtag] = /#{HASHTAG}/io
     # Used in Extractor for final filtering
