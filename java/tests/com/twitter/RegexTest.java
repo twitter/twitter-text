@@ -62,6 +62,11 @@ public class RegexTest extends TestCase {
 
     for (String text : repeatedPaths) {
       long start = System.currentTimeMillis();
+      final int NUM_RUNS = 100;
+      for (int i = 0; i < NUM_RUNS - 1; i++) {
+        Regex.VALID_URL.matcher(text).find();
+        Regex.VALID_URL.matcher(text).matches();
+      }
       boolean isValid = Regex.VALID_URL.matcher(text).find();
       Regex.VALID_URL.matcher(text).matches();
       long end = System.currentTimeMillis();
@@ -69,7 +74,7 @@ public class RegexTest extends TestCase {
       assertTrue("Should be able to extract a valid URL even followed by punctuations", isValid);
 
       long duration = (end - start);
-      assertTrue("Matching a repeated path end should take less than 10ms (took " + duration + "ms)", (duration < 10) );
+      assertTrue("Matching a repeated path end should take less than 10ms (took " + (duration / NUM_RUNS) + "ms)", (duration < 10 * NUM_RUNS) );
     }
   }
 
