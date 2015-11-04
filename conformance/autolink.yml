@@ -150,6 +150,14 @@ tests:
       text: "text#hashtag"
       expected: "text#hashtag"
 
+    - description: "DO NOT Autolink hashtag that begins with \ufe0f (Emoji style hash sign)"
+      text: "#️hashtag"
+      expected: "#️hashtag"
+
+    - description: "DO NOT Autolink hashtag that begins with \ufe0f (Keycap style hash sign)"
+      text: "#⃣hashtag"
+      expected: "#⃣hashtag"
+
     - description: "Autolink multiple hashtags"
       text: "text #hashtag1 #hashtag2"
       expected: "text <a href=\"https://twitter.com/#!/search?q=%23hashtag1\" title=\"#hashtag1\" class=\"tweet-url hashtag\">#hashtag1</a> <a href=\"https://twitter.com/#!/search?q=%23hashtag2\" title=\"#hashtag2\" class=\"tweet-url hashtag\">#hashtag2</a>"

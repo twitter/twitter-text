@@ -202,7 +202,7 @@ public class Regex {
   // initializing in a static synchronized block, there appears to be thread safety issues with Pattern.compile in android
   static {
     synchronized(Regex.class) {
-      VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS + "])(#|\uFF03)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
+      VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS + "])(#|\uFF03)(?!\uFE0F|\u20E3)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
       INVALID_HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
       RTL_CHARACTERS = Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
       AT_SIGNS = Pattern.compile("[" + AT_SIGNS_CHARS + "]");
