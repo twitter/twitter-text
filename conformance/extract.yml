@@ -737,9 +737,13 @@ tests:
       text: "#云々 #学問のすゝめ #いすゞ #各〻 #各〃"
       expected: ["云々", "学問のすゝめ", "いすゞ", "各〻", "各〃"]
 
-    - description: "Extract hashtag with wave dash"
+    - description: "Extract hashtag with fullwidth tilde"
       text: "#メ～テレ ハッシュタグ内で～が認識されず"
       expected: ["メ～テレ"]
+
+    - description: "Extract hashtag with wave dash"
+      text: "#メ〜テレ ハッシュタグ内で～が認識されず"
+      expected: ["メ〜テレ"]
 
     - description: "Hashtags with ş (U+015F)"
       text: "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş"

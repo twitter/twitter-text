@@ -45,6 +45,7 @@ public class Regex {
                                                       "\\u05be" + // HEBREW PUNCTUATION MAQAF
                                                       "\\u05f3" + // HEBREW PUNCTUATION GERESH
                                                       "\\u05f4" + // HEBREW PUNCTUATION GERSHAYIM
+                                                      "\\uff5e" + // FULLWIDTH TILDE
                                                       "\\u301c" + // WAVE DASH
                                                       "\\u309b" + // KATAKANA-HIRAGANA VOICED SOUND MARK
                                                       "\\u309c" + // KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK
