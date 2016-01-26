@@ -1041,19 +1041,22 @@
           break;
         }
         entity = entities[entityIndex];
-      }
 
-      var c = text.charCodeAt(charIndex);
-      if (0xD800 <= c && c <= 0xDBFF && charIndex < text.length - 1) {
-        // Found high surrogate char
-        c = text.charCodeAt(charIndex + 1);
-        if (0xDC00 <= c && c <= 0xDFFF) {
-          // Found surrogate pair
-          charIndex++;
+        // There may be overalapping media entities with the same start index,
+        // so don't move the codePointIndex or charIndex on this pass.
+      } else {
+        var c = text.charCodeAt(charIndex);
+        if (0xD800 <= c && c <= 0xDBFF && charIndex < text.length - 1) {
+          // Found high surrogate char
+          c = text.charCodeAt(charIndex + 1);
+          if (0xDC00 <= c && c <= 0xDFFF) {
+            // Found surrogate pair
+            charIndex++;
+          }
         }
+        codePointIndex++;
+        charIndex++;
       }
-      codePointIndex++;
-      charIndex++;
     }
   };
 

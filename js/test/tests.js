@@ -307,3 +307,15 @@ test("twttr.txt.extractUrls", function() {
   equal(twttr.txt.extractUrls(message_with_hyphenated_url)[0], "hyphenated-url.com", "Should extract full url with hyphen.");
   equal(twttr.txt.extractUrls(message_with_www_hyphenated_url)[0], "www.123-hyphenated-url.com", "Should extract full url with hyphen.");
 });
+
+test("twttr.txt.convertUnicodeIndices", function () {
+  var entities = [
+    { indices: [32, 50] },
+    { indices: [32, 50] }
+  ];
+  twttr.txt.convertUnicodeIndices("Message with multiple photos \uD801\uDC00 http://t.co/foobar", entities);
+  deepEqual(entities, [
+    { indices: [33, 51] },
+    { indices: [33, 51] }
+  ]);
+});
