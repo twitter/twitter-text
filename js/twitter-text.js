@@ -1042,7 +1042,7 @@
         }
         entity = entities[entityIndex];
 
-        // There may be overalapping media entities with the same start index,
+        // There may be overlapping media entities with the same start index,
         // so don't move the codePointIndex or charIndex on this pass.
       } else {
         var c = text.charCodeAt(charIndex);
