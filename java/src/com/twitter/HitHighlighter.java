@@ -73,10 +73,11 @@ public class HitHighlighter {
   }
 
   /**
-   * Format the current <code>highlightTag</code> by adding &lt; and >. If <code>closeTag</code> is <code>true</code>
+   * Format the current <code>highlightTag</code> by adding &lt; and &gt. If <code>closeTag</code> is <code>true</code>
    * then the tag returned will include a <code>/</code> to signify a closing tag.
    *
-   * @param true if this is a closing tag, false otherwise
+   * @param closeTag true if this is a closing tag, false otherwise
+   * @return reformed tag
    */
   protected String tag(boolean closeTag) {
     StringBuilder sb = new StringBuilder(highlightTag.length() + 3);
@@ -91,7 +92,7 @@ public class HitHighlighter {
   /**
    * Get the current HTML tag used for phrase highlighting.
    *
-   * @return current HTML tag (without &lt; or >)
+   * @return current HTML tag (without &lt; or &gt)
    */
   public String getHighlightTag() {
     return highlightTag;
@@ -100,7 +101,7 @@ public class HitHighlighter {
   /**
    * Set the current HTML tag used for phrase highlighting.
    *
-   * @param new HTML tag (without &lt; or >)
+   * @param highlightTag sets highlighting tag
    */
   public void setHighlightTag(String highlightTag) {
     this.highlightTag = highlightTag;

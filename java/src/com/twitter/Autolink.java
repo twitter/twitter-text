@@ -333,7 +333,6 @@ public class Autolink {
 
   /**
    * Auto-link URLs in the Tweet text provided.
-   * <p/>
    * This only auto-links URLs with protocol.
    *
    * @param text of the Tweet to auto-link
@@ -517,7 +516,7 @@ public class Autolink {
   /**
    * Set if the at mark '@' should be included in the link (false by default)
    *
-   * @param noFollow new noFollow value
+   * @param usernameIncludeSymbol if username includes symbol
    */
   public void setUsernameIncludeSymbol(boolean usernameIncludeSymbol) {
     this.usernameIncludeSymbol = usernameIncludeSymbol;
