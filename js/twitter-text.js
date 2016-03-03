@@ -240,7 +240,7 @@
 
   twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
-  twttr.txt.regexen.cyrillicLettersAndMarks = regexSupplant("\u0400-\u04FF");
+  twttr.txt.regexen.cyrillicLettersAndMarks = regexSupplant(/\u0400-\u04FF/);
   twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z#{cyrillicLettersAndMarks}0-9!\*';:=\+,\.\$\/%#\[\]\-_~@\|&#{latinAccentChars}]/i);
   // Allow URL paths to contain up to two nested levels of balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
