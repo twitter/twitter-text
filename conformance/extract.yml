@@ -833,6 +833,14 @@ tests:
       text: "#Մահաթմա #მაჰათმა"
       expected: ["Մահաթմա","მაჰათმა"]
 
+    - description: "Extract hashtag with letter from astral plane (U+20021)"
+      text: "#𠀡"
+      expected: ["𠀡"]
+
+    - description: "Extract hashtag with letter plus marker from astral plane (U+16f04 U+16f51)"
+      text: "#𖼄𖽑"
+      expected: ["𖼄𖽑"]
+
     - description: "Extract hashtag with middle dot"
       text: "#il·lusió"
       expected: ["il·lusió"]
