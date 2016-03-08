@@ -124,6 +124,10 @@ class ConformanceTest < Test::Unit::TestCase
     assert_equal expected, extract_hashtags(text), description
   end
 
+  def_conformance_test("extract.yml", :hashtags_from_astral) do
+    assert_equal expected, extract_hashtags(text), description
+  end
+
   def_conformance_test("extract.yml", :hashtags_with_indices) do
     e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
     assert_equal e, extract_hashtags_with_indices(text), description
