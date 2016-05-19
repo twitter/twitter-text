@@ -72,6 +72,7 @@ public class TldLists {
     "biz",
     "black",
     "blackfriday",
+    "blog",
     "bloomberg",
     "blue",
     "bmw",

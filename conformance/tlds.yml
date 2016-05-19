@@ -1466,6 +1466,10 @@ tests:
     text: https://twitter.blackfriday
     expected:
     - https://twitter.blackfriday
+  - description: blog is a valid generic tld
+    text: https://twitter.blog
+    expected:
+    - https://twitter.blog
   - description: bloomberg is a valid generic tld
     text: https://twitter.bloomberg
     expected:
