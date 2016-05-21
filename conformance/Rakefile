@@ -17,7 +17,7 @@ namespace :tlds do
       next if info.empty?
 
       tlds << {
-        domain: info[0].text.gsub('.', ''),
+        domain: info[0].text.gsub(/[\.\s]+/, '').gsub("\u200f", '').gsub("\u200e", ""),
         type: info[1].text
       }
     end
