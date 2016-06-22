@@ -78,8 +78,8 @@ end
 
 def parse_node(node)
   {
-    domain: info[0].text.gsub(/[\.\s]+/, '').gsub("\u200f", '').gsub("\u200e", ""),
-    type: info[1].text
+    domain: node[0].text.gsub(/[\.\s]+/, '').gsub("\u200f", '').gsub("\u200e", ""),
+    type: node[1].text
   }
 end
 
