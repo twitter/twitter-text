@@ -14,16 +14,9 @@ namespace :tlds do
 
     doc.css('table#tld-table tr').each do |tr|
       info = tr.css('td')
-      next if info.empty?
-
-      tlds << {
-        domain: info[0].text.gsub(/[\.\s]+/, '').gsub("\u200f", '').gsub("\u200e", ""),
-        type: info[1].text
-      }
-    end
-
-    def select_tld(tlds, type)
-      tlds.select {|i| i[:type] =~ type}.map {|i| i[:domain]}.sort
+      unless info.empty?
+        tlds << parse_node(info)
+      end
     end
 
     yml = {}
@@ -81,6 +74,17 @@ EOF
       file.write(test_yml.to_yaml)
     end
   end
+end
+
+def parse_node(node)
+  {
+    domain: info[0].text.gsub(/[\.\s]+/, '').gsub("\u200f", '').gsub("\u200e", ""),
+    type: info[1].text
+  }
+end
+
+def select_tld(tlds, type)
+  tlds.select {|i| i[:type] =~ type}.map {|i| i[:domain]}.sort
 end
 
 def repo_path(*path)
