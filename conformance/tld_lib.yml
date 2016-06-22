@@ -313,6 +313,7 @@ generic:
 - abb
 - abbott
 - abbvie
+- able
 - abogado
 - abudhabi
 - academy
@@ -332,6 +333,7 @@ generic:
 - agakhan
 - agency
 - aig
+- airbus
 - airforce
 - airtel
 - akdn
@@ -340,11 +342,13 @@ generic:
 - allfinanz
 - ally
 - alsace
+- alstom
 - amica
 - amsterdam
 - analytics
 - android
 - anquan
+- anz
 - apartments
 - app
 - apple
@@ -353,12 +357,14 @@ generic:
 - archi
 - army
 - arpa
+- art
 - arte
 - asia
 - associates
 - attorney
 - auction
 - audi
+- audible
 - audio
 - author
 - auto
@@ -399,6 +405,7 @@ generic:
 - biz
 - black
 - blackfriday
+- blanco
 - blog
 - bloomberg
 - blue
@@ -435,6 +442,7 @@ generic:
 - cafe
 - cal
 - call
+- cam
 - camera
 - camp
 - cancerresearch
@@ -467,6 +475,7 @@ generic:
 - chase
 - chat
 - cheap
+- chintai
 - chloe
 - christmas
 - chrome
@@ -504,6 +513,7 @@ generic:
 - contact
 - contractors
 - cooking
+- cookingchannel
 - cool
 - coop
 - corsica
@@ -531,6 +541,7 @@ generic:
 - day
 - dclk
 - dds
+- deal
 - dealer
 - deals
 - degree
@@ -544,6 +555,7 @@ generic:
 - desi
 - design
 - dev
+- dhl
 - diamonds
 - diet
 - digital
@@ -559,7 +571,10 @@ generic:
 - dot
 - download
 - drive
+- dtv
 - dubai
+- dunlop
+- dupont
 - durban
 - dvag
 - earth
@@ -573,8 +588,10 @@ generic:
 - engineer
 - engineering
 - enterprises
+- epost
 - epson
 - equipment
+- ericsson
 - erni
 - esq
 - estate
@@ -595,6 +612,7 @@ generic:
 - fan
 - fans
 - farm
+- farmers
 - fashion
 - fast
 - feedback
@@ -603,6 +621,7 @@ generic:
 - final
 - finance
 - financial
+- fire
 - firestone
 - firmdale
 - fish
@@ -617,6 +636,7 @@ generic:
 - flsmidth
 - fly
 - foo
+- foodnetwork
 - football
 - ford
 - forex
@@ -627,6 +647,7 @@ generic:
 - fresenius
 - frl
 - frogans
+- frontdoor
 - frontier
 - ftr
 - fund
@@ -638,6 +659,7 @@ generic:
 - gallo
 - gallup
 - game
+- games
 - garden
 - gbiz
 - gdn
@@ -661,6 +683,7 @@ generic:
 - goldpoint
 - golf
 - goo
+- goodyear
 - goog
 - google
 - gop
@@ -688,7 +711,9 @@ generic:
 - helsinki
 - here
 - hermes
+- hgtv
 - hiphop
+- hisamitsu
 - hitachi
 - hiv
 - hkt
@@ -715,6 +740,7 @@ generic:
 - ifm
 - iinet
 - imamat
+- imdb
 - immo
 - immobilien
 - industries
@@ -735,6 +761,7 @@ generic:
 - ist
 - istanbul
 - itau
+- itv
 - iwc
 - jaguar
 - java
@@ -762,10 +789,12 @@ generic:
 - kia
 - kim
 - kinder
+- kindle
 - kitchen
 - kiwi
 - koeln
 - komatsu
+- kosher
 - kpmg
 - kpn
 - krd
@@ -788,6 +817,7 @@ generic:
 - lease
 - leclerc
 - legal
+- lego
 - lexus
 - lgbt
 - liaison
@@ -808,6 +838,7 @@ generic:
 - lixil
 - loan
 - loans
+- locker
 - locus
 - lol
 - london
@@ -830,6 +861,7 @@ generic:
 - marketing
 - markets
 - marriott
+- mattel
 - mba
 - med
 - media
@@ -878,6 +910,7 @@ generic:
 - nec
 - net
 - netbank
+- netflix
 - network
 - neustar
 - new
@@ -885,6 +918,7 @@ generic:
 - next
 - nextdirect
 - nexus
+- nfl
 - ngo
 - nhk
 - nico
@@ -895,6 +929,7 @@ generic:
 - nokia
 - northwesternmutual
 - norton
+- now
 - nowruz
 - nowtv
 - nra
@@ -906,6 +941,7 @@ generic:
 - okinawa
 - olayan
 - olayangroup
+- ollo
 - omega
 - one
 - ong
@@ -916,9 +952,11 @@ generic:
 - orange
 - org
 - organic
+- orientexpress
 - origins
 - osaka
 - otsuka
+- ott
 - ovh
 - page
 - pamperedchef
@@ -945,6 +983,7 @@ generic:
 - pin
 - ping
 - pink
+- pioneer
 - pizza
 - place
 - play
@@ -953,10 +992,12 @@ generic:
 - plus
 - pohl
 - poker
+- politie
 - porn
 - post
 - praxi
 - press
+- prime
 - pro
 - prod
 - productions
@@ -1023,6 +1064,7 @@ generic:
 - sapo
 - sarl
 - sas
+- save
 - saxo
 - sbi
 - sbs
@@ -1055,9 +1097,11 @@ generic:
 - shiksha
 - shoes
 - shop
+- shopping
 - shouji
 - show
 - shriram
+- silk
 - sina
 - singles
 - site
@@ -1119,6 +1163,7 @@ generic:
 - tax
 - taxi
 - tci
+- tdk
 - team
 - tech
 - technology
@@ -1153,6 +1198,7 @@ generic:
 - trading
 - training
 - travel
+- travelchannel
 - travelers
 - travelersinsurance
 - trust
@@ -1167,6 +1213,7 @@ generic:
 - university
 - uno
 - uol
+- ups
 - vacations
 - vana
 - vegas
@@ -1221,6 +1268,7 @@ generic:
 - wine
 - wme
 - wolterskluwer
+- woodside
 - work
 - works
 - world
@@ -1243,6 +1291,7 @@ generic:
 - you
 - youtube
 - yun
+- zappos
 - zara
 - zero
 - zip
