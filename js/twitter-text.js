@@ -622,7 +622,7 @@
     options = clone(options || {});
 
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
+    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/hashtag/";
     options.cashtagClass = options.cashtagClass || DEFAULT_CASHTAG_CLASS;
     options.cashtagUrlBase = options.cashtagUrlBase || "https://twitter.com/#!/search?q=%24";
     options.listClass = options.listClass || DEFAULT_LIST_CLASS;
