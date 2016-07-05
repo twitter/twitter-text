@@ -14,16 +14,9 @@ namespace :tlds do
 
     doc.css('table#tld-table tr').each do |tr|
       info = tr.css('td')
-      next if info.empty?
-
-      tlds << {
-        domain: info[0].text.gsub('.', ''),
-        type: info[1].text
-      }
-    end
-
-    def select_tld(tlds, type)
-      tlds.select {|i| i[:type] =~ type}.map {|i| i[:domain]}.sort
+      unless info.empty?
+        tlds << parse_node(info)
+      end
     end
 
     yml = {}
@@ -48,11 +41,11 @@ import java.util.List;
 
 public class TldLists {
   public static final List<String> GTLDS = Arrays.asList(
-#{yml["generic"].sort.map {|el| "    \"#{el}\""}.join(",\n")}
+#{yml["generic"].map {|el| "    \"#{el}\""}.join(",\n")}
   );
 
   public static final List<String> CTLDS = Arrays.asList(
-#{yml["country"].sort.map {|el| "    \"#{el}\""}.join(",\n")}
+#{yml["country"].map {|el| "    \"#{el}\""}.join(",\n")}
   );
 }
 EOF
@@ -81,6 +74,18 @@ EOF
       file.write(test_yml.to_yaml)
     end
   end
+end
+
+def parse_node(node)
+  {
+    domain: node[0].text.gsub(/[\.\s]+/, '').gsub("\u200f", '').gsub("\u200e", ""),
+    type: node[1].text
+  }
+end
+
+def select_tld(tlds, type)
+  # Reverse tlds to make sure tld regex can match longer one when subset exists
+  tlds.select {|i| i[:type] =~ type}.map {|i| i[:domain]}.sort.reverse
 end
 
 def repo_path(*path)
