@@ -84,7 +84,8 @@ def parse_node(node)
 end
 
 def select_tld(tlds, type)
-  tlds.select {|i| i[:type] =~ type}.map {|i| i[:domain]}.sort
+  # Reverse tlds to make sure tld regex can match longer one when subset exists
+  tlds.select {|i| i[:type] =~ type}.map {|i| i[:domain]}.sort.reverse
 end
 
 def repo_path(*path)
