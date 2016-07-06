@@ -56,6 +56,16 @@ public class ConformanceTest extends TestCase {
     }
   }
 
+  public void testHashtagsFromAstralExtractor() throws Exception {
+    File yamlFile = new File(conformanceDir, "extract.yml");
+    List testCases = loadConformanceData(yamlFile, "hashtags_from_astral");
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
+                   extractor.extractHashtags((String)testCase.get(KEY_INPUT)));
+    }
+  }
+
   public void testHashtagsWithIndicesExtractor() throws Exception {
     File yamlFile = new File(conformanceDir, "extract.yml");
     List testCases = loadConformanceData(yamlFile, "hashtags_with_indices");

@@ -144,6 +144,7 @@
     NSArray *urls = [tests objectForKey:@"urls"];
     NSArray *urlsWithIndices = [tests objectForKey:@"urls_with_indices"];
     NSArray *hashtags = [tests objectForKey:@"hashtags"];
+    NSArray *hashtagsFromAstral = [tests objectForKey:@"hashtags_from_astral"];
     NSArray *hashtagsWithIndices = [tests objectForKey:@"hashtags_with_indices"];
     NSArray *symbols = [tests objectForKey:@"cashtags"];
     NSArray *symbolsWithIndices = [tests objectForKey:@"cashtags_with_indices"];
@@ -348,6 +349,37 @@
     //
 
     for (NSDictionary *testCase in hashtags) {
+        NSString *text = [testCase objectForKey:@"text"];
+        NSArray *expected = [testCase objectForKey:@"expected"];
+
+        NSArray *results = [TwitterText hashtagsInText:text checkingURLOverlap:YES];
+        if (results.count == expected.count) {
+            NSUInteger count = results.count;
+            for (NSUInteger i = 0; i < count; i++) {
+                NSString *expectedText = [expected objectAtIndex:i];
+
+                TwitterTextEntity *entity = [results objectAtIndex:i];
+                NSRange r = entity.range;
+                r.location++;
+                r.length--;
+                NSString *actualText = [text substringWithRange:r];
+
+                XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
+            }
+        } else {
+            NSMutableArray *resultTexts = [NSMutableArray array];
+            for (TwitterTextEntity *entity in results) {
+                [resultTexts addObject:[text substringWithRange:entity.range]];
+            }
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+        }
+    }
+
+    //
+    // Hashtags from Astral
+    //
+
+    for (NSDictionary *testCase in hashtagsFromAstral) {
         NSString *text = [testCase objectForKey:@"text"];
         NSArray *expected = [testCase objectForKey:@"expected"];
 

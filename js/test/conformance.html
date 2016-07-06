@@ -87,6 +87,10 @@
               return function(test) {
                 return twttr.txt.extractHashtags(test.text);
               };
+            case "hashtags_from_astral":
+              return function(test) {
+                return twttr.txt.extractHashtags(test.text);
+              };
             case "hashtags_with_indices":
               return function(test) {
                 return twttr.txt.extractHashtagsWithIndices(test.text);
