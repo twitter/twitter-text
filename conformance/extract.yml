@@ -841,6 +841,19 @@ tests:
       text: "#_ #1_2 #122 #〃"
       expected: []
 
+  hashtags_from_astral:
+    - description: "Extract hashtag with letter from astral plane (U+20021)"
+      text: "#\U00020021"
+      expected: ["\U00020021"]
+
+    - description: "Extract hashtag with letter plus marker from astral plane (U+16f04 U+16f51)"
+      text: "#\U00016f04\U00016f51"
+      expected: ["\U00016f04\U00016f51"]
+
+    - description: "Extract hashtag with letter plus number from astral plane (U+104a0)"
+      text: "#\U00000041\U000104a0"
+      expected: ["A\U000104a0"]
+
   hashtags_with_indices:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
