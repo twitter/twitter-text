@@ -37,6 +37,8 @@ public class Regex {
                                               "\\u0300-\\u036f" + // Combining diacritics
                                               "\\u1e00-\\u1eff"; // Latin Extended Additional (mostly for Vietnamese)
 
+  private static final String CYRILLIC_CHARS = "\\u0400-\\u04ff";
+
   // Generated from unicode_regex/unicode_regex_groups.scala, more inclusive than Java's \p{L}\p{M}
   private static final String HASHTAG_LETTERS_AND_MARKS = "\\p{L}\\p{M}" +
     "\\u037f\\u0528-\\u052f\\u08a0-\\u08b2\\u08e4-\\u08ff\\u0978\\u0980\\u0c00\\u0c34\\u0c81\\u0d01" +
@@ -138,7 +140,8 @@ public class Regex {
 
   private static final String URL_VALID_PORT_NUMBER = "[0-9]++";
 
-  private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z\\p{IsCyrillic}0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&@" + LATIN_ACCENTS_CHARS + "]";
+  private static final String URL_VALID_GENERAL_PATH_CHARS =
+    "[a-z0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&@" + LATIN_ACCENTS_CHARS + CYRILLIC_CHARS + "]";
   /** Allow URL paths to contain up to two nested levels of balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
    *  2. Used in IIS sessions like /S(dfd346)/
@@ -162,7 +165,8 @@ public class Regex {
   /** Valid end-of-path characters (so /foo. does not gobble the period).
    *   2. Allow =&# for empty URL parameters and other URL-join artifacts
   **/
-  private static final String URL_VALID_PATH_ENDING_CHARS = "[a-z\\p{IsCyrillic}0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + "]|(?:" + URL_BALANCED_PARENS + ")";
+  private static final String URL_VALID_PATH_ENDING_CHARS =
+    "[a-z0-9=_#/\\-\\+" + LATIN_ACCENTS_CHARS + CYRILLIC_CHARS + "]|(?:" + URL_BALANCED_PARENS + ")";
 
   private static final String URL_VALID_PATH = "(?:" +
     "(?:" +
