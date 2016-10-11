@@ -78,7 +78,7 @@
 // Symbol
 //
 
-#define TWUSymbol               @"[a-z]{1,6}(?:[._][a-z]{1,2})?"
+#define TWUSymbol               @"[a-z0-9]{1,6}[:._-]{0,1}[a-z]{1,2}"
 #define TWUValidSymbol \
     @"(?:^|[" TWUUnicodeSpaces @"])" \
     @"(\\$" TWUSymbol @")" \
