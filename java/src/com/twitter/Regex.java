@@ -191,7 +191,7 @@ public class Regex {
 
   private static final String AT_SIGNS_CHARS = "@\uFF20";
   private static final String DOLLAR_SIGN_CHAR = "\\$";
-  private static final String CASHTAG = "[a-z]{1,6}(?:[._][a-z]{1,2})?";
+  private static final String CASHTAG = "(?:[a-z]{1,2}[:._-]{1}[0-9]{1,6})|(?:[a-z]{1,6}(?:[:._-]{1}(?:[a-z]|[0-9]){1,6})?)|(?:[0-9]{1,6}[:._-]{1}[a-z]{1,2})";
 
   /* Begin public constants */
 

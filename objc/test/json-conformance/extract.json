@@ -634,6 +634,13 @@
         ]
       },
       {
+        "description": "Extract URLs with protocol and path containing Cyrillic characters",
+        "text": "Go to http://twitter.com/Русские_слова",
+        "expected": [
+          "http://twitter.com/Русские_слова"
+        ]
+      },
+      {
         "description": "DO NOT extract short URLs without protocol on ccTLD domains without path",
         "text": "twitter.jp日本語it.so中国語foo.jp it.so foo.jp",
         "expected": [
@@ -1416,6 +1423,20 @@
         ]
       },
       {
+        "description": "Extract hashtag with fullwidth tilde",
+        "text": "#メ～テレ ハッシュタグ内で～が認識されず",
+        "expected": [
+          "メ～テレ"
+        ]
+      },
+      {
+        "description": "Extract hashtag with wave dash",
+        "text": "#メ〜テレ ハッシュタグ内で～が認識されず",
+        "expected": [
+          "メ〜テレ"
+        ]
+      },
+      {
         "description": "Hashtags with ş (U+015F)",
         "text": "Here’s a test tweet for you: #Ateş #qrşt #ştu #ş",
         "expected": [
@@ -1641,6 +1662,29 @@
         ]
       }
     ],
+    "hashtags_from_astral": [
+      {
+        "description": "Extract hashtag with letter from astral plane (U+20021)",
+        "text": "#𠀡",
+        "expected": [
+          "𠀡"
+        ]
+      },
+      {
+        "description": "Extract hashtag with letter plus marker from astral plane (U+16f04 U+16f51)",
+        "text": "#𖼄𖽑",
+        "expected": [
+          "𖼄𖽑"
+        ]
+      },
+      {
+        "description": "Extract hashtag with letter plus number from astral plane (U+104a0)",
+        "text": "#A𐒠",
+        "expected": [
+          "A𐒠"
+        ]
+      }
+    ],
     "hashtags_with_indices": [
       {
         "description": "Extract a hastag at the start",
@@ -1796,10 +1840,30 @@
         ]
       },
       {
-        "description": "Do not extract cashtags if they contain numbers",
-        "text": "$123 $test123 $TE123ST",
+        "description": "Do not extract cashtags if they contain numbers with no letters",
+        "text": "$123 $123.45 $3334:23 $000000@23 $2323_32 $2323-24",
         "expected": [
 
+        ]
+      },
+      {
+        "description": "Do not extract cashtags if they aren't properly formatted",
+        "text": "$test123 $TE123ST $0000-3423",
+        "expected": [
+
+        ]
+      },
+      {
+        "description": "Recognize valid forms",
+        "text": "We're valid $ABC $ABC:AA $ABC-A $AB:ABCD $001122:AA $001122:AA $AB:001122",
+        "expected": [
+          "ABC",
+          "ABC:AA",
+          "ABC-A",
+          "AB:ABCD",
+          "001122:AA",
+          "001122:AA",
+          "AB:001122"
         ]
       },
       {

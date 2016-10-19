@@ -185,6 +185,11 @@
         "expected": true
       },
       {
+        "description": "Valid url: Cyrillic characters in path",
+        "text": "http://example.com/Русские_слова",
+        "expected": true
+      },
+      {
         "description": "Valid url: trailing hyphen",
         "text": "https://www.youtube.com/playlist?list=PL0ZPu8XSRTB7wZzn0mLHMvyzVFeRxbWn-",
         "expected": true
