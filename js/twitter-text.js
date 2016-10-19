@@ -260,7 +260,7 @@
   twttr.txt.regexen.urlHasHttps = /^https:\/\//i;
 
   // cashtag related regex
-  twttr.txt.regexen.cashtag = /[a-z]{1,6}(?:[._][a-z]{1,2})?/i;
+  twttr.txt.regexen.cashtag = /[a-z0-9]{1,6}[:._-]{0,1}[a-z]{1,2}/i;
   twttr.txt.regexen.validCashtag = regexSupplant('(^|#{spaces})(\\$)(#{cashtag})(?=$|\\s|[#{punct}])', 'gi');
 
   // These URL validation pattern strings are based on the ABNF from RFC 3986
