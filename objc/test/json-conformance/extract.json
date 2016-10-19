@@ -1822,7 +1822,7 @@
     "cashtags": [
       {
         "description": "Extract cashtags",
-        "text": "Example cashtags: $TEST $Stock   $symbol",
+        "text": "Example cashtags: $TEST $Stock  $symbol",
         "expected": [
           "TEST",
           "Stock",
@@ -1841,8 +1841,8 @@
         ]
       },
       {
-        "description": "Do not extract cashtags if they only contain numbers",
-        "text": "$123 $test123",
+        "description": "Do not extract cashtags if they only contain numbers or have invalid formats",
+        "text": "$123 $test123 $TE123ST $1234. $1245@ $3.99",
         "expected": [
 
         ]
