@@ -932,6 +932,10 @@ tests:
       text: "We're valid $ABC $ABC:AA $ABC-A $AB:ABCD $001122:AA $001122:AA $AB:001122"
       expected: ["ABC", "ABC:AA", "ABC-A", "AB:ABCD", "001122:AA", "001122:AA", "AB:001122"]
 
+    - description: "Recognize international entries in the form $ticker:country"
+      text: "Stocks are up $VOW:GR, $2010:HK - $6758:JP"
+      expected: ["VOW:GR", "2010:HK", "6758:JP"]
+
     - description: "Do not extract cashtags with non-ASCII characters"
       text: "$ストック $株"
       expected: []

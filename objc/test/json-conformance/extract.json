@@ -1867,6 +1867,15 @@
         ]
       },
       {
+        "description": "Recognize international entries in the form $ticker:country",
+        "text": "Stocks are up $VOW:GR, $2010:HK - $6758:JP",
+        "expected": [
+          "VOW:GR",
+          "2010:HK",
+          "6758:JP"
+        ]
+      },
+      {
         "description": "Do not extract cashtags with non-ASCII characters",
         "text": "$ストック $株",
         "expected": [
