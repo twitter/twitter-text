@@ -93,10 +93,22 @@ tests:
     text: https://twitter.বাংলা
     expected:
     - https://twitter.বাংলা
+  - description: "भारोत is a valid country tld"
+    text: https://twitter.भारोत
+    expected:
+    - https://twitter.भारोत
+  - description: "भारतम् is a valid country tld"
+    text: https://twitter.भारतम्
+    expected:
+    - https://twitter.भारतम्
   - description: "भारत is a valid country tld"
     text: https://twitter.भारत
     expected:
     - https://twitter.भारत
+  - description: "ڀارت is a valid country tld"
+    text: https://twitter.ڀارت
+    expected:
+    - https://twitter.ڀارت
   - description: "پاکستان is a valid country tld"
     text: https://twitter.پاکستان
     expected:
@@ -141,6 +153,10 @@ tests:
     text: https://twitter.بھارت
     expected:
     - https://twitter.بھارت
+  - description: "بارت is a valid country tld"
+    text: https://twitter.بارت
+    expected:
+    - https://twitter.بارت
   - description: "ایران is a valid country tld"
     text: https://twitter.ایران
     expected:
@@ -1266,6 +1282,10 @@ tests:
     text: https://twitter.集团
     expected:
     - https://twitter.集团
+  - description: "通販 is a valid generic tld"
+    text: https://twitter.通販
+    expected:
+    - https://twitter.通販
   - description: "购物 is a valid generic tld"
     text: https://twitter.购物
     expected:
@@ -1386,6 +1406,10 @@ tests:
     text: https://twitter.大拿
     expected:
     - https://twitter.大拿
+  - description: "大众汽车 is a valid generic tld"
+    text: https://twitter.大众汽车
+    expected:
+    - https://twitter.大众汽车
   - description: "在线 is a valid generic tld"
     text: https://twitter.在线
     expected:
@@ -1678,6 +1702,10 @@ tests:
     text: https://twitter.wtc
     expected:
     - https://twitter.wtc
+  - description: wow is a valid generic tld
+    text: https://twitter.wow
+    expected:
+    - https://twitter.wow
   - description: world is a valid generic tld
     text: https://twitter.world
     expected:
@@ -1702,6 +1730,10 @@ tests:
     text: https://twitter.wme
     expected:
     - https://twitter.wme
+  - description: winners is a valid generic tld
+    text: https://twitter.winners
+    expected:
+    - https://twitter.winners
   - description: wine is a valid generic tld
     text: https://twitter.wine
     expected:
@@ -1790,6 +1822,10 @@ tests:
     text: https://twitter.walter
     expected:
     - https://twitter.walter
+  - description: walmart is a valid generic tld
+    text: https://twitter.walmart
+    expected:
+    - https://twitter.walmart
   - description: wales is a valid generic tld
     text: https://twitter.wales
     expected:
@@ -1814,6 +1850,10 @@ tests:
     text: https://twitter.vote
     expected:
     - https://twitter.vote
+  - description: volvo is a valid generic tld
+    text: https://twitter.volvo
+    expected:
+    - https://twitter.volvo
   - description: volkswagen is a valid generic tld
     text: https://twitter.volkswagen
     expected:
@@ -1826,6 +1866,10 @@ tests:
     text: https://twitter.vlaanderen
     expected:
     - https://twitter.vlaanderen
+  - description: vivo is a valid generic tld
+    text: https://twitter.vivo
+    expected:
+    - https://twitter.vivo
   - description: viva is a valid generic tld
     text: https://twitter.viva
     expected:
@@ -1842,6 +1886,10 @@ tests:
     text: https://twitter.vision
     expected:
     - https://twitter.vision
+  - description: visa is a valid generic tld
+    text: https://twitter.visa
+    expected:
+    - https://twitter.visa
   - description: virgin is a valid generic tld
     text: https://twitter.virgin
     expected:
@@ -1902,6 +1950,10 @@ tests:
     text: https://twitter.vegas
     expected:
     - https://twitter.vegas
+  - description: vanguard is a valid generic tld
+    text: https://twitter.vanguard
+    expected:
+    - https://twitter.vanguard
   - description: vana is a valid generic tld
     text: https://twitter.vana
     expected:
@@ -1930,10 +1982,18 @@ tests:
     text: https://twitter.unicom
     expected:
     - https://twitter.unicom
+  - description: uconnect is a valid generic tld
+    text: https://twitter.uconnect
+    expected:
+    - https://twitter.uconnect
   - description: ubs is a valid generic tld
     text: https://twitter.ubs
     expected:
     - https://twitter.ubs
+  - description: ubank is a valid generic tld
+    text: https://twitter.ubank
+    expected:
+    - https://twitter.ubank
   - description: tvs is a valid generic tld
     text: https://twitter.tvs
     expected:
@@ -2038,6 +2098,18 @@ tests:
     text: https://twitter.tmall
     expected:
     - https://twitter.tmall
+  - description: tkmaxx is a valid generic tld
+    text: https://twitter.tkmaxx
+    expected:
+    - https://twitter.tkmaxx
+  - description: tjx is a valid generic tld
+    text: https://twitter.tjx
+    expected:
+    - https://twitter.tjx
+  - description: tjmaxx is a valid generic tld
+    text: https://twitter.tjmaxx
+    expected:
+    - https://twitter.tjmaxx
   - description: tirol is a valid generic tld
     text: https://twitter.tirol
     expected:
@@ -2062,6 +2134,10 @@ tests:
     text: https://twitter.tickets
     expected:
     - https://twitter.tickets
+  - description: tiaa is a valid generic tld
+    text: https://twitter.tiaa
+    expected:
+    - https://twitter.tiaa
   - description: theatre is a valid generic tld
     text: https://twitter.theatre
     expected:
@@ -2138,6 +2214,10 @@ tests:
     text: https://twitter.tatamotors
     expected:
     - https://twitter.tatamotors
+  - description: target is a valid generic tld
+    text: https://twitter.target
+    expected:
+    - https://twitter.target
   - description: taobao is a valid generic tld
     text: https://twitter.taobao
     expected:
@@ -2170,6 +2250,10 @@ tests:
     text: https://twitter.swiss
     expected:
     - https://twitter.swiss
+  - description: swiftcover is a valid generic tld
+    text: https://twitter.swiftcover
+    expected:
+    - https://twitter.swiftcover
   - description: swatch is a valid generic tld
     text: https://twitter.swatch
     expected:
@@ -2258,10 +2342,18 @@ tests:
     text: https://twitter.star
     expected:
     - https://twitter.star
+  - description: staples is a valid generic tld
+    text: https://twitter.staples
+    expected:
+    - https://twitter.staples
   - description: stada is a valid generic tld
     text: https://twitter.stada
     expected:
     - https://twitter.stada
+  - description: srt is a valid generic tld
+    text: https://twitter.srt
+    expected:
+    - https://twitter.srt
   - description: srl is a valid generic tld
     text: https://twitter.srl
     expected:
@@ -2330,6 +2422,14 @@ tests:
     text: https://twitter.smile
     expected:
     - https://twitter.smile
+  - description: smart is a valid generic tld
+    text: https://twitter.smart
+    expected:
+    - https://twitter.smart
+  - description: sling is a valid generic tld
+    text: https://twitter.sling
+    expected:
+    - https://twitter.sling
   - description: skype is a valid generic tld
     text: https://twitter.skype
     expected:
@@ -2366,6 +2466,10 @@ tests:
     text: https://twitter.shriram
     expected:
     - https://twitter.shriram
+  - description: showtime is a valid generic tld
+    text: https://twitter.showtime
+    expected:
+    - https://twitter.showtime
   - description: show is a valid generic tld
     text: https://twitter.show
     expected:
@@ -2430,6 +2534,10 @@ tests:
     text: https://twitter.seven
     expected:
     - https://twitter.seven
+  - description: ses is a valid generic tld
+    text: https://twitter.ses
+    expected:
+    - https://twitter.ses
   - description: services is a valid generic tld
     text: https://twitter.services
     expected:
@@ -2450,6 +2558,10 @@ tests:
     text: https://twitter.security
     expected:
     - https://twitter.security
+  - description: secure is a valid generic tld
+    text: https://twitter.secure
+    expected:
+    - https://twitter.secure
   - description: seat is a valid generic tld
     text: https://twitter.seat
     expected:
@@ -2462,6 +2574,10 @@ tests:
     text: https://twitter.scor
     expected:
     - https://twitter.scor
+  - description: scjohnson is a valid generic tld
+    text: https://twitter.scjohnson
+    expected:
+    - https://twitter.scjohnson
   - description: science is a valid generic tld
     text: https://twitter.science
     expected:
@@ -2546,6 +2662,10 @@ tests:
     text: https://twitter.samsung
     expected:
     - https://twitter.samsung
+  - description: samsclub is a valid generic tld
+    text: https://twitter.samsclub
+    expected:
+    - https://twitter.samsclub
   - description: salon is a valid generic tld
     text: https://twitter.salon
     expected:
@@ -2594,6 +2714,10 @@ tests:
     text: https://twitter.room
     expected:
     - https://twitter.room
+  - description: rogers is a valid generic tld
+    text: https://twitter.rogers
+    expected:
+    - https://twitter.rogers
   - description: rodeo is a valid generic tld
     text: https://twitter.rodeo
     expected:
@@ -2614,6 +2738,10 @@ tests:
     text: https://twitter.rio
     expected:
     - https://twitter.rio
+  - description: rightathome is a valid generic tld
+    text: https://twitter.rightathome
+    expected:
+    - https://twitter.rightathome
   - description: ricoh is a valid generic tld
     text: https://twitter.ricoh
     expected:
@@ -2718,10 +2846,22 @@ tests:
     text: https://twitter.read
     expected:
     - https://twitter.read
+  - description: raid is a valid generic tld
+    text: https://twitter.raid
+    expected:
+    - https://twitter.raid
+  - description: radio is a valid generic tld
+    text: https://twitter.radio
+    expected:
+    - https://twitter.radio
   - description: racing is a valid generic tld
     text: https://twitter.racing
     expected:
     - https://twitter.racing
+  - description: qvc is a valid generic tld
+    text: https://twitter.qvc
+    expected:
+    - https://twitter.qvc
   - description: quest is a valid generic tld
     text: https://twitter.quest
     expected:
@@ -2742,6 +2882,14 @@ tests:
     text: https://twitter.pub
     expected:
     - https://twitter.pub
+  - description: prudential is a valid generic tld
+    text: https://twitter.prudential
+    expected:
+    - https://twitter.prudential
+  - description: pru is a valid generic tld
+    text: https://twitter.pru
+    expected:
+    - https://twitter.pru
   - description: protection is a valid generic tld
     text: https://twitter.protection
     expected:
@@ -2790,6 +2938,10 @@ tests:
     text: https://twitter.praxi
     expected:
     - https://twitter.praxi
+  - description: pramerica is a valid generic tld
+    text: https://twitter.pramerica
+    expected:
+    - https://twitter.pramerica
   - description: post is a valid generic tld
     text: https://twitter.post
     expected:
@@ -2898,6 +3050,10 @@ tests:
     text: https://twitter.pharmacy
     expected:
     - https://twitter.pharmacy
+  - description: pfizer is a valid generic tld
+    text: https://twitter.pfizer
+    expected:
+    - https://twitter.pfizer
   - description: pet is a valid generic tld
     text: https://twitter.pet
     expected:
@@ -2906,6 +3062,10 @@ tests:
     text: https://twitter.pccw
     expected:
     - https://twitter.pccw
+  - description: pay is a valid generic tld
+    text: https://twitter.pay
+    expected:
+    - https://twitter.pay
   - description: passagens is a valid generic tld
     text: https://twitter.passagens
     expected:
@@ -2934,6 +3094,10 @@ tests:
     text: https://twitter.panerai
     expected:
     - https://twitter.panerai
+  - description: panasonic is a valid generic tld
+    text: https://twitter.panasonic
+    expected:
+    - https://twitter.panasonic
   - description: pamperedchef is a valid generic tld
     text: https://twitter.pamperedchef
     expected:
@@ -2982,10 +3146,18 @@ tests:
     text: https://twitter.oracle
     expected:
     - https://twitter.oracle
+  - description: open is a valid generic tld
+    text: https://twitter.open
+    expected:
+    - https://twitter.open
   - description: ooo is a valid generic tld
     text: https://twitter.ooo
     expected:
     - https://twitter.ooo
+  - description: onyourside is a valid generic tld
+    text: https://twitter.onyourside
+    expected:
+    - https://twitter.onyourside
   - description: online is a valid generic tld
     text: https://twitter.online
     expected:
@@ -3010,6 +3182,10 @@ tests:
     text: https://twitter.ollo
     expected:
     - https://twitter.ollo
+  - description: oldnavy is a valid generic tld
+    text: https://twitter.oldnavy
+    expected:
+    - https://twitter.oldnavy
   - description: olayangroup is a valid generic tld
     text: https://twitter.olayangroup
     expected:
@@ -3026,6 +3202,14 @@ tests:
     text: https://twitter.office
     expected:
     - https://twitter.office
+  - description: off is a valid generic tld
+    text: https://twitter.off
+    expected:
+    - https://twitter.off
+  - description: observer is a valid generic tld
+    text: https://twitter.observer
+    expected:
+    - https://twitter.observer
   - description: obi is a valid generic tld
     text: https://twitter.obi
     expected:
@@ -3086,6 +3270,10 @@ tests:
     text: https://twitter.nikon
     expected:
     - https://twitter.nikon
+  - description: nike is a valid generic tld
+    text: https://twitter.nike
+    expected:
+    - https://twitter.nike
   - description: nico is a valid generic tld
     text: https://twitter.nico
     expected:
@@ -3146,6 +3334,10 @@ tests:
     text: https://twitter.nec
     expected:
     - https://twitter.nec
+  - description: nba is a valid generic tld
+    text: https://twitter.nba
+    expected:
+    - https://twitter.nba
   - description: navy is a valid generic tld
     text: https://twitter.navy
     expected:
@@ -3154,6 +3346,10 @@ tests:
     text: https://twitter.natura
     expected:
     - https://twitter.natura
+  - description: nationwide is a valid generic tld
+    text: https://twitter.nationwide
+    expected:
+    - https://twitter.nationwide
   - description: name is a valid generic tld
     text: https://twitter.name
     expected:
@@ -3166,6 +3362,10 @@ tests:
     text: https://twitter.nadex
     expected:
     - https://twitter.nadex
+  - description: nab is a valid generic tld
+    text: https://twitter.nab
+    expected:
+    - https://twitter.nab
   - description: mutuelle is a valid generic tld
     text: https://twitter.mutuelle
     expected:
@@ -3190,6 +3390,10 @@ tests:
     text: https://twitter.mtn
     expected:
     - https://twitter.mtn
+  - description: msd is a valid generic tld
+    text: https://twitter.msd
+    expected:
+    - https://twitter.msd
   - description: movistar is a valid generic tld
     text: https://twitter.movistar
     expected:
@@ -3218,10 +3422,18 @@ tests:
     text: https://twitter.mormon
     expected:
     - https://twitter.mormon
+  - description: mopar is a valid generic tld
+    text: https://twitter.mopar
+    expected:
+    - https://twitter.mopar
   - description: montblanc is a valid generic tld
     text: https://twitter.montblanc
     expected:
     - https://twitter.montblanc
+  - description: monster is a valid generic tld
+    text: https://twitter.monster
+    expected:
+    - https://twitter.monster
   - description: money is a valid generic tld
     text: https://twitter.money
     expected:
@@ -3274,6 +3486,10 @@ tests:
     text: https://twitter.mit
     expected:
     - https://twitter.mit
+  - description: mint is a valid generic tld
+    text: https://twitter.mint
+    expected:
+    - https://twitter.mint
   - description: mini is a valid generic tld
     text: https://twitter.mini
     expected:
@@ -3330,6 +3546,18 @@ tests:
     text: https://twitter.med
     expected:
     - https://twitter.med
+  - description: mckinsey is a valid generic tld
+    text: https://twitter.mckinsey
+    expected:
+    - https://twitter.mckinsey
+  - description: mcdonalds is a valid generic tld
+    text: https://twitter.mcdonalds
+    expected:
+    - https://twitter.mcdonalds
+  - description: mcd is a valid generic tld
+    text: https://twitter.mcd
+    expected:
+    - https://twitter.mcd
   - description: mba is a valid generic tld
     text: https://twitter.mba
     expected:
@@ -3338,6 +3566,14 @@ tests:
     text: https://twitter.mattel
     expected:
     - https://twitter.mattel
+  - description: maserati is a valid generic tld
+    text: https://twitter.maserati
+    expected:
+    - https://twitter.maserati
+  - description: marshalls is a valid generic tld
+    text: https://twitter.marshalls
+    expected:
+    - https://twitter.marshalls
   - description: marriott is a valid generic tld
     text: https://twitter.marriott
     expected:
@@ -3382,6 +3618,10 @@ tests:
     text: https://twitter.madrid
     expected:
     - https://twitter.madrid
+  - description: macys is a valid generic tld
+    text: https://twitter.macys
+    expected:
+    - https://twitter.macys
   - description: luxury is a valid generic tld
     text: https://twitter.luxury
     expected:
@@ -3394,6 +3634,10 @@ tests:
     text: https://twitter.lupin
     expected:
     - https://twitter.lupin
+  - description: lundbeck is a valid generic tld
+    text: https://twitter.lundbeck
+    expected:
+    - https://twitter.lundbeck
   - description: ltda is a valid generic tld
     text: https://twitter.ltda
     expected:
@@ -3402,6 +3646,14 @@ tests:
     text: https://twitter.ltd
     expected:
     - https://twitter.ltd
+  - description: lplfinancial is a valid generic tld
+    text: https://twitter.lplfinancial
+    expected:
+    - https://twitter.lplfinancial
+  - description: lpl is a valid generic tld
+    text: https://twitter.lpl
+    expected:
+    - https://twitter.lpl
   - description: love is a valid generic tld
     text: https://twitter.love
     expected:
@@ -3422,6 +3674,10 @@ tests:
     text: https://twitter.lol
     expected:
     - https://twitter.lol
+  - description: loft is a valid generic tld
+    text: https://twitter.loft
+    expected:
+    - https://twitter.loft
   - description: locus is a valid generic tld
     text: https://twitter.locus
     expected:
@@ -3474,6 +3730,10 @@ tests:
     text: https://twitter.limited
     expected:
     - https://twitter.limited
+  - description: lilly is a valid generic tld
+    text: https://twitter.lilly
+    expected:
+    - https://twitter.lilly
   - description: like is a valid generic tld
     text: https://twitter.like
     expected:
@@ -3518,6 +3778,10 @@ tests:
     text: https://twitter.legal
     expected:
     - https://twitter.legal
+  - description: lefrak is a valid generic tld
+    text: https://twitter.lefrak
+    expected:
+    - https://twitter.lefrak
   - description: leclerc is a valid generic tld
     text: https://twitter.leclerc
     expected:
@@ -3542,6 +3806,10 @@ tests:
     text: https://twitter.latrobe
     expected:
     - https://twitter.latrobe
+  - description: latino is a valid generic tld
+    text: https://twitter.latino
+    expected:
+    - https://twitter.latino
   - description: lat is a valid generic tld
     text: https://twitter.lat
     expected:
@@ -3562,6 +3830,14 @@ tests:
     text: https://twitter.land
     expected:
     - https://twitter.land
+  - description: lancome is a valid generic tld
+    text: https://twitter.lancome
+    expected:
+    - https://twitter.lancome
+  - description: lancia is a valid generic tld
+    text: https://twitter.lancia
+    expected:
+    - https://twitter.lancia
   - description: lancaster is a valid generic tld
     text: https://twitter.lancaster
     expected:
@@ -3574,6 +3850,10 @@ tests:
     text: https://twitter.lamborghini
     expected:
     - https://twitter.lamborghini
+  - description: ladbrokes is a valid generic tld
+    text: https://twitter.ladbrokes
+    expected:
+    - https://twitter.ladbrokes
   - description: lacaixa is a valid generic tld
     text: https://twitter.lacaixa
     expected:
@@ -3662,6 +3942,10 @@ tests:
     text: https://twitter.kaufen
     expected:
     - https://twitter.kaufen
+  - description: juniper is a valid generic tld
+    text: https://twitter.juniper
+    expected:
+    - https://twitter.juniper
   - description: juegos is a valid generic tld
     text: https://twitter.juegos
     expected:
@@ -3714,6 +3998,10 @@ tests:
     text: https://twitter.jetzt
     expected:
     - https://twitter.jetzt
+  - description: jeep is a valid generic tld
+    text: https://twitter.jeep
+    expected:
+    - https://twitter.jeep
   - description: jcp is a valid generic tld
     text: https://twitter.jcp
     expected:
@@ -3770,10 +4058,18 @@ tests:
     text: https://twitter.investments
     expected:
     - https://twitter.investments
+  - description: intuit is a valid generic tld
+    text: https://twitter.intuit
+    expected:
+    - https://twitter.intuit
   - description: international is a valid generic tld
     text: https://twitter.international
     expected:
     - https://twitter.international
+  - description: intel is a valid generic tld
+    text: https://twitter.intel
+    expected:
+    - https://twitter.intel
   - description: int is a valid generic tld
     text: https://twitter.int
     expected:
@@ -3838,6 +4134,10 @@ tests:
     text: https://twitter.ifm
     expected:
     - https://twitter.ifm
+  - description: ieee is a valid generic tld
+    text: https://twitter.ieee
+    expected:
+    - https://twitter.ieee
   - description: icu is a valid generic tld
     text: https://twitter.icu
     expected:
@@ -3858,6 +4158,14 @@ tests:
     text: https://twitter.hyundai
     expected:
     - https://twitter.hyundai
+  - description: hyatt is a valid generic tld
+    text: https://twitter.hyatt
+    expected:
+    - https://twitter.hyatt
+  - description: hughes is a valid generic tld
+    text: https://twitter.hughes
+    expected:
+    - https://twitter.hughes
   - description: htc is a valid generic tld
     text: https://twitter.htc
     expected:
@@ -3882,6 +4190,10 @@ tests:
     text: https://twitter.hoteles
     expected:
     - https://twitter.hoteles
+  - description: hot is a valid generic tld
+    text: https://twitter.hot
+    expected:
+    - https://twitter.hot
   - description: hosting is a valid generic tld
     text: https://twitter.hosting
     expected:
@@ -3894,14 +4206,26 @@ tests:
     text: https://twitter.horse
     expected:
     - https://twitter.horse
+  - description: honeywell is a valid generic tld
+    text: https://twitter.honeywell
+    expected:
+    - https://twitter.honeywell
   - description: honda is a valid generic tld
     text: https://twitter.honda
     expected:
     - https://twitter.honda
+  - description: homesense is a valid generic tld
+    text: https://twitter.homesense
+    expected:
+    - https://twitter.homesense
   - description: homes is a valid generic tld
     text: https://twitter.homes
     expected:
     - https://twitter.homes
+  - description: homegoods is a valid generic tld
+    text: https://twitter.homegoods
+    expected:
+    - https://twitter.homegoods
   - description: homedepot is a valid generic tld
     text: https://twitter.homedepot
     expected:
@@ -3970,6 +4294,14 @@ tests:
     text: https://twitter.hdfcbank
     expected:
     - https://twitter.hdfcbank
+  - description: hdfc is a valid generic tld
+    text: https://twitter.hdfc
+    expected:
+    - https://twitter.hdfc
+  - description: hbo is a valid generic tld
+    text: https://twitter.hbo
+    expected:
+    - https://twitter.hbo
   - description: haus is a valid generic tld
     text: https://twitter.haus
     expected:
@@ -4054,6 +4386,10 @@ tests:
     text: https://twitter.goodyear
     expected:
     - https://twitter.goodyear
+  - description: goodhands is a valid generic tld
+    text: https://twitter.goodhands
+    expected:
+    - https://twitter.goodhands
   - description: goo is a valid generic tld
     text: https://twitter.goo
     expected:
@@ -4106,6 +4442,10 @@ tests:
     text: https://twitter.glass
     expected:
     - https://twitter.glass
+  - description: glade is a valid generic tld
+    text: https://twitter.glade
+    expected:
+    - https://twitter.glade
   - description: giving is a valid generic tld
     text: https://twitter.giving
     expected:
@@ -4126,6 +4466,10 @@ tests:
     text: https://twitter.ggee
     expected:
     - https://twitter.ggee
+  - description: george is a valid generic tld
+    text: https://twitter.george
+    expected:
+    - https://twitter.george
   - description: genting is a valid generic tld
     text: https://twitter.genting
     expected:
@@ -4150,6 +4494,10 @@ tests:
     text: https://twitter.garden
     expected:
     - https://twitter.garden
+  - description: gap is a valid generic tld
+    text: https://twitter.gap
+    expected:
+    - https://twitter.gap
   - description: games is a valid generic tld
     text: https://twitter.games
     expected:
@@ -4190,6 +4538,10 @@ tests:
     text: https://twitter.fund
     expected:
     - https://twitter.fund
+  - description: fujixerox is a valid generic tld
+    text: https://twitter.fujixerox
+    expected:
+    - https://twitter.fujixerox
   - description: fujitsu is a valid generic tld
     text: https://twitter.fujitsu
     expected:
@@ -4326,10 +4678,26 @@ tests:
     text: https://twitter.film
     expected:
     - https://twitter.film
+  - description: fido is a valid generic tld
+    text: https://twitter.fido
+    expected:
+    - https://twitter.fido
+  - description: fidelity is a valid generic tld
+    text: https://twitter.fidelity
+    expected:
+    - https://twitter.fidelity
+  - description: fiat is a valid generic tld
+    text: https://twitter.fiat
+    expected:
+    - https://twitter.fiat
   - description: ferrero is a valid generic tld
     text: https://twitter.ferrero
     expected:
     - https://twitter.ferrero
+  - description: ferrari is a valid generic tld
+    text: https://twitter.ferrari
+    expected:
+    - https://twitter.ferrari
   - description: feedback is a valid generic tld
     text: https://twitter.feedback
     expected:
@@ -4418,6 +4786,10 @@ tests:
     text: https://twitter.eurovision
     expected:
     - https://twitter.eurovision
+  - description: esurance is a valid generic tld
+    text: https://twitter.esurance
+    expected:
+    - https://twitter.esurance
   - description: estate is a valid generic tld
     text: https://twitter.estate
     expected:
@@ -4482,6 +4854,10 @@ tests:
     text: https://twitter.edeka
     expected:
     - https://twitter.edeka
+  - description: eco is a valid generic tld
+    text: https://twitter.eco
+    expected:
+    - https://twitter.eco
   - description: eat is a valid generic tld
     text: https://twitter.eat
     expected:
@@ -4490,6 +4866,10 @@ tests:
     text: https://twitter.earth
     expected:
     - https://twitter.earth
+  - description: dvr is a valid generic tld
+    text: https://twitter.dvr
+    expected:
+    - https://twitter.dvr
   - description: dvag is a valid generic tld
     text: https://twitter.dvag
     expected:
@@ -4502,10 +4882,18 @@ tests:
     text: https://twitter.dupont
     expected:
     - https://twitter.dupont
+  - description: duns is a valid generic tld
+    text: https://twitter.duns
+    expected:
+    - https://twitter.duns
   - description: dunlop is a valid generic tld
     text: https://twitter.dunlop
     expected:
     - https://twitter.dunlop
+  - description: duck is a valid generic tld
+    text: https://twitter.duck
+    expected:
+    - https://twitter.duck
   - description: dubai is a valid generic tld
     text: https://twitter.dubai
     expected:
@@ -4542,6 +4930,14 @@ tests:
     text: https://twitter.dog
     expected:
     - https://twitter.dog
+  - description: dodge is a valid generic tld
+    text: https://twitter.dodge
+    expected:
+    - https://twitter.dodge
+  - description: doctor is a valid generic tld
+    text: https://twitter.doctor
+    expected:
+    - https://twitter.doctor
   - description: docs is a valid generic tld
     text: https://twitter.docs
     expected:
@@ -4550,6 +4946,18 @@ tests:
     text: https://twitter.dnp
     expected:
     - https://twitter.dnp
+  - description: diy is a valid generic tld
+    text: https://twitter.diy
+    expected:
+    - https://twitter.diy
+  - description: dish is a valid generic tld
+    text: https://twitter.dish
+    expected:
+    - https://twitter.dish
+  - description: discover is a valid generic tld
+    text: https://twitter.discover
+    expected:
+    - https://twitter.discover
   - description: discount is a valid generic tld
     text: https://twitter.discount
     expected:
@@ -4870,6 +5278,14 @@ tests:
     text: https://twitter.citic
     expected:
     - https://twitter.citic
+  - description: citi is a valid generic tld
+    text: https://twitter.citi
+    expected:
+    - https://twitter.citi
+  - description: citadel is a valid generic tld
+    text: https://twitter.citadel
+    expected:
+    - https://twitter.citadel
   - description: cisco is a valid generic tld
     text: https://twitter.cisco
     expected:
@@ -4886,6 +5302,10 @@ tests:
     text: https://twitter.church
     expected:
     - https://twitter.church
+  - description: chrysler is a valid generic tld
+    text: https://twitter.chrysler
+    expected:
+    - https://twitter.chrysler
   - description: chrome is a valid generic tld
     text: https://twitter.chrome
     expected:
@@ -4946,6 +5366,10 @@ tests:
     text: https://twitter.ceb
     expected:
     - https://twitter.ceb
+  - description: cbs is a valid generic tld
+    text: https://twitter.cbs
+    expected:
+    - https://twitter.cbs
   - description: cbre is a valid generic tld
     text: https://twitter.cbre
     expected:
@@ -5010,6 +5434,10 @@ tests:
     text: https://twitter.car
     expected:
     - https://twitter.car
+  - description: capitalone is a valid generic tld
+    text: https://twitter.capitalone
+    expected:
+    - https://twitter.capitalone
   - description: capital is a valid generic tld
     text: https://twitter.capital
     expected:
@@ -5038,6 +5466,10 @@ tests:
     text: https://twitter.cam
     expected:
     - https://twitter.cam
+  - description: calvinklein is a valid generic tld
+    text: https://twitter.calvinklein
+    expected:
+    - https://twitter.calvinklein
   - description: call is a valid generic tld
     text: https://twitter.call
     expected:
@@ -5130,6 +5562,10 @@ tests:
     text: https://twitter.boots
     expected:
     - https://twitter.boots
+  - description: booking is a valid generic tld
+    text: https://twitter.booking
+    expected:
+    - https://twitter.booking
   - description: book is a valid generic tld
     text: https://twitter.book
     expected:
@@ -5146,6 +5582,10 @@ tests:
     text: https://twitter.bom
     expected:
     - https://twitter.bom
+  - description: bofa is a valid generic tld
+    text: https://twitter.bofa
+    expected:
+    - https://twitter.bofa
   - description: boehringer is a valid generic tld
     text: https://twitter.boehringer
     expected:
@@ -5182,6 +5622,10 @@ tests:
     text: https://twitter.blog
     expected:
     - https://twitter.blog
+  - description: blockbuster is a valid generic tld
+    text: https://twitter.blockbuster
+    expected:
+    - https://twitter.blockbuster
   - description: blanco is a valid generic tld
     text: https://twitter.blanco
     expected:
@@ -5230,6 +5674,10 @@ tests:
     text: https://twitter.bet
     expected:
     - https://twitter.bet
+  - description: bestbuy is a valid generic tld
+    text: https://twitter.bestbuy
+    expected:
+    - https://twitter.bestbuy
   - description: best is a valid generic tld
     text: https://twitter.best
     expected:
@@ -5246,6 +5694,10 @@ tests:
     text: https://twitter.beer
     expected:
     - https://twitter.beer
+  - description: beauty is a valid generic tld
+    text: https://twitter.beauty
+    expected:
+    - https://twitter.beauty
   - description: beats is a valid generic tld
     text: https://twitter.beats
     expected:
@@ -5262,6 +5714,10 @@ tests:
     text: https://twitter.bbva
     expected:
     - https://twitter.bbva
+  - description: bbt is a valid generic tld
+    text: https://twitter.bbt
+    expected:
+    - https://twitter.bbt
   - description: bbc is a valid generic tld
     text: https://twitter.bbc
     expected:
@@ -5274,6 +5730,10 @@ tests:
     text: https://twitter.bauhaus
     expected:
     - https://twitter.bauhaus
+  - description: basketball is a valid generic tld
+    text: https://twitter.basketball
+    expected:
+    - https://twitter.basketball
   - description: bargains is a valid generic tld
     text: https://twitter.bargains
     expected:
@@ -5306,6 +5766,14 @@ tests:
     text: https://twitter.band
     expected:
     - https://twitter.band
+  - description: bananarepublic is a valid generic tld
+    text: https://twitter.bananarepublic
+    expected:
+    - https://twitter.bananarepublic
+  - description: banamex is a valid generic tld
+    text: https://twitter.banamex
+    expected:
+    - https://twitter.banamex
   - description: baidu is a valid generic tld
     text: https://twitter.baidu
     expected:
@@ -5342,6 +5810,10 @@ tests:
     text: https://twitter.author
     expected:
     - https://twitter.author
+  - description: auspost is a valid generic tld
+    text: https://twitter.auspost
+    expected:
+    - https://twitter.auspost
   - description: audio is a valid generic tld
     text: https://twitter.audio
     expected:
@@ -5362,6 +5834,10 @@ tests:
     text: https://twitter.attorney
     expected:
     - https://twitter.attorney
+  - description: athleta is a valid generic tld
+    text: https://twitter.athleta
+    expected:
+    - https://twitter.athleta
   - description: associates is a valid generic tld
     text: https://twitter.associates
     expected:
@@ -5370,6 +5846,10 @@ tests:
     text: https://twitter.asia
     expected:
     - https://twitter.asia
+  - description: asda is a valid generic tld
+    text: https://twitter.asda
+    expected:
+    - https://twitter.asda
   - description: arte is a valid generic tld
     text: https://twitter.arte
     expected:
@@ -5434,6 +5914,22 @@ tests:
     text: https://twitter.amica
     expected:
     - https://twitter.amica
+  - description: amfam is a valid generic tld
+    text: https://twitter.amfam
+    expected:
+    - https://twitter.amfam
+  - description: amex is a valid generic tld
+    text: https://twitter.amex
+    expected:
+    - https://twitter.amex
+  - description: americanfamily is a valid generic tld
+    text: https://twitter.americanfamily
+    expected:
+    - https://twitter.americanfamily
+  - description: americanexpress is a valid generic tld
+    text: https://twitter.americanexpress
+    expected:
+    - https://twitter.americanexpress
   - description: alstom is a valid generic tld
     text: https://twitter.alstom
     expected:
@@ -5446,6 +5942,10 @@ tests:
     text: https://twitter.ally
     expected:
     - https://twitter.ally
+  - description: allstate is a valid generic tld
+    text: https://twitter.allstate
+    expected:
+    - https://twitter.allstate
   - description: allfinanz is a valid generic tld
     text: https://twitter.allfinanz
     expected:
@@ -5458,6 +5958,10 @@ tests:
     text: https://twitter.alibaba
     expected:
     - https://twitter.alibaba
+  - description: alfaromeo is a valid generic tld
+    text: https://twitter.alfaromeo
+    expected:
+    - https://twitter.alfaromeo
   - description: akdn is a valid generic tld
     text: https://twitter.akdn
     expected:
@@ -5474,6 +5978,10 @@ tests:
     text: https://twitter.airbus
     expected:
     - https://twitter.airbus
+  - description: aigo is a valid generic tld
+    text: https://twitter.aigo
+    expected:
+    - https://twitter.aigo
   - description: aig is a valid generic tld
     text: https://twitter.aig
     expected:
@@ -5490,6 +5998,10 @@ tests:
     text: https://twitter.afl
     expected:
     - https://twitter.afl
+  - description: afamilycompany is a valid generic tld
+    text: https://twitter.afamilycompany
+    expected:
+    - https://twitter.afamilycompany
   - description: aetna is a valid generic tld
     text: https://twitter.aetna
     expected:
@@ -5554,6 +6066,10 @@ tests:
     text: https://twitter.able
     expected:
     - https://twitter.able
+  - description: abc is a valid generic tld
+    text: https://twitter.abc
+    expected:
+    - https://twitter.abc
   - description: abbvie is a valid generic tld
     text: https://twitter.abbvie
     expected:
@@ -5566,6 +6082,10 @@ tests:
     text: https://twitter.abb
     expected:
     - https://twitter.abb
+  - description: abarth is a valid generic tld
+    text: https://twitter.abarth
+    expected:
+    - https://twitter.abarth
   - description: aarp is a valid generic tld
     text: https://twitter.aarp
     expected:
