@@ -1153,8 +1153,8 @@
   twttr.txt.getTweetLength = function(text, options) {
     if (!options) {
       options = {
-          // These come from https://api.twitter.com/1/help/configuration.json
-          // described by https://dev.twitter.com/docs/api/1/get/help/configuration
+          // These come from https://api.twitter.com/1.1/help/configuration.json
+          // described by https://dev.twitter.com/rest/reference/get/help/configuration
           short_url_length: 23,
           short_url_length_https: 23
       };
