@@ -256,7 +256,7 @@ module Twitter
       )
     }iox
 
-    REGEXEN[:cashtag] = /(?:[a-z]{1,2}[:._-][0-9]{1,6})|(?:[a-z]{1,6}(?:[:._-](?:[a-z]|[0-9]){1,6})?)|(?:[0-9]{1,6}[:._-][a-z]{1,2})/i
+    REGEXEN[:cashtag] = /[a-z]{1,6}(?:[._][a-z]{1,2})?/i
     REGEXEN[:valid_cashtag] = /(^|#{REGEXEN[:spaces]})(\$)(#{REGEXEN[:cashtag]})(?=$|\s|[#{PUNCTUATION_CHARS}])/i
 
     # These URL validation pattern strings are based on the ABNF from RFC 3986
