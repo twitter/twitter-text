@@ -351,6 +351,7 @@ generic:
 - "工行"
 - "家電"
 - "娱乐"
+- "天主教"
 - "大拿"
 - "大众汽车"
 - "在线"
@@ -385,6 +386,7 @@ generic:
 - "موقع"
 - "موبايلي"
 - "كوم"
+- "كاثوليك"
 - "شبكة"
 - "بيتك"
 - "بازار"
@@ -398,6 +400,7 @@ generic:
 - "онлайн"
 - "москва"
 - "ком"
+- "католик"
 - "дети"
 - zuerich
 - zone
@@ -683,8 +686,10 @@ generic:
 - rodeo
 - rocks
 - rocher
+- rmit
 - rip
 - rio
+- ril
 - rightathome
 - ricoh
 - richardli
@@ -700,6 +705,7 @@ generic:
 - rentals
 - rent
 - ren
+- reliance
 - reit
 - reisen
 - reise
@@ -827,6 +833,7 @@ generic:
 - nextdirect
 - next
 - news
+- newholland
 - new
 - neustar
 - network
@@ -853,6 +860,7 @@ generic:
 - movie
 - mov
 - motorcycles
+- moto
 - moscow
 - mortgage
 - mormon
@@ -998,6 +1006,7 @@ generic:
 - jmp
 - jll
 - jlc
+- jio
 - jewelry
 - jetzt
 - jeep
@@ -1006,6 +1015,7 @@ generic:
 - java
 - jaguar
 - iwc
+- iveco
 - itv
 - itau
 - istanbul
@@ -1079,6 +1089,7 @@ generic:
 - haus
 - hangout
 - hamburg
+- hair
 - guru
 - guitars
 - guide
@@ -1143,6 +1154,7 @@ generic:
 - frogans
 - frl
 - fresenius
+- free
 - fox
 - foundation
 - forum
@@ -1151,6 +1163,7 @@ generic:
 - ford
 - football
 - foodnetwork
+- food
 - foo
 - fly
 - flsmidth
@@ -1275,6 +1288,7 @@ generic:
 - cuisinella
 - csc
 - cruises
+- cruise
 - crs
 - crown
 - cricket
@@ -1346,10 +1360,13 @@ generic:
 - cbre
 - cbn
 - cba
+- catholic
 - catering
 - cat
 - casino
 - cash
+- caseih
+- case
 - casa
 - cartier
 - cars
@@ -1386,8 +1403,10 @@ generic:
 - broadway
 - bridgestone
 - bradesco
+- box
 - boutique
 - bot
+- boston
 - bostik
 - bosch
 - boots
@@ -1434,6 +1453,7 @@ generic:
 - bayern
 - bauhaus
 - basketball
+- baseball
 - bargains
 - barefoot
 - barclays
@@ -1473,6 +1493,7 @@ generic:
 - apple
 - app
 - apartments
+- aol
 - anz
 - anquan
 - android
