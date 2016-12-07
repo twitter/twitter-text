@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "multi_json", "~> 1.3"
   s.add_development_dependency "nokogiri", "~> 1.5.10"
-  s.add_development_dependency "rake", "~> 11.2.2"
+  s.add_development_dependency "rake", "~> 11.1" # 12 removes method named `last_comment`
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec", "~> 2.14.0"
   s.add_development_dependency "simplecov", "~> 0.8.0"
