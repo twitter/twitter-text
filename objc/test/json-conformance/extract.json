@@ -1120,6 +1120,26 @@
         ]
       },
       {
+        "description": "Properly extract URL that contains t.co in referer",
+        "text": "http://www.foo.com?referer=https://t.co/abcde http://t.co/xyzzy",
+        "expected": [
+          {
+            "url": "http://www.foo.com?referer=https://t.co/abcde",
+            "indices": [
+              0,
+              45
+            ]
+          },
+          {
+            "url": "http://t.co/xyzzy",
+            "indices": [
+              46,
+              63
+            ]
+          }
+        ]
+      },
+      {
         "description": "Extract correct indices for duplicate instances of the same URL",
         "text": "http://t.co http://t.co",
         "expected": [
