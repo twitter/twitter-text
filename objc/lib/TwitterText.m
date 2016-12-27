@@ -269,7 +269,7 @@
     @"(?:[a-zA-Z0-9][a-zA-Z0-9\\-_" TWULatinAccents @"]*\\.)+" \
     @"(?:" TWUValidGTLD @"|" TWUValidCCTLD @"|" TWUValidPunycode @")(?=[^0-9a-z@]|$)"
 
-#define TWUValidTCOURL                  @"https?://t\\.co/[a-zA-Z0-9]+"
+#define TWUValidTCOURL                  @"^https?://t\\.co/[a-zA-Z0-9]+"
 #define TWUInvalidShortDomain           @"\\A" TWUValidDomainName TWUValidCCTLD @"\\z"
 #define TWUValidSpecialShortDomain      @"\\A" TWUValidDomainName TWUValidSpecialCCTLD @"\\z"
 
