@@ -3066,6 +3066,10 @@ tests:
     text: https://twitter.photo
     expected:
     - https://twitter.photo
+  - description: phone is a valid generic tld
+    text: https://twitter.phone
+    expected:
+    - https://twitter.phone
   - description: philips is a valid generic tld
     text: https://twitter.philips
     expected:
@@ -3494,6 +3498,10 @@ tests:
     text: https://twitter.mobily
     expected:
     - https://twitter.mobily
+  - description: mobile is a valid generic tld
+    text: https://twitter.mobile
+    expected:
+    - https://twitter.mobile
   - description: mobi is a valid generic tld
     text: https://twitter.mobi
     expected:
@@ -4242,6 +4250,10 @@ tests:
     text: https://twitter.host
     expected:
     - https://twitter.host
+  - description: hospital is a valid generic tld
+    text: https://twitter.hospital
+    expected:
+    - https://twitter.hospital
   - description: horse is a valid generic tld
     text: https://twitter.horse
     expected:
@@ -4582,6 +4594,10 @@ tests:
     text: https://twitter.fund
     expected:
     - https://twitter.fund
+  - description: fun is a valid generic tld
+    text: https://twitter.fun
+    expected:
+    - https://twitter.fun
   - description: fujixerox is a valid generic tld
     text: https://twitter.fujixerox
     expected:
@@ -5118,6 +5134,10 @@ tests:
     text: https://twitter.date
     expected:
     - https://twitter.date
+  - description: data is a valid generic tld
+    text: https://twitter.data
+    expected:
+    - https://twitter.data
   - description: dance is a valid generic tld
     text: https://twitter.dance
     expected:
