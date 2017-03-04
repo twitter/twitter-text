@@ -11,18 +11,18 @@
 //
 
 #import "TwitterTextTests.h"
-#import "TwitterText.h"
+
+@import TwitterText;
 
 @implementation TwitterTextTests
 
-- (void)setUp
++ (NSString *)_ttxt_jsonConformanceDataFileRoot
 {
-    [super setUp];
-}
-
-- (void)tearDown
-{
-    [super tearDown];
+    NSString *sourceFilePath = [[NSString alloc] initWithCString:__FILE__ encoding:NSUTF8StringEncoding];
+#if !__has_feature(objc_arc)
+    [sourceFilePath autorelease];
+#endif
+    return [[[sourceFilePath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"test/json-conformance"];
 }
 
 - (void)testRemainingCountForLongTweet
@@ -117,13 +117,7 @@
 
 - (void)testExtract
 {
-    NSString *sourceFilePath = [[NSString alloc] initWithCString:__FILE__ encoding:NSUTF8StringEncoding];
-#if !__has_feature(objc_arc)
-    [sourceFilePath autorelease];
-#endif
-    sourceFilePath = [[sourceFilePath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
-    NSString *baseFileName = @"test/json-conformance/extract.json";
-    NSString *fileName = [sourceFilePath stringByAppendingPathComponent:baseFileName];
+    NSString *fileName = [[[self class] _ttxt_jsonConformanceDataFileRoot] stringByAppendingPathComponent:@"extract.json"];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
         XCTFail(@"No test data: %@", fileName);
@@ -520,7 +514,7 @@
 
 - (void)testValidate
 {
-    NSString *fileName = @"../test/json-conformance/validate.json";
+    NSString *fileName = [[[self class] _ttxt_jsonConformanceDataFileRoot] stringByAppendingPathComponent:@"validate.json"];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
         XCTFail(@"No test data: %@", fileName);
@@ -546,7 +540,7 @@
 
 - (void)testTlds
 {
-    NSString *fileName = @"../test/json-conformance/tlds.json";
+    NSString *fileName = [[[self class] _ttxt_jsonConformanceDataFileRoot] stringByAppendingPathComponent:@"tlds.json"];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
         XCTFail(@"No test data: %@", fileName);

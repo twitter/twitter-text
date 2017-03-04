@@ -1,0 +1,11 @@
+framework module TwitterText {
+    module TwitterText {
+        header "TwitterText.h"
+        export *
+    }
+
+    module TwitterTextEntity {
+		header "TwitterTextEntity.h"
+		export *
+    }
+}
