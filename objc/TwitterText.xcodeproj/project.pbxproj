@@ -162,12 +162,10 @@
 				TargetAttributes = {
 					3D4B56AF1E6A37DF00E8E570 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 9YG77X724H;
 						ProvisioningStyle = Automatic;
 					};
 					3D4B56B81E6A37DF00E8E570 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 9YG77X724H;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -338,7 +336,6 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 9YG77X724H;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -359,7 +356,6 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 9YG77X724H;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -377,7 +373,6 @@
 		3D4B56C81E6A37DF00E8E570 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = 9YG77X724H;
 				INFOPLIST_FILE = "TwitterTextTests-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterTextTests;
@@ -388,7 +383,6 @@
 		3D4B56C91E6A37DF00E8E570 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = 9YG77X724H;
 				INFOPLIST_FILE = "TwitterTextTests-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterTextTests;
