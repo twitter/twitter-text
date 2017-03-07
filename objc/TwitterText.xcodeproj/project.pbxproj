@@ -35,8 +35,8 @@
 		3DD6F6B71E6A397600437514 /* TwitterText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterText.m; path = lib/TwitterText.m; sourceTree = SOURCE_ROOT; };
 		3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterTextEntity.h; path = lib/TwitterTextEntity.h; sourceTree = SOURCE_ROOT; };
 		3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterTextEntity.m; path = lib/TwitterTextEntity.m; sourceTree = SOURCE_ROOT; };
-		3DD6F6BE1E6A3B3500437514 /* TwitterTextTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterTextTests.h; path = testproject/TwitterTextTests.h; sourceTree = SOURCE_ROOT; };
 		3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = TwitterText.modulemap; sourceTree = SOURCE_ROOT; };
+		74E1D6611E6E7A9500200344 /* TwitterTextTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextTests.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,12 +92,12 @@
 		3D4B56BD1E6A37DF00E8E570 /* TwitterTextTests */ = {
 			isa = PBXGroup;
 			children = (
-				3DD6F6BE1E6A3B3500437514 /* TwitterTextTests.h */,
+				74E1D6611E6E7A9500200344 /* TwitterTextTests.h */,
 				3D4B56BE1E6A37DF00E8E570 /* TwitterTextTests.m */,
 				3D4B56C01E6A37DF00E8E570 /* TwitterTextTests-Info.plist */,
 			);
 			name = TwitterTextTests;
-			path = testproject;
+			path = tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

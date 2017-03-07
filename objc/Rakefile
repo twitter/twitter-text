@@ -17,7 +17,7 @@ namespace :test do
     desc "Convert testing data from YAML to JSON"
     task :convert_tests do
       INPUT_PATH = repo_path('../conformance/')
-      OUTPUT_PATH = repo_path('test/json-conformance/')
+      OUTPUT_PATH = repo_path('tests/json-conformance/')
 
       FILES = [
         'extract.yml',
@@ -46,8 +46,7 @@ namespace :test do
 
   desc "Clean build and tests"
   task :clean do
-    system("rm -rf testproject/build")
-    system("rm -rf test/json-conformance")
+    system("rm -rf tests/json-conformance")
   end
 end
 
