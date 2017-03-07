@@ -4,7 +4,7 @@
 
 Objective-C version of the twitter-text handling libraries.
 
-This library supports OS X 10.12+ and iOS 10+.
+This library supports OS X 10.11+ and iOS 9+.
 
 == Set up Xcode
 
