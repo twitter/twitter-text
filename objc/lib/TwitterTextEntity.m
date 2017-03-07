@@ -26,11 +26,7 @@
 
 + (instancetype)entityWithType:(TwitterTextEntityType)type range:(NSRange)range
 {
-    TwitterTextEntity *entity = [[self alloc] initWithType:type range:range];
-#if !__has_feature(objc_arc)
-    [entity autorelease];
-#endif
-    return entity;
+    return [[self alloc] initWithType:type range:range];
 }
 
 - (NSComparisonResult)compare:(TwitterTextEntity *)right

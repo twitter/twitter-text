@@ -681,15 +681,12 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
 
 + (NSCharacterSet *)validHashtagBoundaryCharacterSet
 {
-    static NSCharacterSet *charSet = nil;
+    static NSCharacterSet *charset = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        charSet = validHashtagBoundaryCharacterSet();
-#if !__has_feature(objc_arc)
-        [charSet retain];
-#endif
+        charset = validHashtagBoundaryCharacterSet();
     });
-    return charSet;
+    return charset;
 }
 
 + (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
@@ -703,9 +700,6 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
 
     // Remove URLs from text and add t.co length
     NSMutableString *string = [text mutableCopy];
-#if !__has_feature(objc_arc)
-    [string autorelease];
-#endif
 
     NSUInteger urlLengthOffset = 0;
     TwitterTextEntityArray *urlEntities = [self URLsInText:text];
@@ -880,15 +874,12 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
 
 + (NSCharacterSet *)invalidURLWithoutProtocolPrecedingCharSet
 {
-    static NSCharacterSet *charSet;
+    static NSCharacterSet *charset;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        charSet = [NSCharacterSet characterSetWithCharactersInString:@"-_./"];
-#if !__has_feature(objc_arc)
-        [charSet retain];
-#endif
+        charset = [NSCharacterSet characterSetWithCharactersInString:@"-_./"];
     });
-    return charSet;
+    return charset;
 }
 
 + (NSRegularExpression *)validDomainSucceedingCharRegexp

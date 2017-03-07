@@ -19,9 +19,6 @@
 + (NSString *)_ttxt_jsonConformanceDataFileRoot
 {
     NSString *sourceFilePath = [[NSString alloc] initWithCString:__FILE__ encoding:NSUTF8StringEncoding];
-#if !__has_feature(objc_arc)
-    [sourceFilePath autorelease];
-#endif
     return [[[sourceFilePath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"tests/json-conformance"];
 }
 
