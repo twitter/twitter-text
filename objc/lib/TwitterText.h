@@ -27,11 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSCharacterSet *)validHashtagBoundaryCharacterSet;
 
-+ (NSUInteger)tweetLength:(NSString *)text;
-+ (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength;
++ (NSInteger)tweetLength:(NSString *)text;
++ (NSInteger)tweetLength:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength;
 
 + (NSInteger)remainingCharacterCount:(NSString *)text;
-+ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength;
++ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength;
 
 @end
 

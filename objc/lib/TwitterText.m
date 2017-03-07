@@ -319,9 +319,9 @@
 
 #pragma mark - Constants
 
-static const NSUInteger MaxTweetLength = 140;
-static const NSUInteger HTTPShortURLLength = 23;
-static const NSUInteger HTTPSShortURLLength = 23;
+static const NSInteger MaxTweetLength = 140;
+static const NSInteger HTTPShortURLLength = 23;
+static const NSInteger HTTPSShortURLLength = 23;
 
 @implementation TwitterText
 
@@ -330,7 +330,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 + (NSArray<TwitterTextEntity *> *)entitiesInText:(NSString *)text
 {
     if (!text.length) {
-        return [NSArray<TwitterTextEntity *> array];
+        return @[];
     }
 
     NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
@@ -471,7 +471,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 + (NSArray<TwitterTextEntity *> *)hashtagsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
-        return [NSArray<TwitterTextEntity *> array];
+        return @[];
     }
 
     NSArray<TwitterTextEntity *> *urls = nil;
@@ -484,7 +484,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 + (NSArray<TwitterTextEntity *> *)hashtagsInText:(NSString *)text withURLEntities:(NSArray<TwitterTextEntity *> *)urlEntities
 {
     if (!text.length) {
-        return [NSArray<TwitterTextEntity *> array];
+        return @[];
     }
 
     NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
@@ -532,7 +532,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 + (NSArray<TwitterTextEntity *> *)symbolsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
-        return [NSArray<TwitterTextEntity *> array];
+        return @[];
     }
 
     NSArray<TwitterTextEntity *> *urls = nil;
@@ -545,7 +545,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 + (NSArray<TwitterTextEntity *> *)symbolsInText:(NSString *)text withURLEntities:(NSArray<TwitterTextEntity *> *)urlEntities
 {
     if (!text.length) {
-        return [NSArray<TwitterTextEntity *> array];
+        return @[];
     }
 
     NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
@@ -583,7 +583,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 + (NSArray<TwitterTextEntity *> *)mentionedScreenNamesInText:(NSString *)text
 {
     if (!text.length) {
-        return [NSArray<TwitterTextEntity *> array];
+        return @[];
     }
 
     NSArray<TwitterTextEntity *> *mentionsOrLists = [self mentionsOrListsInText:text];
@@ -601,7 +601,7 @@ static const NSUInteger HTTPSShortURLLength = 23;
 + (NSArray<TwitterTextEntity *> *)mentionsOrListsInText:(NSString *)text
 {
     if (!text.length) {
-        return [NSArray<TwitterTextEntity *> array];
+        return @[];
     }
 
     NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
@@ -665,31 +665,26 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:replyRange];
 }
 
-+ (NSUInteger)tweetLength:(NSString *)text
-{
-    return [self tweetLength:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
-}
-
-static NSCharacterSet *validHashtagBoundaryCharacterSet()
-{
-    // Generate equivalent character set matched by TWUHashtagBoundaryInvalidChars regex and invert
-    NSMutableCharacterSet *set = [NSMutableCharacterSet letterCharacterSet];
-    [set formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
-    [set formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString: TWHashtagSpecialChars @"&"]];
-    return [set invertedSet];
-}
-
 + (NSCharacterSet *)validHashtagBoundaryCharacterSet
 {
-    static NSCharacterSet *charset = nil;
+    static NSCharacterSet *charset;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        charset = validHashtagBoundaryCharacterSet();
+        // Generate equivalent character set matched by TWUHashtagBoundaryInvalidChars regex and invert
+        NSMutableCharacterSet *set = [NSMutableCharacterSet letterCharacterSet];
+        [set formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
+        [set formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString: TWHashtagSpecialChars @"&"]];
+        charset = [set invertedSet];
     });
     return charset;
 }
 
-+ (NSUInteger)tweetLength:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
++ (NSInteger)tweetLength:(NSString *)text
+{
+    return [self tweetLength:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
+}
+
++ (NSInteger)tweetLength:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
 {
     // Use Unicode Normalization Form Canonical Composition to calculate tweet text length
     text = [text precomposedStringWithCanonicalMapping];
@@ -737,7 +732,7 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
         }
     }
 
-    return charCount;
+    return (NSInteger)charCount;
 }
 
 + (NSInteger)remainingCharacterCount:(NSString *)text
@@ -745,9 +740,9 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
     return [self remainingCharacterCount:text httpURLLength:HTTPShortURLLength httpsURLLength:HTTPSShortURLLength];
 }
 
-+ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSUInteger)httpURLLength httpsURLLength:(NSUInteger)httpsURLLength
++ (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength
 {
-    return (NSInteger)MaxTweetLength - (NSInteger)[self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
+    return MaxTweetLength - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
 }
 
 #pragma mark - Private Methods
