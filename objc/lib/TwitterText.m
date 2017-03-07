@@ -327,25 +327,25 @@ static const NSUInteger HTTPSShortURLLength = 23;
 
 #pragma mark - Public Methods
 
-+ (TwitterTextEntityArray *)entitiesInText:(NSString *)text
++ (NSArray<TwitterTextEntity *> *)entitiesInText:(NSString *)text
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return [NSArray<TwitterTextEntity *> array];
     }
 
-    TwitterTextMutableEntityArray *results = [TwitterTextMutableEntityArray array];
+    NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
 
-    TwitterTextEntityArray *urls = [self URLsInText:text];
+    NSArray<TwitterTextEntity *> *urls = [self URLsInText:text];
     [results addObjectsFromArray:urls];
 
-    TwitterTextEntityArray *hashtags = [self hashtagsInText:text withURLEntities:urls];
+    NSArray<TwitterTextEntity *> *hashtags = [self hashtagsInText:text withURLEntities:urls];
     [results addObjectsFromArray:hashtags];
 
-    TwitterTextEntityArray *symbols = [self symbolsInText:text withURLEntities:urls];
+    NSArray<TwitterTextEntity *> *symbols = [self symbolsInText:text withURLEntities:urls];
     [results addObjectsFromArray:symbols];
 
-    TwitterTextEntityArray *mentionsAndLists = [self mentionsOrListsInText:text];
-    TwitterTextMutableEntityArray *addingItems = [TwitterTextMutableEntityArray array];
+    NSArray<TwitterTextEntity *> *mentionsAndLists = [self mentionsOrListsInText:text];
+    NSMutableArray<TwitterTextEntity *> *addingItems = [NSMutableArray<TwitterTextEntity *> array];
 
     for (TwitterTextEntity *entity in mentionsAndLists) {
         NSRange entityRange = entity.range;
@@ -367,13 +367,13 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (TwitterTextEntityArray *)URLsInText:(NSString *)text
++ (NSArray<TwitterTextEntity *> *)URLsInText:(NSString *)text
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return @[];
     }
 
-    TwitterTextMutableEntityArray *results = [TwitterTextMutableEntityArray array];
+    NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
     NSUInteger len = text.length;
     NSUInteger position = 0;
     NSRange allRange = NSMakeRange(0, 0);
@@ -468,26 +468,26 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (TwitterTextEntityArray *)hashtagsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
++ (NSArray<TwitterTextEntity *> *)hashtagsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return [NSArray<TwitterTextEntity *> array];
     }
 
-    TwitterTextEntityArray *urls = nil;
+    NSArray<TwitterTextEntity *> *urls = nil;
     if (checkingURLOverlap) {
         urls = [self URLsInText:text];
     }
     return [self hashtagsInText:text withURLEntities:urls];
 }
 
-+ (TwitterTextEntityArray *)hashtagsInText:(NSString *)text withURLEntities:(TwitterTextEntityArray *)urlEntities
++ (NSArray<TwitterTextEntity *> *)hashtagsInText:(NSString *)text withURLEntities:(NSArray<TwitterTextEntity *> *)urlEntities
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return [NSArray<TwitterTextEntity *> array];
     }
 
-    TwitterTextMutableEntityArray *results = [TwitterTextMutableEntityArray array];
+    NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
     NSUInteger len = text.length;
     NSUInteger position = 0;
 
@@ -529,26 +529,26 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (TwitterTextEntityArray *)symbolsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
++ (NSArray<TwitterTextEntity *> *)symbolsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return [NSArray<TwitterTextEntity *> array];
     }
 
-    TwitterTextEntityArray *urls = nil;
+    NSArray<TwitterTextEntity *> *urls = nil;
     if (checkingURLOverlap) {
         urls = [self URLsInText:text];
     }
     return [self symbolsInText:text withURLEntities:urls];
 }
 
-+ (TwitterTextEntityArray *)symbolsInText:(NSString *)text withURLEntities:(TwitterTextEntityArray *)urlEntities
++ (NSArray<TwitterTextEntity *> *)symbolsInText:(NSString *)text withURLEntities:(NSArray<TwitterTextEntity *> *)urlEntities
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return [NSArray<TwitterTextEntity *> array];
     }
 
-    TwitterTextMutableEntityArray *results = [TwitterTextMutableEntityArray array];
+    NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
     NSUInteger len = text.length;
     NSUInteger position = 0;
 
@@ -580,14 +580,14 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (TwitterTextEntityArray *)mentionedScreenNamesInText:(NSString *)text
++ (NSArray<TwitterTextEntity *> *)mentionedScreenNamesInText:(NSString *)text
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return [NSArray<TwitterTextEntity *> array];
     }
 
-    TwitterTextEntityArray *mentionsOrLists = [self mentionsOrListsInText:text];
-    TwitterTextMutableEntityArray *results = [TwitterTextMutableEntityArray array];
+    NSArray<TwitterTextEntity *> *mentionsOrLists = [self mentionsOrListsInText:text];
+    NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
 
     for (TwitterTextEntity *entity in mentionsOrLists) {
         if (entity.type == TwitterTextEntityScreenName) {
@@ -598,13 +598,13 @@ static const NSUInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (TwitterTextEntityArray *)mentionsOrListsInText:(NSString *)text
++ (NSArray<TwitterTextEntity *> *)mentionsOrListsInText:(NSString *)text
 {
     if (!text.length) {
-        return [TwitterTextEntityArray array];
+        return [NSArray<TwitterTextEntity *> array];
     }
 
-    TwitterTextMutableEntityArray *results = [TwitterTextMutableEntityArray array];
+    NSMutableArray<TwitterTextEntity *> *results = [NSMutableArray<TwitterTextEntity *> array];
     NSUInteger len = text.length;
     NSUInteger position = 0;
 
@@ -702,7 +702,7 @@ static NSCharacterSet *validHashtagBoundaryCharacterSet()
     NSMutableString *string = [text mutableCopy];
 
     NSUInteger urlLengthOffset = 0;
-    TwitterTextEntityArray *urlEntities = [self URLsInText:text];
+    NSArray<TwitterTextEntity *> *urlEntities = [self URLsInText:text];
     for (NSInteger i = (NSInteger)urlEntities.count - 1; i >= 0; i--) {
         TwitterTextEntity *entity = [urlEntities objectAtIndex:(NSUInteger)i];
         NSRange urlRange = entity.range;

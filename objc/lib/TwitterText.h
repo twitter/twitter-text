@@ -13,40 +13,16 @@
 #import <Foundation/Foundation.h>
 #import "TwitterTextEntity.h"
 
-#if !__has_feature(nullability)
-#define nonnull
-#define nullable
-#define _Nullable
-#define _Nonnull
-#endif
-
-#ifndef NS_ASSUME_NONNULL_BEGIN
-#define NS_ASSUME_NONNULL_BEGIN
-#endif
-
-#ifndef NS_ASSUME_NONNULL_END
-#define NS_ASSUME_NONNULL_END
-#endif
-
-#if __has_feature(objc_generics)
-typedef NSArray<TwitterTextEntity *> TwitterTextEntityArray;
-typedef NSMutableArray<TwitterTextEntity *> TwitterTextMutableEntityArray;
-#else
-typedef NSArray TwitterTextEntityArray;
-typedef NSMutableArray TwitterTextMutableEntityArray;
-#endif
-
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TwitterText : NSObject
 
-+ (TwitterTextEntityArray *)entitiesInText:(NSString *)text;
-+ (TwitterTextEntityArray *)URLsInText:(NSString *)text;
-+ (TwitterTextEntityArray *)hashtagsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap;
-+ (TwitterTextEntityArray *)symbolsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap;
-+ (TwitterTextEntityArray *)mentionedScreenNamesInText:(NSString *)text;
-+ (TwitterTextEntityArray *)mentionsOrListsInText:(NSString *)text;
++ (NSArray<TwitterTextEntity *> *)entitiesInText:(NSString *)text;
++ (NSArray<TwitterTextEntity *> *)URLsInText:(NSString *)text;
++ (NSArray<TwitterTextEntity *> *)hashtagsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap;
++ (NSArray<TwitterTextEntity *> *)symbolsInText:(NSString *)text checkingURLOverlap:(BOOL)checkingURLOverlap;
++ (NSArray<TwitterTextEntity *> *)mentionedScreenNamesInText:(NSString *)text;
++ (NSArray<TwitterTextEntity *> *)mentionsOrListsInText:(NSString *)text;
 + (nullable TwitterTextEntity *)repliedScreenNameInText:(NSString *)text;
 
 + (NSCharacterSet *)validHashtagBoundaryCharacterSet;
