@@ -16,15 +16,9 @@
 
 @implementation TwitterTextTests
 
-+ (NSString *)_ttxt_jsonConformanceDataFileRoot
+- (void)testRemainingCharacterCountForLongTweet
 {
-    NSString *sourceFilePath = [[NSString alloc] initWithCString:__FILE__ encoding:NSUTF8StringEncoding];
-    return [[[sourceFilePath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"tests/json-conformance"];
-}
-
-- (void)testRemainingCountForLongTweet
-{
-    XCTAssertEqual([TwitterText remainingCharacterCount:@"123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" httpURLLength:23 httpsURLLength:23], (NSInteger)-10);
+    XCTAssertEqual([TwitterText remainingCharacterCount:@"123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" httpURLLength:23 httpsURLLength:23], -10);
 }
 
 - (void)testHashtagBoundary
@@ -114,7 +108,7 @@
 
 - (void)testExtract
 {
-    NSString *fileName = [[[self class] _ttxt_jsonConformanceDataFileRoot] stringByAppendingPathComponent:@"extract.json"];
+    NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"extract.json"];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
         XCTFail(@"No test data: %@", fileName);
@@ -511,7 +505,7 @@
 
 - (void)testValidate
 {
-    NSString *fileName = [[[self class] _ttxt_jsonConformanceDataFileRoot] stringByAppendingPathComponent:@"validate.json"];
+    NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"validate.json"];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
         XCTFail(@"No test data: %@", fileName);
@@ -537,7 +531,7 @@
 
 - (void)testTlds
 {
-    NSString *fileName = [[[self class] _ttxt_jsonConformanceDataFileRoot] stringByAppendingPathComponent:@"tlds.json"];
+    NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"tlds.json"];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
     if (!data) {
         XCTFail(@"No test data: %@", fileName);
@@ -644,6 +638,12 @@
     }
 
     return string;
+}
+
++ (NSString *)conformanceRootDirectory
+{
+    NSString *sourceFilePath = [[NSString alloc] initWithCString:__FILE__ encoding:NSUTF8StringEncoding];
+    return [[[sourceFilePath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"tests/json-conformance"];
 }
 
 @end
