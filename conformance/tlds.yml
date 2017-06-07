@@ -1546,6 +1546,10 @@ tests:
     text: https://twitter.كاثوليك
     expected:
     - https://twitter.كاثوليك
+  - description: "عرب is a valid generic tld"
+    text: https://twitter.عرب
+    expected:
+    - https://twitter.عرب
   - description: "شبكة is a valid generic tld"
     text: https://twitter.شبكة
     expected:
@@ -2718,6 +2722,10 @@ tests:
     text: https://twitter.ruhr
     expected:
     - https://twitter.ruhr
+  - description: rugby is a valid generic tld
+    text: https://twitter.rugby
+    expected:
+    - https://twitter.rugby
   - description: rsvp is a valid generic tld
     text: https://twitter.rsvp
     expected:
@@ -4234,6 +4242,10 @@ tests:
     text: https://twitter.hotmail
     expected:
     - https://twitter.hotmail
+  - description: hotels is a valid generic tld
+    text: https://twitter.hotels
+    expected:
+    - https://twitter.hotels
   - description: hoteles is a valid generic tld
     text: https://twitter.hoteles
     expected:
@@ -4854,6 +4866,10 @@ tests:
     text: https://twitter.eurovision
     expected:
     - https://twitter.eurovision
+  - description: etisalat is a valid generic tld
+    text: https://twitter.etisalat
+    expected:
+    - https://twitter.etisalat
   - description: esurance is a valid generic tld
     text: https://twitter.esurance
     expected:
@@ -5974,6 +5990,10 @@ tests:
     text: https://twitter.aramco
     expected:
     - https://twitter.aramco
+  - description: arab is a valid generic tld
+    text: https://twitter.arab
+    expected:
+    - https://twitter.arab
   - description: aquarelle is a valid generic tld
     text: https://twitter.aquarelle
     expected:
@@ -6098,6 +6118,10 @@ tests:
     text: https://twitter.agakhan
     expected:
     - https://twitter.agakhan
+  - description: africa is a valid generic tld
+    text: https://twitter.africa
+    expected:
+    - https://twitter.africa
   - description: afl is a valid generic tld
     text: https://twitter.afl
     expected:
