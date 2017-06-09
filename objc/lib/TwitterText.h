@@ -15,6 +15,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ Test comment.
+ */
 @interface TwitterText : NSObject
 
 + (NSArray<TwitterTextEntity *> *)entitiesInText:(NSString *)text;
