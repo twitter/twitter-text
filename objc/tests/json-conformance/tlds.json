@@ -2706,6 +2706,13 @@
         ]
       },
       {
+        "description": "عرب is a valid generic tld",
+        "text": "https://twitter.عرب",
+        "expected": [
+          "https://twitter.عرب"
+        ]
+      },
+      {
         "description": "شبكة is a valid generic tld",
         "text": "https://twitter.شبكة",
         "expected": [
@@ -4754,6 +4761,13 @@
         "text": "https://twitter.ruhr",
         "expected": [
           "https://twitter.ruhr"
+        ]
+      },
+      {
+        "description": "rugby is a valid generic tld",
+        "text": "https://twitter.rugby",
+        "expected": [
+          "https://twitter.rugby"
         ]
       },
       {
@@ -7410,6 +7424,13 @@
         ]
       },
       {
+        "description": "hotels is a valid generic tld",
+        "text": "https://twitter.hotels",
+        "expected": [
+          "https://twitter.hotels"
+        ]
+      },
+      {
         "description": "hoteles is a valid generic tld",
         "text": "https://twitter.hoteles",
         "expected": [
@@ -8492,6 +8513,13 @@
         "text": "https://twitter.eurovision",
         "expected": [
           "https://twitter.eurovision"
+        ]
+      },
+      {
+        "description": "etisalat is a valid generic tld",
+        "text": "https://twitter.etisalat",
+        "expected": [
+          "https://twitter.etisalat"
         ]
       },
       {
@@ -10455,6 +10483,13 @@
         ]
       },
       {
+        "description": "arab is a valid generic tld",
+        "text": "https://twitter.arab",
+        "expected": [
+          "https://twitter.arab"
+        ]
+      },
+      {
         "description": "aquarelle is a valid generic tld",
         "text": "https://twitter.aquarelle",
         "expected": [
@@ -10669,6 +10704,13 @@
         "text": "https://twitter.agakhan",
         "expected": [
           "https://twitter.agakhan"
+        ]
+      },
+      {
+        "description": "africa is a valid generic tld",
+        "text": "https://twitter.africa",
+        "expected": [
+          "https://twitter.africa"
         ]
       },
       {
