@@ -10,7 +10,7 @@ namespace :test do
   namespace :conformance do
     desc "Objective-C conformance test suite"
     task :run => [:convert_tests] do
-      system("xctool test -scheme TwitterTextTests -project testproject/TwitterText.xcodeproj")
+      system("xcodebuild test -scheme TwitterText -target TwitterTextTests -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 7'")
       abort if $?.exitstatus != 0 # Return a non-zero exit code when tests fail. Exit code is 0 when tests succeed.
     end
 
