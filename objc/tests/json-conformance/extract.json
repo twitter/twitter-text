@@ -1680,6 +1680,13 @@
         "expected": [
 
         ]
+      },
+      {
+        "description": "Extract hashtag followed by curly quotes",
+        "text": "#whatshappening’s trending.",
+        "expected": [
+          "whatshappening"
+        ]
       }
     ],
     "hashtags_from_astral": [
@@ -1900,6 +1907,13 @@
         "text": "$CashtagMustBeLessThanSixCharacter",
         "expected": [
 
+        ]
+      },
+      {
+        "description": "Extract cashtag followed by curly quotes",
+        "text": "$Stock’s trending.",
+        "expected": [
+          "Stock"
         ]
       }
     ],
