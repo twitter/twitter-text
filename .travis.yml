@@ -11,4 +11,5 @@ matrix:
     - env: TWITTER_TEXT_DIR=java
     - env: TWITTER_TEXT_DIR=js
     - env: TWITTER_TEXT_DIR=objc
+      osx_image: xcode8
 script: "./.travis.sh"
