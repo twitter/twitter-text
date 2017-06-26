@@ -1202,6 +1202,48 @@
     ],
     "hashtags": [
       {
+        "description": "Extract hashtag after emoji without variant selector (uFE0E or uFE0F)",
+        "text": "a ✌#hashtag here",
+        "expected": [
+          "hashtag"
+        ]
+      },
+      {
+        "description": "Extract hashtag after emoji with variant selector FE0E",
+        "text": "a ✌︎#hashtag here",
+        "expected": [
+          "hashtag"
+        ]
+      },
+      {
+        "description": "Extract hashtag after emoji with variant selector FE0F",
+        "text": "a ✌️#hashtag here",
+        "expected": [
+          "hashtag"
+        ]
+      },
+      {
+        "description": "Extract hashtag after emoji with skin tone without variant selector (FE0E or FE0F)",
+        "text": "a ✌🏿#hashtag here",
+        "expected": [
+          "hashtag"
+        ]
+      },
+      {
+        "description": "Extract hashtag after emoji with skin tone with variant selector FE0F",
+        "text": "a ✌🏿️#hashtag here",
+        "expected": [
+          "hashtag"
+        ]
+      },
+      {
+        "description": "Extract hashtag after emoji with zero-width-joiner",
+        "text": "a 👨‍👩‍👧#hashtag here",
+        "expected": [
+          "hashtag"
+        ]
+      },
+      {
         "description": "Extract an all-alpha hashtag",
         "text": "a #hashtag here",
         "expected": [

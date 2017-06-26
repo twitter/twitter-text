@@ -65,7 +65,7 @@
 #define TWUHashtagBoundaryInvalidChars          @"&\\p{L}\\p{M}\\p{Nd}" TWHashtagSpecialChars
 
 #define TWUHashtagBoundary \
-@"^|$|[^" \
+@"^|\\ufe0e|\\ufe0f|$|[^" \
     TWUHashtagBoundaryInvalidChars \
 @"]"
 

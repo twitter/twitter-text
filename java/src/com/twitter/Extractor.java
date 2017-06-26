@@ -1,8 +1,12 @@
 
 package com.twitter;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * A class to extract usernames, lists, hashtags and URLs from Tweet text.
@@ -55,14 +59,10 @@ public class Extractor {
 
       Entity other = (Entity)obj;
 
-      if (this.type.equals(other.type) &&
+      return this.type.equals(other.type) &&
           this.start == other.start &&
           this.end == other.end &&
-          this.value.equals(other.value)) {
-        return true;
-      } else {
-        return false;
-      }
+          this.value.equals(other.value);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class Extractor {
 
   private void removeOverlappingEntities(List<Entity> entities) {
     // sort by index
-    Collections.<Entity>sort(entities, new Comparator<Entity>() {
+    Collections.sort(entities, new Comparator<Entity>() {
       public int compare(Entity e1, Entity e2) {
         return e1.start - e2.start;
       }

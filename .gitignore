@@ -5,3 +5,4 @@ java/.idea
 /.idea
 twitter-text.iml
 .DS_Store
+*.sw?

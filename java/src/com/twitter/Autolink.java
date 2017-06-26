@@ -29,12 +29,12 @@ public class Autolink {
   /** Default attribute for invisible span tag */
   public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'";
 
-  public static interface LinkAttributeModifier {
-    public void modify(Entity entity, Map<String, String> attributes);
-  };
+  public interface LinkAttributeModifier {
+    void modify(Entity entity, Map<String, String> attributes);
+  }
 
-  public static interface LinkTextModifier {
-    public CharSequence modify(Entity entity, CharSequence text);
+  public interface LinkTextModifier {
+    CharSequence modify(Entity entity, CharSequence text);
   }
 
   protected String urlClass = null;
@@ -74,6 +74,10 @@ public class Autolink {
   }
 
   public Autolink() {
+    this(true);
+  }
+
+  public Autolink(boolean noFollow) {
     urlClass = null;
     listClass = DEFAULT_LIST_CLASS;
     usernameClass = DEFAULT_USERNAME_CLASS;
@@ -86,6 +90,7 @@ public class Autolink {
     invisibleTagAttrs = DEFAULT_INVISIBLE_TAG_ATTRS;
 
     extractor.setExtractURLWithoutProtocol(false);
+    this.noFollow = noFollow;
   }
 
   public String escapeBrackets(String text) {

@@ -180,7 +180,7 @@ public class Regex {
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
   "(" +                                                            //  $1 total match
-    "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceeding chracter
+    "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceding character
     "(" +                                                          //  $3 URL
       "(https?://)?" +                                             //  $4 Protocol (optional)
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
@@ -252,7 +252,7 @@ public class Regex {
   // initializing in a static synchronized block, there appears to be thread safety issues with Pattern.compile in android
   static {
     synchronized(Regex.class) {
-      VALID_HASHTAG = Pattern.compile("(^|[^&" + HASHTAG_LETTERS_NUMERALS + "])(#|\uFF03)(?!\uFE0F|\u20E3)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
+      VALID_HASHTAG = Pattern.compile("(^|\\uFE0E|\\uFE0F|[^&" + HASHTAG_LETTERS_NUMERALS + "])(#|\uFF03)(?!\uFE0F|\u20E3)(" + HASHTAG_LETTERS_NUMERALS_SET + "*" + HASHTAG_LETTERS_SET + HASHTAG_LETTERS_NUMERALS_SET + "*)", Pattern.CASE_INSENSITIVE);
       INVALID_HASHTAG_MATCH_END = Pattern.compile("^(?:[#＃]|://)");
       RTL_CHARACTERS = Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
       AT_SIGNS = Pattern.compile("[" + AT_SIGNS_CHARS + "]");

@@ -1,137 +1,233 @@
 
 package com.twitter;
 
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.yaml.snakeyaml.Yaml;
 
-import com.twitter.Extractor.Entity;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-public class ConformanceTest extends TestCase {
+@RunWith(Enclosed.class)
+public class ConformanceTest {
 
   private static final String CONFORMANCE_DIR_PROPERTY = "conformance.dir";
-  protected static final String KEY_DESCRIPTION = "description";
-  protected static final String KEY_INPUT = "text";
-  protected static final String KEY_EXPECTED_OUTPUT = "expected";
-  protected static final String KEY_HIGHLIGHT_HITS = "hits";
-  protected File conformanceDir;
-  protected Extractor extractor = new Extractor();
-  protected Autolink linker = new Autolink();
-  protected Validator validator = new Validator();
-  protected HitHighlighter hitHighlighter = new HitHighlighter();
+  static final String KEY_DESCRIPTION = "description";
+  static final String KEY_INPUT = "text";
+  static final String KEY_EXPECTED_OUTPUT = "expected";
+  private static final String KEY_HIGHLIGHT_HITS = "hits";
+  private static final Extractor extractor = new Extractor();
+  private static final Autolink linker = new Autolink(false);
+  private static final Validator validator = new Validator();
+  private static final HitHighlighter hitHighlighter = new HitHighlighter();
 
-  public void testMentionsExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "mentions");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractMentionedScreennames((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class MentionsConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "mentions");
+    }
+
+    @Test
+    public void testMentionsExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractMentionedScreennames((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testReplyExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "replies");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractReplyScreenname((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class ReplyConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "replies");
+    }
+
+    @Test
+    public void testReplyExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractReplyScreenname((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testHashtagsExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "hashtags");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractHashtags((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class HashtagsConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "hashtags");
+    }
+
+    @Test
+    public void testHashtagsExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractHashtags((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testHashtagsFromAstralExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "hashtags_from_astral");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractHashtags((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class HashtagsAstralConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "hashtags_from_astral");
+    }
+
+    @Test
+    public void testHashtagsAstralExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractHashtags((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testHashtagsWithIndicesExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "hashtags_with_indices");
-    for (Map testCase : (List<Map>)testCases) {
-      List<Map<String, Object>> expectedConfig = (List)testCase.get(KEY_EXPECTED_OUTPUT);
-      List<Extractor.Entity> expected = new ArrayList<Extractor.Entity>();
+  @RunWith(Parameterized.class)
+  public static class HashtagsWithIndicesConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "hashtags_with_indices");
+    }
+
+    @Test
+    public void testHashtagsWithIndicesExtractor() throws Exception {
+      @SuppressWarnings("unchecked")
+      List<Map<String, Object>> expectedConfig = (List<Map<String, Object>>)testCase.get(KEY_EXPECTED_OUTPUT);
+      List<Extractor.Entity> expected = new LinkedList<Extractor.Entity>();
       for (Map<String, Object> configEntry : expectedConfig) {
+        @SuppressWarnings("unchecked")
         List<Integer> indices = (List<Integer>)configEntry.get("indices");
-        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("hashtag").toString(), Entity.Type.HASHTAG));
+        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("hashtag").toString(), Extractor.Entity.Type.HASHTAG));
       }
 
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   expected,
-                   extractor.extractHashtagsWithIndices((String)testCase.get(KEY_INPUT)));
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          expected,
+          extractor.extractHashtagsWithIndices((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testURLsExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "urls");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractURLs((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class URLsConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "urls");
+    }
+
+    @Test
+    public void testURLsExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractURLs((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testCountryTldsExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "tlds.yml");
-    List testCases = loadConformanceData(yamlFile, "country");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractURLs((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class CountryTldsConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("tlds.yml", "country");
+    }
+
+    @Test
+    public void testCountryTldsExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractURLs((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testGenericTldsExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "tlds.yml");
-    List testCases = loadConformanceData(yamlFile, "generic");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractURLs((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class GenericTldsConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("tlds.yml", "generic");
+    }
+
+    @Test
+    public void testGenericTldsExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractURLs((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testCashtagsExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "cashtags");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
-                   extractor.extractCashtags((String)testCase.get(KEY_INPUT)));
+  @RunWith(Parameterized.class)
+  public static class CashtagsConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "cashtags");
+    }
+
+    @Test
+    public void testCashtagsExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          extractor.extractCashtags((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testCashtagsWithIndicesExtractor() throws Exception {
-    File yamlFile = new File(conformanceDir, "extract.yml");
-    List testCases = loadConformanceData(yamlFile, "cashtags_with_indices");
-    for (Map testCase : (List<Map>)testCases) {
-      List<Map<String, Object>> expectedConfig = (List)testCase.get(KEY_EXPECTED_OUTPUT);
-      List<Extractor.Entity> expected = new ArrayList<Extractor.Entity>();
+  @RunWith(Parameterized.class)
+  public static class CashtagsWithIndicesConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("extract.yml", "cashtags_with_indices");
+    }
+
+    @Test
+    public void testCashtagsWithIndicesExtractor() throws Exception {
+      @SuppressWarnings("unchecked")
+      List<Map<String, Object>> expectedConfig = (List<Map<String, Object>>)testCase.get(KEY_EXPECTED_OUTPUT);
+      List<Extractor.Entity> expected = new LinkedList<Extractor.Entity>();
       for (Map<String, Object> configEntry : expectedConfig) {
+        @SuppressWarnings("unchecked")
         List<Integer> indices = (List<Integer>)configEntry.get("indices");
-        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("cashtag").toString(), Entity.Type.CASHTAG));
+        expected.add(new Extractor.Entity(indices.get(0), indices.get(1), configEntry.get("cashtag").toString(), Extractor.Entity.Type.CASHTAG));
       }
 
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
@@ -140,119 +236,157 @@ public class ConformanceTest extends TestCase {
     }
   }
 
+  @RunWith(Parameterized.class)
+  public static class UsernameAutolinkingConformanceTest {
+    @Parameter
+    public Map testCase;
 
-  public void testUsernameAutolinking() throws Exception {
-    File yamlFile = new File(conformanceDir, "autolink.yml");
-    List testCases = loadConformanceData(yamlFile, "usernames");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   linker.autoLinkUsernamesAndLists((String)testCase.get(KEY_INPUT)));
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("autolink.yml", "usernames");
     }
-  }
 
-  public void testListAutolinking() throws Exception {
-    File yamlFile = new File(conformanceDir, "autolink.yml");
-    List testCases = loadConformanceData(yamlFile, "lists");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   linker.autoLinkUsernamesAndLists((String) testCase.get(KEY_INPUT)));
-    }
-  }
-
-  public void testHashtagAutolinking() throws Exception {
-    File yamlFile = new File(conformanceDir, "autolink.yml");
-    List testCases = loadConformanceData(yamlFile, "hashtags");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   linker.autoLinkHashtags((String) testCase.get(KEY_INPUT)));
-    }
-  }
-
-  public void testURLAutolinking() throws Exception {
-    File yamlFile = new File(conformanceDir, "autolink.yml");
-    List testCases = loadConformanceData(yamlFile, "urls");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   linker.autoLinkURLs((String)testCase.get(KEY_INPUT)));
-    }
-  }
-
-  public void testCashtagAutolinking() throws Exception {
-    File yamlFile = new File(conformanceDir, "autolink.yml");
-    List testCases = loadConformanceData(yamlFile, "cashtags");
-    for (Map testCase : (List<Map>) testCases) {
+    @Test
+    public void testUsernameAutolinking() throws Exception {
       assertEquals((String) testCase.get(KEY_DESCRIPTION),
-          (String) testCase.get(KEY_EXPECTED_OUTPUT),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          linker.autoLinkUsernamesAndLists((String) testCase.get(KEY_INPUT)));
+    }
+  }
+
+  @RunWith(Parameterized.class)
+  public static class ListAutolinkingConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("autolink.yml", "lists");
+    }
+
+    @Test
+    public void testListAutolinking() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          linker.autoLinkUsernamesAndLists((String) testCase.get(KEY_INPUT)));
+    }
+  }
+
+  @RunWith(Parameterized.class)
+  public static class HashtagsAutolinkingConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("autolink.yml", "hashtags");
+    }
+
+    @Test
+    public void testHashtagAutolinking() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          linker.autoLinkHashtags((String) testCase.get(KEY_INPUT)));
+    }
+  }
+
+  @RunWith(Parameterized.class)
+  public static class URLsAutolinkingConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("autolink.yml", "urls");
+    }
+
+    @Test
+    public void testURLsAutolinking() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          linker.autoLinkURLs((String) testCase.get(KEY_INPUT)));
+    }
+  }
+
+  @RunWith(Parameterized.class)
+  public static class CashtagsAutolinkingConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("autolink.yml", "cashtags");
+    }
+
+    @Test
+    public void testURLsAutolinking() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
           linker.autoLinkCashtags((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testAllAutolinking() throws Exception {
-    File yamlFile = new File(conformanceDir, "autolink.yml");
-    List testCases = loadConformanceData(yamlFile, "all");
-    autolink(testCases);
-  }
+  @RunWith(Parameterized.class)
+  public static class AllAutolinkingConformanceTest {
+    @Parameter
+    public Map testCase;
 
-  public void testIsValidTweet() throws Exception {
-    File yamlFile = new File(conformanceDir, "validate.yml");
-    List testCases = loadConformanceData(yamlFile, "tweets");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   ((Boolean)testCase.get(KEY_EXPECTED_OUTPUT)).booleanValue(),
-                   validator.isValidTweet(((String)testCase.get(KEY_INPUT))));
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("autolink.yml", "all");
+    }
+
+    @Test
+    public void testAllAutolinking() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          linker.autoLink((String) testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testGetTweetLength() throws Exception {
-    File yamlFile = new File(conformanceDir, "validate.yml");
-    List testCases = loadConformanceData(yamlFile, "lengths");
-    for (Map testCase : (List<Map>)testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   ((Integer)testCase.get(KEY_EXPECTED_OUTPUT)).intValue(),
-                   validator.getTweetLength(((String)testCase.get(KEY_INPUT))));
+  @RunWith(Parameterized.class)
+  public static class TweetLengthConformanceTest {
+    @Parameter
+    public Map testCase;
+
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("validate.yml", "lengths");
+    }
+
+    @Test
+    public void testTweetLengthExtractor() throws Exception {
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          validator.getTweetLength((String)testCase.get(KEY_INPUT)));
     }
   }
 
-  public void testPlainTextHitHighlighting() throws Exception {
-    File yamlFile = new File(conformanceDir, "hit_highlighting.yml");
-    List testCases = loadConformanceData(yamlFile, "plain_text");
-    List<List<Integer>> hits = null;
+  @RunWith(Parameterized.class)
+  public static class PlainTextHitHighlightConformanceTest {
+    @Parameter
+    public Map testCase;
 
-    for (Map testCase : (List<Map>)testCases) {
-      hits = (List<List<Integer>>)testCase.get(KEY_HIGHLIGHT_HITS);
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   hitHighlighter.highlight( (String)testCase.get(KEY_INPUT), hits));
+    @Parameters
+    public static Collection<Map> data() throws Exception {
+      return loadConformanceData("hit_highlighting.yml", "plain_text");
+    }
+
+    @Test
+    public void testAllAutolinkingExtractor() throws Exception {
+      @SuppressWarnings("unchecked")
+      List<List<Integer>> hits = (List<List<Integer>>)testCase.get(KEY_HIGHLIGHT_HITS);
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
+          testCase.get(KEY_EXPECTED_OUTPUT),
+          hitHighlighter.highlight((String)testCase.get(KEY_INPUT), hits));
     }
   }
 
-  public void setUp() {
-    assertNotNull("Missing required system property: " + CONFORMANCE_DIR_PROPERTY, System.getProperty(
-            CONFORMANCE_DIR_PROPERTY));
-    conformanceDir = new File(System.getProperty(CONFORMANCE_DIR_PROPERTY));
-    assertTrue("Conformance directory " + conformanceDir + " is not a directory.", conformanceDir.isDirectory());
-
-    assertNotNull("No extractor configured", extractor);
-    assertNotNull("No autolinker configured", linker);
-    linker.setNoFollow(false);
-  }
-
-  protected void autolink(List<Map> testCases) {
-    for (Map testCase : testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (String)testCase.get(KEY_EXPECTED_OUTPUT),
-                   linker.autoLink((String) testCase.get(KEY_INPUT)));
-    }
-  }
-
-  protected List loadConformanceData(File yamlFile, String testType) throws FileNotFoundException {
+  @SuppressWarnings("unchecked")
+  static List<Map> loadConformanceData(String yamlFile, String testType) throws FileNotFoundException {
     Yaml yaml = new Yaml();
-    Map fullConfig = (Map) yaml.load(new FileInputStream(yamlFile));
-    Map testConfig = (Map)fullConfig.get("tests");
-    return (List)testConfig.get(testType);
+    Map fullConfig = yaml.loadAs(new FileInputStream(new File(System.getProperty(CONFORMANCE_DIR_PROPERTY, "../conformance"), yamlFile)), Map.class);
+    Map testConfig = (Map) fullConfig.get("tests");
+    return (List<Map>)testConfig.get(testType);
   }
 }
