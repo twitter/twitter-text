@@ -180,7 +180,7 @@ public class Regex {
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
   "(" +                                                            //  $1 total match
-    "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceeding chracter
+    "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceding character
     "(" +                                                          //  $3 URL
       "(https?://)?" +                                             //  $4 Protocol (optional)
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
