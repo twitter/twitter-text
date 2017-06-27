@@ -1570,6 +1570,10 @@ tests:
     text: https://twitter.ارامكو
     expected:
     - https://twitter.ارامكو
+  - description: "اتصالات is a valid generic tld"
+    text: https://twitter.اتصالات
+    expected:
+    - https://twitter.اتصالات
   - description: "ابوظبي is a valid generic tld"
     text: https://twitter.ابوظبي
     expected:
@@ -3558,6 +3562,10 @@ tests:
     text: https://twitter.metlife
     expected:
     - https://twitter.metlife
+  - description: merckmsd is a valid generic tld
+    text: https://twitter.merckmsd
+    expected:
+    - https://twitter.merckmsd
   - description: meo is a valid generic tld
     text: https://twitter.meo
     expected:
@@ -4410,6 +4418,10 @@ tests:
     text: https://twitter.group
     expected:
     - https://twitter.group
+  - description: grocery is a valid generic tld
+    text: https://twitter.grocery
+    expected:
+    - https://twitter.grocery
   - description: gripe is a valid generic tld
     text: https://twitter.gripe
     expected:

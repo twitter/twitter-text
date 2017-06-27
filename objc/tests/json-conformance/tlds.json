@@ -2748,6 +2748,13 @@
         ]
       },
       {
+        "description": "اتصالات is a valid generic tld",
+        "text": "https://twitter.اتصالات",
+        "expected": [
+          "https://twitter.اتصالات"
+        ]
+      },
+      {
         "description": "ابوظبي is a valid generic tld",
         "text": "https://twitter.ابوظبي",
         "expected": [
@@ -6227,6 +6234,13 @@
         ]
       },
       {
+        "description": "merckmsd is a valid generic tld",
+        "text": "https://twitter.merckmsd",
+        "expected": [
+          "https://twitter.merckmsd"
+        ]
+      },
+      {
         "description": "meo is a valid generic tld",
         "text": "https://twitter.meo",
         "expected": [
@@ -7715,6 +7729,13 @@
         "text": "https://twitter.group",
         "expected": [
           "https://twitter.group"
+        ]
+      },
+      {
+        "description": "grocery is a valid generic tld",
+        "text": "https://twitter.grocery",
+        "expected": [
+          "https://twitter.grocery"
         ]
       },
       {
