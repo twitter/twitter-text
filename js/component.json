@@ -1,6 +1,6 @@
 {
   "name": "twitter-text",
-  "version": "1.14.6",
+  "version": "1.14.7",
   "main": ["./twitter-text.js"],
   "dependencies": {
   }
