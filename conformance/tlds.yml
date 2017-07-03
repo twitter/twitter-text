@@ -2586,6 +2586,10 @@ tests:
     text: https://twitter.seat
     expected:
     - https://twitter.seat
+  - description: search is a valid generic tld
+    text: https://twitter.search
+    expected:
+    - https://twitter.search
   - description: scot is a valid generic tld
     text: https://twitter.scot
     expected:
@@ -3086,6 +3090,10 @@ tests:
     text: https://twitter.philips
     expected:
     - https://twitter.philips
+  - description: phd is a valid generic tld
+    text: https://twitter.phd
+    expected:
+    - https://twitter.phd
   - description: pharmacy is a valid generic tld
     text: https://twitter.pharmacy
     expected:
@@ -3646,6 +3654,10 @@ tests:
     text: https://twitter.market
     expected:
     - https://twitter.market
+  - description: map is a valid generic tld
+    text: https://twitter.map
+    expected:
+    - https://twitter.map
   - description: mango is a valid generic tld
     text: https://twitter.mango
     expected:
