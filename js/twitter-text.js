@@ -1162,8 +1162,14 @@
       };
     }
     var textLength = twttr.txt.getUnicodeTextLength(text),
-        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
+        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text),
+        mentionsWithIndices = twttr.txt.extractMentionsWithIndices(text);
     twttr.txt.modifyIndicesFromUTF16ToUnicode(text, urlsWithIndices);
+
+	for (var i = 0; i < mentionsWithIndices.length; i++) {
+      // Subtract the length of the @mention list
+      textLength += mentionsWithIndices[i].indices[0] - mentionsWithIndices[i].indices[1];
+    }
 
     for (var i = 0; i < urlsWithIndices.length; i++) {
       // Subtract the length of the original URL

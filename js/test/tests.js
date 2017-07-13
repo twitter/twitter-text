@@ -311,6 +311,7 @@ test("twttr.txt.extractUrls", function() {
 test("twttr.txt.getTweetLength", function() {
   equal(twttr.txt.getTweetLength(""), 0, "empty should be zero length.");
   equal(twttr.txt.getTweetLength("sample tweet"), 12, "small tweet should be counted correctly.");
+  equal(twttr.txt.getTweetLength("sample tweet @twitter"), 13, "should not count @mention.");
   equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/1"), 51, "Should count short URLs as 23");
   equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/this_is_really_really_really_really_really_long"), 94, "Should count long URLs as 23");
 });
