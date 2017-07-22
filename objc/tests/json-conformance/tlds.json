@@ -4526,6 +4526,13 @@
         ]
       },
       {
+        "description": "search is a valid generic tld",
+        "text": "https://twitter.search",
+        "expected": [
+          "https://twitter.search"
+        ]
+      },
+      {
         "description": "scot is a valid generic tld",
         "text": "https://twitter.scot",
         "expected": [
@@ -5398,6 +5405,13 @@
         "text": "https://twitter.philips",
         "expected": [
           "https://twitter.philips"
+        ]
+      },
+      {
+        "description": "phd is a valid generic tld",
+        "text": "https://twitter.phd",
+        "expected": [
+          "https://twitter.phd"
         ]
       },
       {
@@ -6378,6 +6392,13 @@
         "text": "https://twitter.market",
         "expected": [
           "https://twitter.market"
+        ]
+      },
+      {
+        "description": "map is a valid generic tld",
+        "text": "https://twitter.map",
+        "expected": [
+          "https://twitter.map"
         ]
       },
       {

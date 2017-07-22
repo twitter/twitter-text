@@ -209,7 +209,7 @@ module Twitter
 
     REGEXEN[:valid_port_number] = /[0-9]+/
 
-    REGEXEN[:valid_general_url_path_chars] = /[a-z\p{Cyrillic}0-9!\*';:=\+\,\.\$\/%#\[\]\-_~&\|@#{LATIN_ACCENTS}]/io
+    REGEXEN[:valid_general_url_path_chars] = /[a-z\p{Cyrillic}0-9!\*';:=\+\,\.\$\/%#\[\]\p{Pd}_~&\|@#{LATIN_ACCENTS}]/io
     # Allow URL paths to contain up to two nested levels of balanced parens
     #  1. Used in Wikipedia URLs like /Primer_(film)
     #  2. Used in IIS sessions like /S(dfd346)/
@@ -260,7 +260,7 @@ module Twitter
     REGEXEN[:valid_cashtag] = /(^|#{REGEXEN[:spaces]})(\$)(#{REGEXEN[:cashtag]})(?=$|\s|[#{PUNCTUATION_CHARS}])/i
 
     # These URL validation pattern strings are based on the ABNF from RFC 3986
-    REGEXEN[:validate_url_unreserved] = /[a-z\p{Cyrillic}0-9\-._~]/i
+    REGEXEN[:validate_url_unreserved] = /[a-z\p{Cyrillic}0-9\p{Pd}._~]/i
     REGEXEN[:validate_url_pct_encoded] = /(?:%[0-9a-f]{2})/i
     REGEXEN[:validate_url_sub_delims] = /[!$&'()*+,;=]/i
     REGEXEN[:validate_url_pchar] = /(?:

@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.has_rdoc = true
   s.summary = "Twitter text handling library"
 
+  s.add_development_dependency "pry"
   s.add_development_dependency "test-unit"
   s.add_development_dependency "multi_json", "~> 1.3"
   s.add_development_dependency "nokogiri", "~> 1.5.10"

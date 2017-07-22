@@ -141,7 +141,7 @@ public class Regex {
   private static final String URL_VALID_PORT_NUMBER = "[0-9]++";
 
   private static final String URL_VALID_GENERAL_PATH_CHARS =
-    "[a-z0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&@" + LATIN_ACCENTS_CHARS + CYRILLIC_CHARS + "]";
+    "[a-z0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-\\u2013_~\\|&@" + LATIN_ACCENTS_CHARS + CYRILLIC_CHARS + "]";
   /** Allow URL paths to contain up to two nested levels of balanced parens
    *  1. Used in Wikipedia URLs like /Primer_(film)
    *  2. Used in IIS sessions like /S(dfd346)/
