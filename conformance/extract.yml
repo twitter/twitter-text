@@ -332,6 +332,10 @@ tests:
       text: "Go to http://example.com/view/slug-url-?foo=bar"
       expected: ["http://example.com/view/slug-url-?foo=bar"]
 
+    - description: "Extract URLs with an en dash in the path"
+      text: "Go to https://en.m.wikipedia.org/wiki/Hatfield–McCoy_feud please"
+      expected: ["https://en.m.wikipedia.org/wiki/Hatfield–McCoy_feud"]
+
     - description: "Extract URLs beginning with a space"
       text: "@user Try http:// example.com/path"
       expected: ["example.com/path"]
