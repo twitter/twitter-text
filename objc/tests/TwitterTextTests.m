@@ -157,7 +157,7 @@
                 XCTAssertEqualObjects(expectedText, actualText, @"%@", testCase);
             }
         } else {
-            XCTFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase);
         }
     }
 
@@ -179,7 +179,7 @@
                 NSUInteger expectedStart = [[indices objectAtIndex:0] unsignedIntegerValue];
                 NSUInteger expectedEnd = [[indices objectAtIndex:1] unsignedIntegerValue];
                 if (expectedEnd < expectedStart) {
-                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                    XCTFail(@"Expected start is greater than expected end: %lu, %lu", (unsigned long)expectedStart, (unsigned long)expectedEnd);
                 }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
 
@@ -194,7 +194,7 @@
                 XCTAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
-            XCTFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase);
         }
     }
 
@@ -220,7 +220,7 @@
                 NSUInteger expectedStart = [[indices objectAtIndex:0] unsignedIntegerValue];
                 NSUInteger expectedEnd = [[indices objectAtIndex:1] unsignedIntegerValue];
                 if (expectedEnd < expectedStart) {
-                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                    XCTFail(@"Expected start is greater than expected end: %lu, %lu", (unsigned long)expectedStart, (unsigned long)expectedEnd);
                 }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
 
@@ -235,7 +235,7 @@
                 XCTAssertTrue(NSEqualRanges(expectedRange, actualRange), @"%@ != %@\n%@", NSStringFromRange(expectedRange), NSStringFromRange(actualRange), testCase);
             }
         } else {
-            XCTFail(@"Matching count is different: %lu != %lu\n%@", expected.count, results.count, testCase);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase);
         }
     }
 
@@ -287,7 +287,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 
@@ -309,7 +309,7 @@
                 NSUInteger expectedStart = [[expectedIndices objectAtIndex:0] unsignedIntegerValue];
                 NSUInteger expectedEnd = [[expectedIndices objectAtIndex:1] unsignedIntegerValue];
                 if (expectedEnd < expectedStart) {
-                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                    XCTFail(@"Expected start is greater than expected end: %lu, %lu", (unsigned long)expectedStart, (unsigned long)expectedEnd);
                 }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
 
@@ -325,7 +325,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 
@@ -356,7 +356,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 
@@ -387,7 +387,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 
@@ -409,7 +409,7 @@
                 NSUInteger expectedStart = [[expectedIndices objectAtIndex:0] unsignedIntegerValue];
                 NSUInteger expectedEnd = [[expectedIndices objectAtIndex:1] unsignedIntegerValue];
                 if (expectedEnd < expectedStart) {
-                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                    XCTFail(@"Expected start is greater than expected end: %lu, %lu", (unsigned long)expectedStart, (unsigned long)expectedEnd);
                 }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
 
@@ -428,7 +428,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 
@@ -458,7 +458,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 
@@ -479,7 +479,7 @@
                 NSUInteger expectedStart = [[expectedIndices objectAtIndex:0] unsignedIntegerValue];
                 NSUInteger expectedEnd = [[expectedIndices objectAtIndex:1] unsignedIntegerValue];
                 if (expectedEnd < expectedStart) {
-                    XCTFail(@"Expected start is greater than expected end: %ld, %ld", expectedStart, expectedEnd);
+                    XCTFail(@"Expected start is greater than expected end: %lu, %lu", (unsigned long)expectedStart, (unsigned long)expectedEnd);
                 }
                 NSRange expectedRange = NSMakeRange(expectedStart, expectedEnd - expectedStart);
 
@@ -498,7 +498,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 }
@@ -572,7 +572,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 
@@ -600,7 +600,7 @@
             for (TwitterTextEntity *entity in results) {
                 [resultTexts addObject:[text substringWithRange:entity.range]];
             }
-            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", expected.count, results.count, testCase, resultTexts);
+            XCTFail(@"Matching count is different: %lu != %lu\n%@\n%@", (unsigned long)expected.count, (unsigned long)results.count, testCase, resultTexts);
         }
     }
 }
