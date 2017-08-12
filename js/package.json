@@ -6,11 +6,11 @@
   "files": [
     "twitter-text.js"
   ],
-  "homepage": "https://github.com/twitter/twitter-text-js",
+  "homepage": "https://github.com/twitter/twitter-text",
   "author": "Twitter Inc.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/twitter/twitter-text-js.git"
+    "url": "https://github.com/twitter/twitter-text.git"
   },
   "devDependencies": {
     "uglify-js": "~2.4.3",
