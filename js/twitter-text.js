@@ -1148,7 +1148,7 @@
     return result;
   };
 
-  var MAX_LENGTH = 140;
+  var MAX_LENGTH = 280;
 
   // Returns the length of Tweet text with consideration to t.co URL replacement
   // and chars outside the basic multilingual plane that use 2 UTF16 code points
