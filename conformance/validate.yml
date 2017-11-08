@@ -34,10 +34,6 @@ tests:
       expected: false
 
   usernames:
-    - description: "Valid username: a-z < 20 characters""
-      expected: false
-
-  usernames:
     - description: "Valid username: a-z < 20 characters"
       text: "@username"
       expected: true
