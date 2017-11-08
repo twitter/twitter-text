@@ -319,7 +319,7 @@
 
 #pragma mark - Constants
 
-static const NSInteger MaxTweetLength = 140;
+static const NSInteger MaxTweetLength = 280;
 static const NSInteger HTTPShortURLLength = 23;
 static const NSInteger HTTPSShortURLLength = 23;
 

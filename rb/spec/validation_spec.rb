@@ -26,18 +26,18 @@ describe Twitter::Validation do
     TestValidation.new.tweet_invalid?("not-Unicode:\xfff0").should == :invalid_characters
   end
 
-  it "should allow <= 140 combined accent characters" do
+  it "should allow <= 280 combined accent characters" do
     char = [0x65, 0x0301].pack('U')
-    TestValidation.new.tweet_invalid?(char * 139).should == false
-    TestValidation.new.tweet_invalid?(char * 140).should == false
-    TestValidation.new.tweet_invalid?(char * 141).should == :too_long
+    TestValidation.new.tweet_invalid?(char * 279).should == false
+    TestValidation.new.tweet_invalid?(char * 280).should == false
+    TestValidation.new.tweet_invalid?(char * 281).should == :too_long
   end
 
-  it "should allow <= 140 multi-byte characters" do
+  it "should allow <= 280 multi-byte characters" do
     char = [ 0x1d106 ].pack('U')
-    TestValidation.new.tweet_invalid?(char * 139).should == false
-    TestValidation.new.tweet_invalid?(char * 140).should == false
-    TestValidation.new.tweet_invalid?(char * 141).should == :too_long
+    TestValidation.new.tweet_invalid?(char * 279).should == false
+    TestValidation.new.tweet_invalid?(char * 280).should == false
+    TestValidation.new.tweet_invalid?(char * 281).should == :too_long
   end
 
 end
