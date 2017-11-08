@@ -2,7 +2,7 @@ require 'unf'
 
 module Twitter
   module Validation extend self
-    MAX_LENGTH = 140
+    MAX_LENGTH = 280
 
     DEFAULT_TCO_URL_LENGTHS = {
       :short_url_length => 23,
