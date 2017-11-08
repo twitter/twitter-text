@@ -3,13 +3,17 @@
 twitter-text
 ============
 
-This repo is a collection of libraries and conformance tests to standardize parsing of tweet text. It synchronizes development, testing, creating issues, and pull requests for twitter-text's implementations and specification. These libraries are responsible for determining the quantity of characters in a tweet and identifying and linking any url, @username, #hashtag, or $cashtag. See implementations and conformance in this repo below:
+This repo is a collection of libraries and conformance tests to standardize parsing of Tweet text. It synchronizes development, testing, creating issues, and pull requests for twitter-text's implementations and specification. These libraries are responsible for determining the quantity of characters in a Tweet and identifying and linking any url, @username, #hashtag, or $cashtag. 
+
+See implementations and conformance in this repo below:
 
 * [Conformance](conformance)
 * [Java](java)
 * [Ruby](rb)
 * [Javascript](js)
 * [Objective-C](objc)
+
+:warning: Note that a new version of twitter-text will be released soon. See the [announcement on the Twitter Developer forums](https://twittercommunity.com/t/updating-the-character-limit-and-the-twitter-text-library/96425/2), and [documentation regarding the changes](https://developer.twitter.com/en/docs/developer-utilities/twitter-text).
 
 
 ## Copyright and License
