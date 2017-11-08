@@ -7,22 +7,22 @@
         "expected": true
       },
       {
-        "description": "Valid Tweet: 140 characters",
+        "description": "Valid Tweet: 280 characters",
         "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. Winston Churchill (1874-1965) http://bit.ly/dJpywL",
         "expected": true
       },
       {
-        "description": "Valid Tweet: 140 characters (with accents)",
+        "description": "Valid Tweet: 280 characters (with accents)",
         "text": "A lié géts halfway arøünd thé wørld béføré thé truth has a chance tø get its pants øn. Winston Churchill (1874-1965) http://bit.ly/dJpywL",
         "expected": true
       },
       {
-        "description": "Valid Tweet: 140 characters (double byte characters)",
+        "description": "Valid Tweet: 280 characters (double byte characters)",
         "text": "のののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののののの",
         "expected": true
       },
       {
-        "description": "Valid Tweet: 140 characters (double word characters)",
+        "description": "Valid Tweet: 280 characters (double word characters)",
         "text": "🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱",
         "expected": true
       },
@@ -32,12 +32,12 @@
         "expected": false
       },
       {
-        "description": "Invalid Tweet: 141 characters",
+        "description": "Invalid Tweet: 281 characters",
         "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. -- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
         "expected": false
       },
       {
-        "description": "Invalid Tweet: 141 characters (due to newline)",
+        "description": "Invalid Tweet: 281 characters (due to newline)",
         "text": "A lie gets halfway around the world before the truth has a chance to get its pants on. \n- Winston Churchill (1874-1965) http://bit.ly/dJpywL",
         "expected": false
       }
