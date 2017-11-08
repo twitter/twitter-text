@@ -66,6 +66,9 @@
   twttr.txt.regexen.rtl_chars = /[\u0600-\u06FF]|[\u0750-\u077F]|[\u0590-\u05FF]|[\uFE70-\uFEFF]/mg;
   twttr.txt.regexen.non_bmp_code_pairs = /[\uD800-\uDBFF][\uDC00-\uDFFF]/mg;
 
+  // [\uFF00-\uFFEF] : Full-width roman + half-width katakana
+  twttr.txt.regexen.cjk_chars = /[\u2E80-\u2EFF]|[\u2F00-\u2FDF]|[\u2FF0-\u2FFF]|[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\u3100-\u312F]|[\u3130-\u318F]|[\u3190-\u319F]|[\u31A0-\u31BF]|[\u31C0-\u31EF]|[\u31F0-\u31FF]|[\u3200-\u32FF]|[\u3300-\u33FF]|[\u3400-\u4DBF]|[\u4DC0-\u4DFF]|[\u4E00-\u9FFF]|[\uFF00-\uFFEF]/mg;
+
   twttr.txt.regexen.latinAccentChars = /\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u024F\u0253\u0254\u0256\u0257\u0259\u025B\u0263\u0268\u026F\u0272\u0289\u028B\u02BB\u0300-\u036F\u1E00-\u1EFF/;
 
   // Generated from unicode_regex/unicode_regex_groups.scala, same as objective c's \p{L}\p{M}
@@ -993,7 +996,8 @@
   };
 
   twttr.txt.getUnicodeTextLength = function(text) {
-    return text.replace(twttr.txt.regexen.non_bmp_code_pairs, ' ').length;
+    var f = text.replace(twttr.txt.regexen.cjk_chars, '  ');
+    return f.replace(twttr.txt.regexen.non_bmp_code_pairs, ' ').length;
   };
 
   twttr.txt.convertUnicodeIndices = function(text, entities, indicesInUTF16) {
