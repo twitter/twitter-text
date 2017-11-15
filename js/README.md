@@ -11,7 +11,7 @@ Install it with: `npm install twitter-text`
 The `twttr.txt` namespace is exported, making it available as such:
 
 ``` js
-var twitter = require('twitter-text')
+var twitter = require('twitter-txt')
 twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 ```
 
