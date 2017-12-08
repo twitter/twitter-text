@@ -10,7 +10,7 @@ See implementations and conformance in this repo below:
 * [Conformance](conformance)
 * [Java](java)
 * [Ruby](rb)
-* [Javascript](js)
+* [JavaScript](js)
 * [Objective-C](objc)
 
 :warning: Note that a new version of twitter-text will be released soon. See the [announcement on the Twitter Developer forums](https://twittercommunity.com/t/updating-the-character-limit-and-the-twitter-text-library/96425/2), and [documentation regarding the changes](https://developer.twitter.com/en/docs/developer-utilities/twitter-text).
@@ -21,4 +21,3 @@ See implementations and conformance in this repo below:
 Copyright 2014 Twitter, Inc and other contributors
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
-
