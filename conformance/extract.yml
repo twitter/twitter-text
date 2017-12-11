@@ -877,6 +877,10 @@ tests:
       text: "#_ #1_2 #122 #〃"
       expected: []
 
+    - description: "Extract hashtag followed by curly quotes"
+      text: "#whatshappening’s trending."
+      expected: [whatshappening]
+
   hashtags_from_astral:
     - description: "Extract hashtag with letter from astral plane (U+20021)"
       text: "#\U00020021"
@@ -979,6 +983,10 @@ tests:
     - description: "Do not extract too long cashtags"
       text: "$CashtagMustBeLessThanSixCharacter"
       expected: []
+
+    - description: "Extract cashtag followed by curly quotes"
+      text: "$Stock’s trending."
+      expected: [Stock]
 
   cashtags_with_indices:
     - description: "Extract cashtags"

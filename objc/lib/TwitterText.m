@@ -82,7 +82,7 @@
 #define TWUValidSymbol \
     @"(?:^|[" TWUUnicodeSpaces @"])" \
     @"(\\$" TWUSymbol @")" \
-    @"(?=$|\\s|[" TWUPunctuationChars @"])"
+    @"(?=$|\\s|[" TWUPunctuationChars @"]|\\u2019)"
 
 //
 // Mention and list name
