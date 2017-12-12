@@ -33,6 +33,10 @@ tests:
       text: "A lie gets halfway around the world before the truth has a chance to get its pants on. \n- Winston Churchill (1874-1965) http://bit.ly/dJpywL"
       expected: false
 
+    - description: "Valid Tweet: 140 characters (counting 2 character end-of-line as 1 character)"
+      text: "Lorem ipsum dolor sit amet consectetur adipiscing elit.\r\nCum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus."
+      expected: true
+
   usernames:
     - description: "Valid username: a-z < 20 characters"
       text: "@username"

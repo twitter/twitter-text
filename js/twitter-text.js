@@ -996,6 +996,10 @@
     return text.replace(twttr.txt.regexen.non_bmp_code_pairs, ' ').length;
   };
 
+  twttr.txt.cleanTweetText = function(text) {
+    return text.replace("\r\n", "\n")
+  };
+
   twttr.txt.convertUnicodeIndices = function(text, entities, indicesInUTF16) {
     if (entities.length == 0) {
       return;
@@ -1161,9 +1165,10 @@
           short_url_length_https: 23
       };
     }
-    var textLength = twttr.txt.getUnicodeTextLength(text),
-        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
-    twttr.txt.modifyIndicesFromUTF16ToUnicode(text, urlsWithIndices);
+    var cleanText = twttr.txt.cleanTweetText(text),
+        textLength = twttr.txt.getUnicodeTextLength(cleanText),
+        urlsWithIndices = twttr.txt.extractUrlsWithIndices(cleanText);
+    twttr.txt.modifyIndicesFromUTF16ToUnicode(cleanText, urlsWithIndices);
 
     for (var i = 0; i < urlsWithIndices.length; i++) {
       // Subtract the length of the original URL
