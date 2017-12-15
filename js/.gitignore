@@ -5,3 +5,4 @@ build/
 package-lock.json
 src/configs/*.json
 src/configs/BUILD
+src/configs/README.md

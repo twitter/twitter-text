@@ -115,7 +115,7 @@ to work against text that has been auto-linked already.
 
 For all Twitter-Text tests, run:
 
-    npm run build:config;npm run test
+    npm run test
 
 This will run conformance and javascript tests.
 
