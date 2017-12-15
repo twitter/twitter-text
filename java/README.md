@@ -1,5 +1,5 @@
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.twitter/twitter-text.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.twitter%22%20AND%20a%3A%22twitter-text%22)
+[![Maven Central](https://img.shields.io/maven-central/v/com.twitter/twitter-text.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.twitter.twittertext%22%20AND%20a%3A%22twitter-text%22)
 
 # twitter-text
 
@@ -16,7 +16,7 @@ Bringing twitter-text-java into your project should be as simple as adding the f
     <dependency>
       <groupId>com.twitter.twittertext</groupId>
       <artifactId>twitter-text</artifactId>
-      <version>2.0.6</version> <!-- or whatever the latest version is -->
+      <version>2.0.8</version> <!-- or whatever the latest version is -->
     </dependency>
   </dependencies>
 ```
