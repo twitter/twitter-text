@@ -1,7 +1,7 @@
 {
   "name": "twitter-text",
   "description": "official twitter text linkification",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "build/twitter-text.js",
   "files": [
     "build/twitter-text.js"
@@ -36,7 +36,8 @@
     "build": "npm run build:config && rollup -c",
     "build:watch": "npm run build -- -w",
     "build:prod": "rollup -c rollup.config.js --prod",
-    "test": "rollup -c && rake test && rake test:conformance"
+    "prepublish": "npm run build:config && npm run build:prod",
+    "test": "npm run build && rake test && rake test:conformance"
   },
   "dependencies": {
     "punycode": "^2.1.0"
