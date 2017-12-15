@@ -36,7 +36,7 @@
     NSRange rightRange = right.range;
     NSUInteger rightLocation = rightRange.location;
     NSUInteger rightLength = rightRange.length;
-    
+
     if (leftLocation < rightLocation) {
         return NSOrderedAscending;
     } else if (leftLocation > rightLocation) {
@@ -68,6 +68,9 @@
             break;
         case TwitterTextEntitySymbol:
             typeString = @"Symbol";
+            break;
+        case TwitterTextEntityTweetChar:
+            typeString = @"TweetChar";
             break;
     }
     return [NSString stringWithFormat:@"<%@: %@ %@>", NSStringFromClass([self class]), typeString, NSStringFromRange(_range)];

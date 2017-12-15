@@ -62,6 +62,16 @@ class ConformanceTest < Test::Unit::TestCase
     element.attribute_nodes.map{|attr| [attr.name, attr.value]}.sort
   end
 
+  def assert_equal_parse_results(expected, actual, failure_message = nil)
+    e = {}
+    # Note that we don't assert display and valid ranges because of differences
+    # in how ruby counts characters (wrt surrogate pairs) vs. other platforms
+    range_keys = [:display_range_start, :display_range_end, :valid_range_start, :valid_range_end]
+    expected.keys.each { |k| e[k.gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').gsub(/([a-z\d])([A-Z])/,'\1_\2').tr("-", "_").downcase.to_sym] = expected[k] }
+    [e, actual].each { |a| range_keys.each { |k| a.delete(k) } }
+    assert_equal e, actual, failure_message
+  end
+
   CONFORMANCE_DIR = ENV['CONFORMANCE_DIR'] || File.expand_path("../../../conformance", __FILE__)
 
   def self.def_conformance_test(file, test_type, &block)
@@ -207,5 +217,9 @@ class ConformanceTest < Test::Unit::TestCase
 
   def_conformance_test("validate.yml", :lengths) do
     assert_equal expected, tweet_length(text), description
+  end
+
+  def_conformance_test("validate.yml", :WeightedTweetsCounterTest) do
+    assert_equal_parse_results expected, parse_tweet(text), description
   end
 end

@@ -26,8 +26,8 @@ describe Twitter::Rewriter do
       def original_text; "hello @jacob"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "hello [rewritten]"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "hello [rewritten]"
       end
     end
 
@@ -35,8 +35,8 @@ describe Twitter::Rewriter do
       def original_text; "@jacob you're cool"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "[rewritten] you're cool"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "[rewritten] you're cool"
       end
     end
 
@@ -44,8 +44,8 @@ describe Twitter::Rewriter do
       def original_text; "meet@the beach"; end
 
       it "should not be rewritten" do
-        @block_args.should be_nil
-        @rewritten_text.should == "meet@the beach"
+        expect(@block_args).to be nil
+        expect(@rewritten_text).to be == "meet@the beach"
       end
     end
 
@@ -53,8 +53,8 @@ describe Twitter::Rewriter do
       def original_text; "great.@jacob"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "great.[rewritten]"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "great.[rewritten]"
       end
     end
 
@@ -62,8 +62,8 @@ describe Twitter::Rewriter do
       def original_text; "@jacob&^$%^"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "[rewritten]&^$%^"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "[rewritten]&^$%^"
       end
     end
 
@@ -74,8 +74,8 @@ describe Twitter::Rewriter do
       end
 
       it "should be rewritten" do
-        @block_args.should == ["@", @twenty_character_username, nil]
-        @rewritten_text.should == "[rewritten]1"
+        expect(@block_args).to be == ["@", @twenty_character_username, nil]
+        expect(@rewritten_text).to be == "[rewritten]1"
       end
     end
 
@@ -83,8 +83,8 @@ describe Twitter::Rewriter do
       def original_text; "@jacobの"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "[rewritten]の"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "[rewritten]の"
       end
     end
 
@@ -92,8 +92,8 @@ describe Twitter::Rewriter do
       def original_text; "あ@jacob"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "あ[rewritten]"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "あ[rewritten]"
       end
     end
 
@@ -101,8 +101,8 @@ describe Twitter::Rewriter do
       def original_text; "あ@jacobの"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "あ[rewritten]の"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "あ[rewritten]の"
       end
     end
 
@@ -112,8 +112,8 @@ describe Twitter::Rewriter do
       end
 
       it "should be rewritten" do
-        @block_args.should == ["＠", "jacob", nil]
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["＠", "jacob", nil]
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
   end #}}}
@@ -127,8 +127,8 @@ describe Twitter::Rewriter do
       def original_text; "hello @jacob/my-list"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", "/my-list"]
-        @rewritten_text.should == "hello [rewritten]"
+        expect(@block_args).to be == ["@", "jacob", "/my-list"]
+        expect(@rewritten_text).to be == "hello [rewritten]"
       end
     end
 
@@ -136,8 +136,8 @@ describe Twitter::Rewriter do
       def original_text; "hello @jacob/ my-list"; end
 
       it "should not be rewritten" do
-        @block_args.should == ["@", "jacob", nil]
-        @rewritten_text.should == "hello [rewritten]/ my-list"
+        expect(@block_args).to be == ["@", "jacob", nil]
+        expect(@rewritten_text).to be == "hello [rewritten]/ my-list"
       end
     end
 
@@ -145,8 +145,8 @@ describe Twitter::Rewriter do
       def original_text; "hello @/my-list"; end
 
       it "should not be rewritten" do
-        @block_args.should be_nil
-        @rewritten_text.should == "hello @/my-list"
+        expect(@block_args).to be nil
+        expect(@rewritten_text).to be == "hello @/my-list"
       end
     end
 
@@ -154,8 +154,8 @@ describe Twitter::Rewriter do
       def original_text; "@jacob/my-list"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", "/my-list"]
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["@", "jacob", "/my-list"]
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
 
@@ -163,8 +163,8 @@ describe Twitter::Rewriter do
       def original_text; "meet@jacob/my-list"; end
 
       it "should not be rewritten" do
-        @block_args.should be_nil
-        @rewritten_text.should == "meet@jacob/my-list"
+        expect(@block_args).to be nil
+        expect(@rewritten_text).to be == "meet@jacob/my-list"
       end
     end
 
@@ -172,8 +172,8 @@ describe Twitter::Rewriter do
       def original_text; "great.@jacob/my-list"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", "/my-list"]
-        @rewritten_text.should == "great.[rewritten]"
+        expect(@block_args).to be == ["@", "jacob", "/my-list"]
+        expect(@rewritten_text).to be == "great.[rewritten]"
       end
     end
 
@@ -181,8 +181,8 @@ describe Twitter::Rewriter do
       def original_text; "@jacob/my-list&^$%^"; end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", "/my-list"]
-        @rewritten_text.should == "[rewritten]&^$%^"
+        expect(@block_args).to be == ["@", "jacob", "/my-list"]
+        expect(@rewritten_text).to be == "[rewritten]&^$%^"
       end
     end
 
@@ -193,8 +193,8 @@ describe Twitter::Rewriter do
       end
 
       it "should be rewritten" do
-        @block_args.should == ["@", "jacob", "/#{@twentyfive_character_list}"]
-        @rewritten_text.should == "[rewritten]12345"
+        expect(@block_args).to be == ["@", "jacob", "/#{@twentyfive_character_list}"]
+        expect(@rewritten_text).to be == "[rewritten]12345"
       end
     end
   end #}}}
@@ -208,8 +208,8 @@ describe Twitter::Rewriter do
       def original_text; "#123"; end
 
       it "should not be rewritten" do
-        @block_args.should be_nil
-        @rewritten_text.should == "#123"
+        expect(@block_args).to be nil
+        expect(@rewritten_text).to be == "#123"
       end
     end
 
@@ -217,8 +217,8 @@ describe Twitter::Rewriter do
       def original_text; "#ab1d"; end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "ab1d"]
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["#", "ab1d"]
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
 
@@ -226,8 +226,8 @@ describe Twitter::Rewriter do
       def original_text; "#a_b_c_d"; end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "a_b_c_d"]
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["#", "a_b_c_d"]
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
 
@@ -235,8 +235,8 @@ describe Twitter::Rewriter do
       def original_text; "ab#cd"; end
 
       it "should not be rewritten" do
-        @block_args.should be_nil
-        @rewritten_text.should == "ab#cd"
+        expect(@block_args).to be nil
+        expect(@rewritten_text).to be == "ab#cd"
       end
     end
 
@@ -244,8 +244,8 @@ describe Twitter::Rewriter do
       def original_text; "#2ab"; end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "2ab"]
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["#", "2ab"]
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
 
@@ -253,8 +253,8 @@ describe Twitter::Rewriter do
       def original_text; "I'm frickin' awesome #ab #cd #ef"; end
 
       it "rewrites each hashtag" do
-        @block_args.should == [["#", "ab"], ["#", "cd"], ["#", "ef"]]
-        @rewritten_text.should == "I'm frickin' awesome [rewritten] [rewritten] [rewritten]"
+        expect(@block_args).to be == [["#", "ab"], ["#", "cd"], ["#", "ef"]]
+        expect(@rewritten_text).to be == "I'm frickin' awesome [rewritten] [rewritten] [rewritten]"
       end
     end
 
@@ -262,8 +262,8 @@ describe Twitter::Rewriter do
       def original_text; "ok, great.#abc"; end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "abc"]
-        @rewritten_text.should == "ok, great.[rewritten]"
+        expect(@block_args).to be == ["#", "abc"]
+        expect(@rewritten_text).to be == "ok, great.[rewritten]"
       end
     end
 
@@ -271,8 +271,8 @@ describe Twitter::Rewriter do
       def original_text; "&#nbsp;"; end
 
       it "should not be rewritten" do
-        @block_args.should be_nil
-        @rewritten_text.should == "&#nbsp;"
+        expect(@block_args).to be nil
+        expect(@rewritten_text).to be == "&#nbsp;"
       end
     end
 
@@ -280,8 +280,8 @@ describe Twitter::Rewriter do
       def original_text; "#great!"; end
 
       it "should be rewritten, but should not include the !" do
-        @block_args.should == ["#", "great"];
-        @rewritten_text.should == "[rewritten]!"
+        expect(@block_args).to be == ["#", "great"];
+        expect(@rewritten_text).to be == "[rewritten]!"
       end
     end
 
@@ -289,8 +289,8 @@ describe Twitter::Rewriter do
       def original_text; "#twj_devの"; end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "twj_devの"];
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["#", "twj_devの"];
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
 
@@ -298,8 +298,8 @@ describe Twitter::Rewriter do
       def original_text; "#{[0x3000].pack('U')}#twj_dev"; end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "twj_dev"];
-        @rewritten_text.should == "　[rewritten]"
+        expect(@block_args).to be == ["#", "twj_dev"];
+        expect(@rewritten_text).to be == "　[rewritten]"
       end
     end
 
@@ -307,8 +307,8 @@ describe Twitter::Rewriter do
       def original_text; "#twj_dev#{[0x3000].pack('U')}"; end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "twj_dev"];
-        @rewritten_text.should == "[rewritten]　"
+        expect(@block_args).to be == ["#", "twj_dev"];
+        expect(@rewritten_text).to be == "[rewritten]　"
       end
     end
 
@@ -316,8 +316,8 @@ describe Twitter::Rewriter do
       def original_text; "#{[0xFF03].pack('U')}twj_dev"; end
 
       it "should be rewritten" do
-        @block_args.should == ["＃", "twj_dev"];
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["＃", "twj_dev"];
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
 
@@ -328,8 +328,8 @@ describe Twitter::Rewriter do
       end
 
       it "should be rewritten" do
-        @block_args.should == ["#", "éhashtag"];
-        @rewritten_text.should == "[rewritten]"
+        expect(@block_args).to be == ["#", "éhashtag"];
+        expect(@rewritten_text).to be == "[rewritten]"
       end
     end
   end #}}}
@@ -345,8 +345,8 @@ describe Twitter::Rewriter do
       def original_text; "On my search engine #{url} I found good links."; end
 
       it "should be rewritten" do
-        @block_args.should == [url];
-        @rewritten_text.should == "On my search engine [rewritten] I found good links."
+        expect(@block_args).to be == [url];
+        expect(@rewritten_text).to be == "On my search engine [rewritten] I found good links."
       end
     end
 
@@ -354,8 +354,8 @@ describe Twitter::Rewriter do
       def original_text; "いまなにしてる#{url}いまなにしてる"; end
 
       it "should be rewritten" do
-        @block_args.should == [url];
-        @rewritten_text.should == "いまなにしてる[rewritten]いまなにしてる"
+        expect(@block_args).to be == [url];
+        expect(@rewritten_text).to be == "いまなにしてる[rewritten]いまなにしてる"
       end
     end
 
@@ -363,16 +363,16 @@ describe Twitter::Rewriter do
       def original_text; "I found a neatness (#{url})"; end
 
       it "should be rewritten" do
-        @block_args.should == [url];
-        @rewritten_text.should == "I found a neatness ([rewritten])"
+        expect(@block_args).to be == [url];
+        expect(@rewritten_text).to be == "I found a neatness ([rewritten])"
       end
 
       context "when the URL ends with a slash;" do
         def url; "http://www.google.com/"; end
 
         it "should be rewritten" do
-          @block_args.should == [url];
-          @rewritten_text.should == "I found a neatness ([rewritten])"
+          expect(@block_args).to be == [url];
+          expect(@rewritten_text).to be == "I found a neatness ([rewritten])"
         end
       end
 
@@ -380,8 +380,8 @@ describe Twitter::Rewriter do
         def url; "http://www.google.com/fsdfasdf"; end
 
         it "should be rewritten" do
-          @block_args.should == [url];
-          @rewritten_text.should == "I found a neatness ([rewritten])"
+          expect(@block_args).to be == [url];
+          expect(@rewritten_text).to be == "I found a neatness ([rewritten])"
         end
       end
     end
@@ -390,16 +390,16 @@ describe Twitter::Rewriter do
       def original_text; "I found a neatness (#{url})"; end
 
       it "should be rewritten" do
-        @block_args.should == [url];
-        @rewritten_text.should == "I found a neatness ([rewritten])"
+        expect(@block_args).to be == [url];
+        expect(@rewritten_text).to be == "I found a neatness ([rewritten])"
       end
 
       context "wikipedia" do
         def url; "http://en.wikipedia.org/wiki/Madonna_(artist)"; end
 
         it "should be rewritten" do
-          @block_args.should == [url];
-          @rewritten_text.should == "I found a neatness ([rewritten])"
+          expect(@block_args).to be == [url];
+          expect(@rewritten_text).to be == "I found a neatness ([rewritten])"
         end
       end
 
@@ -407,8 +407,8 @@ describe Twitter::Rewriter do
         def url; "http://msdn.com/S(deadbeef)/page.htm"; end
 
         it "should be rewritten" do
-          @block_args.should == [url];
-          @rewritten_text.should == "I found a neatness ([rewritten])"
+          expect(@block_args).to be == [url];
+          expect(@rewritten_text).to be == "I found a neatness ([rewritten])"
         end
       end
 
@@ -416,8 +416,8 @@ describe Twitter::Rewriter do
         def url; "http://example.com/i_has_a_("; end
 
         it "should be rewritten" do
-          @block_args.should == ["http://example.com/i_has_a_"];
-          @rewritten_text.should == "I found a neatness ([rewritten]()"
+          expect(@block_args).to be == ["http://example.com/i_has_a_"];
+          expect(@rewritten_text).to be == "I found a neatness ([rewritten]()"
         end
       end
 
@@ -425,8 +425,8 @@ describe Twitter::Rewriter do
         def url; "http://foo.bar.com/foo_(\")_bar" end
 
         it "should be rewritten" do
-          @block_args.should == ["http://foo.bar.com/foo_"];
-          @rewritten_text.should == "I found a neatness ([rewritten](\")_bar)"
+          expect(@block_args).to be == ["http://foo.bar.com/foo_"];
+          expect(@rewritten_text).to be == "I found a neatness ([rewritten](\")_bar)"
         end
       end
 
@@ -434,8 +434,8 @@ describe Twitter::Rewriter do
         def url; 'http://x.xx.com/("style="color:red"onmouseover="alert(1)' end
 
         it "should be rewritten" do
-          @block_args.should == ["http://x.xx.com/"];
-          @rewritten_text.should == 'I found a neatness ([rewritten]("style="color:red"onmouseover="alert(1))'
+          expect(@block_args).to be == ["http://x.xx.com/"];
+          expect(@rewritten_text).to be == 'I found a neatness ([rewritten]("style="color:red"onmouseover="alert(1))'
         end
       end
     end
@@ -444,17 +444,18 @@ describe Twitter::Rewriter do
       def original_text; "Check this out @hoverbird:#{url}"; end
 
       it "should be rewritten" do
-        @block_args.should == [url];
-        @rewritten_text.should == "Check this out @hoverbird:[rewritten]"
+        expect(@block_args).to be == [url];
+        expect(@rewritten_text).to be == "Check this out @hoverbird:[rewritten]"
       end
     end
 
     context "with a URL ending in allowed punctuation" do
       it "does not consume ending punctuation" do
         %w| ? ! , . : ; ] ) } = \ ' |.each do |char|
-          Twitter::Rewriter.rewrite_urls("#{url}#{char}") do |url|
-            url.should == url; "[rewritten]"
-          end.should == "[rewritten]#{char}"
+          expect(Twitter::Rewriter.rewrite_urls("#{url}#{char}") do |url|
+            expect(url).to be == url
+            "[rewritten]"
+          end).to be == "[rewritten]#{char}"
         end
       end
     end
@@ -462,9 +463,9 @@ describe Twitter::Rewriter do
     context "with a URL preceded in forbidden characters" do
       it "should be rewritten" do
         %w| \ ' / ! = |.each do |char|
-          Twitter::Rewriter.rewrite_urls("#{char}#{url}") do |url|
+          expect(Twitter::Rewriter.rewrite_urls("#{char}#{url}") do |url|
             "[rewritten]" # should not be called here.
-          end.should == "#{char}[rewritten]"
+          end).to be == "#{char}[rewritten]"
         end
       end
     end
@@ -473,8 +474,8 @@ describe Twitter::Rewriter do
       def original_text; "<link rel='true'>#{url}</link>"; end
 
       it "should be rewritten" do
-        @block_args.should == [url];
-        @rewritten_text.should == "<link rel='true'>[rewritten]</link>"
+        expect(@block_args).to be == [url];
+        expect(@rewritten_text).to be == "<link rel='true'>[rewritten]</link>"
       end
     end
 
@@ -482,8 +483,8 @@ describe Twitter::Rewriter do
       def original_text; "http://www.links.org link at start of page, link at end http://www.foo.org"; end
 
       it "should autolink each one" do
-        @block_args.should == [["http://www.links.org"], ["http://www.foo.org"]];
-        @rewritten_text.should == "[rewritten] link at start of page, link at end [rewritten]"
+        expect(@block_args).to be == [["http://www.links.org"], ["http://www.foo.org"]];
+        expect(@rewritten_text).to be == "[rewritten] link at start of page, link at end [rewritten]"
       end
     end
 
@@ -491,8 +492,8 @@ describe Twitter::Rewriter do
       def original_text; "http://foo.com https://bar.com http://mail.foobar.org"; end
 
       it "should autolink each one, in the proper order" do
-        @block_args.should == [["http://foo.com"], ["https://bar.com"], ["http://mail.foobar.org"]];
-        @rewritten_text.should == "[rewritten] [rewritten] [rewritten]"
+        expect(@block_args).to be == [["http://foo.com"], ["https://bar.com"], ["http://mail.foobar.org"]];
+        expect(@rewritten_text).to be == "[rewritten] [rewritten] [rewritten]"
       end
     end
 
@@ -500,8 +501,8 @@ describe Twitter::Rewriter do
       def original_text; "Yahoo integriert Facebook http://golem.mobi/0912/71607.html"; end
 
       it "should autolink it" do
-        @block_args.should == ["http://golem.mobi/0912/71607.html"]
-        @rewritten_text.should == "Yahoo integriert Facebook [rewritten]"
+        expect(@block_args).to be == ["http://golem.mobi/0912/71607.html"]
+        expect(@rewritten_text).to be == "Yahoo integriert Facebook [rewritten]"
       end
     end
 
@@ -509,8 +510,8 @@ describe Twitter::Rewriter do
       def original_text; "I like www.foobar.com dudes"; end
 
       it "does not link at all" do
-        @block_args.should be_nil
-        @rewritten_text.should == "I like www.foobar.com dudes"
+        expect(@block_args).to be nil
+        expect(@rewritten_text).to be == "I like www.foobar.com dudes"
       end
     end
 
@@ -519,8 +520,8 @@ describe Twitter::Rewriter do
         def original_text; 'http://x.xx.com/@"style="color:pink"onmouseover=alert(1)//'; end
 
         it "should not allow XSS follwing @" do
-          @block_args.should == ["http://x.xx.com/"]
-          @rewritten_text.should == '[rewritten]@"style="color:pink"onmouseover=alert(1)//'
+          expect(@block_args).to be == ["http://x.xx.com/"]
+          expect(@rewritten_text).to be == '[rewritten]@"style="color:pink"onmouseover=alert(1)//'
         end
       end
 
@@ -528,8 +529,8 @@ describe Twitter::Rewriter do
         def original_text; "http://example.com/@foobar"; end
 
         it "should link url" do
-          @block_args.should == ["http://example.com/@foobar"]
-          @rewritten_text.should == "[rewritten]"
+          expect(@block_args).to be == ["http://example.com/@foobar"]
+          expect(@rewritten_text).to be == "[rewritten]"
         end
       end
 
@@ -537,8 +538,8 @@ describe Twitter::Rewriter do
         def original_text; "http://example.com/@foobar/"; end
 
         it "should not link the username but link full url" do
-          @block_args.should == ["http://example.com/@foobar/"]
-          @rewritten_text.should == "[rewritten]"
+          expect(@block_args).to be == ["http://example.com/@foobar/"]
+          expect(@rewritten_text).to be == "[rewritten]"
         end
       end
     end

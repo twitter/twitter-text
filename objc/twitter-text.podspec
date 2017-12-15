@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   name = "twitter-text"
-  version = "1.14.7"
+  version = "2.0.0"
   url = "https://github.com/twitter/#{name}"
   git_url = "#{url}.git"
   tag = "v#{version}"
@@ -18,6 +18,6 @@ Pod::Spec.new do |s|
   s.source = { :git => "#{url}.git", :tag => tag }
   s.source_files = "objc/lib/**/*.{h,m}"
   s.author = { "Twitter, Inc." => "opensource@twitter.com" }
-  s.ios.deployment_target = "4.0"
+  s.ios.deployment_target = "9.0"
   s.osx.deployment_target = "10.7"
 end

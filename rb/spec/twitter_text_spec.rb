@@ -13,9 +13,9 @@ if major.to_i == 1 && minor.to_i < 9
     end
 
     it "should raise with invalid KCODE on Ruby < 1.9" do
-      lambda do
+      expect(lambda do
         require 'twitter-text'
-      end.should raise_error
+      end).to raise_error
     end
   end
 end

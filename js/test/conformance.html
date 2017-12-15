@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
 
-  <script src="../lib/jquery-1.4.2.js"></script>
+  <script src="./jquery-1.4.2.js"></script>
 
   <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" type="text/css" media="screen" />
   <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
 
-  <script src="../twitter-text.js"></script>
+  <script src="../build/twitter-text.js"></script>
   <script src="../test/conformance.js"></script>
 
   <script>
@@ -112,7 +112,7 @@
           switch (section) {
             case "tweets":
               return function(test) {
-                return twttr.txt.isValidTweetText(test.text);
+                return twttr.txt.isValidTweetText(test.text, twttr.txt.configs.version1);
               };
             case "usernames":
               return function(test) {
@@ -136,8 +136,12 @@
               };
             case "lengths":
               return function(test) {
-                return twttr.txt.getTweetLength(test.text);
+                return twttr.txt.getTweetLength(test.text, twttr.txt.configs.version1);
               };
+            case "WeightedTweetsCounterTest":
+              return function(test){
+                return twttr.txt.parseTweet(test.text);
+              }
           }
         case "tlds":
           return function(test) {
@@ -147,6 +151,14 @@
 
     }
 
+    function assertFields(actual, expected, fields) {
+      for (var i = 0; i < fields.length; i++) {
+        if (actual[fields[i]] !== expected[fields[i]]) {
+          return false;
+        }
+      }
+      return true;
+    }
 
     for (var suite in cases) {
       (function(suite) {
@@ -163,8 +175,8 @@
           }(section));
         }
       }(suite));
-
     }
+
   </script>
 
 </head>

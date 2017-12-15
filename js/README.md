@@ -40,12 +40,37 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 
 See [Tweet Entities](https://dev.twitter.com/overview/api/entities-in-twitter-objects) for more info getting url entities from Twitter's API.
 
-## Remaining character count example
+## Tweet Parsing
+Previous versions of Twitter-Text provided different helper methods for Tweet validation, Tweet length, and remaining characters calculation. To simplify the API and obtain this information with just one call, Twitter-Text now exposes a new “parseTweet” method that will return the following fields:
 
-    var tweet = "This is a test tweet";
-    var remainingCharacters = 140 - twttr.txt.getTweetLength(tweet);
-    
-`getTweetLength` returns the computed length of a tweet after taking into consideration t.co URL shortening and non UTF-16 characters
+* **weightedLength:** Integer that indicates the weighted length calculated by the algorithm above.
+* **permillage:** Integer value corresponding to the ratio of consumed weighted length to the maximum weighted length.
+* **valid:** Boolean indicating whether it is a valid Tweet.
+* **dispayRangeStart:** Integer with start index on the Tweet string
+* **displayRangeEnd:** Integer with end index on the Tweet string (inclusive)
+* **validDisplayRangeStart:** Integer indicating the valid start index on the Tweet string
+* **validDisplayRangeEnd:** Integer indicating the valid end index on the Tweet string. This can be lesser than displayRangeEnd (inclusive).
+
+```js
+var tweet = "This is a test tweet";
+twttr.txt.parseTweet(tweet);
+/* Returns:
+  {
+    weightedLength: 20,
+    permillage: 71,
+    valid: true,
+    displayRangeEnd: 19,
+    displayRangeStart: 0,
+    validRangeEnd: 19,
+    validRangeStart: 0
+  }
+*/
+```
+Details about Twitter's weighted counting scheme are available on the [official developer website](https://developer.twitter.com/en/docs/developer-utilities/twitter-text).
+
+### Marked for Deprecation
+
+`getTweetLength` returns the weighted length of a tweet that is calculated by parseTweet. It will be deprecated in a subsequent release. Please use parseTweet instead.
 
 ## Usernames
 
@@ -68,7 +93,7 @@ Asian languages like Chinese, Japanese or Korean may not use a delimiter such as
 a space to separate normal text from URLs making it difficult to identify where
 the URL ends and the text starts.
 
-For this reason twitter-text currently does not support extracting or auto-linking
+For this reason Twitter-Text currently does not support extracting or auto-linking
 of URLs immediately followed by non-Latin characters.
 
 Example: "http://twitter.com/は素晴らしい" .
@@ -87,6 +112,12 @@ Use to provide emphasis around the "hits" returned from the Search API, built
 to work against text that has been auto-linked already.
 
 ## Testing
+
+For all Twitter-Text tests, run:
+
+    npm run build:config;npm run test
+
+This will run conformance and javascript tests.
 
 ### Conformance
 

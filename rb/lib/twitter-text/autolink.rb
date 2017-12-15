@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# encoding: utf-8
 
 require 'set'
 require 'twitter-text/hash_helper'
@@ -21,9 +21,9 @@ module Twitter
     # Default URL base for auto-linked lists
     DEFAULT_LIST_URL_BASE = "https://twitter.com/".freeze
     # Default URL base for auto-linked hashtags
-    DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%23".freeze
+    DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/search?q=%23".freeze
     # Default URL base for auto-linked cashtags
-    DEFAULT_CASHTAG_URL_BASE = "https://twitter.com/#!/search?q=%24".freeze
+    DEFAULT_CASHTAG_URL_BASE = "https://twitter.com/search?q=%24".freeze
 
     # Default attributes for invisible span tag
     DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'".freeze
@@ -286,7 +286,7 @@ module Twitter
       # wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
       # everything with the tco-ellipsis class.
       #
-      # Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/#!/username/status/1234/photo/1
+      # Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/username/status/1234/photo/1
       # For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
       # For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
       display_url_sans_ellipses = display_url.gsub("…", "")

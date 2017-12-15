@@ -7,7 +7,7 @@ module Twitter
 
       alias_method(deprecated_method, method)
       define_method method do |*args, &block|
-        warn message
+        warn message unless $TESTING
         send(deprecated_method, *args, &block)
       end
     end

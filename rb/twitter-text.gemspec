@@ -2,11 +2,10 @@
 
 Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "1.14.7"
-  s.authors = ["Matt Sanford", "Patrick Ewing", "Ben Cherry", "Britt Selvitelle",
-               "Raffi Krikorian", "J.P. Cummins", "Yoshimasa Niwa", "Keita Fujii", "James Koval"]
-  s.email = ["matt@twitter.com", "patrick.henry.ewing@gmail.com", "bcherry@gmail.com", "bs@brittspace.com",
-             "raffi@twitter.com", "jcummins@twitter.com", "niw@niw.at", "keita@twitter.com", "jkoval@twitter.com"]
+  s.version = "2.0.0"
+  s.authors = ["David LaMacchia", "Sudheer Guntupalli", "Kaushik Lakshmikanth", "Jose Antonio Marquez Russo", "Lee Adams",
+               "Yoshimasa Niwa"]
+  s.email = ["opensource@twitter.com"]
   s.homepage = "http://twitter.com"
   s.description = s.summary = "A gem that provides text handling for Twitter"
   s.license = "Apache 2.0"
@@ -18,12 +17,14 @@ Gem::Specification.new do |s|
   s.add_development_dependency "pry"
   s.add_development_dependency "test-unit"
   s.add_development_dependency "multi_json", "~> 1.3"
-  s.add_development_dependency "nokogiri", "~> 1.5.10"
-  s.add_development_dependency "rake", "~> 11.1" # 12 removes method named `last_comment`
+  s.add_development_dependency "nokogiri", "~> 1.8.0"
+  s.add_development_dependency "rake"
   s.add_development_dependency "rdoc"
-  s.add_development_dependency "rspec", "~> 2.14.0"
-  s.add_development_dependency "simplecov", "~> 0.8.0"
+  s.add_development_dependency "rspec", "~> 3.0"
+  s.add_development_dependency "simplecov"
   s.add_runtime_dependency     "unf", "~> 0.1.0"
+  # Use of idn-ruby requires libidn to be installed separately
+  s.add_runtime_dependency     "idn-ruby"
 
   s.files         = `git ls-files`.split("\n") + ['lib/assets/tld_lib.yml']
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

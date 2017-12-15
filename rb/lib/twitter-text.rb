@@ -15,6 +15,8 @@ end
   autolink
   extractor
   unicode
+  weighted_range
+  configuration
   validation
   hit_highlighter
 ).each do |name|

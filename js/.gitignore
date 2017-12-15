@@ -1,3 +1,7 @@
 test/conformance.js
 .DS_Store
 node_modules/
+build/
+package-lock.json
+src/configs/*.json
+src/configs/BUILD

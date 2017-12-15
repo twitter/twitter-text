@@ -18,6 +18,7 @@ typedef NS_ENUM(NSUInteger, TwitterTextEntityType) {
     TwitterTextEntityHashtag,
     TwitterTextEntityListName,
     TwitterTextEntitySymbol,
+    TwitterTextEntityTweetChar
 };
 
 @interface TwitterTextEntity : NSObject

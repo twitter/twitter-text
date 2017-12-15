@@ -13,6 +13,9 @@
 		3DD6F6BB1E6A397600437514 /* TwitterText.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B71E6A397600437514 /* TwitterText.m */; };
 		3DD6F6BC1E6A397600437514 /* TwitterTextEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DD6F6BD1E6A397600437514 /* TwitterTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */; };
+		D04EEEBF1FB23C6B00970385 /* IFUnicodeURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D04EEEBA1FB23C4400970385 /* IFUnicodeURL.framework */; };
+		D087405E1F9AB7570066AF36 /* v1.json in Resources */ = {isa = PBXBuildFile; fileRef = D087405C1F9AB7570066AF36 /* v1.json */; };
+		D087405F1F9AB7570066AF36 /* v2.json in Resources */ = {isa = PBXBuildFile; fileRef = D087405D1F9AB7570066AF36 /* v2.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -22,6 +25,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 3D4B56AF1E6A37DF00E8E570;
 			remoteInfo = TwitterText;
+		};
+		D04EEEB91FB23C4400970385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D04EEEAE1FB23C4400970385 /* IFUnicodeURL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 210315601D960386009C7CCB;
+			remoteInfo = IFUnicodeURL;
+		};
+		D04EEEBB1FB23C4400970385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D04EEEAE1FB23C4400970385 /* IFUnicodeURL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 210315681D960387009C7CCB;
+			remoteInfo = IFUnicodeURLTests;
+		};
+		D04EEEBD1FB23C6400970385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D04EEEAE1FB23C4400970385 /* IFUnicodeURL.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2103155F1D960386009C7CCB;
+			remoteInfo = IFUnicodeURL;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -37,6 +61,9 @@
 		3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterTextEntity.m; path = lib/TwitterTextEntity.m; sourceTree = SOURCE_ROOT; };
 		3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = TwitterText.modulemap; path = resources/TwitterText.modulemap; sourceTree = SOURCE_ROOT; };
 		74E1D6611E6E7A9500200344 /* TwitterTextTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextTests.h; sourceTree = "<group>"; };
+		D04EEEAE1FB23C4400970385 /* IFUnicodeURL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IFUnicodeURL.xcodeproj; path = IFUnicodeURL/IFUnicodeURL.xcodeproj; sourceTree = "<group>"; };
+		D087405C1F9AB7570066AF36 /* v1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v1.json; path = ../../../config/v1.json; sourceTree = "<group>"; };
+		D087405D1F9AB7570066AF36 /* v2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v2.json; path = ../../../config/v2.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D04EEEBF1FB23C6B00970385 /* IFUnicodeURL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,7 +91,9 @@
 			children = (
 				3D4B56B21E6A37DF00E8E570 /* TwitterText */,
 				3D4B56BD1E6A37DF00E8E570 /* TwitterTextTests */,
+				D04EE9D11FB03B3300970385 /* ThirdParty */,
 				3D4B56B11E6A37DF00E8E570 /* Products */,
+				D04EED591FB23A3C00970385 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +109,7 @@
 		3D4B56B21E6A37DF00E8E570 /* TwitterText */ = {
 			isa = PBXGroup;
 			children = (
+				D087405B1F9AB72E0066AF36 /* Resources */,
 				3DD6F6B61E6A397600437514 /* TwitterText.h */,
 				3DD6F6B71E6A397600437514 /* TwitterText.m */,
 				3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */,
@@ -98,6 +129,47 @@
 			);
 			name = TwitterTextTests;
 			path = tests;
+			sourceTree = "<group>";
+		};
+		D04EE9D11FB03B3300970385 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				D04EEE101FB23AF700970385 /* IFUnicodeURL */,
+			);
+			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		D04EED591FB23A3C00970385 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D04EEE101FB23AF700970385 /* IFUnicodeURL */ = {
+			isa = PBXGroup;
+			children = (
+				D04EEEAE1FB23C4400970385 /* IFUnicodeURL.xcodeproj */,
+			);
+			name = IFUnicodeURL;
+			sourceTree = "<group>";
+		};
+		D04EEEAF1FB23C4400970385 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D04EEEBA1FB23C4400970385 /* IFUnicodeURL.framework */,
+				D04EEEBC1FB23C4400970385 /* IFUnicodeURLTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D087405B1F9AB72E0066AF36 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D087405C1F9AB7570066AF36 /* v1.json */,
+				D087405D1F9AB7570066AF36 /* v2.json */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -127,6 +199,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D04EEEBE1FB23C6400970385 /* PBXTargetDependency */,
 			);
 			name = TwitterText;
 			productName = TwitterText;
@@ -166,7 +239,7 @@
 					};
 					3D4B56B81E6A37DF00E8E570 = {
 						CreatedOnToolsVersion = 8.2.1;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -176,10 +249,17 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 3D4B56A61E6A37DF00E8E570;
 			productRefGroup = 3D4B56B11E6A37DF00E8E570 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = D04EEEAF1FB23C4400970385 /* Products */;
+					ProjectRef = D04EEEAE1FB23C4400970385 /* IFUnicodeURL.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				3D4B56AF1E6A37DF00E8E570 /* TwitterText */,
@@ -188,11 +268,30 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		D04EEEBA1FB23C4400970385 /* IFUnicodeURL.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = IFUnicodeURL.framework;
+			remoteRef = D04EEEB91FB23C4400970385 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D04EEEBC1FB23C4400970385 /* IFUnicodeURLTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = IFUnicodeURLTests.xctest;
+			remoteRef = D04EEEBB1FB23C4400970385 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		3D4B56AE1E6A37DF00E8E570 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D087405E1F9AB7570066AF36 /* v1.json in Resources */,
+				D087405F1F9AB7570066AF36 /* v2.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +329,11 @@
 			isa = PBXTargetDependency;
 			target = 3D4B56AF1E6A37DF00E8E570 /* TwitterText */;
 			targetProxy = 3D4B56BB1E6A37DF00E8E570 /* PBXContainerItemProxy */;
+		};
+		D04EEEBE1FB23C6400970385 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = IFUnicodeURL;
+			targetProxy = D04EEEBD1FB23C6400970385 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -277,7 +381,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -324,7 +428,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

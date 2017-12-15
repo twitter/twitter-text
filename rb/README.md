@@ -1,16 +1,82 @@
 # twitter-text
 
-![hello](https://img.shields.io/gem/v/twitter-text.svg)
+![](https://img.shields.io/gem/v/twitter-text.svg)
 
-A gem that provides text processing routines for Twitter Tweets. The major
-reason for this is to unify the various auto-linking and extraction of
-usernames, lists, hashtags and URLs.
+This is the Ruby implementation of the twitter-text parsing
+library. The library has methods to parse Tweets and calculate length,
+validity, parse @mentions, #hashtags, URLs, and more.
+
+## Setup
+
+Installation uses bundler.
+
+```
+% gem install bundler
+% bundle install
+```
+
+## Conformance tests
+
+To run the Conformance test suite from the command line via rake:
+
+```
+% rake test:conformance:run
+```
+
+You can also run the rspec tests in the `spec` directory:
+
+```
+% rspec spec
+```
+
+# Length validation
+
+twitter-text 2.0 introduces configuration files that define how Tweets
+are parsed for length. This allows for backwards compatibility and
+flexibility going forward. Old-style traditional 140-character parsing
+is defined by the v1.json configuration file, whereas v2.json is
+updated for "weighted" Tweets where ranges of Unicode code points can
+have independent weights aside from the default weight. The sum of all
+code points, each weighted appropriately, should not exceed the max
+weighted length.
+
+Some old methods from twitter-text 1.0 have been marked deprecated,
+such as the `tweet_length()` method. The new API is based on the
+following method, `parse_tweet()`
+
+```ruby
+def parse_tweet(text, options = {}) { ... }
+```
+
+This method takes a string as input and returns a results object that
+contains information about the
+string. `Twitter::Validation::ParseResults` object includes:
+
+* `:weighted_length`: the overall length of the tweet with code points
+weighted per the ranges defined in the configuration file.
+
+* `:permillage`: indicates the proportion (per thousand) of the weighted
+length in comparison to the max weighted length. A value > 1000
+indicates input text that is longer than the allowable maximum.
+
+* `:valid`: indicates if input text length corresponds to a valid
+result.
+
+* `:display_range_start, :display_range_end`: An array of two unicode code point
+indices identifying the inclusive start and exclusive end of the
+displayable content of the Tweet. For more information, see
+the description of `display_text_range` here:
+[Tweet updates](https://developer.twitter.com/en/docs/tweets/tweet-updates)
+
+* `:valid_range_start, :valid_range_end`: An array of two unicode code point
+indices identifying the inclusive start and exclusive end of the valid
+content of the Tweet. For more information on the extended Tweet
+payload see [Tweet updates](https://developer.twitter.com/en/docs/tweets/tweet-updates)
 
 ## Extraction Examples
 
-
 # Extraction
-```
+```ruby
 class MyClass
   include Twitter::Extractor
   usernames = extract_mentioned_screen_names("Mentioning @twitter and @jack")
@@ -18,9 +84,9 @@ class MyClass
 end
 ```
 
-# Extraction with a block argument
-```ruby
+### Extraction with a block argument
 
+```ruby
 class MyClass
   include Twitter::Extractor
   extract_reply_screen_name("@twitter are you hiring?").do |username|
@@ -31,8 +97,9 @@ end
 
 ## Auto-linking Examples
 
-# Auto-link
-```
+### Auto-link
+
+```ruby
 class MyClass
   include Twitter::Autolink
 
@@ -40,14 +107,14 @@ class MyClass
 end
 ```
 
-# For Ruby on Rails you want to add this to app/helpers/application_helper.rb
-```
+### For Ruby on Rails you want to add this to app/helpers/application_helper.rb
+```ruby
 module ApplicationHelper
   include Twitter::Autolink
 end
 ```
 
-# Now the auto_link function is available in every view. So in index.html.erb:
+### Now the auto_link function is available in every view. So in index.html.erb:
 ```ruby
 <%= auto_link("link @user, please #request") %>
 ```
@@ -90,33 +157,37 @@ words should work equally well.
 Use to provide emphasis around the "hits" returned from the Search API, built
 to work against text that has been auto-linked already.
 
-### Thanks
+## Issues
 
-Thanks to everybody who has filed issues, provided feedback or contributed
-patches. Patches courtesy of:
+Have a bug? Please create an issue here on GitHub!
 
-*   At Twitter …
-    *   Matt Sanford - http://github.com/mzsanford
-    *   Raffi Krikorian - http://github.com/r
-    *   Ben Cherry - http://github.com/bcherry
-    *   Patrick Ewing - http://github.com/hoverbird
-    *   Jeff Smick - http://github.com/sprsquish
-    *   Kenneth Kufluk - https://github.com/kennethkufluk
-    *   Keita Fujii - https://github.com/keitaf
-    *   Yoshimasa Niwa - https://github.com/niw
+<https://github.com/twitter/twitter-text/issues>
 
+## Authors
 
-*   Patches from the community …
-    *   Jean-Philippe Bougie - http://github.com/jpbougie
-    *   Erik Michaels-Ober - https://github.com/sferik
+### V2.0
 
+* David LaMacchia (<https://github.com/dlamacchia>)
+* Yoshimasa Niwa (<https://github.com/niw>)
+* Sudheer Guntupalli (<https://github.com/sudhee>)
+* Kaushik Lakshmikanth (<https://github.com/kaushlakers>)
+* Jose Antonio Marquez Russo (<https://github.com/joseeight>)
+* Lee Adams (<https://github.com/leeaustinadams>)
 
-*   Anyone who has filed an issue. It helps. Really.
+### Previous authors
 
+* Matt Sanford (<http://github.com/mzsanford>)
+* Raffi Krikorian (<http://github.com/r>)
+* Ben Cherry (<http://github.com/bcherry>)
+* Patrick Ewing (<http://github.com/hoverbird>)
+* Jeff Smick (<http://github.com/sprsquish>)
+* Kenneth Kufluk (<https://github.com/kennethkufluk>)
+* Keita Fujii (<https://github.com/keitaf>)
+* Jean-Philippe Bougie (<http://github.com/jpbougie>)
+* Erik Michaels-Ober (<https://github.com/sferik>)
 
-### Copyright and License
+## License
 
-**Copyright 2011 Twitter, Inc.**
+Copyright 2012-2017 Twitter, Inc and other contributors
 
-Licensed under the Apache License, Version 2.0:
-http://www.apache.org/licenses/LICENSE-2.0
+Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)

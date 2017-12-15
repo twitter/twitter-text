@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# encoding: utf-8
 
 module Twitter
   # A collection of regular expressions for parsing Tweet text. The regular expression
@@ -62,10 +62,10 @@ module Twitter
 
     major, minor, _patch = RUBY_VERSION.split('.')
     if major.to_i >= 2 || major.to_i == 1 && minor.to_i >= 9 || (defined?(RUBY_ENGINE) && ["jruby", "rbx"].include?(RUBY_ENGINE))
-      REGEXEN[:list_name] = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/
+      REGEXEN[:list_name] = /[a-z][a-z0-9_\-\u0080-\u00ff]{0,24}/i
     else
       # This line barfs at compile time in Ruby 1.9, JRuby, or Rubinius.
-      REGEXEN[:list_name] = eval("/[a-zA-Z][a-zA-Z0-9_\\-\x80-\xff]{0,24}/")
+      REGEXEN[:list_name] = eval("/[a-z][a-z0-9_\\-\x80-\xff]{0,24}/i")
     end
 
     # Latin accented characters
@@ -148,17 +148,17 @@ module Twitter
     # Used in Extractor for final filtering
     REGEXEN[:end_hashtag_match] = /\A(?:[#＃]|:\/\/)/o
 
-    REGEXEN[:valid_mention_preceding_chars] = /(?:[^a-zA-Z0-9_!#\$%&*@＠]|^|(?:^|[^a-zA-Z0-9_+~.-])[rR][tT]:?)/o
+    REGEXEN[:valid_mention_preceding_chars] = /(?:[^a-z0-9_!#\$%&*@＠]|^|(?:^|[^a-z0-9_+~.-])[rR][tT]:?)/io
     REGEXEN[:at_signs] = /[@＠]/
     REGEXEN[:valid_mention_or_list] = /
       (#{REGEXEN[:valid_mention_preceding_chars]})  # $1: Preceeding character
       (#{REGEXEN[:at_signs]})                       # $2: At mark
-      ([a-zA-Z0-9_]{1,20})                          # $3: Screen name
-      (\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?             # $4: List (optional)
-    /ox
-    REGEXEN[:valid_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-zA-Z0-9_]{1,20})/o
+      ([a-z0-9_]{1,20})                             # $3: Screen name
+      (\/[a-z][a-zA-Z0-9_\-]{0,24})?                # $4: List (optional)
+    /iox
+    REGEXEN[:valid_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-z0-9_]{1,20})/io
     # Used in Extractor for final filtering
-    REGEXEN[:end_mention_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/o
+    REGEXEN[:end_mention_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/io
 
     # URL related hash regex collection
     REGEXEN[:valid_url_preceding_chars] = /(?:[^A-Z0-9@＠$#＃#{INVALID_CHARACTERS.join('')}]|^)/io
@@ -196,12 +196,12 @@ module Twitter
 
     # This is used in Extractor
     REGEXEN[:valid_ascii_domain] = /
-      (?:(?:[A-Za-z0-9\-_]|#{REGEXEN[:latin_accents]})+\.)+
+      (?:(?:[a-z0-9\-_]|#{REGEXEN[:latin_accents]})+\.)+
       (?:#{REGEXEN[:valid_gTLD]}|#{REGEXEN[:valid_ccTLD]}|#{REGEXEN[:valid_punycode]})
     /iox
 
     # This is used in Extractor for stricter t.co URL extraction
-    REGEXEN[:valid_tco_url] = /^https?:\/\/t\.co\/[a-z0-9]+/i
+    REGEXEN[:valid_tco_url] = /^https?:\/\/t\.co\/([a-z0-9]+)/i
 
     # This is used in Extractor to filter out unwanted URLs.
     REGEXEN[:invalid_short_domain] = /\A#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}\Z/io

@@ -244,7 +244,7 @@ test("twttr.txt.autolink", function() {
   }
 
   deepEqual(twttr.txt.autoLink("\uD801\uDC00 #hashtag \uD801\uDC00 @mention \uD801\uDC00 http://twitter.com"),
-      "\uD801\uDC00 <a href=\"https://twitter.com/#!/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>",
+      "\uD801\uDC00 <a href=\"https://twitter.com/search?q=%23hashtag\" title=\"#hashtag\" class=\"tweet-url hashtag\" rel=\"nofollow\">#hashtag</a> \uD801\uDC00 @<a class=\"tweet-url username\" href=\"https://twitter.com/mention\" data-screen-name=\"mention\" rel=\"nofollow\">mention</a> \uD801\uDC00 <a href=\"http://twitter.com\" rel=\"nofollow\">http://twitter.com</a>",
       "Autolink hashtag/mentionURL w/ Supplementary character");
 
   // handle the @ character in the URL
@@ -309,8 +309,80 @@ test("twttr.txt.extractUrls", function() {
 });
 
 test("twttr.txt.getTweetLength", function() {
+  var config = twttr.txt.configs.version2;
   equal(twttr.txt.getTweetLength(""), 0, "empty should be zero length.");
   equal(twttr.txt.getTweetLength("sample tweet"), 12, "small tweet should be counted correctly.");
   equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/1"), 51, "Should count short URLs as 23");
   equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/this_is_really_really_really_really_really_long"), 94, "Should count long URLs as 23");
+
+  // With override configs
+  equal(twttr.txt.getTweetLength("sample tweet", config), 12, "small tweet should be counted correctly with config");
+  equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/this_is_really_really_really_really_really_long", config), 94, "Should count long URLs as 23 with config");
+});
+
+test("twttr.txt.parseTweet", function() {
+  var configVersion1 = twttr.txt.configs.version1;
+  var configVersion2 = twttr.txt.configs.version2;
+  var longTweet = "280 chars-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxxxxxx-xxxxxx"
+  deepEqual(twttr.txt.parseTweet(longTweet, configVersion1), {
+    weightedLength: 280,
+    valid: false,
+    permillage: 2000,
+    displayRangeStart: 0,
+    displayRangeEnd: 279,
+    validRangeStart: 0,
+    validRangeEnd: 139
+  }, 'parse long latin tweet with old config is invalid');
+
+  deepEqual(twttr.txt.parseTweet(longTweet, configVersion2), {
+    weightedLength: 280,
+    valid: true,
+    permillage: 1000,
+    displayRangeStart: 0,
+    displayRangeEnd: 279,
+    validRangeStart: 0,
+    validRangeEnd: 279
+  }, 'parse long latin tweet is valid');
+
+  var cjkEmojiTweet = "你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想到你想到多多多多你想👩‍👩‍👧‍👦";
+  deepEqual(twttr.txt.parseTweet(cjkEmojiTweet, configVersion2), {
+    weightedLength: 289,
+    valid: false,
+    permillage: 1032,
+    displayRangeStart: 0,
+    displayRangeEnd: 149,
+    validRangeStart: 0,
+    validRangeEnd: 140
+  }, 'parse a cjk tweet with an emoji at the end is invalid');
+
+  var familyEmojiTweet = "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦";
+  deepEqual(twttr.txt.parseTweet(familyEmojiTweet, configVersion2), {
+    weightedLength: 220,
+    valid: true,
+    permillage: 785,
+    displayRangeStart: 0,
+    displayRangeEnd: 219,
+    validRangeStart: 0,
+    validRangeEnd: 219
+  }, 'parse a valid tweet with 20 family emojis');
+
+  deepEqual(twttr.txt.parseTweet('', configVersion2), {
+    weightedLength: 0,
+    valid: false,
+    permillage: 0,
+    displayRangeStart: 0,
+    displayRangeEnd: 0,
+    validRangeStart: 0,
+    validRangeEnd: 0
+  }, 'empty tweet should be invalid');
+
+  deepEqual(twttr.txt.parseTweet('abcd \u202A\u202A', configVersion2), {
+    weightedLength: 9,
+    valid: false,
+    permillage: 32,
+    displayRangeStart: 0,
+    displayRangeEnd: 6,
+    validRangeStart: 0,
+    validRangeEnd: 4
+  }, 'invalid char tweet should be invalid');
 });

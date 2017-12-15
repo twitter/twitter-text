@@ -2,12 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.twitter</groupId>
+  <groupId>com.twitter.twittertext</groupId>
   <artifactId>twitter-text</artifactId>
-  <version>1.14.7</version>
-
   <packaging>jar</packaging>
-  <name>twitter-text</name>
+  <version>2.0.8</version>
+  <name>Twitter Text Java library</name>
   <description>Text processing routines for Twitter Tweets</description>
   <url>https://github.com/twitter/twitter-text</url>
   <licenses>
@@ -24,27 +23,41 @@
   </scm>
   <developers>
     <developer>
-      <id>jakl</id>
-      <name>James Koval</name>
-      <email>james.ross.koval@gmail.com</email>
-      <url>https://twitter.com/jakl</url>
+      <id>twitter</id>
+      <name>Twitter</name>
+      <email>opensource@twitter.com</email>
+      <url>https://twitter.com</url>
     </developer>
   </developers>
 
   <build>
     <directory>out</directory>
-    <outputDirectory>build</outputDirectory>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>tests</testSourceDirectory>
+    <outputDirectory>target</outputDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>../config</directory>
+        <includes>
+          <include>**/*.json</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>../conformance</directory>
+        <includes>
+          <include>**/*.yml</include>
+        </includes>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-release-plugin</artifactId>
-         <version>2.5.2</version>
-         <configuration>
-           <mavenExecutorId>forked-path</mavenExecutorId>
-         </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.2</version>
+          <configuration>
+            <mavenExecutorId>forked-path</mavenExecutorId>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -54,8 +67,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <compilerArgument>-Xlint:all</compilerArgument>
         </configuration>
       </plugin>
@@ -63,14 +76,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.12</version>
-        <configuration>
-          <systemProperties>
-            <property>
-              <name>conformance.dir</name>
-              <value>../conformance</value>
-            </property>
-          </systemProperties>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -89,30 +94,6 @@
           <maxmem>256m</maxmem>
           <aggregate>true</aggregate>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/generated-sources/com/twitter</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>../conformance</directory>
-                  <includes>
-                    <include>TldLists.java</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -170,8 +151,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
     <encoding>UTF-8</encoding>
   </properties>
 
@@ -222,7 +203,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9.1</version>
+            <version>2.10.4</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -238,7 +219,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
+            <version>1.6</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -263,11 +244,22 @@
     </dependency>
 
     <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <version>1.18</version>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>2.9.1</version>
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.8.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>2.0.1</version>
+    </dependency>
   </dependencies>
 </project>

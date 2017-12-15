@@ -18,11 +18,11 @@ describe Twitter::HitHighlighter do
       end
 
       it "should default to <em> tags" do
-        @highlighter.hit_highlight(@original, @hits).should == "Testing this <em>hit</em> highliter"
+        expect(@highlighter.hit_highlight(@original, @hits)).to be == "Testing this <em>hit</em> highliter"
       end
 
       it "should allow tag override" do
-        @highlighter.hit_highlight(@original, @hits, :tag => 'b').should == "Testing this <b>hit</b> highliter"
+        expect(@highlighter.hit_highlight(@original, @hits, :tag => 'b')).to be == "Testing this <b>hit</b> highliter"
       end
     end
 
@@ -32,57 +32,57 @@ describe Twitter::HitHighlighter do
       end
 
       it "should return original when no hits are provided" do
-        @highlighter.hit_highlight(@original).should == @original
+        expect(@highlighter.hit_highlight(@original)).to be == @original
       end
 
       it "should highlight one hit" do
-        @highlighter.hit_highlight(@original, hits = [[5, 9]]).should == "Hey! <em>this</em> is a test tweet"
+        expect(@highlighter.hit_highlight(@original, hits = [[5, 9]])).to be == "Hey! <em>this</em> is a test tweet"
       end
 
       it "should highlight two hits" do
-        @highlighter.hit_highlight(@original, hits = [[5, 9], [15, 19]]).should == "Hey! <em>this</em> is a <em>test</em> tweet"
+        expect(@highlighter.hit_highlight(@original, hits = [[5, 9], [15, 19]])).to be == "Hey! <em>this</em> is a <em>test</em> tweet"
       end
 
       it "should correctly highlight first-word hits" do
-        @highlighter.hit_highlight(@original, hits = [[0, 3]]).should == "<em>Hey</em>! this is a test tweet"
+        expect(@highlighter.hit_highlight(@original, hits = [[0, 3]])).to be == "<em>Hey</em>! this is a test tweet"
       end
 
       it "should correctly highlight last-word hits" do
-        @highlighter.hit_highlight(@original, hits = [[20, 25]]).should == "Hey! this is a test <em>tweet</em>"
+        expect(@highlighter.hit_highlight(@original, hits = [[20, 25]])).to be == "Hey! this is a test <em>tweet</em>"
       end
     end
 
     context "with links" do
       it "should highlight with a single link" do
-        @highlighter.hit_highlight("@<a>bcherry</a> this was a test tweet", [[9, 13]]).should == "@<a>bcherry</a> <em>this</em> was a test tweet"
+        expect(@highlighter.hit_highlight("@<a>bcherry</a> this was a test tweet", [[9, 13]])).to be == "@<a>bcherry</a> <em>this</em> was a test tweet"
       end
 
       it "should highlight with link at the end" do
-        @highlighter.hit_highlight("test test <a>test</a>", [[5, 9]]).should == "test <em>test</em> <a>test</a>"
+        expect(@highlighter.hit_highlight("test test <a>test</a>", [[5, 9]])).to be == "test <em>test</em> <a>test</a>"
       end
 
       it "should highlight with a link at the beginning" do
-        @highlighter.hit_highlight("<a>test</a> test test", [[5, 9]]).should == "<a>test</a> <em>test</em> test"
+        expect(@highlighter.hit_highlight("<a>test</a> test test", [[5, 9]])).to be == "<a>test</a> <em>test</em> test"
       end
 
       it "should highlight an entire link" do
-        @highlighter.hit_highlight("test <a>test</a> test", [[5, 9]]).should == "test <a><em>test</em></a> test"
+        expect(@highlighter.hit_highlight("test <a>test</a> test", [[5, 9]])).to be == "test <a><em>test</em></a> test"
       end
 
       it "should highlight within a link" do
-        @highlighter.hit_highlight("test <a>test</a> test", [[6, 8]]).should == "test <a>t<em>es</em>t</a> test"
+        expect(@highlighter.hit_highlight("test <a>test</a> test", [[6, 8]])).to be == "test <a>t<em>es</em>t</a> test"
       end
 
       it "should highlight around a link" do
-        @highlighter.hit_highlight("test <a>test</a> test", [[3, 11]]).should == "tes<em>t <a>test</a> t</em>est"
+        expect(@highlighter.hit_highlight("test <a>test</a> test", [[3, 11]])).to be == "tes<em>t <a>test</a> t</em>est"
       end
 
       it "should fail gracefully with bad hits" do
-        @highlighter.hit_highlight("test test", [[5, 20]]).should == "test <em>test</em>"
+        expect(@highlighter.hit_highlight("test test", [[5, 20]])).to be == "test <em>test</em>"
       end
 
       it "should not mess up with touching tags" do
-        @highlighter.hit_highlight("<a>foo</a><a>foo</a>", [[3,6]]).should == "<a>foo</a><a><em>foo</em></a>"
+        expect(@highlighter.hit_highlight("<a>foo</a><a>foo</a>", [[3,6]])).to be == "<a>foo</a><a><em>foo</em></a>"
       end
 
     end

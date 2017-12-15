@@ -55,24 +55,8 @@ task :package, [:version] => [:pkg] do |t, args|
 
   pkg_file = File.open(repo_path("pkg", pkg_name), "w")
 
-  puts "Writing header..."
-  header_comment = <<-COMMENT
-/*!
- * twitter-text-js #{args.version}
- *
- * Copyright 2012 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this work except in compliance with the License.
- * You may obtain a copy of the License at:
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- */
-  COMMENT
-  pkg_file.write(header_comment)
-
   puts "Writing library..."
-  js_file = File.open(repo_path("twitter-text.js"), "r")
+  js_file = File.open(repo_path("build/twitter-text.js"), "r")
   pkg_file.write(js_file.read)
   js_file.close
 
@@ -95,12 +79,8 @@ namespace :tlds do
     cctlds = format_tlds(tlds['country'], 100)
     gtlds = format_tlds(tlds['generic'], 100)
 
-    twitter_text_js = File.read(repo_path('twitter-text.js'))
-    replace_tlds!(twitter_text_js, 'validGTLD', gtlds)
-    replace_tlds!(twitter_text_js, 'validCCTLD', cctlds)
-    File.open(repo_path('twitter-text.js'), 'w') do |file|
-      file.write(twitter_text_js)
-    end
+    update_tld_sources('src/regexp/validGTLD.js', 'validGTLD', gtlds)
+    update_tld_sources('src/regexp/validCCTLD.js', 'validCCTLD', cctlds)
   end
 end
 
@@ -125,10 +105,18 @@ def line_js(tlds)
   ' ' * indent + quote + tlds.join('|')
 end
 
+def update_tld_sources(file_path, name, tlds)
+  source = File.read(repo_path(file_path))
+  replace_tlds!(source, name, tlds)
+  File.open(repo_path(file_path), 'w') do |file|
+    file.write(source)
+  end
+end
+
 def replace_tlds!(source_code, name, tlds)
-  start = Regexp.quote("twttr.txt.regexen.#{name} =")
+  start = Regexp.quote("#{name} =")
   source_code.sub!(/#{start}.*?;\n/m, <<-D)
-twttr.txt.regexen.#{name} = regexSupplant(RegExp(
+#{name} = regexSupplant(RegExp(
 '(?:(?:' +
 #{tlds}
 ')(?=[^0-9a-zA-Z@]|$))'));

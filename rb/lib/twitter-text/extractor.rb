@@ -1,4 +1,5 @@
-# encoding: UTF-8
+# encoding: utf-8
+require 'idn'
 
 class String
   # Helper function to count the character length by first converting to an
@@ -47,6 +48,15 @@ module Twitter
   # A module for including Tweet parsing in a class. This module provides function for the extraction and processing
   # of usernames, lists, URLs and hashtags.
   module Extractor extend self
+
+    # Maximum URL length as defined by Twitter's backend.
+    MAX_URL_LENGTH = 4096
+
+    # The maximum t.co path length that the Twitter backend supports.
+    MAX_TCO_SLUG_LENGTH = 40
+
+    URL_PROTOCOL_LENGTH = "https://".length
+
     # Remove overlapping entities.
     # This returns a new array with no overlapping entities.
     def remove_overlapping_entities(entities)
@@ -201,6 +211,7 @@ module Twitter
           next if !options[:extract_url_without_protocol] || before =~ Twitter::Regex[:invalid_url_without_protocol_preceding_chars]
           last_url = nil
           domain.scan(Twitter::Regex[:valid_ascii_domain]) do |ascii_domain|
+            next unless is_valid_domain(url.length, ascii_domain, protocol)
             last_url = {
               :url => ascii_domain,
               :indices => [start_position + $~.char_begin(0),
@@ -225,9 +236,13 @@ module Twitter
         else
           # In the case of t.co URLs, don't allow additional path characters
           if url =~ Twitter::Regex[:valid_tco_url]
+            next if $1 && $1.length > MAX_TCO_SLUG_LENGTH
             url = $&
             end_position = start_position + url.char_length
           end
+
+          next unless is_valid_domain(url.length, domain, protocol)
+
           urls << {
             :url => url,
             :indices => [start_position, end_position]
@@ -323,6 +338,21 @@ module Twitter
 
       tags.each{|tag| yield tag[:cashtag], tag[:indices].first, tag[:indices].last} if block_given?
       tags
+    end
+
+    def is_valid_domain(url_length, domain, protocol)
+      begin
+        raise ArgumentError.new("invalid empty domain") unless domain
+        original_domain_length = domain.length
+        encoded_domain = IDN::Idna.toASCII(domain)
+        updated_domain_length = encoded_domain.length
+        url_length += (updated_domain_length - original_domain_length) if (updated_domain_length > original_domain_length)
+        url_length += URL_PROTOCOL_LENGTH unless protocol
+        url_length <= MAX_URL_LENGTH
+      rescue Exception
+        # On error don't consider this a valid domain.
+        return false
+      end
     end
   end
 end
