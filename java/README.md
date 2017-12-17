@@ -1,5 +1,5 @@
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.twitter/twitter-text.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.twitter.twittertext%22%20AND%20a%3A%22twitter-text%22)
+[![Maven Central](https://img.shields.io/maven-central/v/com.twitter.twittertext/twitter-text.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.twitter.twittertext%22%20AND%20a%3A%22twitter-text%22)
 
 # twitter-text
 
