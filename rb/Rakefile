@@ -8,10 +8,12 @@ task :default => ['prebuild', 'spec', 'test:conformance']
 task :test => :spec
 
 directory "config"
+directory "lib/assets"
 
 desc "Prebuild task setup"
-task :prebuild => ["config"] do
+task :prebuild => ["config", "lib/assets"] do
   FileUtils.cp_r '../config/.', 'config', :verbose => true
+  FileUtils.cp_r '../conformance/tld_lib.yml', 'lib/assets', :verbose => true
 end
 
 require 'rubygems'
@@ -46,5 +48,5 @@ end
 
 desc "Clean build"
 task :clean do
-  rm_rf ["config", "pkg", "Gemfile.lock"]
+  rm_rf ["config", "pkg", "lib/assets", "Gemfile.lock"]
 end
