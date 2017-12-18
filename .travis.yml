@@ -1,3 +1,5 @@
+before_install:
+  - brew install libidn
 language: objective-c
 sudo: false
 matrix:
