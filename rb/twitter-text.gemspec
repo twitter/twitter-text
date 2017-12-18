@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "2.0.0"
+  s.version = "2.0.1"
   s.authors = ["David LaMacchia", "Sudheer Guntupalli", "Kaushik Lakshmikanth", "Jose Antonio Marquez Russo", "Lee Adams",
                "Yoshimasa Niwa"]
   s.email = ["opensource@twitter.com"]
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   # Use of idn-ruby requires libidn to be installed separately
   s.add_runtime_dependency     "idn-ruby"
 
-  s.files         = `git ls-files`.split("\n") + ['lib/assets/tld_lib.yml']
+  s.files         = `git ls-files`.split("\n") + ['lib/assets/tld_lib.yml'] + Dir['config/*']
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
