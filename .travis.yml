@@ -1,5 +1,7 @@
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libidn2-dev
 language: objective-c
-sudo: false
 matrix:
   include:
     - env: TWITTER_TEXT_DIR=rb
