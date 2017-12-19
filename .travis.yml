@@ -1,15 +1,12 @@
+before_install:
+  - brew install libidn
 language: objective-c
-sudo: false
+os: osx
 matrix:
   include:
     - env: TWITTER_TEXT_DIR=rb
-      rvm: 1.9.3
-    - env: TWITTER_TEXT_DIR=rb
-      rvm: 2.0.0
-    - env: TWITTER_TEXT_DIR=rb
-      rvm: 2.1.3
+      rvm: 2.4.2
     - env: TWITTER_TEXT_DIR=java
     - env: TWITTER_TEXT_DIR=js
     - env: TWITTER_TEXT_DIR=objc
-      osx_image: xcode8
 script: "./.travis.sh"
