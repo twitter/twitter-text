@@ -31,7 +31,7 @@ module Twitter
     # Parse input text and return hash with descriptive parameters populated.
     def parse_tweet(text, options = {})
       options = DEFAULT_TCO_URL_LENGTHS.merge(options)
-      config = options[:config] || Twitter::Configuration.default_configuration
+      config = options[:config] || Twitter::TextConfiguration.default_configuration
       normalized_text = text.to_nfc
       normalized_text_length = normalized_text.char_length
       unless (normalized_text_length > 0)

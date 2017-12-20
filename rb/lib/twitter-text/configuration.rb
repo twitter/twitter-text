@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 module Twitter
-  class Configuration
+  class TextConfiguration
     require 'json'
 
     PARSER_VERSION_CLASSIC = "v1"
@@ -35,7 +35,7 @@ module Twitter
 
     def self.configuration_from_file(filename)
       config = parse_file(filename)
-      config ? Twitter::Configuration.new(config) : nil
+      config ? Twitter::TextConfiguration.new(config) : nil
     end
 
     def initialize(config = {})
@@ -47,7 +47,7 @@ module Twitter
       @ranges = config[:ranges].map { |range| Twitter::WeightedRange.new(range) } if config.key?(:ranges) && config[:ranges].is_a?(Array)
     end
 
-    self.default_configuration = Twitter::Configuration.configuration_from_file(Twitter::Configuration::CONFIG_V2)
+    self.default_configuration = Twitter::TextConfiguration.configuration_from_file(Twitter::TextConfiguration::CONFIG_V2)
   end
 end
 
