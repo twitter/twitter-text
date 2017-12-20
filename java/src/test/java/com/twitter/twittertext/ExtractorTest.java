@@ -99,7 +99,7 @@ public class ExtractorTest extends TestCase {
         entities.add(new Extractor.Entity(matcher, Type.HASHTAG, 0, 0));
       }
 
-      extractor.modifyIndicesFromUTF16ToToUnicode(testData, entities);
+      extractor.modifyIndicesFromUTF16ToUnicode(testData, entities);
 
       for (int i = 0; i < entities.size(); i++) {
         assertEquals(codePointOffsets.get(i), entities.get(i).getStart());
@@ -182,7 +182,7 @@ public class ExtractorTest extends TestCase {
       assertEquals(extracted.get(1).end, 23);
 
       // count U+10400 as single character
-      extractor.modifyIndicesFromUTF16ToToUnicode(text, extracted);
+      extractor.modifyIndicesFromUTF16ToUnicode(text, extracted);
       assertEquals(extracted.size(), 2);
       assertEquals(extracted.get(0).start, 2);
       assertEquals(extracted.get(0).end, 10);
@@ -249,7 +249,7 @@ public class ExtractorTest extends TestCase {
       assertEquals(extracted.get(1).end, 23);
 
       // count U+10400 as single character
-      extractor.modifyIndicesFromUTF16ToToUnicode(text, extracted);
+      extractor.modifyIndicesFromUTF16ToUnicode(text, extracted);
       assertEquals(extracted.size(), 2);
       assertEquals(extracted.get(0).start, 2);
       assertEquals(extracted.get(0).end, 10);
@@ -336,7 +336,7 @@ public class ExtractorTest extends TestCase {
      assertEquals(extracted.get(1).end, 43);
 
      // count U+10400 as single character
-     extractor.modifyIndicesFromUTF16ToToUnicode(text, extracted);
+     extractor.modifyIndicesFromUTF16ToUnicode(text, extracted);
      assertEquals(extracted.size(), 2);
      assertEquals(extracted.get(0).start, 2);
      assertEquals(extracted.get(0).end, 20);

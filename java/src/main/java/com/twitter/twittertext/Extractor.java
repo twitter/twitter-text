@@ -556,7 +556,7 @@ public class Extractor {
    * @param text original text
    * @param entities entities with UTF-16 based indices
    */
-  public void modifyIndicesFromUTF16ToToUnicode(String text, List<Entity> entities) {
+  public void modifyIndicesFromUTF16ToUnicode(String text, List<Entity> entities) {
     IndexConverter convert = new IndexConverter(text);
 
     for (Entity entity : entities) {
