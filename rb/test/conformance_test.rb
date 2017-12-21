@@ -15,10 +15,10 @@ $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'twitter-text'
 
 class ConformanceTest < Test::Unit::TestCase
-  include Twitter::Extractor
-  include Twitter::Autolink
-  include Twitter::HitHighlighter
-  include Twitter::Validation
+  include Twitter::TwitterText::Extractor
+  include Twitter::TwitterText::Autolink
+  include Twitter::TwitterText::HitHighlighter
+  include Twitter::TwitterText::Validation
 
   private
 

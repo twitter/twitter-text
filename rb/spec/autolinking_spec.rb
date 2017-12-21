@@ -2,10 +2,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 class TestAutolink
-  include Twitter::Autolink
+  include Twitter::TwitterText::Autolink
 end
 
-describe Twitter::Autolink do
+describe Twitter::TwitterText::Autolink do
   def original_text; end
   def url; end
 

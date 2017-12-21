@@ -1,7 +1,7 @@
 # encoding: utf-8
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe "Twitter::Regex regular expressions" do
+describe "Twitter::TwitterText::Regex regular expressions" do
   describe "matching URLS" do
     TestUrls::VALID.each do |url|
       it "should match the URL #{url}" do
@@ -25,13 +25,13 @@ describe "Twitter::Regex regular expressions" do
     it "should match if less than 25 characters" do
       name = "Shuffleboard Community"
       expect(name.length).to be < 25
-      expect(name).to match(Twitter::Regex::REGEXEN[:list_name])
+      expect(name).to match(Twitter::TwitterText::Regex::REGEXEN[:list_name])
     end
 
     it "should not match if greater than 25 characters" do
       name = "Most Glorious Shady Meadows Shuffleboard Community"
       expect(name.length).to be > 25
-      expect(name).to match(Twitter::Regex[:list_name])
+      expect(name).to match(Twitter::TwitterText::Regex[:list_name])
     end
 
   end

@@ -2,18 +2,18 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 class TestValidation
-  include Twitter::Validation
+  include Twitter::TwitterText::Validation
 end
 
-describe Twitter::Validation do
+describe Twitter::TwitterText::Validation do
 
   it "should disallow invalid BOM character" do
-    expect(TestValidation.new.tweet_invalid?("Bom:#{Twitter::Unicode::UFFFE}")).to be == :invalid_characters
-    expect(TestValidation.new.tweet_invalid?("Bom:#{Twitter::Unicode::UFEFF}")).to be == :invalid_characters
+    expect(TestValidation.new.tweet_invalid?("Bom:#{Twitter::TwitterText::Unicode::UFFFE}")).to be == :invalid_characters
+    expect(TestValidation.new.tweet_invalid?("Bom:#{Twitter::TwitterText::Unicode::UFEFF}")).to be == :invalid_characters
   end
 
   it "should disallow invalid U+FFFF character" do
-    expect(TestValidation.new.tweet_invalid?("Bom:#{Twitter::Unicode::UFFFF}")).to be == :invalid_characters
+    expect(TestValidation.new.tweet_invalid?("Bom:#{Twitter::TwitterText::Unicode::UFFFF}")).to be == :invalid_characters
   end
 
   it "should disallow direction change characters" do
@@ -42,7 +42,7 @@ describe Twitter::Validation do
 
   context "when returning results" do
     it "should properly create new fully-populated results from arguments" do
-      results = Twitter::Validation::ParseResults.new(weighted_length: 26, permillage: 92, valid: true, display_range_start: 0, display_range_end: 16, valid_range_start: 0, valid_range_end:16)
+      results = Twitter::TwitterText::Validation::ParseResults.new(weighted_length: 26, permillage: 92, valid: true, display_range_start: 0, display_range_end: 16, valid_range_start: 0, valid_range_end:16)
       expect(results).to_not be nil
       expect(results[:weighted_length]).to eq(26)
       expect(results[:permillage]).to eq(92)
@@ -54,7 +54,7 @@ describe Twitter::Validation do
     end
 
     it "should properly create empty results" do
-      results = Twitter::Validation::ParseResults.empty()
+      results = Twitter::TwitterText::Validation::ParseResults.empty()
       expect(results[:weighted_length]).to eq(0)
       expect(results[:permillage]).to eq(0)
       expect(results[:valid]).to be true

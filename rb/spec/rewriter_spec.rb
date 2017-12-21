@@ -1,7 +1,7 @@
 # encoding: utf-8
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe Twitter::Rewriter do
+describe Twitter::TwitterText::Rewriter do
   def original_text; end
   def url; end
 
@@ -19,7 +19,7 @@ describe Twitter::Rewriter do
 
   describe "rewrite usernames" do #{{{
     before do
-      @rewritten_text = Twitter::Rewriter.rewrite_usernames_or_lists(original_text, &method(:block))
+      @rewritten_text = Twitter::TwitterText::Rewriter.rewrite_usernames_or_lists(original_text, &method(:block))
     end
 
     context "username preceded by a space" do
@@ -120,7 +120,7 @@ describe Twitter::Rewriter do
 
   describe "rewrite lists" do #{{{
     before do
-      @rewritten_text = Twitter::Rewriter.rewrite_usernames_or_lists(original_text, &method(:block))
+      @rewritten_text = Twitter::TwitterText::Rewriter.rewrite_usernames_or_lists(original_text, &method(:block))
     end
 
     context "slug preceded by a space" do
@@ -201,7 +201,7 @@ describe Twitter::Rewriter do
 
   describe "rewrite hashtags" do #{{{
     before do
-      @rewritten_text = Twitter::Rewriter.rewrite_hashtags(original_text, &method(:block))
+      @rewritten_text = Twitter::TwitterText::Rewriter.rewrite_hashtags(original_text, &method(:block))
     end
 
     context "with an all numeric hashtag" do
@@ -338,7 +338,7 @@ describe Twitter::Rewriter do
     def url; "http://www.google.com"; end
 
     before do
-      @rewritten_text = Twitter::Rewriter.rewrite_urls(original_text, &method(:block))
+      @rewritten_text = Twitter::TwitterText::Rewriter.rewrite_urls(original_text, &method(:block))
     end
 
     context "when embedded in plain text" do
@@ -452,7 +452,7 @@ describe Twitter::Rewriter do
     context "with a URL ending in allowed punctuation" do
       it "does not consume ending punctuation" do
         %w| ? ! , . : ; ] ) } = \ ' |.each do |char|
-          expect(Twitter::Rewriter.rewrite_urls("#{url}#{char}") do |url|
+          expect(Twitter::TwitterText::Rewriter.rewrite_urls("#{url}#{char}") do |url|
             expect(url).to be == url
             "[rewritten]"
           end).to be == "[rewritten]#{char}"
@@ -463,7 +463,7 @@ describe Twitter::Rewriter do
     context "with a URL preceded in forbidden characters" do
       it "should be rewritten" do
         %w| \ ' / ! = |.each do |char|
-          expect(Twitter::Rewriter.rewrite_urls("#{char}#{url}") do |url|
+          expect(Twitter::TwitterText::Rewriter.rewrite_urls("#{char}#{url}") do |url|
             "[rewritten]" # should not be called here.
           end).to be == "#{char}[rewritten]"
         end
