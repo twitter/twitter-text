@@ -46,7 +46,7 @@ Previous versions of Twitter-Text provided different helper methods for Tweet va
 * **weightedLength:** Integer that indicates the weighted length calculated by the algorithm above.
 * **permillage:** Integer value corresponding to the ratio of consumed weighted length to the maximum weighted length.
 * **valid:** Boolean indicating whether it is a valid Tweet.
-* **dispayRangeStart:** Integer with start index on the Tweet string
+* **displayRangeStart:** Integer with start index on the Tweet string
 * **displayRangeEnd:** Integer with end index on the Tweet string (inclusive)
 * **validDisplayRangeStart:** Integer indicating the valid start index on the Tweet string
 * **validDisplayRangeEnd:** Integer indicating the valid end index on the Tweet string. This can be lesser than displayRangeEnd (inclusive).
