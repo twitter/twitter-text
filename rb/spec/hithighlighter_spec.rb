@@ -2,10 +2,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 class TestHitHighlighter
-  include Twitter::HitHighlighter
+  include Twitter::TwitterText::HitHighlighter
 end
 
-describe Twitter::HitHighlighter do
+describe Twitter::TwitterText::HitHighlighter do
   describe "highlight" do
     before do
       @highlighter = TestHitHighlighter.new

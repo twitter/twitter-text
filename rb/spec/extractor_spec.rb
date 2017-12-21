@@ -2,10 +2,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 class TestExtractor
-  include Twitter::Extractor
+  include Twitter::TwitterText::Extractor
 end
 
-describe Twitter::Extractor do
+describe Twitter::TwitterText::Extractor do
   before do
     @extractor = TestExtractor.new
   end
@@ -241,7 +241,7 @@ describe Twitter::Extractor do
       it "does not consider a long URL with protocol to be valid" do
         # maximum length of domain label is 32 chars.
         url = ("a" * 31) + "."
-        url *= (Twitter::Extractor::MAX_URL_LENGTH / 32)
+        url *= (Twitter::TwitterText::Extractor::MAX_URL_LENGTH / 32)
         url = "https://" + url + "com" # longer than 4096 (MAX_URL_LENGTH) chars
         expect(@extractor.is_valid_domain(url.length, url, true)).to be false
       end
@@ -249,7 +249,7 @@ describe Twitter::Extractor do
       it "does not consider a long URL without protocol to be valid" do
         # maximum length of domain label is 32 chars.
         url = ("a" * 31) + "."
-        url *= ((Twitter::Extractor::MAX_URL_LENGTH / 32) - 1)
+        url *= ((Twitter::TwitterText::Extractor::MAX_URL_LENGTH / 32) - 1)
         url = url + "com" # shorter than 4096 (MAX_URL_LENGTH) chars
         expect(@extractor.is_valid_domain(url.length, url, false)).to be true
         url = ("a" * (31 - "https://".length)) + "." + url
@@ -309,11 +309,11 @@ describe Twitter::Extractor do
         end
 
         it "should not allow the multiplication character" do
-          expect(@extractor.extract_hashtags("#pre#{Twitter::Unicode::U00D7}post")).to be == ["pre"]
+          expect(@extractor.extract_hashtags("#pre#{Twitter::TwitterText::Unicode::U00D7}post")).to be == ["pre"]
         end
 
         it "should not allow the division character" do
-          expect(@extractor.extract_hashtags("#pre#{Twitter::Unicode::U00F7}post")).to be == ["pre"]
+          expect(@extractor.extract_hashtags("#pre#{Twitter::TwitterText::Unicode::U00F7}post")).to be == ["pre"]
         end
       end
 

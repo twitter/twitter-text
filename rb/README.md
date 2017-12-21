@@ -50,7 +50,7 @@ def parse_tweet(text, options = {}) { ... }
 
 This method takes a string as input and returns a results object that
 contains information about the
-string. `Twitter::Validation::ParseResults` object includes:
+string. `Twitter::TwitterText::Validation::ParseResults` object includes:
 
 * `:weighted_length`: the overall length of the tweet with code points
 weighted per the ranges defined in the configuration file.
@@ -78,7 +78,7 @@ payload see [Tweet updates](https://developer.twitter.com/en/docs/tweets/tweet-u
 # Extraction
 ```ruby
 class MyClass
-  include Twitter::Extractor
+  include Twitter::TwitterText::Extractor
   usernames = extract_mentioned_screen_names("Mentioning @twitter and @jack")
   # usernames = ["twitter", "jack"]
 end
@@ -88,7 +88,7 @@ end
 
 ```ruby
 class MyClass
-  include Twitter::Extractor
+  include Twitter::TwitterText::Extractor
   extract_reply_screen_name("@twitter are you hiring?").do |username|
     # username = "twitter"
   end
@@ -101,7 +101,7 @@ end
 
 ```ruby
 class MyClass
-  include Twitter::Autolink
+  include Twitter::TwitterText::Autolink
 
   html = auto_link("link @user, please #request")
 end
@@ -110,7 +110,7 @@ end
 ### For Ruby on Rails you want to add this to app/helpers/application_helper.rb
 ```ruby
 module ApplicationHelper
-  include Twitter::Autolink
+  include Twitter::TwitterText::Autolink
 end
 ```
 
