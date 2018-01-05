@@ -12,7 +12,7 @@ public class Benchmark extends ConformanceTest {
 
   private static final int AUTO_LINK_TESTS = 10000;
   private static final int ITERATIONS = 10;
-  private static final Autolink linker = new Autolink(false);
+  private static final Autolink LINKER = new Autolink(false);
 
   public double testBenchmarkAutolinking() throws Exception {
     List<Map> testCases = loadConformanceData("autolink.yml", "all");
@@ -29,9 +29,9 @@ public class Benchmark extends ConformanceTest {
 
   private void autolink(List<Map> testCases) {
     for (Map testCase : testCases) {
-      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+      assertEquals((String) testCase.get(KEY_DESCRIPTION),
           testCase.get(KEY_EXPECTED_OUTPUT),
-          linker.autoLink((String) testCase.get(KEY_INPUT)));
+          LINKER.autoLink((String) testCase.get(KEY_INPUT)));
     }
   }
 
@@ -42,8 +42,12 @@ public class Benchmark extends ConformanceTest {
     double worst = 0;
     for (int i = 0; i < ITERATIONS; i++) {
       double result = benchmark.testBenchmarkAutolinking();
-      if (best > result) best = result;
-      if (worst < result) worst = result;
+      if (best > result) {
+        best = result;
+      }
+      if (worst < result) {
+        worst = result;
+      }
       total += result;
     }
     // Drop worst and best

@@ -1,7 +1,5 @@
 package com.twitter.twittertext;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.net.IDN;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +7,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A class to extract usernames, lists, hashtags and URLs from Tweet text.
@@ -25,9 +25,10 @@ public class Extractor {
   public static final int MAX_TCO_SLUG_LENGTH = 40;
 
   /**
-   * The backend adds http:// for normal links and https to *.twitter.com URLs (it also rewrites http to https for
-   * URLs matching *.twitter.com). We're better off adding https:// all the time.
-   * By making the assumption that URL_GROUP_PROTOCOL_LENGTH is https, the trade off is we'll disallow a http URL
+   * The backend adds http:// for normal links and https to *.twitter.com URLs
+   * (it also rewrites http to https for URLs matching *.twitter.com).
+   * We're better off adding https:// all the time. By making the assumption that
+   * URL_GROUP_PROTOCOL_LENGTH is https, the trade off is we'll disallow a http URL
    * that is 4096 characters.
    */
   private static final int URL_GROUP_PROTOCOL_LENGTH = "https://".length();
@@ -36,6 +37,7 @@ public class Extractor {
     public enum Type {
       URL, HASHTAG, MENTION, CASHTAG
     }
+
     protected int start;
     protected int end;
     protected final String value;
@@ -64,7 +66,8 @@ public class Extractor {
     }
 
     public Entity(Matcher matcher, Type type, int groupNumber, int startOffset) {
-      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber), matcher.group(groupNumber), type);
+      this(matcher.start(groupNumber) + startOffset, matcher.end(groupNumber),
+          matcher.group(groupNumber), type);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class Extractor {
         return false;
       }
 
-      Entity other = (Entity)obj;
+      Entity other = (Entity) obj;
 
       return this.type.equals(other.type) &&
           this.start == other.start &&
@@ -92,7 +95,7 @@ public class Extractor {
 
     @Override
     public String toString() {
-      return value + "(" + type +") [" +start + "," + end +"]";
+      return value + "(" + type + ") [" + start + "," + end + "]";
     }
 
     public Integer getStart() {
@@ -168,6 +171,7 @@ public class Extractor {
 
   /**
    * Extract URLs, @mentions, lists and #hashtag from a given text/tweet.
+   *
    * @param text text of tweet
    * @return list of extracted entities
    */
@@ -183,7 +187,8 @@ public class Extractor {
   }
 
   /**
-   * Extract @username references from Tweet text. A mention is an occurance of @username anywhere in a Tweet.
+   * Extract @username references from Tweet text. A mention is an occurrence of @username anywhere
+   * in a Tweet.
    *
    * @param text of the tweet from which to extract usernames
    * @return List of usernames referenced (without the leading @ sign)
@@ -201,7 +206,8 @@ public class Extractor {
   }
 
   /**
-   * Extract @username references from Tweet text. A mention is an occurance of @username anywhere in a Tweet.
+   * Extract @username references from Tweet text. A mention is an occurrence of @username anywhere
+   * in a Tweet.
    *
    * @param text of the tweet from which to extract usernames
    * @return List of usernames referenced (without the leading @ sign)
@@ -216,6 +222,13 @@ public class Extractor {
     return extracted;
   }
 
+  /**
+   * Extract @username and an optional list reference from Tweet text. A mention is an occurrence
+   * of @username anywhere in a Tweet. A mention with a list is a @username/list.
+   *
+   * @param text of the tweet from which to extract usernames
+   * @return List of usernames (without the leading @ sign) and an optional lists referenced
+   */
   public List<Entity> extractMentionsOrListsWithIndices(String text) {
     if (isEmptyString(text)) {
       return Collections.emptyList();
@@ -239,9 +252,10 @@ public class Extractor {
     Matcher matcher = Regex.VALID_MENTION_OR_LIST.matcher(text);
     while (matcher.find()) {
       String after = text.substring(matcher.end());
-      if (! Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
+      if (!Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
         if (matcher.group(Regex.VALID_MENTION_OR_LIST_GROUP_LIST) == null) {
-          extracted.add(new Entity(matcher, Entity.Type.MENTION, Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME));
+          extracted.add(new Entity(matcher, Entity.Type.MENTION,
+              Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME));
         } else {
           extracted.add(new Entity(matcher.start(Regex.VALID_MENTION_OR_LIST_GROUP_USERNAME) - 1,
               matcher.end(Regex.VALID_MENTION_OR_LIST_GROUP_LIST),
@@ -255,11 +269,12 @@ public class Extractor {
   }
 
   /**
-   * Extract a @username reference from the beginning of Tweet text. A reply is an occurrence of @username at the
-   * beginning of a Tweet, preceded by 0 or more spaces.
+   * Extract a @username reference from the beginning of Tweet text. A reply is an occurrence
+   * of @username at the beginning of a Tweet, preceded by 0 or more spaces.
    *
    * @param text of the tweet from which to extract the replied to username
-   * @return username referenced, if any (without the leading @ sign). Returns null if this is not a reply.
+   * @return username referenced, if any (without the leading @ sign).
+   * Returns null if this is not a reply.
    */
   public String extractReplyScreenname(String text) {
     if (text == null) {
@@ -306,7 +321,8 @@ public class Extractor {
    */
   @Nonnull
   public List<Entity> extractURLsWithIndices(@Nullable String text) {
-    if (isEmptyString(text) || (extractURLWithoutProtocol ? text.indexOf('.') : text.indexOf(':')) == -1) {
+    if (isEmptyString(text) ||
+        (extractURLWithoutProtocol ? text.indexOf('.') : text.indexOf(':')) == -1) {
       // Performance optimization.
       // If text doesn't contain '.' or ':' at all, text doesn't contain URL,
       // so we can simply return an empty list.
@@ -323,18 +339,19 @@ public class Extractor {
         // or URL is preceded by invalid character.
         if (!extractURLWithoutProtocol
             || Regex.INVALID_URL_WITHOUT_PROTOCOL_MATCH_BEGIN
-                    .matcher(matcher.group(Regex.VALID_URL_GROUP_BEFORE)).matches()) {
+            .matcher(matcher.group(Regex.VALID_URL_GROUP_BEFORE)).matches()) {
           continue;
         }
       }
       String url = matcher.group(Regex.VALID_URL_GROUP_URL);
       int start = matcher.start(Regex.VALID_URL_GROUP_URL);
       int end = matcher.end(Regex.VALID_URL_GROUP_URL);
-      final Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
-      if (tco_matcher.find()) {
-        final String tcoUrl = tco_matcher.group(0);
-        final String tcoUrlSlug = tco_matcher.group(1);
-        // In the case of t.co URLs, don't allow additional path characters and ensure that the slug is under 40 chars.
+      final Matcher tcoMatcher = Regex.VALID_TCO_URL.matcher(url);
+      if (tcoMatcher.find()) {
+        final String tcoUrl = tcoMatcher.group(0);
+        final String tcoUrlSlug = tcoMatcher.group(1);
+        // In the case of t.co URLs, don't allow additional path characters and
+        // ensure that the slug is under 40 chars.
         if (tcoUrlSlug.length() > MAX_TCO_SLUG_LENGTH) {
           continue;
         } else {
@@ -357,31 +374,35 @@ public class Extractor {
    *
    * @param originalUrlLength The length of the entire URL, including protocol if any
    * @param protocol The protocol used
-   * @param host The hostname to check validity of
+   * @param originalHost The hostname to check validity of
    * @return true if the host is valid
    */
-  public static boolean isValidHostAndLength(int originalUrlLength, @Nullable String protocol, @Nullable String host) {
-    if (isEmptyString(host)) {
+  public static boolean isValidHostAndLength(int originalUrlLength, @Nullable String protocol,
+                                             @Nullable String originalHost) {
+    if (isEmptyString(originalHost)) {
       return false;
     }
-    final int originalHostLength = host.length();
+    final int originalHostLength = originalHost.length();
+    String host;
     try {
       // Use IDN for all host names, if the host is all ASCII, it returns unchanged.
-      // It comes with an added benefit of checking the host length to be between 1 to 63 characters.
-      host = IDN.toASCII(host, IDN.ALLOW_UNASSIGNED);
-      // toASCII can throw IndexOutOfBoundsException when the domain name is longer than 256 characters, instead of
-      // the documented IllegalArgumentException.
+      // It comes with an added benefit of checking host length to be between 1 and 63 characters.
+      host = IDN.toASCII(originalHost, IDN.ALLOW_UNASSIGNED);
+      // toASCII can throw IndexOutOfBoundsException when the domain name is longer than
+      // 256 characters, instead of the documented IllegalArgumentException.
     } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-     return false;
+      return false;
     }
     final int punycodeEncodedHostLength = host.length();
     if (punycodeEncodedHostLength == 0) {
       return false;
     }
     // The punycodeEncoded host length might be different now, offset that length from the URL.
-    originalUrlLength = originalUrlLength + punycodeEncodedHostLength - originalHostLength;
-    // Add the protocol to our length check, if there isn't one, to ensure it doesn't go over the limit.
-    final int urlLengthWithProtocol = originalUrlLength + (protocol == null ? URL_GROUP_PROTOCOL_LENGTH : 0);
+    final int urlLength = originalUrlLength + punycodeEncodedHostLength - originalHostLength;
+    // Add the protocol to our length check, if there isn't one,
+    // to ensure it doesn't go over the limit.
+    final int urlLengthWithProtocol =
+        urlLength + (protocol == null ? URL_GROUP_PROTOCOL_LENGTH : 0);
     return urlLengthWithProtocol <= MAX_URL_LENGTH;
   }
 
@@ -418,7 +439,8 @@ public class Extractor {
    * Extract #hashtag references from Tweet text.
    *
    * @param text of the tweet from which to extract hashtags
-   * @param checkUrlOverlap if true, check if extracted hashtags overlap URLs and remove overlapping ones
+   * @param checkUrlOverlap if true, check if extracted hashtags overlap URLs and
+   * remove overlapping ones
    * @return List of hashtags referenced (without the leading # sign)
    */
   private List<Entity> extractHashtagsWithIndices(String text, boolean checkUrlOverlap) {
@@ -527,11 +549,11 @@ public class Extractor {
     return extractURLWithoutProtocol;
   }
 
-  /*
+  /**
    * Modify Unicode-based indices of the entities to UTF-16 based indices.
-   *
+   * <p>
    * In UTF-16 based indices, Unicode supplementary characters are counted as two characters.
-   *
+   * <p>
    * This method requires that the list of entities be in ascending order by start index.
    *
    * @param text original text
@@ -546,11 +568,11 @@ public class Extractor {
     }
   }
 
-  /*
+  /**
    * Modify UTF-16-based indices of the entities to Unicode-based indices.
-   *
+   * <p>
    * In Unicode-based indices, Unicode supplementary characters are counted as single characters.
-   *
+   * <p>
    * This method requires that the list of entities be in ascending order by start index.
    *
    * @param text original text
@@ -586,6 +608,8 @@ public class Extractor {
     }
 
     /**
+     * Converts code units to code points
+     *
      * @param charIndex Index into the string measured in code units.
      * @return The code point index that corresponds to the specified character index.
      */
@@ -606,12 +630,15 @@ public class Extractor {
     }
 
     /**
+     * Converts code points to code units
+     *
      * @param codePointIndex Index into the string measured in code points.
      * @return the code unit index that corresponds to the specified code point index.
      */
     int codePointsToCodeUnits(int codePointIndex) {
       // Note that offsetByCodePoints accepts negative indices.
-      this.charIndex = text.offsetByCodePoints(this.charIndex, codePointIndex - this.codePointIndex);
+      this.charIndex =
+          text.offsetByCodePoints(this.charIndex, codePointIndex - this.codePointIndex);
       this.codePointIndex = codePointIndex;
       return this.charIndex;
     }

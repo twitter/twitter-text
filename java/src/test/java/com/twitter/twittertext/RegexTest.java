@@ -1,8 +1,8 @@
 package com.twitter.twittertext;
 
-import junit.framework.TestCase;
-
 import java.util.regex.Pattern;
+
+import junit.framework.TestCase;
 
 public class RegexTest extends TestCase {
   public void testAutoLinkHashtags() {
@@ -16,13 +16,18 @@ public class RegexTest extends TestCase {
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#hag\u0303ua");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#caf\u00E9");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05e2\u05d1\u05e8\u05d9\u05ea"); // "#Hebrew"
-    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05d0\u05b2\u05e9\u05b6\u05c1\u05e8"); // with marks
-    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05e2\u05b7\u05dc\u05be\u05d9\u05b0\u05d3\u05b5\u05d9"); // with maqaf 05be
+    assertCaptureCount(3, Regex.VALID_HASHTAG,
+        "#\u05d0\u05b2\u05e9\u05b6\u05c1\u05e8"); // with marks
+    assertCaptureCount(3, Regex.VALID_HASHTAG,
+        "#\u05e2\u05b7\u05dc\u05be\u05d9\u05b0\u05d3\u05b5\u05d9"); // with maqaf 05be
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05d5\u05db\u05d5\u05f3"); // with geresh 05f3
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u05de\u05f4\u05db"); // with gershayim 05f4
-    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u0627\u0644\u0639\u0631\u0628\u064a\u0629"); // "#Arabic"
-    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u062d\u0627\u0644\u064a\u0627\u064b"); // with mark
-    assertCaptureCount(3, Regex.VALID_HASHTAG, "#\u064a\u0640\ufbb1\u0640\u064e\u0671"); // with pres. form
+    assertCaptureCount(3, Regex.VALID_HASHTAG,
+        "#\u0627\u0644\u0639\u0631\u0628\u064a\u0629"); // "#Arabic"
+    assertCaptureCount(3, Regex.VALID_HASHTAG,
+        "#\u062d\u0627\u0644\u064a\u0627\u064b"); // with mark
+    assertCaptureCount(3, Regex.VALID_HASHTAG,
+        "#\u064a\u0640\ufbb1\u0640\u064e\u0671"); // with pres. form
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#ประเทศไทย");
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#ฟรี"); // with mark
     assertCaptureCount(3, Regex.VALID_HASHTAG, "#日本語ハッシュタグ");
@@ -50,31 +55,37 @@ public class RegexTest extends TestCase {
   }
 
   public void testValidURLDoesNotCrashOnLongPaths() {
-    String longPathIsLong = "Check out http://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    assertTrue("Failed to correctly match a very long path", Regex.VALID_URL.matcher(longPathIsLong).find());
+    final String text = "Check out http://example.com/";
+    final StringBuilder longPathIsLong = new StringBuilder(text);
+    for (int i = 0; i < 1500; i++) {
+      longPathIsLong.append("a");
+    }
+    assertTrue("Failed to correctly match a very long path",
+        Regex.VALID_URL.matcher(longPathIsLong.toString()).find());
   }
 
   public void testValidUrlDoesNotTakeForeverOnRepeatedPuctuationAtEnd() {
-    String[] repeatedPaths = {
+    final String[] repeatedPaths = {
         "Try http://example.com/path**********************",
         "http://foo.org/bar/foo-bar-foo-bar.aspx!!!!!! Test"
     };
 
     for (String text : repeatedPaths) {
-      long start = System.currentTimeMillis();
+      final long start = System.currentTimeMillis();
       final int NUM_RUNS = 100;
       for (int i = 0; i < NUM_RUNS - 1; i++) {
         Regex.VALID_URL.matcher(text).find();
         Regex.VALID_URL.matcher(text).matches();
       }
-      boolean isValid = Regex.VALID_URL.matcher(text).find();
+      final boolean isValid = Regex.VALID_URL.matcher(text).find();
       Regex.VALID_URL.matcher(text).matches();
-      long end = System.currentTimeMillis();
+      final long end = System.currentTimeMillis();
 
       assertTrue("Should be able to extract a valid URL even followed by punctuations", isValid);
 
-      long duration = (end - start);
-      assertTrue("Matching a repeated path end should take less than 10ms (took " + (duration / NUM_RUNS) + "ms)", (duration < 10 * NUM_RUNS) );
+      final long duration = end - start;
+      assertTrue("Matching a repeated path end should take less than 10ms (took " +
+          (duration / NUM_RUNS) + "ms)", duration < 10 * NUM_RUNS);
     }
   }
 
@@ -100,11 +111,11 @@ public class RegexTest extends TestCase {
     assertTrue("Match a short URL with ccTLD and '/' without protocol.",
         Regex.VALID_URL.matcher("t.co/blahblah").matches());
 
-    assertFalse("Should not match a URL with non-ASCII characters in the domain name without protocol.",
-        Regex.VALID_URL.matcher("はじめよう.みんな").matches());
+    assertFalse("Should not match a URL with non-ASCII characters in the domain name without " +
+            "protocol.", Regex.VALID_URL.matcher("はじめよう.みんな").matches());
 
-    assertTrue("Should match a URL with non-ASCII characters & hyphen in the domain name with protocol.",
-        Regex.VALID_URL.matcher("http://はじめ-よう.みんな").matches());
+    assertTrue("Should match a URL with non-ASCII characters & hyphen in the domain name with " +
+            "protocol.", Regex.VALID_URL.matcher("http://はじめ-よう.みんな").matches());
 
     assertTrue("Should match a URL with IDNA prefix and valid ASCII characters with protocol",
         Regex.VALID_URL.matcher("http://xn--p8j9a0d9c9a.com/index.html").matches());
@@ -114,13 +125,17 @@ public class RegexTest extends TestCase {
   }
 
   public void testValidUrlDoesNotOverflowOnLongDomains() {
-    String domainIsLong = "cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool.cool";
-    assertTrue("Match a super long url", Regex.VALID_URL.matcher(domainIsLong).matches());
+    final StringBuilder domainIsLong = new StringBuilder("cool");
+    for (int i = 0; i < 1500; i++) {
+      domainIsLong.append(".cool");
+    }
+    assertTrue("Match a super long url",
+        Regex.VALID_URL.matcher(domainIsLong.toString()).matches());
   }
 
   public void testInvalidUrlWithInvalidCharacter() {
-    char[] invalid_chars = new char[]{'\u202A', '\u202B', '\u202C', '\u202D', '\u202E'};
-    for (char c : invalid_chars) {
+    final char[] invalidChars = new char[]{'\u202A', '\u202B', '\u202C', '\u202D', '\u202E'};
+    for (char c : invalidChars) {
       assertFalse("Should not extract URLs with invalid character",
           Regex.VALID_URL.matcher("http://twitt" + c + "er.com").find());
     }
@@ -131,9 +146,10 @@ public class RegexTest extends TestCase {
   }
 
   public void testInvalidMentions() {
-    char[] invalid_chars = new char[]{'!', '@', '#', '$', '%', '&', '*'};
-    for (char c : invalid_chars) {
-      assertFalse("Failed to ignore a mention preceded by " + c, Regex.VALID_MENTION_OR_LIST.matcher("f" + c + "@kn").find());
+    final char[] invalidChars = new char[]{'!', '@', '#', '$', '%', '&', '*'};
+    for (char c : invalidChars) {
+      assertFalse("Failed to ignore a mention preceded by " + c,
+          Regex.VALID_MENTION_OR_LIST.matcher("f" + c + "@kn").find());
     }
   }
 

@@ -4,8 +4,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * A class that represents a parsed tweet structure that contains the length of the tweet, its validity,
- * display ranges etc.
+ * A class that represents a parsed tweet structure that contains the length of the tweet,
+ * its validity, display ranges etc.
  */
 public class TwitterTextParseResults {
 
@@ -28,15 +28,17 @@ public class TwitterTextParseResults {
   /**
    * Text range that is visible
    */
-  @Nonnull public final Range displayTextRange;
+  @Nonnull
+  public final Range displayTextRange;
 
   /**
    * Text range that is valid for a Tweet
    */
-  @Nonnull public final Range validTextRange;
+  @Nonnull
+  public final Range validTextRange;
 
-  public TwitterTextParseResults(int weightedLength, int permillage, boolean isValid, @Nonnull Range displayTextRange,
-      @Nonnull Range validTextRange) {
+  public TwitterTextParseResults(int weightedLength, int permillage, boolean isValid,
+                                 @Nonnull Range displayTextRange, @Nonnull Range validTextRange) {
     this.weightedLength = weightedLength;
     this.permillage = permillage;
     this.isValid = isValid;
@@ -56,7 +58,8 @@ public class TwitterTextParseResults {
 
   @Override
   public boolean equals(@Nullable Object obj) {
-    return this == obj || obj instanceof TwitterTextParseResults && equals((TwitterTextParseResults) obj);
+    return this == obj || obj instanceof TwitterTextParseResults &&
+        equals((TwitterTextParseResults) obj);
   }
 
   private boolean equals(@Nullable TwitterTextParseResults obj) {

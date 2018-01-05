@@ -1,39 +1,65 @@
+// CHECKSTYLE:OFF JavadocMethodRegex
 package com.twitter.twittertext;
-
-import com.twitter.twittertext.Extractor.Entity;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.twitter.twittertext.Extractor.Entity;
+
 /**
  * A class for adding HTML links to hashtag, username and list references in Tweet text.
  */
 public class Autolink {
-  /** Default CSS class for auto-linked list URLs */
+  /**
+   * Default CSS class for auto-linked list URLs
+   */
   public static final String DEFAULT_LIST_CLASS = "tweet-url list-slug";
-  /** Default CSS class for auto-linked username URLs */
+  /**
+   * Default CSS class for auto-linked username URLs
+   */
   public static final String DEFAULT_USERNAME_CLASS = "tweet-url username";
-  /** Default CSS class for auto-linked hashtag URLs */
+  /**
+   * Default CSS class for auto-linked hashtag URLs
+   */
   public static final String DEFAULT_HASHTAG_CLASS = "tweet-url hashtag";
-  /** Default CSS class for auto-linked cashtag URLs */
+  /**
+   * Default CSS class for auto-linked cashtag URLs
+   */
   public static final String DEFAULT_CASHTAG_CLASS = "tweet-url cashtag";
-  /** Default href for username links (the username without the @ will be appended) */
+  /**
+   * Default href for username links (the username without the @ will be appended)
+   */
   public static final String DEFAULT_USERNAME_URL_BASE = "https://twitter.com/";
-  /** Default href for list links (the username/list without the @ will be appended) */
+  /**
+   * Default href for list links (the username/list without the @ will be appended)
+   */
   public static final String DEFAULT_LIST_URL_BASE = "https://twitter.com/";
-  /** Default href for hashtag links (the hashtag without the # will be appended) */
+  /**
+   * Default href for hashtag links (the hashtag without the # will be appended)
+   */
   public static final String DEFAULT_HASHTAG_URL_BASE = "https://twitter.com/search?q=%23";
-  /** Default href for cashtag links (the cashtag without the $ will be appended) */
+  /**
+   * Default href for cashtag links (the cashtag without the $ will be appended)
+   */
   public static final String DEFAULT_CASHTAG_URL_BASE = "https://twitter.com/search?q=%24";
-  /** Default attribute for invisible span tag */
-  public static final String DEFAULT_INVISIBLE_TAG_ATTRS = "style='position:absolute;left:-9999px;'";
+  /**
+   * Default attribute for invisible span tag
+   */
+  public static final String DEFAULT_INVISIBLE_TAG_ATTRS =
+      "style='position:absolute;left:-9999px;'";
 
   public interface LinkAttributeModifier {
+    /**
+     * This lets you modify the attributes depending on the entity.
+     */
     void modify(Entity entity, Map<String, String> attributes);
   }
 
   public interface LinkTextModifier {
+    /**
+     * This lets you modify the text depending on the entity.
+     */
     CharSequence modify(Entity entity, CharSequence text);
   }
 
@@ -61,13 +87,25 @@ public class Autolink {
     StringBuilder builder = new StringBuilder(text.length() * 2);
     for (int i = 0; i < text.length(); i++) {
       char c = text.charAt(i);
-      switch(c) {
-        case '&': builder.append("&amp;"); break;
-        case '>': builder.append("&gt;"); break;
-        case '<': builder.append("&lt;"); break;
-        case '"': builder.append("&quot;"); break;
-        case '\'': builder.append("&#39;"); break;
-        default: builder.append(c); break;
+      switch (c) {
+        case '&':
+          builder.append("&amp;");
+          break;
+        case '>':
+          builder.append("&gt;");
+          break;
+        case '<':
+          builder.append("&lt;");
+          break;
+        case '"':
+          builder.append("&quot;");
+          break;
+        case '\'':
+          builder.append("&#39;");
+          break;
+        default:
+          builder.append(c);
+          break;
       }
     }
     return builder;
@@ -94,47 +132,57 @@ public class Autolink {
   }
 
   public String escapeBrackets(String text) {
-    int len = text.length();
-    if (len == 0)
+    final int len = text.length();
+    if (len == 0) {
       return text;
+    }
 
-    StringBuilder sb = new StringBuilder(len + 16);
+    final StringBuilder sb = new StringBuilder(len + 16);
     for (int i = 0; i < len; ++i) {
       char c = text.charAt(i);
-      if (c == '>')
+      if (c == '>') {
         sb.append("&gt;");
-      else if (c == '<')
+      } else if (c == '<') {
         sb.append("&lt;");
-      else
+      } else {
         sb.append(c);
+      }
     }
     return sb.toString();
   }
 
-  public void linkToText(Entity entity, CharSequence text, Map<String, String> attributes, StringBuilder builder) {
+  public void linkToText(Entity entity, CharSequence originalText, Map<String, String> attributes,
+                         StringBuilder builder) {
     if (noFollow) {
       attributes.put("rel", "nofollow");
     }
     if (linkAttributeModifier != null) {
       linkAttributeModifier.modify(entity, attributes);
     }
+    CharSequence text = originalText;
     if (linkTextModifier != null) {
-      text = linkTextModifier.modify(entity, text);
+      text = linkTextModifier.modify(entity, originalText);
     }
     // append <a> tag
     builder.append("<a");
     for (Map.Entry<String, String> entry : attributes.entrySet()) {
-      builder.append(" ").append(escapeHTML(entry.getKey())).append("=\"").append(escapeHTML(entry.getValue())).append("\"");
+      builder.append(" ").append(escapeHTML(entry.getKey())).append("=\"").
+          append(escapeHTML(entry.getValue())).append("\"");
     }
     builder.append(">").append(text).append("</a>");
   }
 
-  public void linkToTextWithSymbol(Entity entity, CharSequence symbol, CharSequence text, Map<String, String> attributes, StringBuilder builder) {
-    CharSequence taggedSymbol = symbolTag == null || symbolTag.length() == 0 ? symbol : String.format("<%s>%s</%s>", symbolTag, symbol, symbolTag);
-    text = escapeHTML(text);
-    CharSequence taggedText = textWithSymbolTag == null || textWithSymbolTag.length() == 0 ? text : String.format("<%s>%s</%s>", textWithSymbolTag, text, textWithSymbolTag);
+  public void linkToTextWithSymbol(Entity entity, CharSequence symbol, CharSequence originalText,
+                                   Map<String, String> attributes, StringBuilder builder) {
+    final CharSequence taggedSymbol = symbolTag == null || symbolTag.length() == 0 ? symbol :
+        String.format("<%s>%s</%s>", symbolTag, symbol, symbolTag);
+    final CharSequence text = escapeHTML(originalText);
+    final CharSequence taggedText = textWithSymbolTag == null ||
+        textWithSymbolTag.length() == 0 ? text :
+        String.format("<%s>%s</%s>", textWithSymbolTag, text, textWithSymbolTag);
 
-    boolean includeSymbol = usernameIncludeSymbol || !Regex.AT_SIGNS.matcher(symbol).matches();
+    final boolean includeSymbol =
+        usernameIncludeSymbol || !Regex.AT_SIGNS.matcher(symbol).matches();
 
     if (includeSymbol) {
       linkToText(entity, taggedSymbol.toString() + taggedText, attributes, builder);
@@ -146,10 +194,10 @@ public class Autolink {
 
   public void linkToHashtag(Entity entity, String text, StringBuilder builder) {
     // Get the original hash char from text as it could be a full-width char.
-    CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
-    CharSequence hashtag = entity.getValue();
+    final CharSequence hashChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+    final CharSequence hashtag = entity.getValue();
 
-    Map<String, String> attrs = new LinkedHashMap<String, String>();
+    final Map<String, String> attrs = new LinkedHashMap<>();
     attrs.put("href", hashtagUrlBase + hashtag);
     attrs.put("title", "#" + hashtag);
 
@@ -163,9 +211,9 @@ public class Autolink {
   }
 
   public void linkToCashtag(Entity entity, String text, StringBuilder builder) {
-    CharSequence cashtag = entity.getValue();
+    final CharSequence cashtag = entity.getValue();
 
-    Map<String, String> attrs = new LinkedHashMap<String, String>();
+    final Map<String, String> attrs = new LinkedHashMap<>();
     attrs.put("href", cashtagUrlBase + cashtag);
     attrs.put("title", "$" + cashtag);
     attrs.put("class", cashtagClass);
@@ -176,9 +224,9 @@ public class Autolink {
   public void linkToMentionAndList(Entity entity, String text, StringBuilder builder) {
     String mention = entity.getValue();
     // Get the original at char from text as it could be a full-width char.
-    CharSequence atChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
+    final CharSequence atChar = text.subSequence(entity.getStart(), entity.getStart() + 1);
 
-    Map<String, String> attrs = new LinkedHashMap<String, String>();
+    final Map<String, String> attrs = new LinkedHashMap<>();
     if (entity.listSlug != null) {
       mention += entity.listSlug;
       attrs.put("class", listClass);
@@ -192,7 +240,7 @@ public class Autolink {
   }
 
   public void linkToURL(Entity entity, String text, StringBuilder builder) {
-    CharSequence url = entity.getValue();
+    final CharSequence url = entity.getValue();
     CharSequence linkText = escapeHTML(url);
 
     if (entity.displayURL != null && entity.expandedURL != null) {
@@ -200,13 +248,14 @@ public class Autolink {
       // should contain the full original URL (expanded_url), not the display URL.
       //
       // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
-      // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).
+      // font-size:0 to hide those parts that should not be displayed
+      // (because they are not part of display_url).
       // Elements with font-size:0 get copied even though they are not visible.
       // Note that display:none doesn't work here. Elements with display:none don't get copied.
       //
-      // Additionally, we want to *display* ellipses, but we don't want them copied.  To make this happen we
-      // wrap the ellipses in a tco-ellipsis class and provide an onCopy handler that sets display:none on
-      // everything with the tco-ellipsis class.
+      // Additionally, we want to *display* ellipses, but we don't want them copied.
+      // To make this happen we wrap the ellipses in a tco-ellipsis class and provide an onCopy
+      // handler that sets display:none on everything with the tco-ellipsis class.
       //
       // As an example: The user tweets "hi http://longdomainname.com/foo"
       // This gets shortened to "hi http://t.co/xyzabc", with display_url = "…nname.com/foo"
@@ -216,8 +265,8 @@ public class Autolink {
       //   <!-- There's a chance the onCopy event handler might not fire. In case that happens,
       //        we include an &nbsp; here so that the … doesn't bump up against the URL and ruin it.
       //        The &nbsp; is inside the tco-ellipsis span so that when the onCopy handler *does*
-      //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces in a row,
-      //        e.g. "hi  http://longdomainname.com/foo".
+      //        fire, it doesn't get copied.  Otherwise the copied text would have two spaces
+      //        in a row, e.g. "hi  http://longdomainname.com/foo".
       //   <span style='font-size:0'>&nbsp;</span>
       // </span>
       // <span style='font-size:0'>  <!-- This stuff should get copied but not displayed -->
@@ -231,25 +280,31 @@ public class Autolink {
       //   …
       // </span>
       //
-      // Exception: pic.twitter.com images, for which expandedUrl = "https://twitter.com/username/status/1234/photo/1
-      // For those URLs, display_url is not a substring of expanded_url, so we don't do anything special to render the elided parts.
+      // Exception: pic.twitter.com images, for which expandedUrl =
+      // "https://twitter.com/username/status/1234/photo/1
+      // For those URLs, display_url is not a substring of expanded_url,
+      // so we don't do anything special to render the elided parts.
       // For a pic.twitter.com URL, the only elided part will be the "https://", so this is fine.
-      String displayURLSansEllipses = entity.displayURL.replace("…", "");
-      int diplayURLIndexInExpandedURL = entity.expandedURL.indexOf(displayURLSansEllipses);
+      final String displayURLSansEllipses = entity.displayURL.replace("…", "");
+      final int diplayURLIndexInExpandedURL = entity.expandedURL.indexOf(displayURLSansEllipses);
       if (diplayURLIndexInExpandedURL != -1) {
-        String beforeDisplayURL = entity.expandedURL.substring(0, diplayURLIndexInExpandedURL);
-        String afterDisplayURL = entity.expandedURL.substring(diplayURLIndexInExpandedURL + displayURLSansEllipses.length());
-        String precedingEllipsis = entity.displayURL.startsWith("…") ? "…" : "";
-        String followingEllipsis = entity.displayURL.endsWith("…") ? "…" : "";
-        String invisibleSpan = "<span " + invisibleTagAttrs + ">";
+        final String beforeDisplayURL =
+            entity.expandedURL.substring(0, diplayURLIndexInExpandedURL);
+        final String afterDisplayURL = entity.expandedURL.substring(
+            diplayURLIndexInExpandedURL + displayURLSansEllipses.length());
+        final String precedingEllipsis = entity.displayURL.startsWith("…") ? "…" : "";
+        final String followingEllipsis = entity.displayURL.endsWith("…") ? "…" : "";
+        final String invisibleSpan = "<span " + invisibleTagAttrs + ">";
 
-        StringBuilder sb = new StringBuilder("<span class='tco-ellipsis'>");
+        final StringBuilder sb = new StringBuilder("<span class='tco-ellipsis'>");
         sb.append(precedingEllipsis);
         sb.append(invisibleSpan).append("&nbsp;</span></span>");
         sb.append(invisibleSpan).append(escapeHTML(beforeDisplayURL)).append("</span>");
-        sb.append("<span class='js-display-url'>").append(escapeHTML(displayURLSansEllipses)).append("</span>");
+        sb.append("<span class='js-display-url'>").append(escapeHTML(displayURLSansEllipses))
+            .append("</span>");
         sb.append(invisibleSpan).append(escapeHTML(afterDisplayURL)).append("</span>");
-        sb.append("<span class='tco-ellipsis'>").append(invisibleSpan).append("&nbsp;</span>").append(followingEllipsis).append("</span>");
+        sb.append("<span class='tco-ellipsis'>").append(invisibleSpan).append("&nbsp;</span>")
+            .append(followingEllipsis).append("</span>");
 
         linkText = sb;
       } else {
@@ -257,7 +312,7 @@ public class Autolink {
       }
     }
 
-    Map<String, String> attrs = new LinkedHashMap<String, String>();
+    final Map<String, String> attrs = new LinkedHashMap<>();
     attrs.put("href", url.toString());
     if (urlClass != null) {
       attrs.put("class", urlClass);
@@ -272,13 +327,13 @@ public class Autolink {
   }
 
   public String autoLinkEntities(String text, List<Entity> entities) {
-    StringBuilder builder = new StringBuilder(text.length() * 2);
+    final StringBuilder builder = new StringBuilder(text.length() * 2);
     int beginIndex = 0;
 
     for (Entity entity : entities) {
       builder.append(text.subSequence(beginIndex, entity.start));
 
-      switch(entity.type) {
+      switch (entity.type) {
         case URL:
           linkToURL(entity, text, builder);
           break;
@@ -291,7 +346,9 @@ public class Autolink {
         case CASHTAG:
           linkToCashtag(entity, text, builder);
           break;
-     }
+        default:
+          break;
+      }
       beginIndex = entity.end;
     }
     builder.append(text.subSequence(beginIndex, text.length()));
@@ -302,21 +359,21 @@ public class Autolink {
   /**
    * Auto-link hashtags, URLs, usernames and lists.
    *
-   * @param text of the Tweet to auto-link
+   * @param originalText of the Tweet to auto-link
    * @return text with auto-link HTML added
    */
-  public String autoLink(String text) {
-    text = escapeBrackets(text);
+  public String autoLink(String originalText) {
+    final String text = escapeBrackets(originalText);
 
     // extract entities
-    List<Entity> entities = extractor.extractEntitiesWithIndices(text);
+    final List<Entity> entities = extractor.extractEntitiesWithIndices(text);
     return autoLinkEntities(text, entities);
   }
 
   /**
-   * Auto-link the @username and @username/list references in the provided text. Links to @username references will
-   * have the usernameClass CSS classes added. Links to @username/list references will have the listClass CSS class
-   * added.
+   * Auto-link the @username and @username/list references in the provided text.
+   * Links to @username references will have the usernameClass CSS classes added.
+   * Links to @username/list references will have the listClass CSS class added.
    *
    * @param text of the Tweet to auto-link
    * @return text with auto-link HTML added
@@ -326,8 +383,8 @@ public class Autolink {
   }
 
   /**
-   * Auto-link #hashtag references in the provided Tweet text. The #hashtag links will have the hashtagClass CSS class
-   * added.
+   * Auto-link #hashtag references in the provided Tweet text. The #hashtag links will have the
+   * hashtagClass CSS class added.
    *
    * @param text of the Tweet to auto-link
    * @return text with auto-link HTML added
@@ -348,8 +405,8 @@ public class Autolink {
   }
 
   /**
-   * Auto-link $cashtag references in the provided Tweet text. The $cashtag links will have the cashtagClass CSS class
-   * added.
+   * Auto-link $cashtag references in the provided Tweet text. The $cashtag links will have the
+   * cashtagClass CSS class added.
    *
    * @param text of the Tweet to auto-link
    * @return text with auto-link HTML added
@@ -359,7 +416,9 @@ public class Autolink {
   }
 
   /**
-   * @return CSS class for auto-linked URLs
+   * Get CSS class for auto-linked URLs
+   *
+   * @return String that represents the CSS class
    */
   public String getUrlClass() {
     return urlClass;
@@ -375,7 +434,9 @@ public class Autolink {
   }
 
   /**
-   * @return CSS class for auto-linked list URLs
+   * Get CSS class for auto-linked list URLs
+   *
+   * @return String that represents the CSS class
    */
   public String getListClass() {
     return listClass;
@@ -391,7 +452,9 @@ public class Autolink {
   }
 
   /**
-   * @return CSS class for auto-linked username URLs
+   * Get CSS class for auto-linked username URLs
+   *
+   * @return String that represents the CSS class
    */
   public String getUsernameClass() {
     return usernameClass;
@@ -407,7 +470,9 @@ public class Autolink {
   }
 
   /**
-   * @return CSS class for auto-linked hashtag URLs
+   * Get CSS class for auto-linked hashtag URLs
+   *
+   * @return String that represents the CSS class
    */
   public String getHashtagClass() {
     return hashtagClass;
@@ -423,7 +488,9 @@ public class Autolink {
   }
 
   /**
-   * @return CSS class for auto-linked cashtag URLs
+   * Get CSS class for auto-linked cashtag URLs
+   *
+   * @return String that represents the CSS class
    */
   public String getCashtagClass() {
     return cashtagClass;
@@ -439,7 +506,9 @@ public class Autolink {
   }
 
   /**
-   * @return the href value for username links (to which the username will be appended)
+   * Get the href value for username links (to which the username will be appended)
+   *
+   * @return String that represents the href value of username link
    */
   public String getUsernameUrlBase() {
     return usernameUrlBase;
@@ -455,7 +524,9 @@ public class Autolink {
   }
 
   /**
-   * @return the href value for list links (to which the username/list will be appended)
+   * Get the href value for list links (to which the username/list will be appended)
+   *
+   * @return String that represents the href value of username/list link
    */
   public String getListUrlBase() {
     return listUrlBase;
@@ -471,7 +542,9 @@ public class Autolink {
   }
 
   /**
-   * @return the href value for hashtag links (to which the hashtag will be appended)
+   * Get the href value for hashtag links (to which the hashtag will be appended)
+   *
+   * @return String that represents the href value of hashtag link
    */
   public String getHashtagUrlBase() {
     return hashtagUrlBase;
@@ -487,7 +560,9 @@ public class Autolink {
   }
 
   /**
-   * @return the href value for cashtag links (to which the cashtag will be appended)
+   * Get the href value for cashtag links (to which the cashtag will be appended)
+   *
+   * @return String that represents the href value of cashtag link
    */
   public String getCashtagUrlBase() {
     return cashtagUrlBase;
@@ -503,7 +578,9 @@ public class Autolink {
   }
 
   /**
-   * @return if the current URL links will include rel="nofollow" (true by default)
+   * Checks if the current URL links will include rel="nofollow" (true by default)
+   *
+   * @return Boolean indicating if there's a rel=nofollow
    */
   public boolean isNoFollow() {
     return noFollow;
