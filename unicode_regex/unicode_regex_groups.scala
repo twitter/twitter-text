@@ -23,9 +23,9 @@ def regexForRuby(ccs: Seq[Int]) = formatRanges(charRanges(ccs), escRubyChar).mkS
 def regexForObjC(ccs: Seq[Int]) = joinCharClass(formatRanges(charRanges(ccs), escObjCChar))             
 
 def formatMultilineJavaString(emojiRegex: String): String = {
-  val lineRegex = ".{1,92}\\\\{0,2}[^\\\\]{0,5}(\\\\\\\\ud[c-f]\\\\w\\\\w)?".r
+  val lineRegex = ".{1,80}\\\\{0,2}[^\\\\]{0,5}(\\\\\\\\ud[c-f]\\\\w\\\\w)?".r
   val matches = lineRegex.findAllIn(emojiRegex)
-  matches.mkString("\"", "\" +\n    \"", "\"")
+  matches.mkString("\"", "\" +\n      \"", "\"")
 }
 
 def formatMultilineRubyRegex(emojiRegex: String): String = {
@@ -47,9 +47,9 @@ val additionalDecimalNumbers = decimalNumbers.diff(decimalNumbersBasic)
 
 println("Regexes for Java/Scala\n")
 println("  // Generated from unicode_regex/unicode_regex_groups.scala, more inclusive than Java's \\p{L}\\p{M}")
-println(s"""  private static final String HASHTAG_LETTERS_AND_MARKS = "\\\\p{L}\\\\p{M}" +\n    ${formatMultilineJavaString(regexForJava(additionalLettersAndMarks))};\n""")
+println(s"""  private static final String HASHTAG_LETTERS_AND_MARKS = "\\\\p{L}\\\\p{M}" +\n      ${formatMultilineJavaString(regexForJava(additionalLettersAndMarks))};\n""")
 println("  // Generated from unicode_regex/unicode_regex_groups.scala, more inclusive than Java's \\p{Nd}")
-println(s"""  private static final String HASHTAG_NUMERALS = "\\\\p{Nd}" +\n    ${formatMultilineJavaString(regexForJava(additionalDecimalNumbers))};\n""")
+println(s"""  private static final String HASHTAG_NUMERALS = "\\\\p{Nd}" +\n      ${formatMultilineJavaString(regexForJava(additionalDecimalNumbers))};\n""")
 
 println("Regexes for Ruby\n")
 println("    # Generated from unicode_regex/unicode_regex_groups.scala, more inclusive than Ruby's \\p{L}\\p{M}")

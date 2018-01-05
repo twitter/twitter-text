@@ -41,11 +41,11 @@ import java.util.List;
 
 public class TldLists {
   public static final List<String> GTLDS = Arrays.asList(
-#{yml["generic"].map {|el| "    \"#{el}\""}.join(",\n")}
+#{yml["generic"].map {|el| "      \"#{el}\""}.join(",\n")}
   );
 
   public static final List<String> CTLDS = Arrays.asList(
-#{yml["country"].map {|el| "    \"#{el}\""}.join(",\n")}
+#{yml["country"].map {|el| "      \"#{el}\""}.join(",\n")}
   );
 }
 EOF

@@ -1,18 +1,21 @@
 package com.twitter.twittertext;
 
-import com.twitter.twittertext.TwitterTextConfiguration.TwitterTextWeightedRange;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.ListIterator;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.twitter.twittertext.TwitterTextConfiguration.TwitterTextWeightedRange;
 
 /**
  * A class to parse tweet text with a {@link TwitterTextConfiguration} and returns a
  * {@link TwitterTextParseResults} object
  */
-public class TwitterTextParser {
+public final class TwitterTextParser {
+
+  private TwitterTextParser() {
+  }
 
   public static final TwitterTextParseResults EMPTY_TWITTER_TEXT_PARSE_RESULTS =
       new TwitterTextParseResults(0, 0, false, Range.EMPTY, Range.EMPTY);
@@ -52,22 +55,27 @@ public class TwitterTextParser {
    */
   @Nonnull
   public static TwitterTextParseResults parseTweet(@Nullable final String tweet,
-      @Nonnull final TwitterTextConfiguration config) {
+                                                   @Nonnull final TwitterTextConfiguration config) {
     return parseTweet(tweet, config, true);
   }
 
   /**
    * Returns the weighted length of a tweet without doing any URL processing.
    * Used by Twitter Backend to validate the visible tweet in the final step of tweet creation.
+   *
+   * @param tweet which is to be parsed
+   * @return {@link TwitterTextParseResults} object
    */
   @Nonnull
-  public static TwitterTextParseResults parseTweetWithoutUrlExtraction(@Nullable final String tweet) {
+  public static TwitterTextParseResults parseTweetWithoutUrlExtraction(
+      @Nullable final String tweet) {
     return parseTweet(tweet, TWITTER_TEXT_WEIGHTED_CHAR_COUNT_CONFIG, false);
   }
 
   /**
-   * Parses a given tweet text with the given {@link TwitterTextConfiguration} and optionally control
-   * if urls should/shouldn't be normalized to {@link TwitterTextConfiguration.DEFAULT_TRANSFORMED_URL_LENGTH}
+   * Parses a given tweet text with the given {@link TwitterTextConfiguration} and
+   * optionally control if urls should/shouldn't be normalized to
+   * {@link TwitterTextConfiguration.DEFAULT_TRANSFORMED_URL_LENGTH}
    *
    * @param tweet which is to be parsed
    * @param config {@link TwitterTextConfiguration}
@@ -76,7 +84,8 @@ public class TwitterTextParser {
    */
   @Nonnull
   private static TwitterTextParseResults parseTweet(@Nullable final String tweet,
-      @Nonnull final TwitterTextConfiguration config, boolean extractURLs) {
+                                                    @Nonnull final TwitterTextConfiguration config,
+                                                    boolean extractURLs) {
     if (tweet == null || tweet.trim().length() == 0) {
       return EMPTY_TWITTER_TEXT_PARSE_RESULTS;
     }
@@ -149,6 +158,7 @@ public class TwitterTextParser {
     final boolean isValid = !hasInvalidCharacters && scaledWeightedLength <= maxWeightedTweetLength;
     final int permillage = scaledWeightedLength * 1000 / maxWeightedTweetLength;
     return new TwitterTextParseResults(scaledWeightedLength, permillage, isValid,
-        new Range(0, offset + normalizedTweetOffset - 1), new Range(0, validOffset + normalizedTweetOffset - 1));
+        new Range(0, offset + normalizedTweetOffset - 1),
+        new Range(0, validOffset + normalizedTweetOffset - 1));
   }
 }

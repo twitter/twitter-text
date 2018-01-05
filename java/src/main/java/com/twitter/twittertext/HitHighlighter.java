@@ -8,20 +8,26 @@ import java.util.List;
  * A class for adding HTML highlighting in Tweet text (such as would be returned from a Search)
  */
 public class HitHighlighter {
-  /** Default HTML tag for highlight hits */
+  /**
+   * Default HTML tag for highlight hits
+   */
   public static final String DEFAULT_HIGHLIGHT_TAG = "em";
 
-  /** the current HTML tag used for hit highlighting */
+  /**
+   * the current HTML tag used for hit highlighting
+   */
   protected String highlightTag;
 
-  /** Create a new HitHighlighter object. */
+  /**
+   * Create a new HitHighlighter object.
+   */
   public HitHighlighter() {
     highlightTag = DEFAULT_HIGHLIGHT_TAG;
   }
 
   /**
-   * Surround the <code>hits</code> in the provided <code>text</code> with an HTML tag. This is used with offsets
-   * from the search API to support the highlighting of query terms.
+   * Surround the <code>hits</code> in the provided <code>text</code> with an HTML tag.
+   * This is used with offsets from the search API to support the highlighting of query terms.
    *
    * @param text of the Tweet to highlight
    * @param hits A List of highlighting offsets (themselves lists of two elements)
@@ -29,11 +35,11 @@ public class HitHighlighter {
    */
   public String highlight(String text, List<List<Integer>> hits) {
     if (hits == null || hits.isEmpty()) {
-      return(text);
+      return text;
     }
 
-    StringBuilder sb = new StringBuilder(text.length());
-    CharacterIterator iterator = new StringCharacterIterator(text);
+    final StringBuilder sb = new StringBuilder(text.length());
+    final CharacterIterator iterator = new StringCharacterIterator(text);
     boolean isCounting = true;
     boolean tagOpened = false;
     int currentIndex = 0;
@@ -41,11 +47,11 @@ public class HitHighlighter {
 
     while (currentChar != CharacterIterator.DONE) {
       // TODO: this is slow.
-      for (List<Integer> start_end : hits) {
-        if (start_end.get(0) == currentIndex) {
+      for (List<Integer> startEnd : hits) {
+        if (startEnd.get(0) == currentIndex) {
           sb.append(tag(false));
           tagOpened = true;
-        } else if (start_end.get(1) == currentIndex) {
+        } else if (startEnd.get(1) == currentIndex) {
           sb.append(tag(true));
           tagOpened = false;
         }
@@ -68,24 +74,25 @@ public class HitHighlighter {
       sb.append(tag(true));
     }
 
-    return(sb.toString());
+    return sb.toString();
   }
 
   /**
-   * Format the current <code>highlightTag</code> by adding &lt; and &gt;. If <code>closeTag</code> is <code>true</code>
-   * then the tag returned will include a <code>/</code> to signify a closing tag.
+   * Format the current <code>highlightTag</code> by adding &lt; and &gt;.
+   * If <code>closeTag</code> is <code>true</code> then the tag returned will include a
+   * <code>/</code> to signify a closing tag.
    *
    * @param closeTag true if this is a closing tag, false otherwise
    * @return reformed tag
    */
   protected String tag(boolean closeTag) {
-    StringBuilder sb = new StringBuilder(highlightTag.length() + 3);
+    final StringBuilder sb = new StringBuilder(highlightTag.length() + 3);
     sb.append("<");
     if (closeTag) {
       sb.append("/");
     }
     sb.append(highlightTag).append(">");
-    return(sb.toString());
+    return sb.toString();
   }
 
   /**
