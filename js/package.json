@@ -6,11 +6,11 @@
   "files": [
     "build/twitter-text.js"
   ],
-  "homepage": "https://github.com/twitter/twitter-text-js",
+  "homepage": "https://github.com/twitter/twitter-text",
   "author": "Twitter Inc.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/twitter/twitter-text-js.git"
+    "url": "https://github.com/twitter/twitter-text.git"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
