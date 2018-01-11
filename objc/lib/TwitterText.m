@@ -10,9 +10,8 @@
 //  http://www.apache.org/licenses/LICENSE-2.0
 //
 
+#import "NSURL+IFUnicodeURL.h"
 #import "TwitterText.h"
-
-@import IFUnicodeURL;
 
 #pragma mark - Regular Expressions
 
