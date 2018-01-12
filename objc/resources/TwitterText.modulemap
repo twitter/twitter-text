@@ -5,7 +5,7 @@ framework module TwitterText {
     }
 
     module TwitterTextEntity {
-		header "TwitterTextEntity.h"
-		export *
+        header "TwitterTextEntity.h"
+        export *
     }
 }
