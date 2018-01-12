@@ -668,7 +668,7 @@ typedef NSInteger (^TextUnitCounterBlock)(NSInteger currentLength, NSString* tex
 
 + (NSInteger)tweetLength:(NSString *)text
 {
-    return [self tweetLength:text httpURLLength:kTransformedURLLength httpsURLLength:kTransformedURLLength];
+    return [self tweetLength:text transformedURLLength:kTransformedURLLength];
 }
 
 + (NSInteger)tweetLength:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength

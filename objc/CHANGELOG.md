@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.2] - 2018-01-11
+### Changed
+- Fixed deprecation warnings
+- Final prep for cocoapod release of 2.0
+
 ## [2.0.1] - 2018-01-10
 ### Added
 - This CHANGELOG.md file
