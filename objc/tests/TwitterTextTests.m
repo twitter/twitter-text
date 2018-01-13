@@ -495,7 +495,7 @@
         return;
     }
 
-    [TwitterTextParser setDefaultParserConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationClassic]];
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationClassic]];
 
     NSDictionary *tests = [rootDic objectForKey:@"tests"];
     NSArray *lengths = [tests objectForKey:@"lengths"];
@@ -525,7 +525,7 @@
         return;
     }
 
-    [TwitterTextParser setDefaultParserConfiguration: [TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV2]];
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV2]];
     NSDictionary *tests = [rootDic objectForKey:@"tests"];
     NSArray *lengths = [tests objectForKey:@"WeightedTweetsCounterTest"];
 

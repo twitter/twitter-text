@@ -964,7 +964,7 @@ static TwitterTextParser *sDefaultParser;
     return sDefaultParser;
 }
 
-+ (void)setDefaultParserConfiguration:(TwitterTextConfiguration *)configuration
++ (void)setDefaultParserWithConfiguration:(TwitterTextConfiguration *)configuration
 {
     dispatch_async([self _queue], ^{
         sDefaultParser = [[TwitterTextParser alloc] initWithConfiguration:configuration];

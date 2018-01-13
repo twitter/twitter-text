@@ -3,7 +3,7 @@ require 'rubygems'
 require 'json'
 require 'fileutils'
 
-task :default => ['test:conformance:run']
+task :default => ['test:conformance:ios:run']
 task :clean => ['test:clean']
 
 namespace :test do
@@ -56,7 +56,7 @@ namespace :test do
 
   desc "Clean build and tests"
   task :clean do
-    system("rm -rf tests/json-conformance")
+    rm_rf ["tests/json-conformance"]
   end
 end
 

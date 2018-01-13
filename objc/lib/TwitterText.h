@@ -102,8 +102,9 @@ FOUNDATION_EXTERN NSString * const kTwitterTextParserConfigurationV2;
 @property (nonatomic, readonly) TwitterTextConfiguration *configuration;
 
 + (instancetype)defaultParser NS_SWIFT_NAME(defaultParser());
-+ (void)setDefaultParserConfiguration:(TwitterTextConfiguration *)configuration;
-- (instancetype)initWithConfiguration:(TwitterTextConfiguration *)configuration;
++ (void)setDefaultParserWithConfiguration:(TwitterTextConfiguration *)configuration;
+
+- (instancetype)initWithConfiguration:(TwitterTextConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
 - (TwitterTextParseResults *)parseTweet:(NSString *)text;
 - (NSInteger)maxWeightedTweetLength;
 

@@ -13,8 +13,6 @@
 		3DD6F6BB1E6A397600437514 /* TwitterText.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B71E6A397600437514 /* TwitterText.m */; };
 		3DD6F6BC1E6A397600437514 /* TwitterTextEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DD6F6BD1E6A397600437514 /* TwitterTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */; };
-		D087405E1F9AB7570066AF36 /* v1.json in Resources */ = {isa = PBXBuildFile; fileRef = D087405C1F9AB7570066AF36 /* v1.json */; };
-		D087405F1F9AB7570066AF36 /* v2.json in Resources */ = {isa = PBXBuildFile; fileRef = D087405D1F9AB7570066AF36 /* v2.json */; };
 		D0DDF1991FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0DDF19A1FFED34C0019BEA7 /* IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1971FFED34C0019BEA7 /* IFUnicodeURL.h */; };
 		D0DDF19B1FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */; };
@@ -44,6 +42,10 @@
 		D0DDF1CD1FFED35D0019BEA7 /* nameprep_prohibit.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1B41FFED35D0019BEA7 /* nameprep_prohibit.h */; };
 		D0DDF1CE1FFED35D0019BEA7 /* nameprep_prohibit_allowunassigned.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1B51FFED35D0019BEA7 /* nameprep_prohibit_allowunassigned.h */; };
 		D0DDF1D21FFED3840019BEA7 /* NSURL+IFUnicodeURLTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF1D01FFED3800019BEA7 /* NSURL+IFUnicodeURLTest.m */; };
+		D0F715BA200985C100D66E5C /* v1.json in Resources */ = {isa = PBXBuildFile; fileRef = D0F715B8200985C100D66E5C /* v1.json */; };
+		D0F715BB200985C100D66E5C /* v2.json in Resources */ = {isa = PBXBuildFile; fileRef = D0F715B9200985C100D66E5C /* v2.json */; };
+		D0F715BC200985CB00D66E5C /* v1.json in Resources */ = {isa = PBXBuildFile; fileRef = D0F715B8200985C100D66E5C /* v1.json */; };
+		D0F715BD200985CE00D66E5C /* v2.json in Resources */ = {isa = PBXBuildFile; fileRef = D0F715B9200985C100D66E5C /* v2.json */; };
 		D0FE6FC320069D800032DA00 /* TwitterText.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DD6F6B61E6A397600437514 /* TwitterText.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0FE6FC420069D860032DA00 /* TwitterText.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B71E6A397600437514 /* TwitterText.m */; };
 		D0FE6FC520069D8A0032DA00 /* TwitterTextEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -78,8 +80,6 @@
 		D0FE6FE220069DF00032DA00 /* IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1971FFED34C0019BEA7 /* IFUnicodeURL.h */; };
 		D0FE6FE320069DF50032DA00 /* NSURL+IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0FE6FE420069DFF0032DA00 /* NSURL+IFUnicodeURL.m in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */; };
-		D0FE6FE520069E8C0032DA00 /* v1.json in Resources */ = {isa = PBXBuildFile; fileRef = D087405C1F9AB7570066AF36 /* v1.json */; };
-		D0FE6FE620069E8C0032DA00 /* v2.json in Resources */ = {isa = PBXBuildFile; fileRef = D087405D1F9AB7570066AF36 /* v2.json */; };
 		D0FE6FE720069EA60032DA00 /* TwitterText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0FE6FAC200699CA0032DA00 /* TwitterText.framework */; };
 /* End PBXBuildFile section */
 
@@ -112,8 +112,6 @@
 		3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterTextEntity.m; path = lib/TwitterTextEntity.m; sourceTree = SOURCE_ROOT; };
 		3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = TwitterText.modulemap; path = resources/TwitterText.modulemap; sourceTree = SOURCE_ROOT; };
 		74E1D6611E6E7A9500200344 /* TwitterTextTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextTests.h; sourceTree = "<group>"; };
-		D087405C1F9AB7570066AF36 /* v1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v1.json; path = ../../../config/v1.json; sourceTree = "<group>"; };
-		D087405D1F9AB7570066AF36 /* v2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v2.json; path = ../../../config/v2.json; sourceTree = "<group>"; };
 		D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+IFUnicodeURL.h"; path = "IFUnicodeURL/IFUnicodeURL/NSURL+IFUnicodeURL.h"; sourceTree = "<group>"; };
 		D0DDF1971FFED34C0019BEA7 /* IFUnicodeURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IFUnicodeURL.h; path = IFUnicodeURL/IFUnicodeURL/IFUnicodeURL.h; sourceTree = "<group>"; };
 		D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+IFUnicodeURL.m"; path = "IFUnicodeURL/IFUnicodeURL/NSURL+IFUnicodeURL.m"; sourceTree = "<group>"; };
@@ -143,6 +141,8 @@
 		D0DDF1B41FFED35D0019BEA7 /* nameprep_prohibit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameprep_prohibit.h; sourceTree = "<group>"; };
 		D0DDF1B51FFED35D0019BEA7 /* nameprep_prohibit_allowunassigned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameprep_prohibit_allowunassigned.h; sourceTree = "<group>"; };
 		D0DDF1D01FFED3800019BEA7 /* NSURL+IFUnicodeURLTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+IFUnicodeURLTest.m"; path = "IFUnicodeURL/Tests/NSURL+IFUnicodeURLTest.m"; sourceTree = "<group>"; };
+		D0F715B8200985C100D66E5C /* v1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v1.json; path = ../../config/v1.json; sourceTree = "<group>"; };
+		D0F715B9200985C100D66E5C /* v2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v2.json; path = ../../config/v2.json; sourceTree = "<group>"; };
 		D0FE6FAC200699CA0032DA00 /* TwitterText.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TwitterText.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0FE6FB4200699CB0032DA00 /* TwitterTextTests Mac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TwitterTextTests Mac.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -206,7 +206,7 @@
 		3D4B56B21E6A37DF00E8E570 /* TwitterText */ = {
 			isa = PBXGroup;
 			children = (
-				D087405B1F9AB72E0066AF36 /* Resources */,
+				D0F715B7200985A700D66E5C /* Resources */,
 				3DD6F6B61E6A397600437514 /* TwitterText.h */,
 				3DD6F6B71E6A397600437514 /* TwitterText.m */,
 				3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */,
@@ -250,15 +250,6 @@
 				D0DDF1951FFED3260019BEA7 /* Source */,
 			);
 			name = IFUnicodeURL;
-			sourceTree = "<group>";
-		};
-		D087405B1F9AB72E0066AF36 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				D087405C1F9AB7570066AF36 /* v1.json */,
-				D087405D1F9AB7570066AF36 /* v2.json */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		D0DDF1951FFED3260019BEA7 /* Source */ = {
@@ -311,6 +302,15 @@
 				D0DDF1D01FFED3800019BEA7 /* NSURL+IFUnicodeURLTest.m */,
 			);
 			name = Tests;
+			sourceTree = "<group>";
+		};
+		D0F715B7200985A700D66E5C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D0F715B8200985C100D66E5C /* v1.json */,
+				D0F715B9200985C100D66E5C /* v2.json */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -506,8 +506,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D087405E1F9AB7570066AF36 /* v1.json in Resources */,
-				D087405F1F9AB7570066AF36 /* v2.json in Resources */,
+				D0F715BA200985C100D66E5C /* v1.json in Resources */,
+				D0F715BB200985C100D66E5C /* v2.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,8 +522,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0FE6FE520069E8C0032DA00 /* v1.json in Resources */,
-				D0FE6FE620069E8C0032DA00 /* v2.json in Resources */,
+				D0F715BC200985CB00D66E5C /* v1.json in Resources */,
+				D0F715BD200985CE00D66E5C /* v2.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
