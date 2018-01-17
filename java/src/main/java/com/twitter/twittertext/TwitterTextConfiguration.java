@@ -10,7 +10,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 /**
  * A class that represents the different configurations used by {@link TwitterTextParser}
@@ -63,31 +63,28 @@ public class TwitterTextConfiguration {
   @Nonnull
   public static TwitterTextConfiguration configurationFromJson(@Nonnull String json,
                                                                boolean isResource) {
-    // jackson's default serialization format is json
-    final ObjectMapper objectMapper = new ObjectMapper();
+    Gson gson = new Gson();
     TwitterTextConfiguration config;
-    try {
-      if (isResource) {
-        InputStream resourceStream = TwitterTextConfiguration.class.getResourceAsStream("/" + json);
-        // For whatever reason, this fails in some Samsung Galaxy J7 family of devices,
-        // try falling back to classloader.
-        if (resourceStream == null) {
-          resourceStream =
-              TwitterTextConfiguration.class.getClassLoader().getResourceAsStream(json);
-        }
-        try {
-          final Reader reader = new BufferedReader(new InputStreamReader(resourceStream));
-          config = objectMapper.readValue(reader, TwitterTextConfiguration.class);
-          // If an invalid resource is passed, use default config.
-        } catch (NullPointerException ex) {
-          return getDefaultConfig();
-        }
-      } else {
-        config = objectMapper.readValue(json, TwitterTextConfiguration.class);
+    if (isResource) {
+      InputStream resourceStream = TwitterTextConfiguration.class.getResourceAsStream("/" + json);
+      // For whatever reason, this fails in some Samsung Galaxy J7 family of devices,
+      // try falling back to classloader.
+      if (resourceStream == null) {
+        resourceStream =
+            TwitterTextConfiguration.class.getClassLoader().getResourceAsStream(json);
       }
-    // InputStreamReader can throw an NPE when the resource is null
-    } catch (IOException ex) {
-      config = getDefaultConfig();
+      try {
+        final Reader reader = new BufferedReader(new InputStreamReader(resourceStream));
+        config = gson.fromJson(reader, TwitterTextConfiguration.class);
+        // If an invalid resource is passed, use default config.
+      } catch (NullPointerException ex) {
+        return getDefaultConfig();
+      }
+    } else {
+      config = gson.fromJson(json, TwitterTextConfiguration.class);
+    }
+    if(config == null) {
+      return getDefaultConfig();
     }
     return config;
   }
