@@ -147,16 +147,11 @@ public class Regex {
           URL_VALID_UNICODE_CHARS + "\\.)";
 
   private static final String URL_PUNYCODE = "(?:xn--[-0-9a-z]+)";
-  private static final String SPECIAL_URL_VALID_CCTLD = "(?:(?:" + "co|tv" + ")(?=[^a-z0-9@]|$))";
 
   private static final String URL_VALID_DOMAIN =
-    "(?:" +                                                   // subdomains + domain + TLD
-        URL_VALID_SUBDOMAIN + "+" + URL_VALID_DOMAIN_NAME +   // e.g. www.twitter.com, foo.co.jp ...
+    "(?:" +                                                   // optional sub-domain + domain + TLD
+        URL_VALID_SUBDOMAIN + "*" + URL_VALID_DOMAIN_NAME +   // e.g. twitter.com, foo.co.jp ...
         "(?:" + URL_VALID_GTLD + "|" + URL_VALID_CCTLD + "|" + URL_PUNYCODE + ")" +
-    ")" +
-    "|(?:" +                                                  // domain + gTLD + some ccTLD
-      URL_VALID_DOMAIN_NAME +                                 // e.g. twitter.com
-      "(?:" + URL_VALID_GTLD + "|" + URL_PUNYCODE + "|" + SPECIAL_URL_VALID_CCTLD + ")" +
     ")" +
     "|(?:" + "(?<=https?://)" +
       "(?:" +

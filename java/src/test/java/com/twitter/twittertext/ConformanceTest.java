@@ -401,24 +401,7 @@ public class ConformanceTest {
     }
   }
 
-  @RunWith(Parameterized.class)
-  public static class TweetLengthConformanceTest {
-    @Parameter
-    public Map testCase;
-
-    @Parameters
-    public static Collection<Map> data() throws Exception {
-      return loadConformanceData("validate.yml", "lengths");
-    }
-
-    @Test
-    public void testTweetLengthExtractor() throws Exception {
-      assertEquals((String) testCase.get(KEY_DESCRIPTION),
-          testCase.get(KEY_EXPECTED_OUTPUT),
-          VALIDATOR.getTweetLength((String) testCase.get(KEY_INPUT)));
-    }
-  }
-
+  @SuppressWarnings("deprecation")
   @RunWith(Parameterized.class)
   public static class WeightedTweetsConformanceTest {
     @Parameter
@@ -443,28 +426,6 @@ public class ConformanceTest {
       assertEquals(message, expected.get("displayRangeEnd"), parseResults.displayTextRange.end);
       assertEquals(message, expected.get("validRangeStart"), parseResults.validTextRange.start);
       assertEquals(message, expected.get("validRangeEnd"), parseResults.validTextRange.end);
-    }
-  }
-
-  @RunWith(Parameterized.class)
-  public static class V1TweetLengthConformanceTest {
-    @Parameter
-    public Map testCase;
-
-    @Parameters
-    public static Collection<Map> data() throws Exception {
-      return loadConformanceData("validate.yml", "lengths");
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testV1TweetLength() throws Exception {
-      final TwitterTextParseResults parseResults =
-          TwitterTextParser.parseTweet((String) testCase.get(KEY_INPUT),
-              TwitterTextParser.TWITTER_TEXT_DEFAULT_CONFIG);
-      assertEquals((String) testCase.get(KEY_DESCRIPTION),
-          testCase.get(KEY_EXPECTED_OUTPUT),
-          parseResults.weightedLength);
     }
   }
 

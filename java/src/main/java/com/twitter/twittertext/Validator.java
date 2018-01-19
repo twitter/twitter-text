@@ -1,12 +1,10 @@
 package com.twitter.twittertext;
 
-import java.text.Normalizer;
-
 /**
  * A class for validating Tweet texts.
  */
 public class Validator {
-  public static final int MAX_TWEET_LENGTH = 140;
+  public static final int MAX_TWEET_LENGTH = 280;
 
   protected int shortUrlLength = 23;
   protected int shortUrlLengthHttps = 23;
@@ -14,25 +12,15 @@ public class Validator {
   private Extractor extractor = new Extractor();
 
   /**
-   * Returns the length of a given tweet text counting code points.
+   * Returns the weighted length of a given tweet text
    *
    * @param tweetText the source to mark as modified.
    * @return length of a tweet
-   * @deprecated This doesn't do weighted character count calculations, so use TwitterTextParser
-   * instead.
+   * @deprecated Use TwitterTextParser
    */
   @Deprecated
   public int getTweetLength(String tweetText) {
-    final String text = Normalizer.normalize(tweetText, Normalizer.Form.NFC);
-    int length = text.codePointCount(0, text.length());
-
-    for (Extractor.Entity urlEntity : extractor.extractURLsWithIndices(text)) {
-      length += urlEntity.start - urlEntity.end;
-      length += urlEntity.value.toLowerCase().startsWith("https://") ?
-          shortUrlLengthHttps : shortUrlLength;
-    }
-
-    return length;
+    return TwitterTextParser.parseTweet(tweetText).weightedLength;
   }
 
   /**
@@ -41,8 +29,7 @@ public class Validator {
    */
   @Deprecated
   public boolean isValidTweet(String text) {
-    return text != null && text.length() != 0 && !hasInvalidCharacters(text) &&
-        getTweetLength(text) <= MAX_TWEET_LENGTH;
+    return TwitterTextParser.parseTweet(text).isValid;
   }
 
   public static boolean hasInvalidCharacters(String text) {

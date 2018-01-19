@@ -99,10 +99,10 @@ public class RegexTest extends TestCase {
     assertTrue("Matching a URL with gTLD followed by ccTLD without protocol.",
         Regex.VALID_URL.matcher("www.foo.org.za").matches());
 
-    assertTrue("Should not match a short URL with ccTLD without protocol.",
+    assertTrue("Match a short URL with ccTLD with protocol.",
         Regex.VALID_URL.matcher("http://t.co").matches());
 
-    assertFalse("Should not match a short URL with ccTLD without protocol.",
+    assertTrue("Match a short URL with ccTLD without protocol.",
         Regex.VALID_URL.matcher("it.so").matches());
 
     assertFalse("Should not match a URL with invalid gTLD.",

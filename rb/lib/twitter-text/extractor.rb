@@ -218,11 +218,7 @@ module Twitter
                 :indices => [start_position + $~.char_begin(0),
                              start_position + $~.char_end(0)]
               }
-              if path ||
-                 ascii_domain =~ Twitter::TwitterText::Regex[:valid_special_short_domain] ||
-                 ascii_domain !~ Twitter::TwitterText::Regex[:invalid_short_domain]
-                urls << last_url
-              end
+              urls << last_url
             end
 
             # no ASCII-only domain found. Skip the entire URL

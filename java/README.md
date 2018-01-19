@@ -16,7 +16,7 @@ Bringing twitter-text-java into your project should be as simple as adding the f
     <dependency>
       <groupId>com.twitter.twittertext</groupId>
       <artifactId>twitter-text</artifactId>
-      <version>2.0.9</version> <!-- or whatever the latest version is -->
+      <version>2.0.10</version> <!-- or whatever the latest version is -->
     </dependency>
   </dependencies>
 ```

@@ -178,7 +178,7 @@ test("twttr.txt.autolink", function() {
   deepEqual(twttr.txt.autoLinkEntities("twitter.com", twttr.txt.extractEntitiesWithIndices("twitter.com")),
       "<a href=\"http://twitter.com\" rel=\"nofollow\">twitter.com</a>", "AutoLink with extractUrlsWithoutProtocol");
   deepEqual(twttr.txt.autoLinkEntities("TWITTER.JP", twttr.txt.extractEntitiesWithIndices("TWITTER.JP")),
-      "TWITTER.JP", "Do not AutoLink withoutProtocol just because domain is uppercase");
+      "<a href=\"http://TWITTER.JP\" rel=\"nofollow\">TWITTER.JP</a>", "AutoLink with extractUrlsWithoutProtocol with ccTLD domains");
 
   // url entities
   autoLinkResult = twttr.txt.autoLink("http://t.co/0JG5Mcq", {

@@ -322,7 +322,7 @@ tests:
 
     - description: "Extract URLs without protocol not on (com|org|edu|gov|net) domains"
       text: "foo.baz foo.co.jp www.xxxxxxx.baz www.foo.co.uk wwwww.xxxxxxx foo.comm foo.somecom foo.govedu foo.jp"
-      expected: ["foo.co.jp", "www.foo.co.uk"]
+      expected: ["foo.co.jp", "www.foo.co.uk", "foo.jp"]
 
     - description: "Extract URLs without protocol on ccTLD with slash"
       text: "t.co/abcde bit.ly/abcde"
@@ -368,9 +368,9 @@ tests:
       text: "http://exampleこれは日本語です.com/path/index.html http://あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ.com/path/index.html"
       expected: ["http://exampleこれは日本語です.com/path/index.html"]
 
-    - description: "DO NOT extract short URLs without protocol on ccTLD domains without path"
+    - description: "Extract short URLs without protocol on ccTLD domains without path"
       text: "twitter.jp日本語it.so中国語foo.jp it.so foo.jp"
-      expected: []
+      expected: ["twitter.jp", "it.so", "foo.jp", "it.so", "foo.jp"]
 
     - description: "DO NOT extract invalid URL"
       text: "Hello http://xn--はじめよう.com/index.html"
@@ -543,7 +543,7 @@ tests:
 
     - description: "Extract URL before newline"
       text: "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nit.so\nit.so/abcde"
-      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "it.so/abcde"]
+      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "it.so", "it.so/abcde"]
 
     - description: "DO NOT extract URL if preceded by $"
       text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
