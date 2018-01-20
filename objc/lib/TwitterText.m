@@ -125,18 +125,13 @@
 #define TWUValidURLUnicodeDomain        @"(?:(?:" TWUValidURLUnicodeCharacters @"[" TWUValidURLUnicodeCharacters @"\\-]{0,255})?" TWUValidURLUnicodeCharacters @"\\.)"
 
 #define TWUValidPunycode                @"(?:xn--[-0-9a-z]+)"
-#define TWUValidSpecialCCTLD            @"(?:(?:co|tv)(?=[^a-z0-9@]|$))"
 
 #define TWUValidDomain \
 @"(?:" \
-    TWUValidURLSubdomain @"+" TWUValidURLDomain \
+    TWUValidURLSubdomain @"*" TWUValidURLDomain \
     @"(?:" TWUValidGTLD @"|" TWUValidCCTLD @"|" TWUValidPunycode @")" \
 @")" \
-@"|(?:" \
-    TWUValidURLDomain \
-    @"(?:" TWUValidGTLD @"|" TWUValidPunycode @"|" TWUValidSpecialCCTLD @")" \
-  @")" \
-  @"|(?:(?<=https?://)" \
+@"|(?:(?<=https?://)" \
   @"(?:" \
     @"(?:" TWUValidURLDomain TWUValidCCTLD @")" \
     @"|(?:" \
@@ -430,7 +425,7 @@ typedef NSInteger (^TextUnitCounterBlock)(NSInteger currentLength, NSString* tex
         NSInteger start = urlRange.location;
         NSInteger end = NSMaxRange(urlRange);
 
-        NSTextCheckingResult *tcoResult = [[self validTCOURLRegexp] firstMatchInString:url options:0 range:NSMakeRange(0, url.length)];
+        NSTextCheckingResult *tcoResult = url ? [[self validTCOURLRegexp] firstMatchInString:url options:0 range:NSMakeRange(0, url.length)] : nil;
         if (tcoResult && tcoResult.numberOfRanges >= 2) {
             NSRange tcoRange = [tcoResult rangeAtIndex:0];
             NSRange tcoUrlSlugRange = [tcoResult rangeAtIndex:1];

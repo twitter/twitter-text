@@ -17,7 +17,6 @@ import hashtagSpecialChars from './hashtagSpecialChars';
 import invalidChars from './invalidChars';
 import invalidCharsGroup from './invalidCharsGroup';
 import invalidDomainChars from './invalidDomainChars';
-import invalidShortDomain from './invalidShortDomain';
 import invalidUrlWithoutProtocolPrecedingChars from './invalidUrlWithoutProtocolPrecedingChars';
 import latinAccentChars from './latinAccentChars';
 import nonBmpCodePairs from './nonBmpCodePairs';
@@ -68,8 +67,6 @@ import validMentionPrecedingChars from './validMentionPrecedingChars';
 import validPortNumber from './validPortNumber';
 import validPunycode from './validPunycode';
 import validReply from './validReply';
-import validSpecialCCTLD from './validSpecialCCTLD';
-import validSpecialShortDomain from './validSpecialShortDomain';
 import validSubdomain from './validSubdomain';
 import validTcoUrl from './validTcoUrl';
 import validUrlBalancedParens from './validUrlBalancedParens';
@@ -99,7 +96,6 @@ export default {
   invalidChars,
   invalidCharsGroup,
   invalidDomainChars,
-  invalidShortDomain,
   invalidUrlWithoutProtocolPrecedingChars,
   latinAccentChars,
   nonBmpCodePairs,
@@ -150,8 +146,6 @@ export default {
   validPortNumber,
   validPunycode,
   validReply,
-  validSpecialCCTLD,
-  validSpecialShortDomain,
   validSubdomain,
   validTcoUrl,
   validUrlBalancedParens,

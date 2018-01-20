@@ -481,36 +481,6 @@
     }
 }
 
-- (void)testValidate
-{
-    NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"validate.json"];
-    NSData *data = [NSData dataWithContentsOfFile:fileName];
-    if (!data) {
-        XCTFail(@"No test data: %@", fileName);
-        return;
-    }
-    NSDictionary *rootDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
-    if (!rootDic) {
-        XCTFail(@"Invalid test data: %@", fileName);
-        return;
-    }
-
-    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationClassic]];
-
-    NSDictionary *tests = [rootDic objectForKey:@"tests"];
-    NSArray *lengths = [tests objectForKey:@"lengths"];
-
-    for (NSDictionary *testCase in lengths) {
-        NSString *text = [testCase objectForKey:@"text"];
-        text = [self stringByParsingUnicodeEscapes:text];
-        NSUInteger expected = [[testCase objectForKey:@"expected"] unsignedIntegerValue];
-        NSUInteger len = [TwitterText tweetLength:text];
-        TwitterTextParseResults *results = [[TwitterTextParser defaultParser] parseTweet:text];
-        XCTAssertEqual(len, results.weightedLength, "TwitterTextParser with classic configuration is not compatible with TwitterText for string %@", text);
-        XCTAssertEqual(len, expected, @"Length should be the same");
-    }
-}
-
 - (void)testWeightedTweetsCounting
 {
     NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"validate.json"];

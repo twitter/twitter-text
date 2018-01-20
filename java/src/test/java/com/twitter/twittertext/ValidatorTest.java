@@ -2,6 +2,7 @@ package com.twitter.twittertext;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("deprecation")
 public class ValidatorTest extends TestCase {
   protected Validator validator = new Validator();
 
@@ -27,7 +28,7 @@ public class ValidatorTest extends TestCase {
   public void testAccentCharacters() {
     String c = "\u0065\u0301";
     StringBuilder builder = new StringBuilder();
-    for (int i = 0; i < 139; i++) {
+    for (int i = 0; i < 279; i++) {
       builder.append(c);
     }
     assertTrue(validator.isValidTweet(builder.toString()));

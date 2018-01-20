@@ -183,13 +183,6 @@ module Twitter
       }ix
       REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/i
 
-      REGEXEN[:valid_special_cctld] = %r{
-        (?:
-          (?:co|tv)
-          (?=[^0-9a-z@]|$)
-        )
-      }ix
-
       REGEXEN[:valid_domain] = /(?:
         #{REGEXEN[:valid_subdomain]}*#{REGEXEN[:valid_domain_name]}
         (?:#{REGEXEN[:valid_gTLD]}|#{REGEXEN[:valid_ccTLD]}|#{REGEXEN[:valid_punycode]})
@@ -203,10 +196,6 @@ module Twitter
 
       # This is used in Extractor for stricter t.co URL extraction
       REGEXEN[:valid_tco_url] = /^https?:\/\/t\.co\/([a-z0-9]+)/i
-
-      # This is used in Extractor to filter out unwanted URLs.
-      REGEXEN[:invalid_short_domain] = /\A#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_ccTLD]}\Z/io
-      REGEXEN[:valid_special_short_domain] = /\A#{REGEXEN[:valid_domain_name]}#{REGEXEN[:valid_special_cctld]}\Z/io
 
       REGEXEN[:valid_port_number] = /[0-9]+/
 

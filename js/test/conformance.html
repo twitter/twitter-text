@@ -134,10 +134,6 @@
               return function(test) {
                 return twttr.txt.isValidUrl(test.text, true, false);
               };
-            case "lengths":
-              return function(test) {
-                return twttr.txt.getTweetLength(test.text, twttr.txt.configs.version1);
-              };
             case "WeightedTweetsCounterTest":
               return function(test){
                 return twttr.txt.parseTweet(test.text);

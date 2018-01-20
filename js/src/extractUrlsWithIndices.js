@@ -1,9 +1,7 @@
 import extractUrl from './regexp/extractUrl';
-import invalidShortDomain from './regexp/invalidShortDomain';
 import invalidUrlWithoutProtocolPrecedingChars from './regexp/invalidUrlWithoutProtocolPrecedingChars';
 import idna from './lib/idna';
 import validAsciiDomain from './regexp/validAsciiDomain';
-import validSpecialShortDomain from './regexp/validSpecialShortDomain';
 import validTcoUrl from './regexp/validTcoUrl';
 
 const DEFAULT_PROTOCOL = 'https://';
@@ -45,9 +43,7 @@ const extractUrlsWithIndices = function (text, options = DEFAULT_PROTOCOL_OPTION
           url: asciiDomain,
           indices: [ startPosition + asciiStartPosition, startPosition + asciiEndPosition ]
         };
-        if (path || asciiDomain.match(validSpecialShortDomain) || !asciiDomain.match(invalidShortDomain)) {
-          urls.push(lastUrl);
-        }
+        urls.push(lastUrl);
       });
 
       // no ASCII-only domain found. Skip the entire URL.
