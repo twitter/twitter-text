@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import autoLink from './autoLink';
 import autoLinkCashtags from './autoLinkCashtags';
 import autoLinkEntities from './autoLinkEntities';
