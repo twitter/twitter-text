@@ -40,7 +40,6 @@
     "test": "npm run build && rake test && rake test:conformance"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
     "punycode": "^2.1.0"
   }
 }
