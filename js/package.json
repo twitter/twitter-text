@@ -1,7 +1,7 @@
 {
   "name": "twitter-text",
   "description": "official twitter text linkification",
-  "version": "2.0.4",
+  "version": "2.0.4-rc1",
   "main": "build/twitter-text.js",
   "files": [
     "build/twitter-text.js"
