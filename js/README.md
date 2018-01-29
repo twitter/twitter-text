@@ -139,7 +139,7 @@ Your default browser will open the test suite.
 
 Official versions are kept in the `pkg/` directory.  To roll a new version, (ex. v1.1.0), run the following from project root:
 
-    rake package[1.1.0]
+    npm run build && rake package[1.1.0]
 
 This will make a new file at `pkg/twitter-text-1.1.0.js`.
 
