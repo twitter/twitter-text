@@ -14,8 +14,8 @@ const idna = {
     }
 
     const labels = domain.split('.');
-    const asciiLabels = [];
-    for (const label of labels) {
+    for (let i = 0; i < labels.length; i++) {
+      const label = labels[i];
       const punycodeEncodedLabel = punycode.toASCII(label);
       if (punycodeEncodedLabel.length < 1 || punycodeEncodedLabel.length > MAX_DOMAIN_LABEL_LENGTH) {
         // DNS label has invalid length
