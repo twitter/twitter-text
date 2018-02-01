@@ -42,13 +42,15 @@
           <include>**/*.json</include>
         </includes>
       </resource>
-      <resource>
+    </resources>
+    <testResources>
+      <testResource>
         <directory>../conformance</directory>
         <includes>
           <include>**/*.yml</include>
         </includes>
-      </resource>
-    </resources>
+      </testResource>
+    </testResources>
     <pluginManagement>
       <plugins>
         <plugin>
