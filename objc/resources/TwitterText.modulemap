@@ -8,4 +8,9 @@ framework module TwitterText {
         header "TwitterTextEntity.h"
         export *
     }
+
+    module NSURL_IFUnicodeURL {
+        header "NSURL+IFUnicodeURL.h"
+        export *
+    }
 }
