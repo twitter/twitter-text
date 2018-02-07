@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.5] - 2018-02-07
+### Changed
+- Fixes project files to address analyzer warnings, problems with
+  groups (and missing files)
+- IFUnicodeURL.h is the umbrella header for the IFUnicodeURL.xcodeproj
+  and as such, should not be included as a file in the
+  TwitterText.xcodeproj
+- Fixes project files to address problems using the framework on
+  macOS.
+
 ## [2.0.4] - 2018-01-26
 ### Changed
 - Domains with country code TLDs that are not prefixed by a protocol

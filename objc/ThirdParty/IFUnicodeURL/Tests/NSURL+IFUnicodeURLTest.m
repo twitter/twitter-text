@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Twitter, Inc. All rights reserved.
 //
 
-#import "NSURL+IFUnicodeURL.h"
-
+@import TwitterText.NSURL_IFUnicodeURL;
 @import XCTest;
+
 
 @interface NSURL_IFUnicodeURLTest : XCTestCase
 @end

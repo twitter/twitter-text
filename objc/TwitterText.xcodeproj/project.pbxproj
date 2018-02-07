@@ -14,7 +14,6 @@
 		3DD6F6BC1E6A397600437514 /* TwitterTextEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DD6F6BD1E6A397600437514 /* TwitterTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */; };
 		D0DDF1991FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D0DDF19A1FFED34C0019BEA7 /* IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1971FFED34C0019BEA7 /* IFUnicodeURL.h */; };
 		D0DDF19B1FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */; };
 		D0DDF1B61FFED35D0019BEA7 /* puny.c in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF19C1FFED35D0019BEA7 /* puny.c */; };
 		D0DDF1B71FFED35D0019BEA7 /* race.c in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF19D1FFED35D0019BEA7 /* race.c */; };
@@ -77,7 +76,6 @@
 		D0FE6FDF20069DE90032DA00 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1A11FFED35D0019BEA7 /* util.h */; };
 		D0FE6FE020069DEC0032DA00 /* xcode_config.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1A21FFED35D0019BEA7 /* xcode_config.h */; };
 		D0FE6FE120069DEE0032DA00 /* xcode.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF19E1FFED35D0019BEA7 /* xcode.h */; };
-		D0FE6FE220069DF00032DA00 /* IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1971FFED34C0019BEA7 /* IFUnicodeURL.h */; };
 		D0FE6FE320069DF50032DA00 /* NSURL+IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0FE6FE420069DFF0032DA00 /* NSURL+IFUnicodeURL.m in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */; };
 		D0FE6FE720069EA60032DA00 /* TwitterText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0FE6FAC200699CA0032DA00 /* TwitterText.framework */; };
@@ -102,18 +100,17 @@
 
 /* Begin PBXFileReference section */
 		3D4B56B01E6A37DF00E8E570 /* TwitterText.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TwitterText.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3D4B56B41E6A37DF00E8E570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = resources/Info.plist; sourceTree = "<group>"; };
+		3D4B56B41E6A37DF00E8E570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = resources/Info.plist; sourceTree = "<group>"; };
 		3D4B56B91E6A37DF00E8E570 /* TwitterTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwitterTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D4B56BE1E6A37DF00E8E570 /* TwitterTextTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwitterTextTests.m; sourceTree = "<group>"; };
 		3D4B56C01E6A37DF00E8E570 /* TwitterTextTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "TwitterTextTests-Info.plist"; path = "resources/TwitterTextTests-Info.plist"; sourceTree = "<group>"; };
-		3DD6F6B61E6A397600437514 /* TwitterText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterText.h; path = lib/TwitterText.h; sourceTree = SOURCE_ROOT; };
-		3DD6F6B71E6A397600437514 /* TwitterText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterText.m; path = lib/TwitterText.m; sourceTree = SOURCE_ROOT; };
-		3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterTextEntity.h; path = lib/TwitterTextEntity.h; sourceTree = SOURCE_ROOT; };
-		3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterTextEntity.m; path = lib/TwitterTextEntity.m; sourceTree = SOURCE_ROOT; };
-		3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = TwitterText.modulemap; path = resources/TwitterText.modulemap; sourceTree = SOURCE_ROOT; };
+		3DD6F6B61E6A397600437514 /* TwitterText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterText.h; path = lib/TwitterText.h; sourceTree = "<group>"; };
+		3DD6F6B71E6A397600437514 /* TwitterText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterText.m; path = lib/TwitterText.m; sourceTree = "<group>"; };
+		3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterTextEntity.h; path = lib/TwitterTextEntity.h; sourceTree = "<group>"; };
+		3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterTextEntity.m; path = lib/TwitterTextEntity.m; sourceTree = "<group>"; };
+		3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = TwitterText.modulemap; path = resources/TwitterText.modulemap; sourceTree = "<group>"; };
 		74E1D6611E6E7A9500200344 /* TwitterTextTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextTests.h; sourceTree = "<group>"; };
 		D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+IFUnicodeURL.h"; path = "IFUnicodeURL/IFUnicodeURL/NSURL+IFUnicodeURL.h"; sourceTree = "<group>"; };
-		D0DDF1971FFED34C0019BEA7 /* IFUnicodeURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IFUnicodeURL.h; path = IFUnicodeURL/IFUnicodeURL/IFUnicodeURL.h; sourceTree = "<group>"; };
 		D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+IFUnicodeURL.m"; path = "IFUnicodeURL/IFUnicodeURL/NSURL+IFUnicodeURL.m"; sourceTree = "<group>"; };
 		D0DDF19C1FFED35D0019BEA7 /* puny.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = puny.c; path = IFUnicodeURL/IFUnicodeURL/IDNSDK/puny.c; sourceTree = "<group>"; };
 		D0DDF19D1FFED35D0019BEA7 /* race.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = race.c; path = IFUnicodeURL/IFUnicodeURL/IDNSDK/race.c; sourceTree = "<group>"; };
@@ -141,8 +138,8 @@
 		D0DDF1B41FFED35D0019BEA7 /* nameprep_prohibit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameprep_prohibit.h; sourceTree = "<group>"; };
 		D0DDF1B51FFED35D0019BEA7 /* nameprep_prohibit_allowunassigned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameprep_prohibit_allowunassigned.h; sourceTree = "<group>"; };
 		D0DDF1D01FFED3800019BEA7 /* NSURL+IFUnicodeURLTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+IFUnicodeURLTest.m"; path = "IFUnicodeURL/Tests/NSURL+IFUnicodeURLTest.m"; sourceTree = "<group>"; };
-		D0F715B8200985C100D66E5C /* v1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v1.json; path = ../../config/v1.json; sourceTree = "<group>"; };
-		D0F715B9200985C100D66E5C /* v2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = v2.json; path = ../../config/v2.json; sourceTree = "<group>"; };
+		D0F715B8200985C100D66E5C /* v1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v1.json; sourceTree = "<group>"; };
+		D0F715B9200985C100D66E5C /* v2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v2.json; sourceTree = "<group>"; };
 		D0FE6FAC200699CA0032DA00 /* TwitterText.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TwitterText.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0FE6FB4200699CB0032DA00 /* TwitterTextTests Mac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TwitterTextTests Mac.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -214,7 +211,7 @@
 				3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */,
 				3D4B56B41E6A37DF00E8E570 /* Info.plist */,
 			);
-			path = TwitterText;
+			name = TwitterText;
 			sourceTree = "<group>";
 		};
 		3D4B56BD1E6A37DF00E8E570 /* TwitterTextTests */ = {
@@ -269,7 +266,6 @@
 				D0DDF1A11FFED35D0019BEA7 /* util.h */,
 				D0DDF1A21FFED35D0019BEA7 /* xcode_config.h */,
 				D0DDF19E1FFED35D0019BEA7 /* xcode.h */,
-				D0DDF1971FFED34C0019BEA7 /* IFUnicodeURL.h */,
 				D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */,
 				D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */,
 			);
@@ -311,6 +307,7 @@
 				D0F715B9200985C100D66E5C /* v2.json */,
 			);
 			name = Resources;
+			path = ../config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -335,7 +332,6 @@
 				D0DDF1CA1FFED35D0019BEA7 /* nameprep_datastructures.h in Headers */,
 				D0DDF1C71FFED35D0019BEA7 /* nameprep_compose.h in Headers */,
 				D0DDF1BE1FFED35D0019BEA7 /* nameprep.h in Headers */,
-				D0DDF19A1FFED34C0019BEA7 /* IFUnicodeURL.h in Headers */,
 				D0DDF1C81FFED35D0019BEA7 /* nameprep_cononical.h in Headers */,
 				D0DDF1C31FFED35D0019BEA7 /* nameprep_bidi_lcat.h in Headers */,
 				3DD6F6BC1E6A397600437514 /* TwitterTextEntity.h in Headers */,
@@ -372,7 +368,6 @@
 				D0FE6FD020069DD50032DA00 /* nameprep_bidi_lcat.h in Headers */,
 				D0FE6FCD20069DC90032DA00 /* puny.h in Headers */,
 				D0FE6FD720069DD60032DA00 /* nameprep_datastructures.h in Headers */,
-				D0FE6FE220069DF00032DA00 /* IFUnicodeURL.h in Headers */,
 				D0FE6FE020069DEC0032DA00 /* xcode_config.h in Headers */,
 				D0FE6FC320069D800032DA00 /* TwitterText.h in Headers */,
 			);
@@ -459,7 +454,7 @@
 		3D4B56A71E6A37DF00E8E570 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = Twitter;
 				TargetAttributes = {
 					3D4B56AF1E6A37DF00E8E570 = {
@@ -610,7 +605,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -621,6 +618,8 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -663,7 +662,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -674,6 +675,8 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -786,6 +789,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = resources/TwitterText.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterText;
 				PRODUCT_NAME = TwitterText;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -821,6 +825,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = resources/TwitterText.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterText;
 				PRODUCT_NAME = TwitterText;
 				PROVISIONING_PROFILE_SPECIFIER = "";
