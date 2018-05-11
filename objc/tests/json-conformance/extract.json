@@ -925,7 +925,7 @@
         "description": "Extract a URL with a ton of trailing '!'",
         "text": "Test a ton of periods http://example.com/path/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
         "expected": [
-          "http://example.com/path/"
+          "http://example.com/path/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         ]
       },
       {
