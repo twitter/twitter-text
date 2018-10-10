@@ -1,8 +1,15 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 package com.twitter.twittertext;
 
 import java.text.Normalizer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.regex.Matcher;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -20,7 +27,10 @@ public final class TwitterTextParser {
   public static final TwitterTextParseResults EMPTY_TWITTER_TEXT_PARSE_RESULTS =
       new TwitterTextParseResults(0, 0, false, Range.EMPTY, Range.EMPTY);
 
-  public static final TwitterTextConfiguration TWITTER_TEXT_DEFAULT_CONFIG =
+  /**
+   * v1.json is the legacy, traditional code point counting configuration
+   */
+  public static final TwitterTextConfiguration TWITTER_TEXT_CODE_POINT_COUNT_CONFIG =
       TwitterTextConfiguration.configurationFromJson("v1.json", true);
 
   /**
@@ -32,6 +42,15 @@ public final class TwitterTextParser {
    */
   public static final TwitterTextConfiguration TWITTER_TEXT_WEIGHTED_CHAR_COUNT_CONFIG =
       TwitterTextConfiguration.configurationFromJson("v2.json", true);
+
+  /**
+   * v3.json supports counting emoji as one weighted character
+   */
+  public static final TwitterTextConfiguration TWITTER_TEXT_EMOJI_CHAR_COUNT_CONFIG =
+      TwitterTextConfiguration.configurationFromJson("v3.json", true);
+
+  public static final TwitterTextConfiguration TWITTER_TEXT_DEFAULT_CONFIG =
+      TWITTER_TEXT_EMOJI_CHAR_COUNT_CONFIG;
 
   private static final Extractor EXTRACTOR = new Extractor();
 
@@ -110,6 +129,17 @@ public final class TwitterTextParser {
     int offset = 0;
     int validOffset = 0;
 
+    final Map<Integer, Integer> emojiMap = new HashMap<>();
+    if (config.getEmojiParsingEnabled()) {
+      final Matcher emojiMatcher = TwitterTextEmojiRegex.VALID_EMOJI_PATTERN
+          .matcher(normalizedTweet);
+      while (emojiMatcher.find()) {
+        final int start = emojiMatcher.start();
+        final int end = emojiMatcher.end();
+        emojiMap.put(start, end - start);
+      }
+    }
+
     while (offset < tweetLength) {
       int charWeight = config.getDefaultWeight();
 
@@ -133,10 +163,18 @@ public final class TwitterTextParser {
       if (offset < tweetLength) {
         final int codePoint = normalizedTweet.codePointAt(offset);
 
-        for (final TwitterTextWeightedRange weightedRange : ranges) {
-          if (weightedRange.getRange().isInRange(codePoint)) {
-            charWeight = weightedRange.getWeight();
-            break;
+        int emojiLength = -1;
+        if (emojiMap.containsKey(offset)) {
+          charWeight = config.getDefaultWeight();
+          emojiLength = emojiMap.get(offset);
+        }
+
+        if (emojiLength == -1) {
+          for (final TwitterTextWeightedRange weightedRange : ranges) {
+            if (weightedRange.getRange().isInRange(codePoint)) {
+              charWeight = weightedRange.getWeight();
+              break;
+            }
           }
         }
 
@@ -145,11 +183,15 @@ public final class TwitterTextParser {
         hasInvalidCharacters = hasInvalidCharacters ||
             Validator.hasInvalidCharacters(normalizedTweet.substring(offset, offset + 1));
 
-        final int charCount = Character.charCount(codePoint);
-        offset += charCount;
-
+        final int offsetDelta;
+        if (emojiLength != -1) {
+          offsetDelta = emojiLength;
+        } else {
+          offsetDelta = Character.charCount(codePoint);
+        }
+        offset += offsetDelta;
         if (!hasInvalidCharacters && weightedCount <= scaledMaxWeightedTweetLength) {
-          validOffset += charCount;
+          validOffset += offsetDelta;
         }
       }
     }

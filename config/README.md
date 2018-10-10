@@ -13,6 +13,7 @@ The configuration format is a JSON string. The JSON can have the following prope
 * `maxWeightedTweetLength` (required, integer, min value 0)
 * `scale` (required, integer, min value 1)
 * `defaultWeight` (required, integer, min value 0)
+* `emojiParsingEnabled` (optional, boolean)
 * `transformedURLLength` (integer, min value 0)
 * `ranges` (array of range items)
 
@@ -47,6 +48,13 @@ The Tweet length is the (`weighted length` / `scale`).
 
 The default weight applied to all code points. This is overridden in
 one or more range items.
+
+### emojiParsingEnabled
+
+When set to true, the weighted Tweet length considers all emoji as a
+single code point (with a default weight of 200), including longer
+grapheme clusters combined by zero-width joiners. When set to false,
+Tweet length is calculated by weighing individual Unicode code points.
 
 ### transformedURLLength
 

@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 require 'unf'
 
 module Twitter
@@ -34,8 +38,7 @@ module Twitter
         options = DEFAULT_TCO_URL_LENGTHS.merge(options)
         config = options[:config] || Twitter::TwitterText::Configuration.default_configuration
         normalized_text = text.to_nfc
-        normalized_text_length = normalized_text.char_length
-        unless (normalized_text_length > 0)
+        unless (normalized_text.length > 0)
           ParseResults.empty()
         end
 
@@ -46,6 +49,7 @@ module Twitter
         ranges = config.ranges
 
         url_entities = Twitter::TwitterText::Extractor.extract_urls_with_indices(normalized_text)
+        emoji_entities = config.emoji_parsing_enabled ? Twitter::TwitterText::Extractor.extract_emoji_with_indices(normalized_text) : []
 
         has_invalid_chars = false
         weighted_count = 0
@@ -53,24 +57,42 @@ module Twitter
         display_offset = 0
         valid_offset = 0
 
-        while offset < normalized_text_length
+        while offset < normalized_text.codepoint_length
           # Reset the default char weight each pass through the loop
           char_weight = config.default_weight
+          entity_length = 0
+
           url_entities.each do |url_entity|
             if url_entity[:indices].first == offset
-              url_length = url_entity[:indices].last - url_entity[:indices].first
+              entity_length = url_entity[:indices].last - url_entity[:indices].first
               weighted_count += transformed_url_length
-              offset += url_length
-              display_offset += url_length
+              offset += entity_length
+              display_offset += entity_length
               if weighted_count <= scaled_max_weighted_tweet_length
-                valid_offset += url_length
+                valid_offset += entity_length
               end
-              # Finding a match breaks the loop; order of ranges matters.
+              # Finding a match breaks the loop
               break
             end
           end
 
-          if offset < normalized_text_length
+          emoji_entities.each do |emoji_entity|
+            if emoji_entity[:indices].first == offset
+              entity_length = emoji_entity[:indices].last - emoji_entity[:indices].first
+              weighted_count += char_weight # the default weight
+              offset += entity_length
+              display_offset += entity_length
+              if weighted_count <= scaled_max_weighted_tweet_length
+                valid_offset += entity_length
+              end
+              # Finding a match breaks the loop
+              break
+            end
+          end
+
+          next if entity_length > 0
+
+          if offset < normalized_text.codepoint_length
             code_point = normalized_text[offset]
 
             ranges.each do |range|
@@ -82,17 +104,19 @@ module Twitter
 
             weighted_count += char_weight
 
-            has_invalid_chars = contains_invalid?(normalized_text[offset]) unless has_invalid_chars
-            char_count = code_point.char_length
-            offset += char_count
-            display_offset += char_count
+            has_invalid_chars = contains_invalid?(code_point) unless has_invalid_chars
+            codepoint_length = code_point.codepoint_length
+            offset += codepoint_length
+            display_offset += codepoint_length
+            #          index += codepoint_length
 
             if !has_invalid_chars && (weighted_count <= scaled_max_weighted_tweet_length)
-              valid_offset += char_count
+              valid_offset += codepoint_length
             end
           end
         end
-        normalized_text_offset = text.char_length - normalized_text.char_length
+
+        normalized_text_offset = text.codepoint_length - normalized_text.codepoint_length
         scaled_weighted_length = weighted_count / scale
         is_valid = !has_invalid_chars && (scaled_weighted_length <= max_weighted_tweet_length)
         permillage = scaled_weighted_length * 1000 / max_weighted_tweet_length

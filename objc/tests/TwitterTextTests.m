@@ -1,13 +1,8 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 //  TwitterTextTests.m
-//
-//  Copyright 2012-2017 Twitter, Inc.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
 //
 
 #import "TwitterTextTests.h"
@@ -481,7 +476,108 @@
     }
 }
 
-- (void)testWeightedTweetsCounting
+- (void)testValidate
+{
+    NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"validate.json"];
+    NSData *data = [NSData dataWithContentsOfFile:fileName];
+    if (!data) {
+        XCTFail(@"No test data: %@", fileName);
+        return;
+    }
+    NSDictionary *rootDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    if (!rootDic) {
+        XCTFail(@"Invalid test data: %@", fileName);
+        return;
+    }
+
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationClassic]];
+
+    NSDictionary *tests = [rootDic objectForKey:@"tests"];
+    NSArray *lengths = [tests objectForKey:@"lengths"];
+
+    for (NSDictionary *testCase in lengths) {
+        NSString *text = [testCase objectForKey:@"text"];
+        text = [self stringByParsingUnicodeEscapes:text];
+        NSUInteger expected = [[testCase objectForKey:@"expected"] unsignedIntegerValue];
+        NSUInteger len = [TwitterText tweetLength:text];
+        TwitterTextParseResults *results = [[TwitterTextParser defaultParser] parseTweet:text];
+        XCTAssertEqual(len, results.weightedLength, "TwitterTextParser with classic configuration is not compatible with TwitterText for string %@", text);
+        XCTAssertEqual(len, expected, @"Length should be the same");
+    }
+}
+
+- (void)_testWeightedTweetsCountingWithTestSuite:(NSString *)testSuite
+{
+    NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"validate.json"];
+    NSData *data = [NSData dataWithContentsOfFile:fileName];
+    if (!data) {
+        XCTFail(@"No test data: %@", fileName);
+        return;
+    }
+    NSDictionary *rootDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    if (!rootDic) {
+        XCTFail(@"Invalid test data: %@", fileName);
+        return;
+    }
+
+    NSDictionary *tests = [rootDic objectForKey:@"tests"];
+    NSArray *lengths = [tests objectForKey:testSuite];
+
+    for (NSDictionary *testCase in lengths) {
+        NSString *text = [testCase objectForKey:@"text"];
+        text = [self stringByParsingUnicodeEscapes:text];
+        NSDictionary *expected = [testCase objectForKey:@"expected"];
+        TwitterTextParseResults *results = [[TwitterTextParser defaultParser] parseTweet:text];
+
+        NSString *testDescription = testCase[@"description"];
+        NSInteger weightedLength = [expected[@"weightedLength"] integerValue];
+        NSInteger permillage = [expected[@"permillage"] integerValue];
+        BOOL isValid = [expected[@"valid"] boolValue];
+        NSUInteger displayRangeStart = [expected[@"displayRangeStart"] integerValue];
+        NSUInteger displayRangeEnd = [expected[@"displayRangeEnd"] integerValue];
+        NSUInteger validRangeStart = [expected[@"validRangeStart"] integerValue];
+        NSUInteger validRangeEnd = [expected[@"validRangeEnd"] integerValue];
+
+        XCTAssertEqual(results.weightedLength, weightedLength, @"Length should be the same in \"%@\"", testDescription);
+        XCTAssertEqual(results.permillage, permillage, @"Permillage should be the same in \"%@\"", testDescription);
+        XCTAssertEqual(results.isValid, isValid, @"Valid should be the samein \"%@\"", testDescription);
+        XCTAssertEqual(results.displayTextRange.location, displayRangeStart, @"Display text range start should be the same in \"%@\"", testDescription);
+        XCTAssertEqual(results.displayTextRange.length, displayRangeEnd - displayRangeStart + 1, @"Display text range length should be the same in \"%@\"", testDescription);
+        XCTAssertEqual(results.validDisplayTextRange.location, validRangeStart, @"Valid text range start should be the same in \"%@\"", testDescription);
+        XCTAssertEqual(results.validDisplayTextRange.length, validRangeEnd - validRangeStart + 1, @"Valid text range length should be the same in \"%@\"", testDescription);
+    }
+}
+
+- (void)testUnicodePointTweetLengthCounting
+{
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV2]];
+    [self _testWeightedTweetsCountingWithTestSuite:@"WeightedTweetsCounterTest"];
+}
+
+- (void)testEmojiWeightedTweetLengthCounting
+{
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV3]];
+    [self _testWeightedTweetsCountingWithTestSuite:@"WeightedTweetsWithDiscountedEmojiCounterTest"];
+}
+
+- (void)testZeroWidthJoinerAndNonJoiner
+{
+    // This test is in the Objective-C code because the behavior seems to differ between
+    // this implementation and other platforms.
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV3]];
+    NSString *text = @"ZWJ: क्ष -> क्\u200Dष; ZWNJ: क्ष -> क्\u200Cष";
+    text = [self stringByParsingUnicodeEscapes:text];
+    TwitterTextParseResults *results = [[TwitterTextParser defaultParser] parseTweet:text];
+    XCTAssertEqual(results.weightedLength, 35);
+    XCTAssertEqual(results.permillage, 125);
+    XCTAssertEqual(results.isValid, YES);
+    XCTAssertEqual(results.displayTextRange.location, 0);
+    XCTAssertEqual(results.displayTextRange.length, 35);
+    XCTAssertEqual(results.validDisplayTextRange.location, 0);
+    XCTAssertEqual(results.validDisplayTextRange.length, 35);
+}
+
+- (void)testUnicodeDirectionalMarkerCounting
 {
     NSString *fileName = [[[self class] conformanceRootDirectory] stringByAppendingPathComponent:@"validate.json"];
     NSData *data = [NSData dataWithContentsOfFile:fileName];
@@ -497,7 +593,7 @@
 
     [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV2]];
     NSDictionary *tests = [rootDic objectForKey:@"tests"];
-    NSArray *lengths = [tests objectForKey:@"WeightedTweetsCounterTest"];
+    NSArray *lengths = [tests objectForKey:@"UnicodeDirectionalMarkerCounterTest"];
 
     for (NSDictionary *testCase in lengths) {
         NSString *text = [testCase objectForKey:@"text"];
@@ -605,6 +701,25 @@
     XCTAssertEqual(1, weightedRange.range.length);
     XCTAssertEqual(2, weightedRange.weight);
 }
+
+- (void)testTwitterTextParserConfigurationV2ToV3Transition
+{
+    TwitterTextConfiguration *configurationV2 = [TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV2];
+    TwitterTextConfiguration *configurationV3 = [TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV3];
+
+    XCTAssertEqual(configurationV2.defaultWeight, configurationV3.defaultWeight);
+    XCTAssertEqual(configurationV2.transformedURLLength, configurationV3.transformedURLLength);
+    XCTAssertEqual(configurationV2.maxWeightedTweetLength, configurationV3.maxWeightedTweetLength);
+    XCTAssertEqual(configurationV2.scale, configurationV3.scale);
+
+    for (NSUInteger i = 0; i < configurationV2.ranges.count; i++) {
+        TwitterTextWeightedRange *weightedRangeV2 = configurationV2.ranges[i];
+        TwitterTextWeightedRange *weightedRangeV3 = configurationV3.ranges[i];
+        XCTAssertTrue(NSEqualRanges(weightedRangeV2.range, weightedRangeV3.range));
+        XCTAssertEqual(weightedRangeV2.weight, weightedRangeV3.weight);
+    }
+}
+
 
 - (NSString *)stringByParsingUnicodeEscapes:(NSString *)string
 {

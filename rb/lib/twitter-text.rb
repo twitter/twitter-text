@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 major, minor, _patch = RUBY_VERSION.split('.')
 
 $RUBY_1_9 = if major.to_i == 1 && minor.to_i < 9
@@ -10,6 +14,7 @@ end
 
 %w(
   deprecation
+  emoji_regex
   regex
   rewriter
   autolink

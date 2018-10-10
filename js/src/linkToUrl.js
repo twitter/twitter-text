@@ -1,10 +1,14 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import clone from './lib/clone';
 import htmlEscape from './htmlEscape';
 import linkToText from './linkToText';
 import linkTextWithEntity from './linkTextWithEntity';
 import urlHasProtocol from './regexp/urlHasProtocol';
 
-export default function (entity, text, options) {
+export default function(entity, text, options) {
   let url = entity.url;
   const displayUrl = url;
   let linkText = htmlEscape(displayUrl);

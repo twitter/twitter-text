@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 # encoding: utf-8
 require 'idn'
 
@@ -5,7 +9,7 @@ class String
   # Helper function to count the character length by first converting to an
   # array.  This is needed because with unicode strings, the return value
   # of length may be incorrect
-  def char_length
+  def codepoint_length
     if respond_to? :codepoints
       length
     else
@@ -13,25 +17,25 @@ class String
     end
   end
 
-  # Helper function to convert this string into an array of unicode characters.
-  def to_char_a
-    @to_char_a ||= if chars.kind_of?(Enumerable)
+  # Helper function to convert this string into an array of unicode code points.
+  def to_codepoint_a
+    @to_codepoint_a ||= if chars.kind_of?(Enumerable)
       chars.to_a
     else
-      char_array = []
-      0.upto(char_length - 1) { |i| char_array << [chars.slice(i)].pack('U') }
-      char_array
+      codepoint_array = []
+      0.upto(codepoint_length - 1) { |i| codepoint_array << [chars.slice(i)].pack('U') }
+      codepoint_array
     end
   end
 end
 
-# Helper functions to return character offsets instead of byte offsets.
+# Helper functions to return code point offsets instead of byte offsets.
 class MatchData
   def char_begin(n)
     if string.respond_to? :codepoints
       self.begin(n)
     else
-      string[0, self.begin(n)].char_length
+      string[0, self.begin(n)].codepoint_length
     end
   end
 
@@ -39,7 +43,7 @@ class MatchData
     if string.respond_to? :codepoints
       self.end(n)
     else
-      string[0, self.end(n)].char_length
+      string[0, self.end(n)].codepoint_length
     end
   end
 end
@@ -77,11 +81,14 @@ module Twitter
       #
       # If a block is given then it will be called for each entity.
       def extract_entities_with_indices(text, options = {}, &block)
+        config = options[:config] || Twitter::TwitterText::Configuration.default_configuration
+
         # extract all entities
         entities = extract_urls_with_indices(text, options) +
                    extract_hashtags_with_indices(text, :check_url_overlap => false) +
                    extract_mentions_or_lists_with_indices(text) +
                    extract_cashtags_with_indices(text)
+        entities += extract_emoji_with_indices(text) if config.emoji_parsing_enabled
 
         return [] if entities.empty?
 
@@ -235,7 +242,7 @@ module Twitter
             if url =~ Twitter::TwitterText::Regex[:valid_tco_url]
               next if $1 && $1.length > MAX_TCO_SLUG_LENGTH
               url = $&
-                    end_position = start_position + url.char_length
+                    end_position = start_position + url.codepoint_length
             end
 
             next unless is_valid_domain(url.length, domain, protocol)
@@ -335,6 +342,31 @@ module Twitter
 
         tags.each{|tag| yield tag[:cashtag], tag[:indices].first, tag[:indices].last} if block_given?
         tags
+      end
+
+      def extract_emoji_with_indices(text) # :yields: emoji, start, end
+        emoji = []
+        text.scan(Twitter::TwitterText::Regex[:valid_emoji]) do |emoji_text|
+          match_data = $~
+                        start_position = match_data.char_begin(0)
+          end_position = match_data.char_end(0)
+          emoji << {
+            :emoji => emoji_text,
+            :indices => [start_position, end_position]
+          }
+        end
+        emoji
+      end
+
+      def is_valid_emoji(text)
+        begin
+          raise ArgumentError.new("invalid empty emoji") unless text
+          entities = extract_emoji_with_indices(text)
+          entities.count == 1 && entities[0][:emoji] == text
+        rescue Exception
+          # On error don't consider this a valid domain.
+          return false
+        end
       end
 
       def is_valid_domain(url_length, domain, protocol)

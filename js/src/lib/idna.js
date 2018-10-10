@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import punycode from 'punycode';
 import validAsciiDomain from '../regexp/validAsciiDomain';
 
@@ -8,7 +12,7 @@ const PUNYCODE_ENCODED_DOMAIN_PREFIX = 'xn--';
 // See https://tools.ietf.org/html/rfc3490#section-4.1 for details
 const idna = {
   toAscii: function(domain) {
-    if ((domain.substring(0, 4) === PUNYCODE_ENCODED_DOMAIN_PREFIX) && !domain.match(validAsciiDomain)) {
+    if (domain.substring(0, 4) === PUNYCODE_ENCODED_DOMAIN_PREFIX && !domain.match(validAsciiDomain)) {
       // Punycode encoded url cannot contain non ASCII characters
       return;
     }
@@ -24,6 +28,6 @@ const idna = {
     }
     return labels.join('.');
   }
-}
+};
 
 export default idna;

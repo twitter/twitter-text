@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import validateUrlAuthority from './regexp/validateUrlAuthority';
 import validateUrlFragment from './regexp/validateUrlFragment';
 import validateUrlPath from './regexp/validateUrlPath';
@@ -10,14 +14,14 @@ function isValidMatch(string, regex, optional) {
   if (!optional) {
     // RegExp["$&"] is the text of the last match
     // blank strings are ok, but are falsy, so we check stringiness instead of truthiness
-    return ((typeof string === 'string') && string.match(regex) && RegExp['$&'] === string);
+    return typeof string === 'string' && string.match(regex) && RegExp['$&'] === string;
   }
 
   // RegExp["$&"] is the text of the last match
-  return (!string || (string.match(regex) && RegExp['$&'] === string));
+  return !string || (string.match(regex) && RegExp['$&'] === string);
 }
 
-export default function (url, unicodeDomains, requireProtocol) {
+export default function(url, unicodeDomains, requireProtocol) {
   if (unicodeDomains == null) {
     unicodeDomains = true;
   }
@@ -42,15 +46,19 @@ export default function (url, unicodeDomains, requireProtocol) {
     query = urlParts[4],
     fragment = urlParts[5];
 
-  if (!(
-  (!requireProtocol || (isValidMatch(scheme, validateUrlScheme) && scheme.match(/^https?$/i))) &&
-  isValidMatch(path, validateUrlPath) &&
-  isValidMatch(query, validateUrlQuery, true) &&
-  isValidMatch(fragment, validateUrlFragment, true)
-)) {
+  if (
+    !(
+      (!requireProtocol || (isValidMatch(scheme, validateUrlScheme) && scheme.match(/^https?$/i))) &&
+      isValidMatch(path, validateUrlPath) &&
+      isValidMatch(query, validateUrlQuery, true) &&
+      isValidMatch(fragment, validateUrlFragment, true)
+    )
+  ) {
     return false;
   }
 
-  return (unicodeDomains && isValidMatch(authority, validateUrlUnicodeAuthority)) ||
-       (!unicodeDomains && isValidMatch(authority, validateUrlAuthority));
+  return (
+    (unicodeDomains && isValidMatch(authority, validateUrlUnicodeAuthority)) ||
+    (!unicodeDomains && isValidMatch(authority, validateUrlAuthority))
+  );
 }

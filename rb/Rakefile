@@ -24,7 +24,7 @@ namespace :test do
   namespace :conformance do
     desc "Run conformance test suite"
     task :run => ['prebuild'] do
-      ruby '-rubygems', "test/conformance_test.rb"
+      ruby "test/conformance_test.rb"
     end
   end
 

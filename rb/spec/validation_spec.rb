@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 # encoding: utf-8
 require File.dirname(__FILE__) + '/spec_helper'
 
@@ -16,9 +20,9 @@ describe Twitter::TwitterText::Validation do
     expect(TestValidation.new.tweet_invalid?("Bom:#{Twitter::TwitterText::Unicode::UFFFF}")).to be == :invalid_characters
   end
 
-  it "should disallow direction change characters" do
+  it "should allow direction change characters" do
     [0x202A, 0x202B, 0x202C, 0x202D, 0x202E].map{|cp| [cp].pack('U') }.each do |char|
-      expect(TestValidation.new.tweet_invalid?("Invalid:#{char}")).to eq(:invalid_characters)
+      expect(TestValidation.new.tweet_invalid?("Invalid:#{char}")).to be false
     end
   end
 
@@ -62,6 +66,22 @@ describe Twitter::TwitterText::Validation do
       expect(results[:display_range_end]).to eq(0)
       expect(results[:valid_range_start]).to eq(0)
       expect(results[:valid_range_end]).to eq(0)
+    end
+  end
+
+  context "when parsing tweet text" do
+    it "should properly parse ZWJ and ZWNJ when grapheme clusters are enabled", ruby: ">= 2.5.0" do
+      # Grapheme clustering of devenghali script differs based on platform implementation
+      text = "ZWJ: क्ष -> क्\u200Dष; ZWNJ: क्ष -> क्\u200Cष"
+      config = Twitter::TwitterText::Configuration::configuration_from_file(Twitter::TwitterText::Configuration::CONFIG_V3)
+      results = Twitter::TwitterText::Validation::parse_tweet(text, config: config)
+      expect(results[:weighted_length]).to eq(29)
+      expect(results[:permillage]).to eq(103)
+      expect(results[:valid]).to be true
+      expect(results[:display_range_start]).to eq(0)
+      expect(results[:display_range_end]).to eq(34)
+      expect(results[:valid_range_start]).to eq(0)
+      expect(results[:valid_range_end]).to eq(34)
     end
   end
 end

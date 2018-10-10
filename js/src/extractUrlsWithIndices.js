@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import extractUrl from './regexp/extractUrl';
 import invalidUrlWithoutProtocolPrecedingChars from './regexp/invalidUrlWithoutProtocolPrecedingChars';
 import idna from './lib/idna';
@@ -9,7 +13,7 @@ const DEFAULT_PROTOCOL_OPTIONS = { extractUrlsWithoutProtocol: true };
 const MAX_URL_LENGTH = 4096;
 const MAX_TCO_SLUG_LENGTH = 40;
 
-const extractUrlsWithIndices = function (text, options = DEFAULT_PROTOCOL_OPTIONS) {
+const extractUrlsWithIndices = function(text, options = DEFAULT_PROTOCOL_OPTIONS) {
   if (!text || (options.extractUrlsWithoutProtocol ? !text.match(/\./) : !text.match(/:/))) {
     return [];
   }
@@ -25,7 +29,7 @@ const extractUrlsWithIndices = function (text, options = DEFAULT_PROTOCOL_OPTION
     let endPosition = extractUrl.lastIndex;
     const startPosition = endPosition - url.length;
 
-    if (!isValidUrl(url , protocol || DEFAULT_PROTOCOL, domain)) {
+    if (!isValidUrl(url, protocol || DEFAULT_PROTOCOL, domain)) {
       continue;
     }
     // extract ASCII-only domains.
@@ -36,12 +40,12 @@ const extractUrlsWithIndices = function (text, options = DEFAULT_PROTOCOL_OPTION
 
       let lastUrl = null;
       let asciiEndPosition = 0;
-      domain.replace(validAsciiDomain, function (asciiDomain) {
+      domain.replace(validAsciiDomain, function(asciiDomain) {
         const asciiStartPosition = domain.indexOf(asciiDomain, asciiEndPosition);
         asciiEndPosition = asciiStartPosition + asciiDomain.length;
         lastUrl = {
           url: asciiDomain,
-          indices: [ startPosition + asciiStartPosition, startPosition + asciiEndPosition ]
+          indices: [startPosition + asciiStartPosition, startPosition + asciiEndPosition]
         };
         urls.push(lastUrl);
       });
@@ -69,7 +73,7 @@ const extractUrlsWithIndices = function (text, options = DEFAULT_PROTOCOL_OPTION
       }
       urls.push({
         url: url,
-        indices: [ startPosition, endPosition ]
+        indices: [startPosition, endPosition]
       });
     }
   }
@@ -85,7 +89,7 @@ const isValidUrl = function(url, protocol, domain) {
   }
 
   urlLength = urlLength + punycodeEncodedDomain.length - domain.length;
-  return (protocol.length + urlLength) <= MAX_URL_LENGTH;
-}
+  return protocol.length + urlLength <= MAX_URL_LENGTH;
+};
 
 export default extractUrlsWithIndices;

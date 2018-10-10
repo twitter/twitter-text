@@ -16,7 +16,7 @@ Bringing twitter-text-java into your project should be as simple as adding the f
     <dependency>
       <groupId>com.twitter.twittertext</groupId>
       <artifactId>twitter-text</artifactId>
-      <version>2.0.10</version> <!-- or whatever the latest version is -->
+      <version>3.0.0</version> <!-- or whatever the latest version is -->
     </dependency>
   </dependencies>
 ```
@@ -40,8 +40,9 @@ To generate Javadocs, run this under src/main/java:
 `% javadoc -d ../../../docs/api/ com.twitter.twittertext`
 
 ## API
+twitter-text 3.0 updates the config file with emojiParsingEnabled config option. When true, twitter-text will parse and discount emoji supported by the twemoji library (see https://github.com/twitter/twemoji). The length of these emoji will be the default weight (200 or two characters) even if they contain multiple code points combined by zero-width joiners. This means that emoji with skin tone and gender modifiers no longer count as more characters than those without such modifiers.
 
-twitter-text 2.0 introduces configuration files that define how Tweets are parsed for length. This allows for backwards compatibility and flexibility going forward. Old-style traditional 140-character parsing is defined by the v1.json configuration file, whereas v2.json is updated for "weighted" Tweets where ranges of Unicode code points can have independent weights aside from the default weight. The sum of all code points, each weighted appropriately, should not exceed the max weighted length.
+twitter-text 2.0 introduced configuration files that define how Tweets are parsed for length. This allows for backwards compatibility and flexibility going forward. Old-style traditional 140-character parsing is defined by the v1.json configuration file, whereas v2.json is updated for "weighted" Tweets where ranges of Unicode code points can have independent weights aside from the default weight. The sum of all code points, each weighted appropriately, should not exceed the max weighted length.
 
 `static TwitterTextParseResults TwitterTextParser.parseTweet(String text)`
 
@@ -86,6 +87,6 @@ https://github.com/twitter/twitter-text/issues
 
 ## License
 
-Copyright 2011-2017 Twitter, Inc. and other contributors
+Copyright 2011-2018 Twitter, Inc. and other contributors
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0

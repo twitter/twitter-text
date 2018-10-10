@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import regexSupplant from '../lib/regexSupplant';
 import validGeneralUrlPathChars from './validGeneralUrlPathChars';
 import validUrlBalancedParens from './validUrlBalancedParens';
@@ -7,11 +11,11 @@ import validUrlPathEndingChars from './validUrlPathEndingChars';
 const validUrlPath = regexSupplant(
   '(?:' +
     '(?:' +
-      '#{validGeneralUrlPathChars}*' +
-      '(?:#{validUrlBalancedParens}#{validGeneralUrlPathChars}*)*' +
-      '#{validUrlPathEndingChars}' +
-    ')|(?:@#{validGeneralUrlPathChars}+\/)' +
-  ')',
+    '#{validGeneralUrlPathChars}*' +
+    '(?:#{validUrlBalancedParens}#{validGeneralUrlPathChars}*)*' +
+    '#{validUrlPathEndingChars}' +
+    ')|(?:@#{validGeneralUrlPathChars}+/)' +
+    ')',
   {
     validGeneralUrlPathChars,
     validUrlBalancedParens,

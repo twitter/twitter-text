@@ -1,13 +1,8 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 //  TwitterText.h
-//
-//  Copyright 2012-2017 Twitter, Inc.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
 //
 
 #import <Foundation/Foundation.h>
@@ -39,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXTERN NSString * const kTwitterTextParserConfigurationClassic;
 FOUNDATION_EXTERN NSString * const kTwitterTextParserConfigurationV2;
+FOUNDATION_EXTERN NSString * const kTwitterTextParserConfigurationV3;
 
 @interface TwitterTextWeightedRange : NSObject
 /**
@@ -62,6 +58,7 @@ FOUNDATION_EXTERN NSString * const kTwitterTextParserConfigurationV2;
 @property (nonatomic, readonly) NSInteger scale;
 @property (nonatomic, readonly) NSInteger defaultWeight;
 @property (nonatomic, readonly) NSInteger transformedURLLength;
+@property (nonatomic, readonly, getter=isEmojiParsingEnabled) BOOL emojiParsingEnabled;
 @property (nonatomic, readonly) NSArray<TwitterTextWeightedRange *> *ranges;
 
 @end

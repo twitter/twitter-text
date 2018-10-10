@@ -1,8 +1,12 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 # encoding: utf-8
 
 Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "2.1.0"
+  s.version = "3.0.0"
   s.authors = ["David LaMacchia", "Sudheer Guntupalli", "Kaushik Lakshmikanth", "Jose Antonio Marquez Russo", "Lee Adams",
                "Yoshimasa Niwa"]
   s.email = ["opensource@twitter.com"]
@@ -14,7 +18,6 @@ Gem::Specification.new do |s|
   s.has_rdoc = true
   s.summary = "Twitter text handling library"
 
-  s.add_development_dependency "pry"
   s.add_development_dependency "test-unit"
   s.add_development_dependency "multi_json", "~> 1.3"
   s.add_development_dependency "nokogiri", "~> 1.8.0"

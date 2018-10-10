@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 # encoding: utf-8
 
 module Twitter
@@ -53,11 +57,26 @@ module Twitter
       ].flatten.map{|c| [c].pack('U*')}.freeze
       REGEXEN[:spaces] = /[#{UNICODE_SPACES.join('')}]/o
 
+      DIRECTIONAL_CHARACTERS = [
+        0x061C,          # ARABIC LETTER MARK (ALM)
+        0x200E,          # LEFT-TO-RIGHT MARK (LRM)
+        0x200F,          # RIGHT-TO-LEFT MARK (RLM)
+        0x202A,          # LEFT-TO-RIGHT EMBEDDING (LRE)
+        0x202B,          # RIGHT-TO-LEFT EMBEDDING (RLE)
+        0x202C,          # POP DIRECTIONAL FORMATTING (PDF)
+        0x202D,          # LEFT-TO-RIGHT OVERRIDE (LRO)
+        0x202E,          # RIGHT-TO-LEFT OVERRIDE (RLO)
+        0x2066,          # LEFT-TO-RIGHT ISOLATE (LRI)
+        0x2067,          # RIGHT-TO-LEFT ISOLATE (RLI)
+        0x2068,          # FIRST STRONG ISOLATE (FSI)
+        0x2069,          # POP DIRECTIONAL ISOLATE (PDI)
+      ].map{|cp| [cp].pack('U')}.freeze
+      REGEXEN[:directional_characters] = /[#{DIRECTIONAL_CHARACTERS.join('')}]/o
+
       # Character not allowed in Tweets
       INVALID_CHARACTERS = [
         0xFFFE, 0xFEFF, # BOM
         0xFFFF,         # Special
-        0x202A, 0x202B, 0x202C, 0x202D, 0x202E # Directional change
       ].map{|cp| [cp].pack('U') }.freeze
       REGEXEN[:invalid_control_characters] = /[#{INVALID_CHARACTERS.join('')}]/o
 
@@ -157,14 +176,16 @@ module Twitter
         ([a-z0-9_]{1,20})                             # $3: Screen name
         (\/[a-z][a-zA-Z0-9_\-]{0,24})?                # $4: List (optional)
       /iox
-      REGEXEN[:valid_reply] = /^(?:#{REGEXEN[:spaces]})*#{REGEXEN[:at_signs]}([a-z0-9_]{1,20})/io
+      REGEXEN[:valid_reply] = /^(?:[#{UNICODE_SPACES}#{DIRECTIONAL_CHARACTERS}])*#{REGEXEN[:at_signs]}([a-z0-9_]{1,20})/io
       # Used in Extractor for final filtering
       REGEXEN[:end_mention_match] = /\A(?:#{REGEXEN[:at_signs]}|#{REGEXEN[:latin_accents]}|:\/\/)/io
 
       # URL related hash regex collection
-      REGEXEN[:valid_url_preceding_chars] = /(?:[^A-Z0-9@＠$#＃#{INVALID_CHARACTERS.join('')}]|^)/io
+      REGEXEN[:valid_url_preceding_chars] = /(?:[^A-Z0-9@＠$#＃#{INVALID_CHARACTERS.join('')}]|[#{DIRECTIONAL_CHARACTERS.join('')}]|^)/io
       REGEXEN[:invalid_url_without_protocol_preceding_chars] = /[-_.\/]$/
-      DOMAIN_VALID_CHARS = "[^#{PUNCTUATION_CHARS}#{SPACE_CHARS}#{CTRL_CHARS}#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
+
+      DOMAIN_VALID_CHARS = "[^#{DIRECTIONAL_CHARACTERS.join('')}#{PUNCTUATION_CHARS}#{SPACE_CHARS}#{CTRL_CHARS}#{INVALID_CHARACTERS.join('')}#{UNICODE_SPACES.join('')}]"
+      # "[a-z0-9#{LATIN_ACCENTS}]"
       REGEXEN[:valid_subdomain] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[_-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
       REGEXEN[:valid_domain_name] = /(?:(?:#{DOMAIN_VALID_CHARS}(?:[-]|#{DOMAIN_VALID_CHARS})*)?#{DOMAIN_VALID_CHARS}\.)/io
 
@@ -247,7 +268,7 @@ module Twitter
       }iox
 
       REGEXEN[:cashtag] = /[a-z]{1,6}(?:[._][a-z]{1,2})?/i
-      REGEXEN[:valid_cashtag] = /(^|#{REGEXEN[:spaces]})(\$)(#{REGEXEN[:cashtag]})(?=$|\s|[#{PUNCTUATION_CHARS}])/i
+      REGEXEN[:valid_cashtag] = /(^|[#{UNICODE_SPACES}#{DIRECTIONAL_CHARACTERS}])(\$)(#{REGEXEN[:cashtag]})(?=$|\s|[#{PUNCTUATION_CHARS}])/i
 
       # These URL validation pattern strings are based on the ABNF from RFC 3986
       REGEXEN[:validate_url_unreserved] = /[a-z\p{Cyrillic}0-9\p{Pd}._~]/i
@@ -327,6 +348,8 @@ module Twitter
       REGEXEN[:validate_url_path] = %r{(/#{REGEXEN[:validate_url_pchar]}*)*}i
       REGEXEN[:validate_url_query] = %r{(#{REGEXEN[:validate_url_pchar]}|/|\?)*}i
       REGEXEN[:validate_url_fragment] = %r{(#{REGEXEN[:validate_url_pchar]}|/|\?)*}i
+
+      REGEXEN[:valid_emoji] = Twitter::TwitterText::Regex::Emoji[:valid_emoji]
 
       # Modified version of RFC 3986 Appendix B
       REGEXEN[:validate_url_unencoded] = %r{

@@ -1,7 +1,11 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import autoLinkEntities from './autoLinkEntities';
 import modifyIndicesFromUnicodeToUTF16 from './modifyIndicesFromUnicodeToUTF16';
 
-export default function (text, json, options) {
+export default function(text, json, options) {
   // map JSON entity to twitter-text entity
   if (json.user_mentions) {
     for (var i = 0; i < json.user_mentions.length; i++) {

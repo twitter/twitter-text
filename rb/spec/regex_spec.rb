@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 # encoding: utf-8
 require File.dirname(__FILE__) + '/spec_helper'
 
@@ -34,5 +38,39 @@ describe "Twitter::TwitterText::Regex regular expressions" do
       expect(name).to match(Twitter::TwitterText::Regex[:list_name])
     end
 
+  end
+
+  describe "matching Unicode 10.0 emoji" do
+    it "should match new emoji" do
+      input = "Unicode 10.0; grinning face with one large and one small eye: 🤪; woman with headscarf: 🧕; (fitzpatrick) woman with headscarf + medium-dark skin tone: 🧕🏾; flag (England): 🏴󠁧󠁢󠁥󠁮󠁧󠁿"
+      expected = ["🤪", "🧕", "🧕🏾", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"]
+      entities = Twitter::TwitterText::Extractor.extract_emoji_with_indices(input)
+      entities.each_with_index do |entity, i|
+        expect(entity[:emoji]).to be_kind_of(String)
+        expect(entity[:indices]).to be_kind_of(Array)
+        entity[:indices].each do |position|
+          expect(position).to be_kind_of(Integer)
+        end
+        expect(entity[:emoji]).to be == expected[i]
+        expect(Twitter::TwitterText::Extractor.is_valid_emoji(entity[:emoji])).to be true
+      end
+    end
+  end
+
+  describe "matching Unicode 9.0 emoji" do
+    it "should match new emoji" do
+      input = "Unicode 9.0; face with cowboy hat: 🤠; woman dancing: 💃, woman dancing + medium-dark skin tone: 💃🏾"
+      expected = ["🤠", "💃", "💃🏾"]
+      entities = Twitter::TwitterText::Extractor.extract_emoji_with_indices(input)
+      entities.each_with_index do |entity, i|
+        expect(entity[:emoji]).to be_kind_of(String)
+        expect(entity[:indices]).to be_kind_of(Array)
+        entity[:indices].each do |position|
+          expect(position).to be_kind_of(Integer)
+        end
+        expect(entity[:emoji]).to be == expected[i]
+        expect(Twitter::TwitterText::Extractor.is_valid_emoji(entity[:emoji])).to be true
+      end
+    end
   end
 end

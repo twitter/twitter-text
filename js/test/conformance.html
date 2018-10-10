@@ -1,3 +1,8 @@
+<!--
+Copyright 2018 Twitter, Inc.
+Licensed under the Apache License, Version 2.0
+http://www.apache.org/licenses/LICENSE-2.0
+ --!>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +13,7 @@
   <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" type="text/css" media="screen" />
   <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
 
-  <script src="../build/twitter-text.js"></script>
+  <script src="../dist/twitter-text.js"></script>
   <script src="../test/conformance.js"></script>
 
   <script>
@@ -83,6 +88,14 @@
               return function(test) {
                 return twttr.txt.extractUrlsWithIndices(test.text);
               };
+            case "urls_with_directional_markers":
+              return function(test) {
+                return twttr.txt.extractUrlsWithIndices(test.text);
+              };
+            case "tco_urls_with_params":
+              return function(test) {
+                return twttr.txt.extractUrls(test.text);
+              };
             case "hashtags":
               return function(test) {
                 return twttr.txt.extractHashtags(test.text);
@@ -135,7 +148,15 @@
                 return twttr.txt.isValidUrl(test.text, true, false);
               };
             case "WeightedTweetsCounterTest":
-              return function(test){
+              return function(test) {
+                return twttr.txt.parseTweet(test.text);
+              }
+            case "WeightedTweetsWithDiscountedEmojiCounterTest":
+              return function(test) {
+                return twttr.txt.parseTweet(test.text, twttr.txt.configs.version3);
+              }
+            case "UnicodeDirectionalMarkerCounterTest":
+              return function(test) {
                 return twttr.txt.parseTweet(test.text);
               }
           }

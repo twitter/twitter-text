@@ -1,7 +1,11 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import htmlEscape from './htmlEscape';
 import stringSupplant from './lib/stringSupplant';
 
-export default function (entity, options) {
+export default function(entity, options) {
   const displayUrl = entity.display_url;
   const expandedUrl = entity.expanded_url;
 
@@ -65,8 +69,10 @@ export default function (entity, options) {
     //   …
     // </span>
     v['invisible'] = options.invisibleTagAttrs;
-    return stringSupplant("<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>", v);
+    return stringSupplant(
+      "<span class='tco-ellipsis'>#{precedingEllipsis}<span #{invisible}>&nbsp;</span></span><span #{invisible}>#{beforeDisplayUrl}</span><span class='js-display-url'>#{displayUrlSansEllipses}</span><span #{invisible}>#{afterDisplayUrl}</span><span class='tco-ellipsis'><span #{invisible}>&nbsp;</span>#{followingEllipsis}</span>",
+      v
+    );
   }
   return displayUrl;
 }
-

@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 $TESTING=true
 
 # Ruby 1.8 encoding check
@@ -20,6 +24,15 @@ require File.expand_path('../test_urls', __FILE__)
 
 RSpec.configure do |config|
   config.include TestUrls
+
+  config.filter_run_excluding :ruby => lambda { |version|
+    case version.to_s
+    when /^> (.*)/
+      !(RUBY_VERSION.to_s > $1)
+    else
+      !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
+    end
+  }
 end
 
 RSpec::Matchers.define :match_autolink_expression do

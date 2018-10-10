@@ -91,10 +91,10 @@ def format_tlds(tlds, max_length = 100)
 end
 
 def replace_tlds(source_code, name, tlds)
-  source_code.sub(/#{Regexp.quote('#define ' + name)}.*?#{Regexp.quote('@")"')}\n/m, <<-D)
+  source_code.sub(/#{Regexp.quote('#define ' + name)}.*?#{Regexp.quote('@")(?=[^a-z0-9@]|$))"')}\n/m, <<-D)
 #define #{name} \\
-@"(?:" \\
+@"(?:(?:" \\
 #{tlds}
-@")"
+@")(?=[^a-z0-9@]|$))"
   D
 end

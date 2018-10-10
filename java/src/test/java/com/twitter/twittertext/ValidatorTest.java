@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 package com.twitter.twittertext;
 
 import junit.framework.TestCase;
@@ -17,11 +21,11 @@ public class ValidatorTest extends TestCase {
   }
 
   public void testDirectionChangeCharacters() {
-    assertFalse(validator.isValidTweet("test \u202A test"));
-    assertFalse(validator.isValidTweet("test \u202B test"));
-    assertFalse(validator.isValidTweet("test \u202C test"));
-    assertFalse(validator.isValidTweet("test \u202D test"));
-    assertFalse(validator.isValidTweet("test \u202E test"));
+    assertTrue(validator.isValidTweet("test \u202A test"));
+    assertTrue(validator.isValidTweet("test \u202B test"));
+    assertTrue(validator.isValidTweet("test \u202C test"));
+    assertTrue(validator.isValidTweet("test \u202D test"));
+    assertTrue(validator.isValidTweet("test \u202E test"));
     assertTrue(validator.isValidTweet("test \u202F test"));
   }
 

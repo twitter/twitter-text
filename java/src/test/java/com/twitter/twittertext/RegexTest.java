@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 package com.twitter.twittertext;
 
 import java.util.regex.Pattern;
@@ -102,6 +106,12 @@ public class RegexTest extends TestCase {
     assertTrue("Match a short URL with ccTLD with protocol.",
         Regex.VALID_URL.matcher("http://t.co").matches());
 
+    assertFalse("Should not match a short URL with empty TLD with protocol.",
+        Regex.VALID_URL.matcher("http://twitt").matches());
+
+    assertFalse("Should not match a short URL with empty TLD without protocol.",
+        Regex.VALID_URL.matcher("twitt").matches());
+
     assertTrue("Match a short URL with ccTLD without protocol.",
         Regex.VALID_URL.matcher("it.so").matches());
 
@@ -133,11 +143,11 @@ public class RegexTest extends TestCase {
         Regex.VALID_URL.matcher(domainIsLong.toString()).matches());
   }
 
-  public void testInvalidUrlWithInvalidCharacter() {
-    final char[] invalidChars = new char[]{'\u202A', '\u202B', '\u202C', '\u202D', '\u202E'};
-    for (char c : invalidChars) {
-      assertFalse("Should not extract URLs with invalid character",
-          Regex.VALID_URL.matcher("http://twitt" + c + "er.com").find());
+  public void testInvalidUrlWithDirectionalCharacter() {
+    final char[] directionalChar = new char[]{'\u202A', '\u202B', '\u202C', '\u202D', '\u202E'};
+    for (char c : directionalChar) {
+      assertFalse("Should not extract URLs with directional character",
+          Regex.VALID_URL.matcher("http://twitt" + c + ".com").find());
     }
   }
 
