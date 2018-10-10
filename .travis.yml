@@ -7,6 +7,5 @@ matrix:
     - env: TWITTER_TEXT_DIR=rb
       rvm: 2.4.2
     - env: TWITTER_TEXT_DIR=java
-    - env: TWITTER_TEXT_DIR=js
     - env: TWITTER_TEXT_DIR=objc
 script: "./.travis.sh"
