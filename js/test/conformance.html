@@ -149,7 +149,7 @@ http://www.apache.org/licenses/LICENSE-2.0
               };
             case "WeightedTweetsCounterTest":
               return function(test) {
-                return twttr.txt.parseTweet(test.text);
+                return twttr.txt.parseTweet(test.text, twttr.txt.configs.version2);
               }
             case "WeightedTweetsWithDiscountedEmojiCounterTest":
               return function(test) {
