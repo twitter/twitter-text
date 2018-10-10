@@ -1,3 +1,8 @@
+/**
+ * Copyright 2018 Twitter, Inc.
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 // Generates compact regex fragments to simulate the functionality of Objective C in other languages
 
 import scala.io.Source

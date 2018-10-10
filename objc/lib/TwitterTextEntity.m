@@ -1,13 +1,8 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 //  TwitterTextEntity.m
-//
-//  Copyright 2012-2017 Twitter, Inc.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
 //
 
 #import "TwitterTextEntity.h"
@@ -71,6 +66,9 @@
             break;
         case TwitterTextEntityTweetChar:
             typeString = @"TweetChar";
+            break;
+        case TwitterTextEntityTweetEmojiChar:
+            typeString = @"TweetEmojiChar";
             break;
     }
     return [NSString stringWithFormat:@"<%@: %@ %@>", NSStringFromClass([self class]), typeString, NSStringFromRange(_range)];

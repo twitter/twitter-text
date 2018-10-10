@@ -13,6 +13,14 @@
 		3DD6F6BB1E6A397600437514 /* TwitterText.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B71E6A397600437514 /* TwitterText.m */; };
 		3DD6F6BC1E6A397600437514 /* TwitterTextEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DD6F6BD1E6A397600437514 /* TwitterTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */; };
+		D09842702018100A00BAA5F1 /* v3.json in Resources */ = {isa = PBXBuildFile; fileRef = D0CD06B420102524007BE0D4 /* v3.json */; };
+		D0CD06B520102525007BE0D4 /* v3.json in Resources */ = {isa = PBXBuildFile; fileRef = D0CD06B420102524007BE0D4 /* v3.json */; };
+		D0D1AC4220E19F3800BE44A5 /* TwitterTextEmoji.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D1AC3F20E19F3800BE44A5 /* TwitterTextEmoji.m */; };
+		D0D1AC4320E19F3800BE44A5 /* TwitterTextEmoji.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D1AC3F20E19F3800BE44A5 /* TwitterTextEmoji.m */; };
+		D0D1AC4420E19F3800BE44A5 /* TwitterTextEmoji.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D1AC4020E19F3800BE44A5 /* TwitterTextEmoji.h */; };
+		D0D1AC4520E19F3800BE44A5 /* TwitterTextEmoji.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D1AC4020E19F3800BE44A5 /* TwitterTextEmoji.h */; };
+		D0D1AC4A20E19F8200BE44A5 /* TwitterTextEmojiTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D1AC4820E19F8200BE44A5 /* TwitterTextEmojiTests.m */; };
+		D0D1AC4B20E19F8200BE44A5 /* TwitterTextEmojiTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D1AC4820E19F8200BE44A5 /* TwitterTextEmojiTests.m */; };
 		D0DDF1991FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0DDF19B1FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */; };
 		D0DDF1B61FFED35D0019BEA7 /* puny.c in Sources */ = {isa = PBXBuildFile; fileRef = D0DDF19C1FFED35D0019BEA7 /* puny.c */; };
@@ -110,6 +118,11 @@
 		3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterTextEntity.m; path = lib/TwitterTextEntity.m; sourceTree = "<group>"; };
 		3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = TwitterText.modulemap; path = resources/TwitterText.modulemap; sourceTree = "<group>"; };
 		74E1D6611E6E7A9500200344 /* TwitterTextTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextTests.h; sourceTree = "<group>"; };
+		D0CD06B420102524007BE0D4 /* v3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v3.json; sourceTree = "<group>"; };
+		D0D1AC3F20E19F3800BE44A5 /* TwitterTextEmoji.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterTextEmoji.m; path = lib/TwitterTextEmoji.m; sourceTree = "<group>"; };
+		D0D1AC4020E19F3800BE44A5 /* TwitterTextEmoji.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterTextEmoji.h; path = lib/TwitterTextEmoji.h; sourceTree = "<group>"; };
+		D0D1AC4820E19F8200BE44A5 /* TwitterTextEmojiTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterTextEmojiTests.m; sourceTree = "<group>"; };
+		D0D1AC4920E19F8200BE44A5 /* TwitterTextEmojiTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterTextEmojiTests.h; sourceTree = "<group>"; };
 		D0DDF1961FFED34C0019BEA7 /* NSURL+IFUnicodeURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+IFUnicodeURL.h"; path = "IFUnicodeURL/IFUnicodeURL/NSURL+IFUnicodeURL.h"; sourceTree = "<group>"; };
 		D0DDF1981FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+IFUnicodeURL.m"; path = "IFUnicodeURL/IFUnicodeURL/NSURL+IFUnicodeURL.m"; sourceTree = "<group>"; };
 		D0DDF19C1FFED35D0019BEA7 /* puny.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = puny.c; path = IFUnicodeURL/IFUnicodeURL/IDNSDK/puny.c; sourceTree = "<group>"; };
@@ -208,6 +221,8 @@
 				3DD6F6B71E6A397600437514 /* TwitterText.m */,
 				3DD6F6B81E6A397600437514 /* TwitterTextEntity.h */,
 				3DD6F6B91E6A397600437514 /* TwitterTextEntity.m */,
+				D0D1AC4020E19F3800BE44A5 /* TwitterTextEmoji.h */,
+				D0D1AC3F20E19F3800BE44A5 /* TwitterTextEmoji.m */,
 				3DD6F6C01E6A4B7600437514 /* TwitterText.modulemap */,
 				3D4B56B41E6A37DF00E8E570 /* Info.plist */,
 			);
@@ -219,6 +234,8 @@
 			children = (
 				74E1D6611E6E7A9500200344 /* TwitterTextTests.h */,
 				3D4B56BE1E6A37DF00E8E570 /* TwitterTextTests.m */,
+				D0D1AC4920E19F8200BE44A5 /* TwitterTextEmojiTests.h */,
+				D0D1AC4820E19F8200BE44A5 /* TwitterTextEmojiTests.m */,
 				3D4B56C01E6A37DF00E8E570 /* TwitterTextTests-Info.plist */,
 			);
 			name = TwitterTextTests;
@@ -305,6 +322,7 @@
 			children = (
 				D0F715B8200985C100D66E5C /* v1.json */,
 				D0F715B9200985C100D66E5C /* v2.json */,
+				D0CD06B420102524007BE0D4 /* v3.json */,
 			);
 			name = Resources;
 			path = ../config;
@@ -321,6 +339,7 @@
 				D0DDF1C21FFED35D0019BEA7 /* toxxx.h in Headers */,
 				D0DDF1BF1FFED35D0019BEA7 /* puny.h in Headers */,
 				D0DDF1CB1FFED35D0019BEA7 /* nameprep_decompose.h in Headers */,
+				D0D1AC4420E19F3800BE44A5 /* TwitterTextEmoji.h in Headers */,
 				D0DDF1C61FFED35D0019BEA7 /* nameprep_compatible.h in Headers */,
 				D0DDF1BD1FFED35D0019BEA7 /* adapter.h in Headers */,
 				D0DDF1C51FFED35D0019BEA7 /* nameprep_charmap.h in Headers */,
@@ -351,6 +370,7 @@
 				D0FE6FCF20069DCE0032DA00 /* race.h in Headers */,
 				D0FE6FD920069DD60032DA00 /* nameprep_lookups.h in Headers */,
 				D0FE6FD420069DD60032DA00 /* nameprep_compose.h in Headers */,
+				D0D1AC4520E19F3800BE44A5 /* TwitterTextEmoji.h in Headers */,
 				D0FE6FD620069DD60032DA00 /* nameprep_data.h in Headers */,
 				D0FE6FDB20069DD60032DA00 /* nameprep_prohibit_allowunassigned.h in Headers */,
 				D0FE6FE120069DEE0032DA00 /* xcode.h in Headers */,
@@ -501,6 +521,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0CD06B520102525007BE0D4 /* v3.json in Resources */,
 				D0F715BA200985C100D66E5C /* v1.json in Resources */,
 				D0F715BB200985C100D66E5C /* v2.json in Resources */,
 			);
@@ -517,6 +538,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D09842702018100A00BAA5F1 /* v3.json in Resources */,
 				D0F715BC200985CB00D66E5C /* v1.json in Resources */,
 				D0F715BD200985CE00D66E5C /* v2.json in Resources */,
 			);
@@ -541,6 +563,7 @@
 				D0DDF19B1FFED34C0019BEA7 /* NSURL+IFUnicodeURL.m in Sources */,
 				D0DDF1C11FFED35D0019BEA7 /* toxxx.c in Sources */,
 				3DD6F6BD1E6A397600437514 /* TwitterTextEntity.m in Sources */,
+				D0D1AC4220E19F3800BE44A5 /* TwitterTextEmoji.m in Sources */,
 				D0DDF1B61FFED35D0019BEA7 /* puny.c in Sources */,
 				D0DDF1B91FFED35D0019BEA7 /* util.c in Sources */,
 				D0DDF1BA1FFED35D0019BEA7 /* nameprep.c in Sources */,
@@ -552,6 +575,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D4B56BF1E6A37DF00E8E570 /* TwitterTextTests.m in Sources */,
+				D0D1AC4A20E19F8200BE44A5 /* TwitterTextEmojiTests.m in Sources */,
 				D0DDF1D21FFED3840019BEA7 /* NSURL+IFUnicodeURLTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -565,6 +589,7 @@
 				D0FE6FDE20069DE70032DA00 /* util.c in Sources */,
 				D0FE6FC420069D860032DA00 /* TwitterText.m in Sources */,
 				D0FE6FDC20069DD90032DA00 /* toxxx.c in Sources */,
+				D0D1AC4320E19F3800BE44A5 /* TwitterTextEmoji.m in Sources */,
 				D0FE6FC620069D8E0032DA00 /* TwitterTextEntity.m in Sources */,
 				D0FE6FCC20069DC50032DA00 /* puny.c in Sources */,
 				D0FE6FE420069DFF0032DA00 /* NSURL+IFUnicodeURL.m in Sources */,
@@ -576,6 +601,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0FE6FC820069DB70032DA00 /* NSURL+IFUnicodeURLTest.m in Sources */,
+				D0D1AC4B20E19F8200BE44A5 /* TwitterTextEmojiTests.m in Sources */,
 				D0FE6FC720069DAC0032DA00 /* TwitterTextTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

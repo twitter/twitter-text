@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import autoLink from './autoLink';
 import autoLinkCashtags from './autoLinkCashtags';
 import autoLinkEntities from './autoLinkEntities';
@@ -5,7 +9,7 @@ import autoLinkHashtags from './autoLinkHashtags';
 import autoLinkUrlsCustom from './autoLinkUrlsCustom';
 import autoLinkUsernamesOrLists from './autoLinkUsernamesOrLists';
 import autoLinkWithJSON from './autoLinkWithJSON';
-import configs from './configs/index';
+import configs from './configs';
 import convertUnicodeIndices from './convertUnicodeIndices';
 import extractCashtags from './extractCashtags';
 import extractCashtagsWithIndices from './extractCashtagsWithIndices';
@@ -39,7 +43,6 @@ import linkToTextWithSymbol from './linkToTextWithSymbol';
 import linkToUrl from './linkToUrl';
 import modifyIndicesFromUTF16ToUnicode from './modifyIndicesFromUTF16ToUnicode';
 import modifyIndicesFromUnicodeToUTF16 from './modifyIndicesFromUnicodeToUTF16';
-import './lib/objectAssignPolyfill';
 import regexen from './regexp/index';
 import removeOverlappingEntities from './removeOverlappingEntities';
 import parseTweet from './parseTweet';

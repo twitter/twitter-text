@@ -664,6 +664,44 @@ tests:
         - url: "http://foobar.پاکستان/"
           indices: [42, 64]
 
+  urls_with_directional_markers:
+    - description: "Extract URLs from RTL text"
+      text: "\U00002066\U0000202Atest abcdef.com پاکستان http://twitter.com/\U0000202C\U00002069"
+      expected:
+        - url: "abcdef.com"
+          indices: [7, 17]
+        - url: "http://twitter.com/"
+          indices: [26, 45]
+
+    - description: "Extract URLs from RTL text with embedded directional marks"
+      text: "This is a test \U00002066\U0000202Atwitter.com\U0000202C\U00002069 \U00002066\U0000202Ahttp://foobar.پاکستان/\U0000202C\U00002069⁩ قطر فلسطين عمان"
+      expected:
+        - url: "twitter.com"
+          indices: [17, 28]
+        - url: "http://foobar.پاکستان/"
+          indices: [33, 55]
+
+  tco_urls_with_params:
+    - description: "Extract valid URL with params: https://t.co/UqIyJAJTfo?amp=1"
+      text: "text https://t.co/UqIyJAJTfo?amp=1"
+      expected: ["https://t.co/UqIyJAJTfo?amp=1"]
+
+    - description: "Extract valid URL with params: https://t.co/UqIyJAJTfo?type=js"
+      text: "text https://t.co/UqIyJAJTfo?type=js"
+      expected: ["https://t.co/UqIyJAJTfo?type=js"]
+
+    - description: "Extract valid URL with params: https://t.co/UqIyJAJTfo?ssr=true"
+      text: "text https://t.co/UqIyJAJTfo?ssr=true"
+      expected: ["https://t.co/UqIyJAJTfo?ssr=true"]
+
+    - description: "Extract a valid URL with params: https://t.co/asdfdf?a=b#123"
+      text: "text https://t.co/asdfdf?a=b#123"
+      expected: ["https://t.co/asdfdf?a=b#123"]
+
+    - description: "Extract a valid URL with params: https://t.co/sadfasdf?a=b&c=d"
+      text: "text https://t.co/sadfasdf?a=b&c=d"
+      expected: ["https://t.co/sadfasdf?a=b&c=d"]
+
   hashtags:
     - description: "Extract hashtag after emoji without variant selector (uFE0E or uFE0F)"
       text: "a ✌#hashtag here"

@@ -1,3 +1,7 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 require 'multi_json'
 require 'nokogiri'
 require 'test/unit'
@@ -130,6 +134,11 @@ class ConformanceTest < Test::Unit::TestCase
     assert_equal e, extract_urls_with_indices(text), description
   end
 
+  def_conformance_test("extract.yml", :urls_with_directional_markers) do
+    e = expected.map{|elem| elem.inject({}){|h, (k,v)| h[k.to_sym] = v; h} }
+    assert_equal e, extract_urls_with_indices(text), description
+  end
+
   def_conformance_test("extract.yml", :hashtags) do
     assert_equal expected, extract_hashtags(text), description
   end
@@ -215,11 +224,19 @@ class ConformanceTest < Test::Unit::TestCase
     assert_equal expected, valid_hashtag?(text), description
   end
 
-  def_conformance_test("validate.yml", :lengths) do
-    assert_equal expected, tweet_length(text), description
+  def_conformance_test("validate.yml", :WeightedTweetsCounterTest) do
+    # Force v2 configuration, basic weighted code point support
+    config = Twitter::TwitterText::Configuration::configuration_from_file(Twitter::TwitterText::Configuration::CONFIG_V2)
+    assert_equal_parse_results expected, parse_tweet(text, config: config), description
   end
 
-  def_conformance_test("validate.yml", :WeightedTweetsCounterTest) do
+  def_conformance_test("validate.yml", :WeightedTweetsWithDiscountedEmojiCounterTest) do
+    # Force v3 configuration, which supports discounting grapheme clusters that are emoji
+    config = Twitter::TwitterText::Configuration::configuration_from_file(Twitter::TwitterText::Configuration::CONFIG_V3)
+    assert_equal_parse_results expected, parse_tweet(text, config: config), description
+  end
+
+  def_conformance_test("validate.yml", :UnicodeDirectionalMarkerCounterTest) do
     assert_equal_parse_results expected, parse_tweet(text), description
   end
 end

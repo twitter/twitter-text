@@ -1,4 +1,8 @@
-export default function (text, entities, indicesInUTF16) {
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
+export default function(text, entities, indicesInUTF16) {
   if (entities.length == 0) {
     return;
   }
@@ -7,7 +11,9 @@ export default function (text, entities, indicesInUTF16) {
   let codePointIndex = 0;
 
   // sort entities by start index
-  entities.sort(function (a, b) { return a.indices[0] - b.indices[0]; });
+  entities.sort(function(a, b) {
+    return a.indices[0] - b.indices[0];
+  });
   let entityIndex = 0;
   let entity = entities[0];
 
@@ -26,10 +32,10 @@ export default function (text, entities, indicesInUTF16) {
     }
 
     let c = text.charCodeAt(charIndex);
-    if (c >= 0xD800 && c <= 0xDBFF && charIndex < text.length - 1) {
+    if (c >= 0xd800 && c <= 0xdbff && charIndex < text.length - 1) {
       // Found high surrogate char
       c = text.charCodeAt(charIndex + 1);
-      if (c >= 0xDC00 && c <= 0xDFFF) {
+      if (c >= 0xdc00 && c <= 0xdfff) {
         // Found surrogate pair
         charIndex++;
       }

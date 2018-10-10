@@ -39,7 +39,10 @@ package com.twitter.twittertext;
 import java.util.Arrays;
 import java.util.List;
 
-public class TldLists {
+public final class TldLists {
+  private TldLists() {
+  }
+
   public static final List<String> GTLDS = Arrays.asList(
 #{yml["generic"].map {|el| "      \"#{el}\""}.join(",\n")}
   );

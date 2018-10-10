@@ -1,6 +1,10 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import splitTags from './splitTags';
 
-export default function (text, hits, options) {
+export default function(text, hits, options) {
   const defaultHighlightTag = 'em';
 
   hits = hits || [];
@@ -11,7 +15,7 @@ export default function (text, hits, options) {
   }
 
   let tagName = options.tag || defaultHighlightTag,
-    tags = [ `<${tagName}>`, `</${tagName}>` ],
+    tags = [`<${tagName}>`, `</${tagName}>`],
     chunks = splitTags(text),
     i,
     j,
@@ -79,7 +83,7 @@ export default function (text, hits, options) {
       result += chunkChars.slice(chunkCursor);
     }
     for (index = chunkIndex + 1; index < chunks.length; index += 1) {
-      result += (index % 2 === 0 ? chunks[index] : `<${chunks[index]}>`);
+      result += index % 2 === 0 ? chunks[index] : `<${chunks[index]}>`;
     }
   }
 

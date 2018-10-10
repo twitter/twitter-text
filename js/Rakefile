@@ -56,7 +56,7 @@ task :package, [:version] => [:pkg] do |t, args|
   pkg_file = File.open(repo_path("pkg", pkg_name), "w")
 
   puts "Writing library..."
-  js_file = File.open(repo_path("build/twitter-text.js"), "r")
+  js_file = File.open(repo_path("dist/twitter-text.js"), "r")
   pkg_file.write(js_file.read)
   js_file.close
 
@@ -101,7 +101,7 @@ end
 
 def line_js(tlds)
   quote = "'"
-  indent = 4
+  indent = 6
   ' ' * indent + quote + tlds.join('|')
 end
 
@@ -116,10 +116,13 @@ end
 def replace_tlds!(source_code, name, tlds)
   start = Regexp.quote("#{name} =")
   source_code.sub!(/#{start}.*?;\n/m, <<-D)
-#{name} = regexSupplant(RegExp(
-'(?:(?:' +
+#{name} = regexSupplant(
+  RegExp(
+    '(?:(?:' +
 #{tlds}
-')(?=[^0-9a-zA-Z@]|$))'));
+      ')(?=[^0-9a-zA-Z@]|$))'
+  )
+);
 D
 end
 

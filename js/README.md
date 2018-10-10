@@ -46,7 +46,7 @@ Previous versions of Twitter-Text provided different helper methods for Tweet va
 * **weightedLength:** Integer that indicates the weighted length calculated by the algorithm above.
 * **permillage:** Integer value corresponding to the ratio of consumed weighted length to the maximum weighted length.
 * **valid:** Boolean indicating whether it is a valid Tweet.
-* **displayRangeStart:** Integer with start index on the Tweet string
+* **dispayRangeStart:** Integer with start index on the Tweet string
 * **displayRangeEnd:** Integer with end index on the Tweet string (inclusive)
 * **validDisplayRangeStart:** Integer indicating the valid start index on the Tweet string
 * **validDisplayRangeEnd:** Integer indicating the valid end index on the Tweet string. This can be lesser than displayRangeEnd (inclusive).
@@ -139,7 +139,7 @@ Your default browser will open the test suite.
 
 Official versions are kept in the `pkg/` directory.  To roll a new version, (ex. v1.1.0), run the following from project root:
 
-    npm run build && rake package[1.1.0]
+    rake package[1.1.0]
 
 This will make a new file at `pkg/twitter-text-1.1.0.js`.
 

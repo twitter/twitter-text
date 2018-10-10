@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 package com.twitter.twittertext;
 
 import java.util.Collection;
@@ -22,8 +26,22 @@ public class Regex {
   private static final String INVALID_CHARACTERS =
     "\\uFFFE" +           // BOM
     "\\uFEFF" +           // BOM
-    "\\uFFFF" +           // Special
-    "\\u202A-\\u202E";    // Direction change
+    "\\uFFFF";            // Special
+
+  private static final String DIRECTIONAL_CHARACTERS =
+    "\\u061C" + // ARABIC LETTER MARK (ALM)
+    "\\u200E" + // LEFT-TO-RIGHT MARK (LRM)
+    "\\u200F" + // RIGHT-TO-LEFT MARK (RLM)
+    "\\u202A" + // LEFT-TO-RIGHT EMBEDDING (LRE)
+    "\\u202B" + // RIGHT-TO-LEFT EMBEDDING (RLE)
+    "\\u202C" + // POP DIRECTIONAL FORMATTING (PDF)
+    "\\u202D" + // LEFT-TO-RIGHT OVERRIDE (LRO)
+    "\\u202E" + // RIGHT-TO-LEFT OVERRIDE (RLO)
+    "\\u2066" + // LEFT-TO-RIGHT ISOLATE (LRI)
+    "\\u2067" + // RIGHT-TO-LEFT ISOLATE (RLI)
+    "\\u2068" + // FIRST STRONG ISOLATE (FSI)
+    "\\u2069";  // POP DIRECTIONAL ISOLATE (PDI)
+
 
   private static final String UNICODE_SPACES = "[" +
     "\\u0009-\\u000d" +     //  # White_Space # Cc   [5] <control-0009>..<control-000D>
@@ -127,8 +145,8 @@ public class Regex {
   private static final String HASHTAG_LETTERS_NUMERALS_SET = "[" + HASHTAG_LETTERS_NUMERALS + "]";
 
   /* URL related hash regex collection */
-  private static final String URL_VALID_PRECEEDING_CHARS =
-      "(?:[^a-z0-9@＠$#＃" + INVALID_CHARACTERS + "]|^)";
+  private static final String URL_VALID_PRECEDING_CHARS =
+      "(?:[^a-z0-9@＠$#＃" + INVALID_CHARACTERS + "]|[" + DIRECTIONAL_CHARACTERS + "]|^)";
 
   private static final String URL_VALID_CHARS = "[a-z0-9" + LATIN_ACCENTS_CHARS + "]";
   private static final String URL_VALID_SUBDOMAIN =
@@ -214,11 +232,11 @@ public class Regex {
   private static final String URL_VALID_URL_QUERY_ENDING_CHARS = "[a-z0-9\\-_&=#/]";
   private static final String VALID_URL_PATTERN_STRING =
   "(" +                                                            //  $1 total match
-    "(" + URL_VALID_PRECEEDING_CHARS + ")" +                       //  $2 Preceding character
+    "(" + URL_VALID_PRECEDING_CHARS + ")" +                        //  $2 Preceding character
     "(" +                                                          //  $3 URL
       "(https?://)?" +                                             //  $4 Protocol (optional)
       "(" + URL_VALID_DOMAIN + ")" +                               //  $5 Domain(s)
-      "(?::(" + URL_VALID_PORT_NUMBER + "))?" +                     //  $6 Port number (optional)
+      "(?::(" + URL_VALID_PORT_NUMBER + "))?" +                    //  $6 Port number (optional)
       "(/" +
         URL_VALID_PATH + "*+" +
       ")?" +                                                       //  $7 URL Path and anchor
@@ -298,16 +316,19 @@ public class Regex {
       VALID_MENTION_OR_LIST = Pattern.compile("([^a-z0-9_!#$%&*" + AT_SIGNS_CHARS +
           "]|^|(?:^|[^a-z0-9_+~.-])RT:?)(" + AT_SIGNS +
           "+)([a-z0-9_]{1,20})(/[a-z][a-z0-9_\\-]{0,24})?", Pattern.CASE_INSENSITIVE);
-      VALID_REPLY = Pattern.compile("^(?:" + UNICODE_SPACES + ")*" + AT_SIGNS + "([a-z0-9_]{1,20})",
-          Pattern.CASE_INSENSITIVE);
+      VALID_REPLY = Pattern.compile("^(?:" + UNICODE_SPACES + "|" + DIRECTIONAL_CHARACTERS + ")*" +
+          AT_SIGNS + "([a-z0-9_]{1,20})", Pattern.CASE_INSENSITIVE);
       INVALID_MENTION_MATCH_END =
           Pattern.compile("^(?:[" + AT_SIGNS_CHARS + LATIN_ACCENTS_CHARS + "]|://)");
       INVALID_URL_WITHOUT_PROTOCOL_MATCH_BEGIN = Pattern.compile("[-_./]$");
 
       VALID_URL = Pattern.compile(VALID_URL_PATTERN_STRING, Pattern.CASE_INSENSITIVE);
-      VALID_TCO_URL = Pattern.compile("^https?://t\\.co/([a-z0-9]+)", Pattern.CASE_INSENSITIVE);
-      VALID_CASHTAG = Pattern.compile("(^|" + UNICODE_SPACES + ")(" + DOLLAR_SIGN_CHAR + ")(" +
-          CASHTAG + ")" + "(?=$|\\s|\\p{Punct})", Pattern.CASE_INSENSITIVE);
+      VALID_TCO_URL = Pattern.compile("^https?://t\\.co/([a-z0-9]+)(?:\\?" +
+          URL_VALID_URL_QUERY_CHARS + "*" + URL_VALID_URL_QUERY_ENDING_CHARS + ")?",
+          Pattern.CASE_INSENSITIVE);
+      VALID_CASHTAG = Pattern.compile("(^|" + UNICODE_SPACES + "|" + DIRECTIONAL_CHARACTERS + ")(" +
+          DOLLAR_SIGN_CHAR + ")(" + CASHTAG + ")" + "(?=$|\\s|\\p{Punct})",
+          Pattern.CASE_INSENSITIVE);
       VALID_DOMAIN = Pattern.compile(URL_VALID_DOMAIN, Pattern.CASE_INSENSITIVE);
     }
   }

@@ -1,9 +1,13 @@
+# Copyright 2018 Twitter, Inc.
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+
 module Twitter
   module TwitterText
     # A module provides base methods to rewrite usernames, lists, hashtags and URLs.
     module Rewriter extend self
       def rewrite_entities(text, entities)
-        chars = text.to_s.to_char_a
+        codepoints = text.to_s.to_codepoint_a
 
         # sort by start index
         entities = entities.sort_by do |entity|
@@ -14,11 +18,11 @@ module Twitter
         result = []
         last_index = entities.inject(0) do |index, entity|
           indices = entity.respond_to?(:indices) ? entity.indices : entity[:indices]
-          result << chars[index...indices.first]
-          result << yield(entity, chars)
+          result << codepoints[index...indices.first]
+          result << yield(entity, codepoints)
           indices.last
         end
-        result << chars[last_index..-1]
+        result << codepoints[last_index..-1]
 
         result.flatten.join
       end
@@ -35,8 +39,8 @@ module Twitter
 
       def rewrite_usernames_or_lists(text)
         entities = Extractor.extract_mentions_or_lists_with_indices(text)
-        rewrite_entities(text, entities) do |entity, chars|
-          at = chars[entity[:indices].first]
+        rewrite_entities(text, entities) do |entity, codepoints|
+          at = codepoints[entity[:indices].first]
           list_slug = entity[:list_slug]
           list_slug = nil if list_slug.empty?
           yield(at, entity[:screen_name], list_slug)
@@ -46,8 +50,8 @@ module Twitter
 
       def rewrite_hashtags(text)
         entities = Extractor.extract_hashtags_with_indices(text)
-        rewrite_entities(text, entities) do |entity, chars|
-          hash = chars[entity[:indices].first]
+        rewrite_entities(text, entities) do |entity, codepoints|
+          hash = codepoints[entity[:indices].first]
           yield(hash, entity[:hashtag])
         end
       end
@@ -55,7 +59,7 @@ module Twitter
 
       def rewrite_urls(text)
         entities = Extractor.extract_urls_with_indices(text, :extract_url_without_protocol => false)
-        rewrite_entities(text, entities) do |entity, chars|
+        rewrite_entities(text, entities) do |entity, codepoints|
           yield(entity[:url])
         end
       end

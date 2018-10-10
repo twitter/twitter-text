@@ -1,7 +1,7 @@
 test/conformance.js
 .DS_Store
 node_modules/
-build/
+dist/
 package-lock.json
 src/configs/*.json
 src/configs/BUILD

@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 package com.twitter.twittertext;
 
 import java.io.BufferedReader;
@@ -10,12 +14,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A class that represents the different configurations used by {@link TwitterTextParser}
  * to parse a tweet.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TwitterTextConfiguration {
 
   // These defaults should be kept up to date with v2.json config.
@@ -38,6 +44,7 @@ public class TwitterTextConfiguration {
   private int maxWeightedTweetLength;
   private int scale;
   private int defaultWeight;
+  private boolean emojiParsingEnabled;
   private int transformedURLLength;
   @Nonnull
   private List<TwitterTextWeightedRange> ranges;
@@ -122,6 +129,11 @@ public class TwitterTextConfiguration {
     return this;
   }
 
+  private TwitterTextConfiguration setEmojiParsingEnabled(boolean emojiParsingEnabled) {
+    this.emojiParsingEnabled = emojiParsingEnabled;
+    return this;
+  }
+
   private TwitterTextConfiguration setTransformedURLLength(int urlLength) {
     this.transformedURLLength = urlLength;
     return this;
@@ -173,6 +185,15 @@ public class TwitterTextConfiguration {
   }
 
   /**
+   * Get whether emoji parsing is enabled.
+   *
+   * @return true if emoji parsing is enabled, otherwise false.
+   */
+  public boolean getEmojiParsingEnabled() {
+    return emojiParsingEnabled;
+  }
+
+  /**
    * In previous versions of twitter-text, which was the "shortened URL length."
    * Differentiating between the http and https shortened length for URLs has been deprecated
    * (https is used for all t.co URLs). The default value is 23.
@@ -205,6 +226,7 @@ public class TwitterTextConfiguration {
     result = result * 31 + maxWeightedTweetLength;
     result = result * 31 + scale;
     result = result * 31 + defaultWeight;
+    result = result * 31 + (emojiParsingEnabled ? 1 : 0);
     result = result * 31 + transformedURLLength;
     result = result * 31 + ranges.hashCode();
     return result;
@@ -222,6 +244,7 @@ public class TwitterTextConfiguration {
     final TwitterTextConfiguration that = (TwitterTextConfiguration) o;
     return version == that.version && maxWeightedTweetLength == that.maxWeightedTweetLength &&
         scale == that.scale && defaultWeight == that.defaultWeight &&
+        emojiParsingEnabled == that.emojiParsingEnabled &&
         transformedURLLength == that.transformedURLLength && ranges.equals(that.ranges);
   }
 

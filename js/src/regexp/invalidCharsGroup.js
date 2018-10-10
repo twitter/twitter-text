@@ -1,2 +1,6 @@
-const invalidCharsGroup = /\uFFFE\uFEFF\uFFFF\u202A-\u202E/;
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
+const invalidCharsGroup = /\uFFFE\uFEFF\uFFFF/;
 export default invalidCharsGroup;

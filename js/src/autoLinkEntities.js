@@ -1,3 +1,7 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import clone from './lib/clone';
 import extractHtmlAttrsFromOptions from './extractHtmlAttrsFromOptions';
 import htmlEscape from './htmlEscape';
@@ -15,7 +19,7 @@ const DEFAULT_HASHTAG_CLASS = 'tweet-url hashtag';
 // Default CSS class for auto-linked cashtags (along with the url class)
 const DEFAULT_CASHTAG_CLASS = 'tweet-url cashtag';
 
-export default function (text, entities, options) {
+export default function(text, entities, options) {
   var options = clone(options || {});
   options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
   options.hashtagUrlBase = options.hashtagUrlBase || 'https://twitter.com/search?q=%23';
@@ -42,11 +46,15 @@ export default function (text, entities, options) {
   let beginIndex = 0;
 
   // sort entities by start index
-  entities.sort(function (a, b) { return a.indices[0] - b.indices[0]; });
+  entities.sort(function(a, b) {
+    return a.indices[0] - b.indices[0];
+  });
 
-  const nonEntity = options.htmlEscapeNonEntities ? htmlEscape : function (text) {
-    return text;
-  };
+  const nonEntity = options.htmlEscapeNonEntities
+    ? htmlEscape
+    : function(text) {
+        return text;
+      };
 
   for (var i = 0; i < entities.length; i++) {
     const entity = entities[i];

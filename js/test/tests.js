@@ -1,3 +1,8 @@
+// Copyright 2018 Twitter, Inc.
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
+/* eslint-disable */
 module("twttr.txt");
 
 test("twttr.txt.htmlEscape", function() {
@@ -238,7 +243,7 @@ test("twttr.txt.autolink", function() {
   ok(!picTwitter.match(/foo\/statuses</), 'Don\'t include the tail of expanded_url');
 
   // urls with invalid character
-  var invalidChars = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E'];
+  var invalidChars = ['\uFEFF'];
   for (var i = 0; i < invalidChars.length; i++) {
     equal(twttr.txt.extractUrls("http://twitt" + invalidChars[i] + "er.com").length, 0, 'Should not extract URL with invalid character');
   }
@@ -375,14 +380,4 @@ test("twttr.txt.parseTweet", function() {
     validRangeStart: 0,
     validRangeEnd: 0
   }, 'empty tweet should be invalid');
-
-  deepEqual(twttr.txt.parseTweet('abcd \u202A\u202A', configVersion2), {
-    weightedLength: 9,
-    valid: false,
-    permillage: 32,
-    displayRangeStart: 0,
-    displayRangeEnd: 6,
-    validRangeStart: 0,
-    validRangeEnd: 4
-  }, 'invalid char tweet should be invalid');
 });
