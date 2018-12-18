@@ -313,18 +313,6 @@ test("twttr.txt.extractUrls", function() {
   equal(twttr.txt.extractUrls(message_with_www_hyphenated_url)[0], "www.123-hyphenated-url.com", "Should extract full url with hyphen.");
 });
 
-test("twttr.txt.getTweetLength", function() {
-  var config = twttr.txt.configs.version2;
-  equal(twttr.txt.getTweetLength(""), 0, "empty should be zero length.");
-  equal(twttr.txt.getTweetLength("sample tweet"), 12, "small tweet should be counted correctly.");
-  equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/1"), 51, "Should count short URLs as 23");
-  equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/this_is_really_really_really_really_really_long"), 94, "Should count long URLs as 23");
-
-  // With override configs
-  equal(twttr.txt.getTweetLength("sample tweet", config), 12, "small tweet should be counted correctly with config");
-  equal(twttr.txt.getTweetLength("sample tweet with short url http://t.co/this_is_really_really_really_really_really_long", config), 94, "Should count long URLs as 23 with config");
-});
-
 test("twttr.txt.parseTweet", function() {
   var configVersion1 = twttr.txt.configs.version1;
   var configVersion2 = twttr.txt.configs.version2;
