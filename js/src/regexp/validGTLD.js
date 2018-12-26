@@ -72,7 +72,7 @@ const validGTLD = regexSupplant(
       'faith|fairwinds|fail|fage|extraspace|express|exposed|expert|exchange|everbank|events|eus|' +
       'eurovision|etisalat|esurance|estate|esq|erni|ericsson|equipment|epson|epost|enterprises|' +
       'engineering|engineer|energy|emerck|email|education|edu|edeka|eco|eat|earth|dvr|dvag|durban|' +
-      'dupont|duns|dunlop|duck|dubai|dtv|drive|download|dot|doosan|domains|doha|dog|dodge|doctor|' +
+      'dupont|duns|dunlop|duck|dubai|dtv|drive|download|dot|doosan|domains|dom|doha|dog|dodge|doctor|' +
       'docs|dnp|diy|dish|discover|discount|directory|direct|digital|diet|diamonds|dhl|dev|design|' +
       'desi|dentist|dental|democrat|delta|deloitte|dell|delivery|degree|deals|dealer|deal|dds|dclk|' +
       'day|datsun|dating|date|data|dance|dad|dabur|cyou|cymru|cuisinella|csc|cruises|cruise|crs|' +
