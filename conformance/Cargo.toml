@@ -1,0 +1,13 @@
+[package]
+name = "twitter_text_conformance"
+version = "0.1.0"
+authors = ["Robert Sayre <sayrer@gmail.com>"]
+
+[dependencies]
+serde = "1.0"
+serde_derive = "1.0"
+serde_yaml = "0.7"
+pest = "2.1.0"
+twitter_text = { path = "../twitter_text" }
+twitter_text_config = { path = "../config" }
+twitter_text_parser = { path = "../parser" }

@@ -1,0 +1,3774 @@
+// Copyright 2019 Robert Sayre
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
+//
+// A tweet is composed of a sequence of text and entities
+//
+tweet = { SOI ~ (entity | invalid_char | text)+ ~ EOI }
+
+invalid_char = {
+    "\u{fffe}" | // BOM
+    "\u{feff}" | // BOM
+    "\u{ffff}"   // Special
+}
+
+text = _{ !invalid_char ~ (emoji | ANY) }
+
+//
+// An "entity" represents some special content embedded in the
+// tweet. This grammar only covers those that have representations
+// in the tweet text. There are other types, such as polls, that do not appear in the text.
+//
+// Pest uses a Parsing Expression Grammar (PEG), so the order of the choices here
+// is significant <https://en.wikipedia.org/wiki/Parsing_expression_grammar#Semantics>.
+// In particular, placing URLs before other entities helps resolve ambiguities where
+// URL fragments might also be interpreted as hashtags (see <goo.gl/4udoLK>).
+//
+entity = _{ possible_url | possible_hashtag | possible_mention | possible_cashtag }
+
+//
+// CASHTAGS
+//
+cashtag_prefix = { "$" }
+cashtag_text = _{ ASCII_ALPHA{1,6} ~ (("." | "_")? ~ ASCII_ALPHA{1,2})? ~ !(ASCII_DIGIT | ASCII_ALPHA) }
+cashtag_token = _{ cashtag_prefix ~ cashtag_text }
+cashtag = { cashtag_token }
+invalid_cashtag_start = _{ (!space ~ text) ~ cashtag_token | cashtag_prefix ~ protocol ~ subdomain_char* }
+possible_cashtag = _{ invalid_cashtag_start | (cashtag ~ cashtag_token*) }
+
+
+//
+// HASHTAGS
+//
+hashtag_prefix = _{ "#" | "＃" }
+hashtag_letter_or_mark = _{
+    UPPERCASE_LETTER | LOWERCASE_LETTER | TITLECASE_LETTER | MODIFIER_LETTER |
+    OTHER_LETTER | NONSPACING_MARK | ENCLOSING_MARK | SPACING_MARK
+}
+hashtag_special = _{
+    DECIMAL_NUMBER | "_" |
+    "\u{200c}" | "\u{200d}" | "\u{a67e}" | "\u{05be}" | "\u{05f3}" | "\u{05f4}" | "\u{ff5e}" | "\u{301c}" |
+    "\u{309b}" | "\u{309c}" | "\u{30a0}" | "\u{30fb}" | "\u{3003}" | "\u{0f0b}" | "\u{0f0c}" | "\u{00b7}"
+}
+hashtag_text = _{ !("\u{fe0f}" | "\u{20e3}") ~ (hashtag_special*  ~ hashtag_letter_or_mark+ ~ hashtag_special*)+ }
+hashtag = { hashtag_prefix ~ hashtag_text }
+invalid_hashtag_start = _{
+    (("&" | hashtag_letter_or_mark) ~ hashtag_prefix ~ &hashtag_text) |
+    hashtag_prefix ~ protocol ~ subdomain_char*
+}
+possible_hashtag = _{ "\u{fe0e}" | "\u{fe0f}" ~ hashtag | invalid_hashtag_start | hashtag }
+
+
+//
+// MENTIONS
+//
+possible_mention = _{ list | user }
+
+//
+// USER
+//
+user_prefix = _{ "@" | "＠" }
+user_char = _{ alphanumeric | "_" }
+user_token = _{ user_prefix ~ user_char{1, 20} }
+user_invalid_prefix = _{ user_char | "!" | "#" | "$" | "%" | "&" | "*" | user_prefix | protocol }
+user_invalid_suffix = _{ user_prefix | latin_accent | "://" | "-" }
+rt_prefix = _{ !(user_char | "+" | "~" | "." | "-") | SOI ~ ^"rt" ~ ":"? }
+username = { user_token }
+user = _{
+    user_prefix ~ protocol ~ subdomain_char* |
+    user_token ~ user_token+ | // ignore @text@like@this
+    user_token ~ user_invalid_suffix |
+    rt_prefix ~ username |
+    user_invalid_prefix ~ user_token |
+    username
+}
+
+//
+// LIST
+//
+listname = { user_token }
+list_slug = { "/" ~ (ASCII_ALPHA ~ (alphanumeric | "_" | "-"){,24}){1} }
+list = { listname ~ list_slug }
+
+//
+// REPLY
+//
+reply = _{ space? ~ username ~ !user_invalid_suffix }
+
+
+//
+// URLs beginning with "http"
+//
+possible_url = _{ !(user_prefix | hashtag_prefix | cashtag_prefix) ~ (url | uwp) }
+url = { tco_url | normal_url }
+tco_url = _{
+    (protocol ~ tco_domain ~ "/" ~ alphanumeric{1,40} ~ (query ~ fragment?)? ~ !(alphanumeric | cyrillic_char | latin_accent)) |
+     protocol ~ tco_domain ~ "/"? ~ !(alphanumeric | cyrillic_char | latin_accent)
+}
+tco_domain =  { "t.co" }
+normal_url = _{ protocol ~ userinfo? ~ host ~ port? ~ path? ~ query? ~ fragment? }
+
+//
+// PROTOCOL
+// 
+protocol = _{ ^"http" ~ (^"s")? ~ "://" }
+
+//
+// USERINFO
+//
+pct_encoded = _{ "%" ~ HEX_DIGIT }
+sub_delims = _{ "!" | "$" | "&" | "'" | "(" | ")" | "*" | "+" | "," | ";" | "=" }
+unreserved = _{ alphanumeric | "-" | "." | "_" | "~" | cyrillic_char }
+userinfo = _{ (unreserved | pct_encoded | sub_delims | ":")* ~ "@" }
+
+//
+// DOMAINS
+//
+host = { !"t.co" ~ domain | ipv4_address | ip_literal }
+
+//
+// TLD
+//
+invalid_tld_suffix = _{ 'a'..'z' | '0'..'9' | "@" }
+tld = { tld_list ~ !invalid_tld_suffix }
+
+//
+// TEXT DOMAINS
+//
+domain = { (sl_domain | longer_domain) ~ tld }
+sl_domain = _{
+    (domain_segment ~ "." ~ &tld) ~ 
+    !((domain_segment ~ "." ~ &tld) | "." ~ &tld | longer_domain)
+}
+longer_domain = _{ subdomain ~ ("." ~ subdomain)* ~ "." ~ sl_domain }
+subdomain = _{ !sl_domain ~ subdomain_segment }
+punycode_host = _{ ^"xn" ~ "--" ~ ("-" | alphanumeric)+ }
+domain_segment = _{punycode_host | (domain_char ~ ("-"? ~ domain_char)*)+}
+domain_char = _{ (non_punctuation ~ ("-"? ~ non_punctuation)+) | non_punctuation }
+subdomain_segment = _{punycode_host | subdomain_char+}
+subdomain_char = _{ (domain_char ~ "_"? ~ domain_char) | domain_char }
+
+//
+// IPv4 ADDRESS
+// Adapted from core-pegjs <https://goo.gl/LQPPAi>
+//
+ipv4_address = _{ dec_octet ~ "." ~ dec_octet ~ "." ~ dec_octet ~ "." ~ dec_octet }
+dec_octet = _{
+    "25" ~ '\u{0030}'..'\u{0035}' |            // 250-255
+    "2" ~ '\u{0030}'..'\u{0034}' ~ '0'..'9' |  // 200-249
+    "1" ~ '0'..'9' ~ '0'..'9' |                // 100-199
+    '\u{0031}'..'\u{0039}' ~ '0'..'9' |        // 10-99
+    '0'..'9'                                   // 0-9
+}
+
+//
+// IPv6 ADDRESS
+// Adapted from core-pegjs <https://goo.gl/LQPPAi>
+//
+ip_literal = _{ "[" ~ ipv6_address ~ "]" }
+ipv6_address = _{
+    (                   h16_{6} ~ ls32) |
+    (            "::" ~ h16_{5} ~ ls32) |
+    (h16_{0,1} ~ "::" ~ h16_{4} ~ ls32) |
+    (h16_{0,2} ~ "::" ~ h16_{3} ~ ls32) |
+    (h16_{0,3} ~ "::" ~ h16_{2} ~ ls32) |
+    (h16_{0,4} ~ "::" ~ h16_{1} ~ ls32) |
+    (h16_{0,5} ~ "::" ~           ls32) |
+    (h16_{0,6} ~ "::" ~           h16 ) |
+    (h16_{0,7} ~ "::"                 )
+}
+ls32 = _{ (h16 ~ ":" ~ h16) | ipv4_address }
+h16_ = _{ h16 ~ ":" }
+h16 = _{ HEX_DIGIT{1,4} }
+
+//
+// URL WITHOUT PROTOCOL (UWP)
+//
+invalid_preceding_url_chars = { "_" | "-" | "." | protocol }
+uwp = { invalid_preceding_url_chars ~ uwp_domain | url_without_protocol }
+url_without_protocol = { uwp_domain ~ port? ~ path? ~ query? ~ fragment? }
+uwp_domain = { (uwp_sl_domain | uwp_longer_domain) ~ tld }
+uwp_sl_domain = _{ (uwp_domain_char+ ~ "." ~ &tld) ~ !((uwp_domain_char+ ~ "." ~ &tld) | "." ~ &tld | uwp_sl_domain) }
+uwp_longer_domain = _{ uwp_subdomain ~ ("." ~ uwp_subdomain)* ~ "." ~ uwp_sl_domain }
+uwp_subdomain = { !uwp_sl_domain ~ uwp_subdomain_char+ }
+uwp_subdomain_char = _{ (uwp_domain_char ~ "_"? ~ uwp_domain_char) | uwp_domain_char }
+uwp_domain_char = _{
+    ((alphanumeric | latin_accent) ~ ("-"? ~ (alphanumeric | latin_accent))+)
+    | alphanumeric | latin_accent
+}
+
+//
+// PORT
+//
+port = { ":" ~ '1'..'9' ~ ASCII_DIGIT* }
+
+//
+// PATH
+//
+url_general_path = _{ url_path_end | path_punctuation }
+url_path_end = _{ alphanumeric | "=" | "_" | "-" | "+" | cyrillic_char | latin_accent | url_balanced_parens }
+path_punctuation = _{
+   "!" | "*" | "\'" | ";" | ":" | "," | "." | "$" | "%" | "[" | "]" | "\u{2013}" | "~" | "|" | "&" | "@"
+}
+
+// Allow URL paths to contain up to two nested levels of balanced parens
+//  1. Used in Wikipedia URLs like /Primer_(film)
+//  2. Used in IIS sessions like /S(dfd346)/
+//  3. Used in Rdio URLs like /track/We_Up_(Album_Version_(Edited))/
+balanced_paren_path_text = _{ "(" ~ url_general_path+ ~ ")" }
+url_balanced_parens = _{
+    balanced_paren_path_text |
+    "(" ~ url_general_path* ~ balanced_paren_path_text ~ url_general_path* ~ ")"
+}
+
+end_path = _{ (url_path_end | (path_punctuation+ ~ &url_path_end))+ }
+segment = _{ (url_general_path+ ~ &"/") | end_path }
+path = _{ "/" ~ ((segment ~ ("/" ~ segment)*) ~ ("/")?)?}
+
+//
+// QUERY
+//
+query_punctuation_char = _{
+    "!" | "?" | "*" | "\'" | "(" | ")" | ";" | ":" |  "$" | "%" | "[" | "]" | "." | "," | "~" | "|" | "@"
+}
+query_end_char = _{ ASCII_ALPHA | ASCII_DIGIT | "-" | "_" | "&" | "=" | "/" | "+"}
+query_char = _{ query_end_char | query_punctuation_char+ ~ &query_end_char }
+query = _{ "?" ~ query_char+ | "?" ~ &"#" }
+
+//
+// FRAGMENT
+//
+fragment_end = _{ query_end_char | "#" }
+fragment_char = _{ fragment_end | query_punctuation_char+ ~ &fragment_end }
+fragment = _{ "#" ~ fragment_char* }
+
+
+//
+// General rules
+//
+alphanumeric = _{ ASCII_ALPHA | ASCII_DIGIT }
+latin_accent = _{
+    '\u{00c0}'..'\u{00d6}' | '\u{00d8}'..'\u{00f6}' | '\u{00f8}'..'\u{00ff}' | '\u{0100}'..'\u{024f}' |
+    '\u{0253}'..'\u{0254}' | '\u{0256}'..'\u{0257}' | '\u{0259}'..'\u{0259}' | '\u{025b}'..'\u{025b}' |
+    '\u{0263}'..'\u{0263}' | '\u{0268}'..'\u{0268}' | '\u{026f}'..'\u{026f}' | '\u{0272}'..'\u{0272}' |
+    '\u{0289}'..'\u{0289}' | '\u{028b}'..'\u{028b}' | '\u{02bb}'..'\u{02bb}' | '\u{0300}'..'\u{036f}' |
+    '\u{1e00}'..'\u{1eff}'
+}
+cyrillic_char = _{ '\u{0400}'..'\u{04ff}' }
+space = _{
+    "\u{0020}" | "\u{0085}" | "\u{00A0}" | "\u{1680}" | "\u{180E}" | "\u{2028}" | "\u{2029}" |
+    "\u{202F}" | "\u{205F}" | "\u{3000}" | '\u{0009}'..'\u{000D}' | '\u{2000}'..'\u{200A}'
+}
+punctuation_char = _{
+    "-" | "_" | "!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," | "." | "/" |
+    "\\" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "]" | "^" | "`" | "{" | "|" | "}" | "~"
+}
+non_punctuation = _{ !(punctuation_char | space | PUNCTUATION) ~ text }
+
+//
+// Emoji
+//
+emoji = {
+    man_or_woman_with_optional_skin_tone_and_modifier |
+    person_with_vs16_or_skin_tone_and_trailing_mf_symbol |
+    person_with_optional_skin_tone_and_trailing_mf_symbol |
+    other_zwj_sequences |
+    emojified_symbols |
+    default_text_symbols |
+    variants_allowing_trailing_fe0f_but_not_fe0e |
+    diversity_emoji_with_optional_skin_tone |
+    flags_and_regular_emoji
+}
+
+// A zero-width-joiner character is used to combine emoji together.
+// For example, a face with a skin tone.
+zwj = _{ "\u{200d}" }
+
+// A skin tone applied to another emoji
+skin_tone = _{ '\u{01f3fb}'..'\u{01f3ff}' }
+
+// A trailing Male or Female symbol
+trailing_mf_symbol = _{ zwj ~ (("\u{2640}" | "\u{2642}") ~ "\u{fe0f}"?) }
+
+man_or_woman_with_optional_skin_tone_and_modifier = _{
+    // Man or Woman
+    man_or_woman ~
+    // Followed by an optional skin tone
+    skin_tone? ~
+    // Followed by a joined modifier
+    zwj ~
+    ((("\u{2695}" | "\u{2696}" | "\u{2708}") ~ "\u{fe0f}"?) |
+     ("\u{1f33e}" | "\u{1f373}" | "\u{1f393}" | "\u{1f3a4}" | "\u{1f3a8}" | "\u{1f3eb}" | "\u{1f3ed}" | "\u{1f4bb}" |
+      "\u{1f4bc}" | "\u{1f527}" | "\u{1f52c}" | "\u{1f680}" | "\u{1f692}" | '\u{1f9b0}'..'\u{1f9b3}')
+    )
+}
+
+person_with_vs16_or_skin_tone_and_trailing_mf_symbol = _{
+    ("\u{26f9}" | "\u{1f3cb}" | "\u{1f3cc}" | "\u{1f574}" | "\u{1f575}") ~
+    ("\u{fe0f}" | skin_tone)? ~ trailing_mf_symbol
+}
+
+person_with_optional_skin_tone_and_trailing_mf_symbol = _{
+    ("\u{1f3c3}" | "\u{1f3c4}" | "\u{1f3ca}" | "\u{1f46e}" | "\u{1f471}" | "\u{1f473}" | "\u{1f477}" |
+     "\u{1f481}" | "\u{1f482}" | "\u{1f486}" | "\u{1f487}" | '\u{1f645}'..'\u{1f647}'  | "\u{1f64b}" |
+     "\u{1f64d}" | "\u{1f64e}" | "\u{1f6a3}" | '\u{1f6b4}'..'\u{1f6b6}'  | "\u{1f926}" | "\u{1f935}" |
+     '\u{1f937}'..'\u{1f939}'  | "\u{1f93d}" | "\u{1f93e}" | "\u{1f9b8}" | "\u{1f9b9}" |
+     '\u{1f9d6}'..'\u{1f9dd}') ~ skin_tone? ~ trailing_mf_symbol
+}
+
+other_zwj_sequences = _{
+    // Starts with Man
+    ("\u{1f468}" ~ zwj ~
+     (
+        ("\u{1f466}" ~ zwj ~ "\u{1f466}") |
+        ("\u{1f467}" ~ zwj ~ boy_or_girl) |
+        ("\u{1f468}" ~ zwj ~ ("\u{1f466}" ~ zwj ~ "\u{1f466}" | "\u{1f467}" ~ zwj ~ boy_or_girl | boy_or_girl)) |
+        ("\u{1f469}" ~ zwj ~ ("\u{1f466}" ~ zwj ~ "\u{1f466}" | "\u{1f467}" ~ zwj ~ boy_or_girl | boy_or_girl)) |
+        ("\u{2764}" ~ "\u{fe0f}"? ~ zwj ~ ("\u{1f468}" | "\u{1f48b}" ~ zwj ~ "\u{1f468}")) |
+        boy_or_girl
+     )
+    ) |
+
+    // Starts with Woman
+    ("\u{1f469}" ~ zwj ~
+     (
+        ("\u{1f466}" ~ zwj ~ "\u{1f466}") |
+        ("\u{1f467}" ~ zwj ~ boy_or_girl) |
+        ("\u{1f469}" ~ zwj ~ ("\u{1f466}" ~ zwj ~ "\u{1f466}" | "\u{1f467}" ~ zwj ~ boy_or_girl | boy_or_girl)) |
+        ("\u{2764}" ~ "\u{fe0f}"? ~ zwj ~ (man_or_woman | "\u{1f48b}" ~ zwj ~ man_or_woman)) |
+        boy_or_girl
+     )
+    ) |
+
+    // Zombies, genies, dancers, and wrestlers
+    (("\u{1f9df}" | "\u{1f9de}" | "\u{1f46f}" | "\u{1f93c}") ~ trailing_mf_symbol) |
+
+    // Others
+    ("\u{1f3f3}" ~ "\u{fe0f}"? ~ zwj ~ "\u{1f308}") |
+    ("\u{1f3f4}" ~ zwj ~ "\u{2620}" ~ "\u{fe0f}"?)  |
+    ("\u{1f441}" ~ "\u{fe0f}"? ~ zwj ~ "\u{1f5e8}" ~ "\u{fe0f}"?)
+}
+
+man_or_woman = _{
+    "\u{1f468}" | "\u{1f469}"
+}
+
+boy_or_girl = _{
+    "\u{1f466}" | "\u{01f467}"
+}
+
+// Emojified symbols #, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 + possible variant selector + keycap
+emojified_symbols = _{
+    ("#" | "*" | ASCII_DIGIT) ~ "\u{fe0f}"? ~ "\u{20e3}"
+}
+
+default_text_symbols = _{
+    ("©" | "®" | "\u{2122}" | "\u{265f}") ~ "\u{fe0f}"
+}
+
+variants_allowing_trailing_fe0f_but_not_fe0e = _{
+    ("\u{203c}" | "\u{2049}" | "\u{2139}" | '\u{2194}'..'\u{2199}' | "\u{21a9}" | "\u{21aa}" | "\u{231a}" |
+     "\u{231b}" | "\u{2328}" | "\u{23cf}" | '\u{23ed}'..'\u{23ef}' | "\u{23f1}" | "\u{23f2}" | '\u{23f8}'..'\u{23fa}' |
+     "\u{24c2}" | "\u{25aa}" | "\u{25ab}" | "\u{25b6}" | "\u{25c0}" | '\u{25fb}'..'\u{25fe}' | '\u{2600}'..'\u{2604}' |
+     "\u{260e}" | "\u{2611}" | "\u{2614}" | "\u{2615}" | "\u{2618}" | "\u{2620}" | "\u{2622}" | "\u{2623}" |
+     "\u{2626}" | "\u{262a}" | "\u{262e}" | "\u{262f}" | '\u{2638}'..'\u{263a}' | "\u{2640}" | "\u{2642}" |
+     '\u{2648}'..'\u{2653}' | "\u{2660}" | "\u{2663}" | "\u{2665}" | "\u{2666}" | "\u{2668}" | "\u{267b}" | "\u{267e}" |
+     "\u{267f}" | '\u{2692}'..'\u{2697}' | "\u{2699}" | "\u{269b}" | "\u{269c}" | "\u{26a0}" | "\u{26a1}" |
+     "\u{26aa}" | "\u{26ab}" | "\u{26b0}" | "\u{26b1}" | "\u{26bd}" | "\u{26be}" | "\u{26c4}" | "\u{26c5}" |
+     "\u{26c8}" | "\u{26cf}" | "\u{26d1}" | "\u{26d3}" | "\u{26d4}" | "\u{26e9}" | "\u{26ea}" |
+     '\u{26f0}'..'\u{26f5}' | "\u{26f8}" | "\u{26fa}" | "\u{26fd}" | "\u{2702}" | "\u{2708}" | "\u{2709}" |
+     "\u{270f}" | "\u{2712}" | "\u{2714}" | "\u{2716}" | "\u{271d}" | "\u{2721}" | "\u{2733}" | "\u{2734}" |
+     "\u{2744}" | "\u{2747}" | "\u{2757}" | "\u{2763}" | "\u{2764}" | "\u{27a1}" | "\u{2934}" | "\u{2935}" |
+     '\u{2b05}'..'\u{2b07}' | "\u{2b1b}" | "\u{2b1c}" | "\u{2b50}" | "\u{2b55}" | "\u{3030}" | "\u{303d}" |
+     "\u{3297}" | "\u{3299}" | "\u{1f004}" | "\u{1f170}" | "\u{1f171}" | "\u{1f17e}" | "\u{1f17f}" | "\u{1f202}" |
+     "\u{1f21a}" | "\u{1f22f}" | "\u{1f237}" | "\u{1f321}" | '\u{1f324}'..'\u{1f32c}' | "\u{1f336}" | "\u{1f37d}" |
+     "\u{1f396}" | "\u{1f397}" | '\u{1f399}'..'\u{1f39b}' | "\u{1f39e}" | "\u{1f39f}" | "\u{1f3cd}" | "\u{1f3ce}" |
+     '\u{1f3d4}'..'\u{1f3df}' | "\u{1f3f3}" | "\u{1f3f5}" | "\u{1f3f7}" | "\u{1f43f}" | "\u{1f441}" | "\u{1f4fd}" |
+     "\u{1f549}" | "\u{1f54a}" | "\u{1f56f}" | "\u{1f570}" | "\u{1f573}" | '\u{1f576}'..'\u{1f579}' | "\u{1f587}" |
+     '\u{1f58a}'..'\u{1f58d}' | "\u{1f5a5}" | "\u{1f5a8}" | "\u{1f5b1}" | "\u{1f5b2}" | "\u{1f5bc}" |
+     '\u{1f5c2}'..'\u{1f5c4}' | '\u{1f5d1}'..'\u{1f5d3}' | '\u{1f5dc}'..'\u{1f5de}' | "\u{1f5e1}" | "\u{1f5e3}" |
+     "\u{1f5e8}" | "\u{1f5ef}" | "\u{1f5f3}" | "\u{1f5fa}" | "\u{1f6cb}" | '\u{1f6cd}'..'\u{1f6cf}' |
+     '\u{1f6e0}'..'\u{1f6e5}' | "\u{1f6e9}" | "\u{1f6f0}" | "\u{1f6f3}") ~
+    ("\u{fe0f}" | !"\u{fe0e}")
+}
+
+diversity_emoji_with_optional_skin_tone = _{
+    ((("\u{261d}" | "\u{26f7}" | "\u{26f9}" | "\u{270c}" | "\u{270d}" |
+       "\u{1f3cb}" | "\u{1f3cc}" | "\u{1f574}" | "\u{1f575}" | "\u{1f590}") ~ ("\u{fe0f}" | !"\u{fe0e}")) |
+     ("\u{270a}" | "\u{270b}" | "\u{1f385}" | '\u{1f3c2}'..'\u{1f3c4}' | "\u{1f3c7}" | "\u{1f3ca}" | "\u{1f442}" |
+      "\u{1f443}" | '\u{1f446}'..'\u{1f450}' | '\u{1f466}'..'\u{1f469}' | "\u{1f46e}" | '\u{1f470}'..'\u{1f478}' |
+      "\u{1f47c}" | '\u{1f481}'..'\u{1f483}' | '\u{1f485}'..'\u{1f487}' | "\u{1f4aa}" | "\u{1f57a}" | "\u{1f595}" |
+      "\u{1f596}" | '\u{1f645}'..'\u{1f647}' | '\u{1f64b}'..'\u{1f64f}' | "\u{1f6a3}" | '\u{1f6b4}'..'\u{1f6b6}' |
+      "\u{1f6c0}" | "\u{1f6cc}" | '\u{1f918}'..'\u{1f91c}' | "\u{1f91e}" | "\u{1f91f}" | "\u{1f926}" |
+      '\u{1f930}'..'\u{1f939}' | "\u{1f93d}" | "\u{1f93e}" | "\u{1f9b5}" | "\u{1f9b6}" | "\u{1f9b8}" | "\u{1f9b9}" |
+      '\u{1f9d1}'..'\u{1f9dd}')) ~ skin_tone?
+}
+
+flags_and_regular_emoji = _{
+     "\u{1f3f4}\u{e0067}\u{e0062}\u{e0065}\u{e006e}\u{e0067}\u{e007f}" |
+     "\u{1f3f4}\u{e0067}\u{e0062}\u{e0073}\u{e0063}\u{e0074}\u{e007f}" |
+     "\u{1f3f4}\u{e0067}\u{e0062}\u{e0077}\u{e006c}\u{e0073}\u{e007f}" |
+     ("\u{1f1e6}" ~ ('\u{1f1e8}'..'\u{1f1ec}' | "\u{1f1ee}" | "\u{1f1f1}" | "\u{1f1f2}" | "\u{1f1f4}" |
+                     '\u{1f1f6}'..'\u{1f1fa}' | "\u{1f1fc}" | "\u{1f1fd}" | "\u{1f1ff}")) |
+     ("\u{1f1e7}" ~ ("\u{1f1e6}" | "\u{1f1e7}" | '\u{1f1e9}'..'\u{1f1ef}' | '\u{1f1f1}'..'\u{1f1f4}' |
+                     '\u{1f1f6}'..'\u{1f1f9}' | "\u{1f1fb}" | "\u{1f1fc}" | "\u{1f1fe}" | "\u{1f1ff}")) |
+     ("\u{1f1e8}" ~ ("\u{1f1e6}" | "\u{1f1e8}" | "\u{1f1e9}" | '\u{1f1eb}'..'\u{1f1ee}' |
+                     '\u{1f1f0}'..'\u{1f1f5}' | "\u{1f1f7}" | '\u{1f1fa}'..'\u{1f1ff}')) |
+     ("\u{1f1e9}" ~ ("\u{1f1ea}" | "\u{1f1ec}" | "\u{1f1ef}" | "\u{1f1f0}" | "\u{1f1f2}" | "\u{1f1f4}" | "\u{1f1ff}")) |
+     ("\u{1f1ea}" ~ ("\u{1f1e6}" | "\u{1f1e8}" | "\u{1f1ea}" |
+                     "\u{1f1ec}" | "\u{1f1ed}" | '\u{1f1f7}'..'\u{1f1fa}')) |
+     ("\u{1f1eb}" ~ ('\u{1f1ee}'..'\u{1f1f0}' | "\u{1f1f2}" | "\u{1f1f4}" | "\u{1f1f7}")) |
+     ("\u{1f1ec}" ~ ("\u{1f1e6}" | "\u{1f1e7}" | '\u{1f1e9}'..'\u{1f1ee}' | '\u{1f1f1}'..'\u{1f1f3}' |
+                     '\u{1f1f5}'..'\u{1f1fa}' | "\u{1f1fc}" | "\u{1f1fe}")) |
+     ("\u{1f1ed}" ~ ("\u{1f1f0}" | "\u{1f1f2}" | "\u{1f1f3}" | "\u{1f1f7}" | "\u{1f1f9}" | "\u{1f1fa}" )) |
+     ("\u{1f1ee}" ~ ('\u{1f1e8}'..'\u{1f1ea}' | '\u{1f1f1}'..'\u{1f1f4}' | '\u{1f1f6}'..'\u{1f1f9}')) |
+     ("\u{1f1ef}" ~ ("\u{1f1ea}" | "\u{1f1f2}" | "\u{1f1f4}" | "\u{1f1f5}")) |
+     ("\u{1f1f0}" ~ ("\u{1f1ea}" | '\u{1f1ec}'..'\u{1f1ee}' | "\u{1f1f2}" | "\u{1f1f3}" | "\u{1f1f5}" | "\u{1f1f7}" |
+                     "\u{1f1fc}" | "\u{1f1fe}" | "\u{1f1ff}")) |
+     ("\u{1f1f1}" ~ ('\u{1f1e6}'..'\u{1f1e8}' | "\u{1f1ee}" | "\u{1f1f0}" | '\u{1f1f7}'..'\u{1f1fb}' | "\u{1f1fe}")) |
+     ("\u{1f1f2}" ~ ("\u{1f1e6}" | '\u{1f1e8}'..'\u{1f1ed}' | '\u{1f1f0}'..'\u{1f1ff}')) |
+     ("\u{1f1f3}" ~ ("\u{1f1e6}" | "\u{1f1e8}" | '\u{1f1ea}'..'\u{1f1ec}' | "\u{1f1ee}" | "\u{1f1f1}" | "\u{1f1f4}" |
+                     "\u{1f1f5}" | "\u{1f1f7}" | "\u{1f1fa}" | "\u{1f1ff}")) |
+     "\u{1f1f4}\u{1f1f2}" |
+     ("\u{1f1f5}" ~ ("\u{1f1e6}" | '\u{1f1ea}'..'\u{1f1ed}' | '\u{1f1f0}'..'\u{1f1f3}' | '\u{1f1f7}'..'\u{1f1f9}' |
+                     "\u{1f1fc}" | "\u{1f1fe}"))|
+     "\u{1f1f6}\u{1f1e6}" |
+     ("\u{1f1f7}" ~ ("\u{1f1ea}" | "\u{1f1f4}" | "\u{1f1f8}" | "\u{1f1fa}" | "\u{1f1fc}")) |
+     ("\u{1f1f8}" ~ ('\u{1f1e6}'..'\u{1f1ea}' | '\u{1f1ec}'..'\u{1f1f4}' | '\u{1f1f7}'..'\u{1f1f9}' | "\u{1f1fb}" | '\u{1f1fd}'..'\u{1f1ff}')) |
+     ("\u{1f1f9}" ~ ("\u{1f1e6}" | "\u{1f1e8}" | "\u{1f1e9}" | '\u{1f1eb}'..'\u{1f1ed}' | '\u{1f1ef}'..'\u{1f1f4}' | "\u{1f1f7}" | "\u{1f1f9}" | "\u{1f1fb}" | "\u{1f1fc}" | "\u{1f1ff}")) |
+     ("\u{1f1fa}" ~ ("\u{1f1e6}" | "\u{1f1ec}" | "\u{1f1f2}" | "\u{1f1f3}" | "\u{1f1f8}" | "\u{1f1fe}" | "\u{1f1ff}")) |
+     ("\u{1f1fb}" ~ ("\u{1f1e6}" | "\u{1f1e8}" | "\u{1f1ea}" | "\u{1f1ec}" | "\u{1f1ee}" | "\u{1f1f3}" | "\u{1f1fa}")) |
+     ("\u{1f1fc}" ~ ("\u{1f1eb}" | "\u{1f1f8}")) |
+     "\u{1f1fd}\u{01f1f0}" |
+     ("\u{1f1fe}" ~ ("\u{1f1ea}" | "\u{1f1f9}")) |
+     ("\u{1f1ff}" ~ ("\u{1f1e6}" | "\u{1f1f2}" | "\u{1f1fc}")) |
+     ('\u{23e9}'..'\u{23ec}' | "\u{23f0}" | "\u{23f3}" | "\u{267e}" | "\u{26ce}" | "\u{2705}" | "\u{2728}" |
+      "\u{274c}" | "\u{274e}" | '\u{2753}'..'\u{2755}' | '\u{2795}'..'\u{2797}' | "\u{27b0}" | "\u{27bf}" |
+      "\u{e50a}" | "\u{1f0cf}" | "\u{1f18e}" | '\u{1f191}'..'\u{1f19a}' | '\u{1f1e6}'..'\u{1f1ff}' | "\u{1f201}" |
+      '\u{1f232}'..'\u{1f236}' | '\u{1f238}'..'\u{1f23a}' | "\u{1f250}" | "\u{1f251}" | '\u{1f300}'..'\u{1f320}' |
+      '\u{1f32d}'..'\u{1f335}' | '\u{1f337}'..'\u{1f37c}' | '\u{1f37e}'..'\u{1f384}' | '\u{1f386}'..'\u{1f393}' |
+      '\u{1f3a0}'..'\u{1f3c1}' | "\u{1f3c5}" | "\u{1f3c6}" | "\u{1f3c8}" | "\u{1f3c9}" | '\u{1f3cf}'..'\u{1f3d3}' |
+      '\u{1f3e0}'..'\u{1f3f0}' | "\u{1f3f4}" | '\u{1f3f8}'..'\u{1f43e}' | "\u{1f440}" | "\u{1f444}" | "\u{1f445}" |
+      '\u{1f451}'..'\u{1f465}' | '\u{1f46a}'..'\u{1f46d}' | "\u{1f46f}" | '\u{1f479}'..'\u{1f47b}' |
+      '\u{1f47d}'..'\u{1f480}' | "\u{1f484}" | '\u{1f488}'..'\u{1f4a9}' | '\u{1f4ab}'..'\u{1f4fc}' |
+      '\u{1f4ff}'..'\u{1f53d}' | '\u{1f54b}'..'\u{1f54e}' | '\u{1f550}'..'\u{1f567}' | "\u{1f5a4}" |
+      '\u{1f5fb}'..'\u{1f644}' | '\u{1f648}'..'\u{1f64a}' | '\u{1f680}'..'\u{1f6a2}' | '\u{1f6a4}'..'\u{1f6b3}' |
+      '\u{1f6b7}'..'\u{1f6bf}' | '\u{1f6c1}'..'\u{1f6c5}' | '\u{1f6d0}'..'\u{1f6d2}' | "\u{1f6eb}" | "\u{1f6ec}" |
+      '\u{1f6f4}'..'\u{1f6f9}' | '\u{1f910}'..'\u{1f917}' | "\u{1f91d}" | '\u{1f920}'..'\u{1f925}' |
+      '\u{1f927}'..'\u{1f92f}' | "\u{1f93a}" | "\u{1f93c}" | '\u{1f940}'..'\u{1f945}' | '\u{1f947}'..'\u{1f970}' |
+      '\u{1f973}'..'\u{1f976}' | "\u{1f97a}" | '\u{1f97c}'..'\u{1f9a2}' | '\u{1f9b0}'..'\u{1f9b4}' | "\u{1f9b7}" |
+      '\u{1f9c0}'..'\u{1f9c2}' | "\u{1f9d0}" | '\u{1f9de}'..'\u{1f9ff}') |
+     "\u{fe0f}"
+}
+
+//
+// VALIDATION
+//
+valid_username = { SOI ~ username ~ EOI }
+valid_list = { SOI ~ list ~ EOI }
+valid_url = { SOI ~ url ~ EOI }
+
+// This rule is generated by tld_gen.py
+// See the comments there.
+tld_list = _{
+     ^"a" ~
+       (
+        ^"a" ~
+          (
+           ^"a"
+           | ^"rp"
+          )
+        | ^"b" ~
+          (
+           ^"arth"
+           | ^"b" ~
+             (
+              ^"ott"
+              | ^"vie"
+             )?
+           | ^"c"
+           | ^"le"
+           | ^"ogado"
+           | ^"udhabi"
+          )
+        | ^"c" ~
+          (
+           ^"ademy"
+           | ^"c" ~
+             (
+              ^"enture"
+              | ^"ountant" ~
+                (
+                 ^"s"
+                )?
+             )
+           | ^"o"
+           | ^"t" ~
+             (
+              ^"ive"
+              | ^"or"
+             )
+          )?
+        | ^"d" ~
+          (
+           ^"ac"
+           | ^"s"
+           | ^"ult"
+          )?
+        | ^"e" ~
+          (
+           ^"g"
+           | ^"ro"
+           | ^"tna"
+          )?
+        | ^"f" ~
+          (
+           ^"amilycompany"
+           | ^"l"
+           | ^"rica"
+          )?
+        | ^"g" ~
+          (
+           ^"akhan"
+           | ^"ency"
+          )?
+        | ^"i" ~
+          (
+           ^"g" ~
+             (
+              ^"o"
+             )?
+           | ^"r" ~
+             (
+              ^"bus"
+              | ^"force"
+              | ^"tel"
+             )
+          )?
+        | ^"kdn"
+        | ^"l" ~
+          (
+           ^"faromeo"
+           | ^"i" ~
+             (
+              ^"baba"
+              | ^"pay"
+             )
+           | ^"l" ~
+             (
+              ^"finanz"
+              | ^"state"
+              | ^"y"
+             )
+           | ^"s" ~
+             (
+              ^"ace"
+              | ^"tom"
+             )
+          )?
+        | ^"m" ~
+          (
+           ^"e" ~
+             (
+              ^"rican" ~
+                (
+                 ^"express"
+                 | ^"family"
+                )
+              | ^"x"
+             )
+           | ^"fam"
+           | ^"ica"
+           | ^"sterdam"
+          )?
+        | ^"n" ~
+          (
+           ^"alytics"
+           | ^"droid"
+           | ^"quan"
+           | ^"z"
+          )?
+        | ^"o" ~
+          (
+           ^"l"
+          )?
+        | ^"p" ~
+          (
+           ^"artments"
+           | ^"p" ~
+             (
+              ^"le"
+             )?
+          )
+        | ^"q" ~
+          (
+           ^"uarelle"
+          )?
+        | ^"r" ~
+          (
+           ^"a" ~
+             (
+              ^"b"
+              | ^"mco"
+             )
+           | ^"chi"
+           | ^"my"
+           | ^"pa"
+           | ^"t" ~
+             (
+              ^"e"
+             )?
+          )?
+        | ^"s" ~
+          (
+           ^"da"
+           | ^"ia"
+           | ^"sociates"
+          )?
+        | ^"t" ~
+          (
+           ^"hleta"
+           | ^"torney"
+          )?
+        | ^"u" ~
+          (
+           ^"ction"
+           | ^"di" ~
+             (
+              ^"ble"
+              | ^"o"
+             )?
+           | ^"spost"
+           | ^"t" ~
+             (
+              ^"hor"
+              | ^"o" ~
+                (
+                 ^"s"
+                )?
+             )
+          )?
+        | ^"vianca"
+        | ^"w" ~
+          (
+           ^"s"
+          )?
+        | ^"x" ~
+          (
+           ^"a"
+          )?
+        | ^"z" ~
+          (
+           ^"ure"
+          )?
+       )
+     | ^"b" ~
+       (
+        ^"a" ~
+          (
+           ^"by"
+           | ^"idu"
+           | ^"n" ~
+             (
+              ^"a" ~
+                (
+                 ^"mex"
+                 | ^"narepublic"
+                )
+              | ^"d"
+              | ^"k"
+             )
+           | ^"r" ~
+             (
+              ^"c" ~
+                (
+                 ^"elona"
+                 | ^"lay" ~
+                   (
+                    ^"card"
+                    | ^"s"
+                   )
+                )
+              | ^"efoot"
+              | ^"gains"
+             )?
+           | ^"s" ~
+             (
+              ^"eball"
+              | ^"ketball"
+             )
+           | ^"uhaus"
+           | ^"yern"
+          )?
+        | ^"b" ~
+          (
+           ^"c"
+           | ^"t"
+           | ^"va"
+          )?
+        | ^"c" ~
+          (
+           ^"g"
+           | ^"n"
+          )
+        | ^"d"
+        | ^"e" ~
+          (
+           ^"a" ~
+             (
+              ^"ts"
+              | ^"uty"
+             )
+           | ^"er"
+           | ^"ntley"
+           | ^"rlin"
+           | ^"st" ~
+             (
+              ^"buy"
+             )?
+           | ^"t"
+          )?
+        | ^"f"
+        | ^"g"
+        | ^"h" ~
+          (
+           ^"arti"
+          )?
+        | ^"i" ~
+          (
+           ^"ble"
+           | ^"d"
+           | ^"ke"
+           | ^"ng" ~
+             (
+              ^"o"
+             )?
+           | ^"o"
+           | ^"z"
+          )?
+        | ^"j"
+        | ^"l" ~
+          (
+           ^"a" ~
+             (
+              ^"ck" ~
+                (
+                 ^"friday"
+                )?
+              | ^"nco"
+             )
+           | ^"o" ~
+             (
+              ^"ckbuster"
+              | ^"g"
+              | ^"omberg"
+             )
+           | ^"ue"
+          )?
+        | ^"m" ~
+          (
+           ^"s"
+           | ^"w"
+          )?
+        | ^"n" ~
+          (
+           ^"l"
+           | ^"pparibas"
+          )?
+        | ^"o" ~
+          (
+           ^"ats"
+           | ^"ehringer"
+           | ^"fa"
+           | ^"m"
+           | ^"nd"
+           | ^"o" ~
+             (
+              ^"k" ~
+                (
+                 ^"ing"
+                )?
+              | ^"ts"
+             )?
+           | ^"s" ~
+             (
+              ^"ch"
+              | ^"t" ~
+                (
+                 ^"ik"
+                 | ^"on"
+                )
+             )
+           | ^"t"
+           | ^"utique"
+           | ^"x"
+          )?
+        | ^"q"
+        | ^"r" ~
+          (
+           ^"adesco"
+           | ^"idgestone"
+           | ^"o" ~
+             (
+              ^"adway"
+              | ^"ker"
+              | ^"ther"
+             )
+           | ^"ussels"
+          )?
+        | ^"s"
+        | ^"t"
+        | ^"u" ~
+          (
+           ^"dapest"
+           | ^"gatti"
+           | ^"ild" ~
+             (
+              ^"ers"
+             )?
+           | ^"siness"
+           | ^"y"
+           | ^"zz"
+          )
+        | ^"v"
+        | ^"w"
+        | ^"y"
+        | ^"z" ~
+          (
+           ^"h"
+          )?
+       )
+     | ^"c" ~
+       (
+        ^"a" ~
+          (
+           ^"b"
+           | ^"fe"
+           | ^"l" ~
+             (
+              ^"l"
+              | ^"vinklein"
+             )?
+           | ^"m" ~
+             (
+              ^"era"
+              | ^"p"
+             )?
+           | ^"n" ~
+             (
+              ^"cerresearch"
+              | ^"on"
+             )
+           | ^"p" ~
+             (
+              ^"etown"
+              | ^"ital" ~
+                (
+                 ^"one"
+                )?
+             )
+           | ^"r" ~
+             (
+              ^"avan"
+              | ^"ds"
+              | ^"e" ~
+                (
+                 ^"er" ~
+                   (
+                    ^"s"
+                   )?
+                )?
+              | ^"s"
+              | ^"tier"
+             )?
+           | ^"s" ~
+             (
+              ^"a"
+              | ^"e" ~
+                (
+                 ^"ih"
+                )?
+              | ^"h"
+              | ^"ino"
+             )
+           | ^"t" ~
+             (
+              ^"ering"
+              | ^"holic"
+             )?
+          )?
+        | ^"b" ~
+          (
+           ^"a"
+           | ^"n"
+           | ^"re"
+           | ^"s"
+          )
+        | ^"c"
+        | ^"d"
+        | ^"e" ~
+          (
+           ^"b"
+           | ^"nter"
+           | ^"o"
+           | ^"rn"
+          )
+        | ^"f" ~
+          (
+           ^"a"
+           | ^"d"
+          )?
+        | ^"g"
+        | ^"h" ~
+          (
+           ^"a" ~
+             (
+              ^"n" ~
+                (
+                 ^"el"
+                 | ^"nel"
+                )
+              | ^"se"
+              | ^"t"
+             )
+           | ^"eap"
+           | ^"intai"
+           | ^"loe"
+           | ^"r" ~
+             (
+              ^"istmas"
+              | ^"ome"
+              | ^"ysler"
+             )
+           | ^"urch"
+          )?
+        | ^"i" ~
+          (
+           ^"priani"
+           | ^"rcle"
+           | ^"sco"
+           | ^"t" ~
+             (
+              ^"adel"
+              | ^"i" ~
+                (
+                 ^"c"
+                )?
+              | ^"y" ~
+                (
+                 ^"eats"
+                )?
+             )
+          )?
+        | ^"k"
+        | ^"l" ~
+          (
+           ^"aims"
+           | ^"eaning"
+           | ^"i" ~
+             (
+              ^"ck"
+              | ^"ni" ~
+                (
+                 ^"c"
+                 | ^"que"
+                )
+             )
+           | ^"o" ~
+             (
+              ^"thing"
+              | ^"ud"
+             )
+           | ^"ub" ~
+             (
+              ^"med"
+             )?
+          )?
+        | ^"m"
+        | ^"n"
+        | ^"o" ~
+          (
+           ^"ach"
+           | ^"des"
+           | ^"ffee"
+           | ^"l" ~
+             (
+              ^"lege"
+              | ^"ogne"
+             )
+           | ^"m" ~
+             (
+              ^"cast"
+              | ^"m" ~
+                (
+                 ^"bank"
+                 | ^"unity"
+                )
+              | ^"p" ~
+                (
+                 ^"a" ~
+                   (
+                    ^"ny"
+                    | ^"re"
+                   )
+                 | ^"uter"
+                )
+              | ^"sec"
+             )?
+           | ^"n" ~
+             (
+              ^"dos"
+              | ^"s" ~
+                (
+                 ^"truction"
+                 | ^"ulting"
+                )
+              | ^"t" ~
+                (
+                 ^"act"
+                 | ^"ractors"
+                )
+             )
+           | ^"o" ~
+             (
+              ^"king" ~
+                (
+                 ^"channel"
+                )?
+              | ^"l"
+              | ^"p"
+             )
+           | ^"rsica"
+           | ^"u" ~
+             (
+              ^"ntry"
+              | ^"pon" ~
+                (
+                 ^"s"
+                )?
+              | ^"rses"
+             )
+          )?
+        | ^"r" ~
+          (
+           ^"edit" ~
+             (
+              ^"card"
+              | ^"union"
+             )?
+           | ^"icket"
+           | ^"own"
+           | ^"s"
+           | ^"uise" ~
+             (
+              ^"s"
+             )?
+          )?
+        | ^"sc"
+        | ^"u" ~
+          (
+           ^"isinella"
+          )?
+        | ^"v"
+        | ^"w"
+        | ^"x"
+        | ^"y" ~
+          (
+           ^"mru"
+           | ^"ou"
+          )?
+        | ^"z"
+       )
+     | ^"d" ~
+       (
+        ^"a" ~
+          (
+           ^"bur"
+           | ^"d"
+           | ^"nce"
+           | ^"t" ~
+             (
+              ^"a"
+              | ^"e"
+              | ^"ing"
+              | ^"sun"
+             )
+           | ^"y"
+          )
+        | ^"clk"
+        | ^"ds"
+        | ^"e" ~
+          (
+           ^"al" ~
+             (
+              ^"er"
+              | ^"s"
+             )?
+           | ^"gree"
+           | ^"l" ~
+             (
+              ^"ivery"
+              | ^"l"
+              | ^"oitte"
+              | ^"ta"
+             )
+           | ^"mocrat"
+           | ^"nt" ~
+             (
+              ^"al"
+              | ^"ist"
+             )
+           | ^"si" ~
+             (
+              ^"gn"
+             )?
+           | ^"v"
+          )?
+        | ^"hl"
+        | ^"i" ~
+          (
+           ^"amonds"
+           | ^"et"
+           | ^"gital"
+           | ^"rect" ~
+             (
+              ^"ory"
+             )?
+           | ^"s" ~
+             (
+              ^"co" ~
+                (
+                 ^"unt"
+                 | ^"ver"
+                )
+              | ^"h"
+             )
+           | ^"y"
+          )
+        | ^"j"
+        | ^"k"
+        | ^"m"
+        | ^"np"
+        | ^"o" ~
+          (
+           ^"c" ~
+             (
+              ^"s"
+              | ^"tor"
+             )
+           | ^"dge"
+           | ^"g"
+           | ^"ha"
+           | ^"mains"
+           | ^"osan"
+           | ^"t"
+           | ^"wnload"
+          )?
+        | ^"rive"
+        | ^"tv"
+        | ^"u" ~
+          (
+           ^"bai"
+           | ^"ck"
+           | ^"n" ~
+             (
+              ^"lop"
+              | ^"s"
+             )
+           | ^"pont"
+           | ^"rban"
+          )
+        | ^"v" ~
+          (
+           ^"ag"
+           | ^"r"
+          )
+        | ^"z"
+       )
+     | ^"e" ~
+       (
+        ^"a" ~
+          (
+           ^"rth"
+           | ^"t"
+          )
+        | ^"c" ~
+          (
+           ^"o"
+          )?
+        | ^"d" ~
+          (
+           ^"eka"
+           | ^"u" ~
+             (
+              ^"cation"
+             )?
+          )
+        | ^"e"
+        | ^"g"
+        | ^"h"
+        | ^"m" ~
+          (
+           ^"ail"
+           | ^"erck"
+          )
+        | ^"n" ~
+          (
+           ^"ergy"
+           | ^"gineer" ~
+             (
+              ^"ing"
+             )?
+           | ^"terprises"
+          )
+        | ^"p" ~
+          (
+           ^"ost"
+           | ^"son"
+          )
+        | ^"quipment"
+        | ^"r" ~
+          (
+           ^"icsson"
+           | ^"ni"
+          )?
+        | ^"s" ~
+          (
+           ^"q"
+           | ^"tate"
+           | ^"urance"
+          )?
+        | ^"t" ~
+          (
+           ^"isalat"
+          )?
+        | ^"u" ~
+          (
+           ^"rovision"
+           | ^"s"
+          )?
+        | ^"ve" ~
+          (
+           ^"nts"
+           | ^"rbank"
+          )
+        | ^"x" ~
+          (
+           ^"change"
+           | ^"p" ~
+             (
+              ^"ert"
+              | ^"osed"
+              | ^"ress"
+             )
+           | ^"traspace"
+          )
+       )
+     | ^"f" ~
+       (
+        ^"a" ~
+          (
+           ^"ge"
+           | ^"i" ~
+             (
+              ^"l"
+              | ^"rwinds"
+              | ^"th"
+             )
+           | ^"mily"
+           | ^"n" ~
+             (
+              ^"s"
+             )?
+           | ^"rm" ~
+             (
+              ^"ers"
+             )?
+           | ^"s" ~
+             (
+              ^"hion"
+              | ^"t"
+             )
+          )
+        | ^"e" ~
+          (
+           ^"dex"
+           | ^"edback"
+           | ^"rr" ~
+             (
+              ^"ari"
+              | ^"ero"
+             )
+          )
+        | ^"i" ~
+          (
+           ^"at"
+           | ^"d" ~
+             (
+              ^"elity"
+              | ^"o"
+             )
+           | ^"lm"
+           | ^"na" ~
+             (
+              ^"l"
+              | ^"nc" ~
+                (
+                 ^"e"
+                 | ^"ial"
+                )
+             )
+           | ^"r" ~
+             (
+              ^"e" ~
+                (
+                 ^"stone"
+                )?
+              | ^"mdale"
+             )
+           | ^"sh" ~
+             (
+              ^"ing"
+             )?
+           | ^"t" ~
+             (
+              ^"ness"
+             )?
+          )?
+        | ^"j"
+        | ^"k"
+        | ^"l" ~
+          (
+           ^"i" ~
+             (
+              ^"ckr"
+              | ^"ghts"
+              | ^"r"
+             )
+           | ^"o" ~
+             (
+              ^"rist"
+              | ^"wers"
+             )
+           | ^"smidth"
+           | ^"y"
+          )
+        | ^"m"
+        | ^"o" ~
+          (
+           ^"o" ~
+             (
+              ^"d" ~
+                (
+                 ^"network"
+                )?
+              | ^"tball"
+             )?
+           | ^"r" ~
+             (
+              ^"d"
+              | ^"ex"
+              | ^"sale"
+              | ^"um"
+             )
+           | ^"undation"
+           | ^"x"
+          )?
+        | ^"r" ~
+          (
+           ^"e" ~
+             (
+              ^"e"
+              | ^"senius"
+             )
+           | ^"l"
+           | ^"o" ~
+             (
+              ^"gans"
+              | ^"nt" ~
+                (
+                 ^"door"
+                 | ^"ier"
+                )
+             )
+          )?
+        | ^"tr"
+        | ^"u" ~
+          (
+           ^"ji" ~
+             (
+              ^"tsu"
+              | ^"xerox"
+             )
+           | ^"n" ~
+             (
+              ^"d"
+             )?
+           | ^"rniture"
+           | ^"tbol"
+          )
+        | ^"yi"
+       )
+     | ^"g" ~
+       (
+        ^"a" ~
+          (
+           ^"l" ~
+             (
+              ^"l" ~
+                (
+                 ^"ery"
+                 | ^"o"
+                 | ^"up"
+                )
+             )?
+           | ^"me" ~
+             (
+              ^"s"
+             )?
+           | ^"p"
+           | ^"rden"
+          )?
+        | ^"b" ~
+          (
+           ^"iz"
+          )?
+        | ^"d" ~
+          (
+           ^"n"
+          )?
+        | ^"e" ~
+          (
+           ^"a"
+           | ^"nt" ~
+             (
+              ^"ing"
+             )?
+           | ^"orge"
+          )?
+        | ^"f"
+        | ^"g" ~
+          (
+           ^"ee"
+          )?
+        | ^"h"
+        | ^"i" ~
+          (
+           ^"ft" ~
+             (
+              ^"s"
+             )?
+           | ^"v" ~
+             (
+              ^"es"
+              | ^"ing"
+             )
+          )?
+        | ^"l" ~
+          (
+           ^"a" ~
+             (
+              ^"de"
+              | ^"ss"
+             )
+           | ^"e"
+           | ^"ob" ~
+             (
+              ^"al"
+              | ^"o"
+             )
+          )?
+        | ^"m" ~
+          (
+           ^"ail"
+           | ^"bh"
+           | ^"o"
+           | ^"x"
+          )?
+        | ^"n"
+        | ^"o" ~
+          (
+           ^"daddy"
+           | ^"l" ~
+             (
+              ^"d" ~
+                (
+                 ^"point"
+                )?
+              | ^"f"
+             )
+           | ^"o" ~
+             (
+              ^"d" ~
+                (
+                 ^"hands"
+                 | ^"year"
+                )
+              | ^"g" ~
+                (
+                 ^"le"
+                )?
+             )?
+           | ^"p"
+           | ^"t"
+           | ^"v"
+          )
+        | ^"p"
+        | ^"q"
+        | ^"r" ~
+          (
+           ^"a" ~
+             (
+              ^"inger"
+              | ^"phics"
+              | ^"tis"
+             )
+           | ^"een"
+           | ^"ipe"
+           | ^"o" ~
+             (
+              ^"cery"
+              | ^"up"
+             )
+          )?
+        | ^"s"
+        | ^"t"
+        | ^"u" ~
+          (
+           ^"ardian"
+           | ^"cci"
+           | ^"ge"
+           | ^"i" ~
+             (
+              ^"de"
+              | ^"tars"
+             )
+           | ^"ru"
+          )?
+        | ^"w"
+        | ^"y"
+       )
+     | ^"h" ~
+       (
+        ^"a" ~
+          (
+           ^"ir"
+           | ^"mburg"
+           | ^"ngout"
+           | ^"us"
+          )
+        | ^"bo"
+        | ^"dfc" ~
+          (
+           ^"bank"
+          )?
+        | ^"e" ~
+          (
+           ^"alth" ~
+             (
+              ^"care"
+             )?
+           | ^"l" ~
+             (
+              ^"p"
+              | ^"sinki"
+             )
+           | ^"r" ~
+             (
+              ^"e"
+              | ^"mes"
+             )
+          )
+        | ^"gtv"
+        | ^"i" ~
+          (
+           ^"phop"
+           | ^"samitsu"
+           | ^"tachi"
+           | ^"v"
+          )
+        | ^"k" ~
+          (
+           ^"t"
+          )?
+        | ^"m"
+        | ^"n"
+        | ^"o" ~
+          (
+           ^"ckey"
+           | ^"l" ~
+             (
+              ^"dings"
+              | ^"iday"
+             )
+           | ^"me" ~
+             (
+              ^"depot"
+              | ^"goods"
+              | ^"s" ~
+                (
+                 ^"ense"
+                )?
+             )
+           | ^"n" ~
+             (
+              ^"da"
+              | ^"eywell"
+             )
+           | ^"rse"
+           | ^"s" ~
+             (
+              ^"pital"
+              | ^"t" ~
+                (
+                 ^"ing"
+                )?
+             )
+           | ^"t" ~
+             (
+              ^"el" ~
+                (
+                 ^"es"
+                 | ^"s"
+                )
+              | ^"mail"
+             )?
+           | ^"use"
+           | ^"w"
+          )
+        | ^"r"
+        | ^"sbc"
+        | ^"t" ~
+          (
+           ^"c"
+          )?
+        | ^"u" ~
+          (
+           ^"ghes"
+          )?
+        | ^"y" ~
+          (
+           ^"att"
+           | ^"undai"
+          )
+       )
+     | ^"i" ~
+       (
+        ^"bm"
+        | ^"c" ~
+          (
+           ^"bc"
+           | ^"e"
+           | ^"u"
+          )
+        | ^"d"
+        | ^"e" ~
+          (
+           ^"ee"
+          )?
+        | ^"fm"
+        | ^"inet"
+        | ^"kano"
+        | ^"l"
+        | ^"m" ~
+          (
+           ^"amat"
+           | ^"db"
+           | ^"mo" ~
+             (
+              ^"bilien"
+             )?
+          )?
+        | ^"n" ~
+          (
+           ^"dustries"
+           | ^"f" ~
+             (
+              ^"initi"
+              | ^"o"
+             )
+           | ^"g"
+           | ^"k"
+           | ^"s" ~
+             (
+              ^"titute"
+              | ^"ur" ~
+                (
+                 ^"ance"
+                 | ^"e"
+                )
+             )
+           | ^"t" ~
+             (
+              ^"e" ~
+                (
+                 ^"l"
+                 | ^"rnational"
+                )
+              | ^"uit"
+             )?
+           | ^"vestments"
+          )?
+        | ^"o"
+        | ^"piranga"
+        | ^"q"
+        | ^"r" ~
+          (
+           ^"ish"
+          )?
+        | ^"s" ~
+          (
+           ^"elect"
+           | ^"maili"
+           | ^"t" ~
+             (
+              ^"anbul"
+             )?
+          )?
+        | ^"t" ~
+          (
+           ^"au"
+           | ^"v"
+          )?
+        | ^"veco"
+        | ^"wc"
+       )
+     | ^"j" ~
+       (
+        ^"a" ~
+          (
+           ^"guar"
+           | ^"va"
+          )
+        | ^"c" ~
+          (
+           ^"b"
+           | ^"p"
+          )
+        | ^"e" ~
+          (
+           ^"ep"
+           | ^"tzt"
+           | ^"welry"
+          )?
+        | ^"io"
+        | ^"l" ~
+          (
+           ^"c"
+           | ^"l"
+          )
+        | ^"m" ~
+          (
+           ^"p"
+          )?
+        | ^"nj"
+        | ^"o" ~
+          (
+           ^"b" ~
+             (
+              ^"s"
+              | ^"urg"
+             )
+           | ^"t"
+           | ^"y"
+          )?
+        | ^"p" ~
+          (
+           ^"morgan"
+           | ^"rs"
+          )?
+        | ^"u" ~
+          (
+           ^"egos"
+           | ^"niper"
+          )
+       )
+     | ^"k" ~
+       (
+        ^"aufen"
+        | ^"ddi"
+        | ^"e" ~
+          (
+           ^"rry" ~
+             (
+              ^"hotels"
+              | ^"logistics"
+              | ^"properties"
+             )
+          )?
+        | ^"fh"
+        | ^"g"
+        | ^"h"
+        | ^"i" ~
+          (
+           ^"a"
+           | ^"m"
+           | ^"nd" ~
+             (
+              ^"er"
+              | ^"le"
+             )
+           | ^"tchen"
+           | ^"wi"
+          )?
+        | ^"m"
+        | ^"n"
+        | ^"o" ~
+          (
+           ^"eln"
+           | ^"matsu"
+           | ^"sher"
+          )
+        | ^"p" ~
+          (
+           ^"mg"
+           | ^"n"
+          )?
+        | ^"r" ~
+          (
+           ^"d"
+           | ^"ed"
+          )?
+        | ^"uokgroup"
+        | ^"w"
+        | ^"y" ~
+          (
+           ^"oto"
+          )?
+        | ^"z"
+       )
+     | ^"l" ~
+       (
+        ^"a" ~
+          (
+           ^"caixa"
+           | ^"dbrokes"
+           | ^"m" ~
+             (
+              ^"borghini"
+              | ^"er"
+             )
+           | ^"n" ~
+             (
+              ^"c" ~
+                (
+                 ^"aster"
+                 | ^"ia"
+                 | ^"ome"
+                )
+              | ^"d" ~
+                (
+                 ^"rover"
+                )?
+              | ^"xess"
+             )
+           | ^"salle"
+           | ^"t" ~
+             (
+              ^"ino"
+              | ^"robe"
+             )?
+           | ^"w" ~
+             (
+              ^"yer"
+             )?
+          )?
+        | ^"b"
+        | ^"c"
+        | ^"ds"
+        | ^"e" ~
+          (
+           ^"ase"
+           | ^"clerc"
+           | ^"frak"
+           | ^"g" ~
+             (
+              ^"al"
+              | ^"o"
+             )
+           | ^"xus"
+          )
+        | ^"gbt"
+        | ^"i" ~
+          (
+           ^"aison"
+           | ^"dl"
+           | ^"fe" ~
+             (
+              ^"insurance"
+              | ^"style"
+             )?
+           | ^"ghting"
+           | ^"ke"
+           | ^"lly"
+           | ^"m" ~
+             (
+              ^"ited"
+              | ^"o"
+             )
+           | ^"n" ~
+             (
+              ^"coln"
+              | ^"de"
+              | ^"k"
+             )
+           | ^"psy"
+           | ^"v" ~
+             (
+              ^"e"
+              | ^"ing"
+             )
+           | ^"xil"
+          )?
+        | ^"k"
+        | ^"o" ~
+          (
+           ^"an" ~
+             (
+              ^"s"
+             )?
+           | ^"c" ~
+             (
+              ^"ker"
+              | ^"us"
+             )
+           | ^"ft"
+           | ^"l"
+           | ^"ndon"
+           | ^"tt" ~
+             (
+              ^"e"
+              | ^"o"
+             )
+           | ^"ve"
+          )
+        | ^"pl" ~
+          (
+           ^"financial"
+          )?
+        | ^"r"
+        | ^"s"
+        | ^"t" ~
+          (
+           ^"d" ~
+             (
+              ^"a"
+             )?
+          )?
+        | ^"u" ~
+          (
+           ^"ndbeck"
+           | ^"pin"
+           | ^"x" ~
+             (
+              ^"e"
+              | ^"ury"
+             )
+          )?
+        | ^"v"
+        | ^"y"
+       )
+     | ^"m" ~
+       (
+        ^"a" ~
+          (
+           ^"cys"
+           | ^"drid"
+           | ^"i" ~
+             (
+              ^"f"
+              | ^"son"
+             )
+           | ^"keup"
+           | ^"n" ~
+             (
+              ^"agement"
+              | ^"go"
+             )?
+           | ^"p"
+           | ^"r" ~
+             (
+              ^"ket" ~
+                (
+                 ^"ing"
+                 | ^"s"
+                )?
+              | ^"riott"
+              | ^"shalls"
+             )
+           | ^"serati"
+           | ^"ttel"
+          )?
+        | ^"ba"
+        | ^"c" ~
+          (
+           ^"d" ~
+             (
+              ^"onalds"
+             )?
+           | ^"kinsey"
+          )?
+        | ^"d"
+        | ^"e" ~
+          (
+           ^"d" ~
+             (
+              ^"ia"
+             )?
+           | ^"et"
+           | ^"lbourne"
+           | ^"m" ~
+             (
+              ^"e"
+              | ^"orial"
+             )
+           | ^"n" ~
+             (
+              ^"u"
+             )?
+           | ^"o"
+           | ^"rckmsd"
+           | ^"tlife"
+          )?
+        | ^"f"
+        | ^"g"
+        | ^"h"
+        | ^"i" ~
+          (
+           ^"ami"
+           | ^"crosoft"
+           | ^"l"
+           | ^"n" ~
+             (
+              ^"i"
+              | ^"t"
+             )
+           | ^"t" ~
+             (
+              ^"subishi"
+             )?
+          )
+        | ^"k"
+        | ^"l" ~
+          (
+           ^"b"
+           | ^"s"
+          )?
+        | ^"m" ~
+          (
+           ^"a"
+          )?
+        | ^"n"
+        | ^"o" ~
+          (
+           ^"bi" ~
+             (
+              ^"l" ~
+                (
+                 ^"e"
+                 | ^"y"
+                )
+             )?
+           | ^"da"
+           | ^"e"
+           | ^"i"
+           | ^"m"
+           | ^"n" ~
+             (
+              ^"ash"
+              | ^"ey"
+              | ^"ster"
+              | ^"tblanc"
+             )
+           | ^"par"
+           | ^"r" ~
+             (
+              ^"mon"
+              | ^"tgage"
+             )
+           | ^"scow"
+           | ^"to" ~
+             (
+              ^"rcycles"
+             )?
+           | ^"v" ~
+             (
+              ^"i" ~
+                (
+                 ^"e"
+                 | ^"star"
+                )
+             )?
+          )?
+        | ^"p"
+        | ^"q"
+        | ^"r"
+        | ^"s" ~
+          (
+           ^"d"
+          )?
+        | ^"t" ~
+          (
+           ^"n"
+           | ^"pc"
+           | ^"r"
+          )?
+        | ^"u" ~
+          (
+           ^"seum"
+           | ^"tu" ~
+             (
+              ^"al"
+              | ^"elle"
+             )
+          )?
+        | ^"v"
+        | ^"w"
+        | ^"x"
+        | ^"y"
+        | ^"z"
+       )
+     | ^"n" ~
+       (
+        ^"a" ~
+          (
+           ^"b"
+           | ^"dex"
+           | ^"goya"
+           | ^"me"
+           | ^"t" ~
+             (
+              ^"ionwide"
+              | ^"ura"
+             )
+           | ^"vy"
+          )?
+        | ^"ba"
+        | ^"c"
+        | ^"e" ~
+          (
+           ^"c"
+           | ^"t" ~
+             (
+              ^"bank"
+              | ^"flix"
+              | ^"work"
+             )?
+           | ^"ustar"
+           | ^"w" ~
+             (
+              ^"holland"
+              | ^"s"
+             )?
+           | ^"x" ~
+             (
+              ^"t" ~
+                (
+                 ^"direct"
+                )?
+              | ^"us"
+             )
+          )?
+        | ^"f" ~
+          (
+           ^"l"
+          )?
+        | ^"g" ~
+          (
+           ^"o"
+          )?
+        | ^"hk"
+        | ^"i" ~
+          (
+           ^"co"
+           | ^"k" ~
+             (
+              ^"e"
+              | ^"on"
+             )
+           | ^"nja"
+           | ^"ssa" ~
+             (
+              ^"n"
+              | ^"y"
+             )
+          )?
+        | ^"l"
+        | ^"o" ~
+          (
+           ^"kia"
+           | ^"rt" ~
+             (
+              ^"hwesternmutual"
+              | ^"on"
+             )
+           | ^"w" ~
+             (
+              ^"ruz"
+              | ^"tv"
+             )?
+          )?
+        | ^"p"
+        | ^"r" ~
+          (
+           ^"a"
+           | ^"w"
+          )?
+        | ^"tt"
+        | ^"u"
+        | ^"yc"
+        | ^"z"
+       )
+     | ^"o" ~
+       (
+        ^"b" ~
+          (
+           ^"i"
+           | ^"server"
+          )
+        | ^"ff" ~
+          (
+           ^"ice"
+          )?
+        | ^"kinawa"
+        | ^"l" ~
+          (
+           ^"ayan" ~
+             (
+              ^"group"
+             )?
+           | ^"dnavy"
+           | ^"lo"
+          )
+        | ^"m" ~
+          (
+           ^"ega"
+          )?
+        | ^"n" ~
+          (
+           ^"e"
+           | ^"g"
+           | ^"ion"
+           | ^"l" ~
+             (
+              ^"ine"
+             )?
+           | ^"yourside"
+          )
+        | ^"oo"
+        | ^"pen"
+        | ^"r" ~
+          (
+           ^"a" ~
+             (
+              ^"cle"
+              | ^"nge"
+             )
+           | ^"g" ~
+             (
+              ^"anic"
+             )?
+           | ^"i" ~
+             (
+              ^"entexpress"
+              | ^"gins"
+             )
+          )
+        | ^"saka"
+        | ^"t" ~
+          (
+           ^"suka"
+           | ^"t"
+          )
+        | ^"vh"
+       )
+     | ^"p" ~
+       (
+        ^"a" ~
+          (
+           ^"ge"
+           | ^"mperedchef"
+           | ^"n" ~
+             (
+              ^"asonic"
+              | ^"erai"
+             )
+           | ^"r" ~
+             (
+              ^"is"
+              | ^"s"
+              | ^"t" ~
+                (
+                 ^"ners"
+                 | ^"s"
+                 | ^"y"
+                )
+             )
+           | ^"ssagens"
+           | ^"y"
+          )?
+        | ^"ccw"
+        | ^"e" ~
+          (
+           ^"t"
+          )?
+        | ^"f" ~
+          (
+           ^"izer"
+          )?
+        | ^"g"
+        | ^"h" ~
+          (
+           ^"armacy"
+           | ^"d"
+           | ^"ilips"
+           | ^"o" ~
+             (
+              ^"ne"
+              | ^"to" ~
+                (
+                 ^"graphy"
+                 | ^"s"
+                )?
+             )
+           | ^"ysio"
+          )?
+        | ^"i" ~
+          (
+           ^"aget"
+           | ^"c" ~
+             (
+              ^"s"
+              | ^"t" ~
+                (
+                 ^"et"
+                 | ^"ures"
+                )
+             )
+           | ^"d"
+           | ^"n" ~
+             (
+              ^"g"
+              | ^"k"
+             )?
+           | ^"oneer"
+           | ^"zza"
+          )
+        | ^"k"
+        | ^"l" ~
+          (
+           ^"a" ~
+             (
+              ^"ce"
+              | ^"y" ~
+                (
+                 ^"station"
+                )?
+             )
+           | ^"u" ~
+             (
+              ^"mbing"
+              | ^"s"
+             )
+          )?
+        | ^"m"
+        | ^"n" ~
+          (
+           ^"c"
+          )?
+        | ^"o" ~
+          (
+           ^"hl"
+           | ^"ker"
+           | ^"litie"
+           | ^"rn"
+           | ^"st"
+          )
+        | ^"r" ~
+          (
+           ^"a" ~
+             (
+              ^"merica"
+              | ^"xi"
+             )
+           | ^"ess"
+           | ^"ime"
+           | ^"o" ~
+             (
+              ^"d" ~
+                (
+                 ^"uctions"
+                )?
+              | ^"f"
+              | ^"gressive"
+              | ^"mo"
+              | ^"pert" ~
+                (
+                 ^"ies"
+                 | ^"y"
+                )
+              | ^"tection"
+             )?
+           | ^"u" ~
+             (
+              ^"dential"
+             )?
+          )?
+        | ^"s"
+        | ^"t"
+        | ^"ub"
+        | ^"w" ~
+          (
+           ^"c"
+          )?
+        | ^"y"
+       )
+     | ^"q" ~
+       (
+        ^"a"
+        | ^"pon"
+        | ^"ue" ~
+          (
+           ^"bec"
+           | ^"st"
+          )
+        | ^"vc"
+       )
+     | ^"r" ~
+       (
+        ^"a" ~
+          (
+           ^"cing"
+           | ^"dio"
+           | ^"id"
+          )
+        | ^"e" ~
+          (
+           ^"a" ~
+             (
+              ^"d"
+              | ^"l" ~
+                (
+                 ^"estate"
+                 | ^"t" ~
+                   (
+                    ^"or"
+                    | ^"y"
+                   )
+                )
+             )
+           | ^"cipes"
+           | ^"d" ~
+             (
+              ^"stone"
+              | ^"umbrella"
+             )?
+           | ^"hab"
+           | ^"i" ~
+             (
+              ^"se" ~
+                (
+                 ^"n"
+                )?
+              | ^"t"
+             )
+           | ^"liance"
+           | ^"n" ~
+             (
+              ^"t" ~
+                (
+                 ^"als"
+                )?
+             )?
+           | ^"p" ~
+             (
+              ^"air"
+              | ^"ort"
+              | ^"ublican"
+             )
+           | ^"st" ~
+             (
+              ^"aurant"
+             )?
+           | ^"view" ~
+             (
+              ^"s"
+             )?
+           | ^"xroth"
+          )?
+        | ^"i" ~
+          (
+           ^"c" ~
+             (
+              ^"h" ~
+                (
+                 ^"ardli"
+                )?
+              | ^"oh"
+             )
+           | ^"ghtathome"
+           | ^"l"
+           | ^"o"
+           | ^"p"
+          )
+        | ^"mit"
+        | ^"o" ~
+          (
+           ^"c" ~
+             (
+              ^"her"
+              | ^"ks"
+             )
+           | ^"deo"
+           | ^"gers"
+           | ^"om"
+          )?
+        | ^"s" ~
+          (
+           ^"vp"
+          )?
+        | ^"u" ~
+          (
+           ^"gby"
+           | ^"hr"
+           | ^"n"
+          )?
+        | ^"w" ~
+          (
+           ^"e"
+          )?
+        | ^"yukyu"
+       )
+     | ^"s" ~
+       (
+        ^"a" ~
+          (
+           ^"arland"
+           | ^"fe" ~
+             (
+              ^"ty"
+             )?
+           | ^"kura"
+           | ^"l" ~
+             (
+              ^"e"
+              | ^"on"
+             )
+           | ^"ms" ~
+             (
+              ^"club"
+              | ^"ung"
+             )
+           | ^"n" ~
+             (
+              ^"dvik" ~
+                (
+                 ^"coromant"
+                )?
+              | ^"ofi"
+             )
+           | ^"p" ~
+             (
+              ^"o"
+             )?
+           | ^"rl"
+           | ^"s"
+           | ^"ve"
+           | ^"xo"
+          )?
+        | ^"b" ~
+          (
+           ^"i"
+           | ^"s"
+          )?
+        | ^"c" ~
+          (
+           ^"a"
+           | ^"b"
+           | ^"h" ~
+             (
+              ^"aeffler"
+              | ^"midt"
+              | ^"o" ~
+                (
+                 ^"larships"
+                 | ^"ol"
+                )
+              | ^"ule"
+              | ^"warz"
+             )
+           | ^"ience"
+           | ^"johnson"
+           | ^"o" ~
+             (
+              ^"r"
+              | ^"t"
+             )
+          )?
+        | ^"d"
+        | ^"e" ~
+          (
+           ^"a" ~
+             (
+              ^"rch"
+              | ^"t"
+             )
+           | ^"cur" ~
+             (
+              ^"e"
+              | ^"ity"
+             )
+           | ^"ek"
+           | ^"lect"
+           | ^"ner"
+           | ^"rvices"
+           | ^"s"
+           | ^"ven"
+           | ^"w"
+           | ^"x" ~
+             (
+              ^"y"
+             )?
+          )?
+        | ^"fr"
+        | ^"g"
+        | ^"h" ~
+          (
+           ^"a" ~
+             (
+              ^"ngrila"
+              | ^"rp"
+              | ^"w"
+             )
+           | ^"ell"
+           | ^"i" ~
+             (
+              ^"a"
+              | ^"ksha"
+             )
+           | ^"o" ~
+             (
+              ^"es"
+              | ^"p" ~
+                (
+                 ^"ping"
+                )?
+              | ^"uji"
+              | ^"w" ~
+                (
+                 ^"time"
+                )?
+             )
+           | ^"riram"
+          )?
+        | ^"i" ~
+          (
+           ^"lk"
+           | ^"n" ~
+             (
+              ^"a"
+              | ^"gles"
+             )
+           | ^"te"
+          )?
+        | ^"j"
+        | ^"k" ~
+          (
+           ^"i" ~
+             (
+              ^"n"
+             )?
+           | ^"y" ~
+             (
+              ^"pe"
+             )?
+          )?
+        | ^"l" ~
+          (
+           ^"ing"
+          )?
+        | ^"m" ~
+          (
+           ^"art"
+           | ^"ile"
+          )?
+        | ^"n" ~
+          (
+           ^"cf"
+          )?
+        | ^"o" ~
+          (
+           ^"c" ~
+             (
+              ^"cer"
+              | ^"ial"
+             )
+           | ^"ft" ~
+             (
+              ^"bank"
+              | ^"ware"
+             )
+           | ^"hu"
+           | ^"l" ~
+             (
+              ^"ar"
+              | ^"utions"
+             )
+           | ^"n" ~
+             (
+              ^"g"
+              | ^"y"
+             )
+           | ^"y"
+          )?
+        | ^"p" ~
+          (
+           ^"ace"
+           | ^"iegel"
+           | ^"ot"
+           | ^"readbetting"
+          )
+        | ^"r" ~
+          (
+           ^"l"
+           | ^"t"
+          )?
+        | ^"s"
+        | ^"t" ~
+          (
+           ^"a" ~
+             (
+              ^"da"
+              | ^"ples"
+              | ^"r" ~
+                (
+                 ^"hub"
+                )?
+              | ^"t" ~
+                (
+                 ^"e" ~
+                   (
+                    ^"bank"
+                    | ^"farm"
+                   )
+                 | ^"oil"
+                )
+             )
+           | ^"c" ~
+             (
+              ^"group"
+             )?
+           | ^"o" ~
+             (
+              ^"ckholm"
+              | ^"r" ~
+                (
+                 ^"age"
+                 | ^"e"
+                )
+             )
+           | ^"ream"
+           | ^"ud" ~
+             (
+              ^"io"
+              | ^"y"
+             )
+           | ^"yle"
+          )?
+        | ^"u" ~
+          (
+           ^"cks"
+           | ^"pp" ~
+             (
+              ^"l" ~
+                (
+                 ^"ies"
+                 | ^"y"
+                )
+              | ^"ort"
+             )
+           | ^"r" ~
+             (
+              ^"f"
+              | ^"gery"
+             )
+           | ^"zuki"
+          )?
+        | ^"v"
+        | ^"w" ~
+          (
+           ^"atch"
+           | ^"i" ~
+             (
+              ^"ftcover"
+              | ^"ss"
+             )
+          )
+        | ^"x"
+        | ^"y" ~
+          (
+           ^"dney"
+           | ^"mantec"
+           | ^"stems"
+          )?
+        | ^"z"
+       )
+     | ^"t" ~
+       (
+        ^"a" ~
+          (
+           ^"b"
+           | ^"ipei"
+           | ^"lk"
+           | ^"obao"
+           | ^"rget"
+           | ^"t" ~
+             (
+              ^"a" ~
+                (
+                 ^"motors"
+                 | ^"r"
+                )
+              | ^"too"
+             )
+           | ^"x" ~
+             (
+              ^"i"
+             )?
+          )
+        | ^"c" ~
+          (
+           ^"i"
+          )?
+        | ^"d" ~
+          (
+           ^"k"
+          )?
+        | ^"e" ~
+          (
+           ^"am"
+           | ^"ch" ~
+             (
+              ^"nology"
+             )?
+           | ^"l" ~
+             (
+              ^"e" ~
+                (
+                 ^"city"
+                 | ^"fonica"
+                )
+             )?
+           | ^"masek"
+           | ^"nnis"
+           | ^"va"
+          )
+        | ^"f"
+        | ^"g"
+        | ^"h" ~
+          (
+           ^"d"
+           | ^"eat" ~
+             (
+              ^"er"
+              | ^"re"
+             )
+          )?
+        | ^"i" ~
+          (
+           ^"aa"
+           | ^"ckets"
+           | ^"enda"
+           | ^"ffany"
+           | ^"ps"
+           | ^"r" ~
+             (
+              ^"es"
+              | ^"ol"
+             )
+          )
+        | ^"j" ~
+          (
+           ^"maxx"
+           | ^"x"
+          )?
+        | ^"k" ~
+          (
+           ^"maxx"
+          )?
+        | ^"l"
+        | ^"m" ~
+          (
+           ^"all"
+          )?
+        | ^"n"
+        | ^"o" ~
+          (
+           ^"day"
+           | ^"kyo"
+           | ^"ols"
+           | ^"p"
+           | ^"ray"
+           | ^"shiba"
+           | ^"tal"
+           | ^"urs"
+           | ^"wn"
+           | ^"y" ~
+             (
+              ^"ota"
+              | ^"s"
+             )
+          )?
+        | ^"p"
+        | ^"r" ~
+          (
+           ^"a" ~
+             (
+              ^"d" ~
+                (
+                 ^"e"
+                 | ^"ing"
+                )
+              | ^"ining"
+              | ^"vel" ~
+                (
+                 ^"channel"
+                 | ^"ers" ~
+                   (
+                    ^"insurance"
+                   )?
+                )?
+             )
+           | ^"ust"
+           | ^"v"
+          )?
+        | ^"t"
+        | ^"u" ~
+          (
+           ^"be"
+           | ^"i"
+           | ^"nes"
+           | ^"shu"
+          )
+        | ^"v" ~
+          (
+           ^"s"
+          )?
+        | ^"w"
+        | ^"z"
+       )
+     | ^"u" ~
+       (
+        ^"a"
+        | ^"b" ~
+          (
+           ^"ank"
+           | ^"s"
+          )
+        | ^"connect"
+        | ^"g"
+        | ^"k"
+        | ^"m"
+        | ^"n" ~
+          (
+           ^"i" ~
+             (
+              ^"com"
+              | ^"versity"
+             )
+           | ^"o"
+          )
+        | ^"ol"
+        | ^"ps"
+        | ^"s"
+        | ^"y"
+        | ^"z"
+       )
+     | ^"v" ~
+       (
+        ^"a" ~
+          (
+           ^"cations"
+           | ^"n" ~
+             (
+              ^"a"
+              | ^"guard"
+             )
+          )?
+        | ^"c"
+        | ^"e" ~
+          (
+           ^"gas"
+           | ^"ntures"
+           | ^"r" ~
+             (
+              ^"isign"
+              | "mögensberat" ~
+                (
+                 ^"er"
+                 | ^"ung"
+                )
+              | ^"sicherung"
+             )
+           | ^"t"
+          )?
+        | ^"g"
+        | ^"i" ~
+          (
+           ^"ajes"
+           | ^"deo"
+           | ^"g"
+           | ^"king"
+           | ^"llas"
+           | ^"n"
+           | ^"p"
+           | ^"rgin"
+           | ^"s" ~
+             (
+              ^"a"
+              | ^"ion"
+              | ^"ta" ~
+                (
+                 ^"print"
+                )?
+             )
+           | ^"v" ~
+             (
+              ^"a"
+              | ^"o"
+             )
+          )?
+        | ^"laanderen"
+        | ^"n"
+        | ^"o" ~
+          (
+           ^"dka"
+           | ^"l" ~
+             (
+              ^"kswagen"
+              | ^"vo"
+             )
+           | ^"t" ~
+             (
+              ^"e"
+              | ^"ing"
+              | ^"o"
+             )
+           | ^"yage"
+          )
+        | ^"u" ~
+          (
+           ^"elos"
+          )?
+       )
+     | ^"w" ~
+       (
+        ^"a" ~
+          (
+           ^"l" ~
+             (
+              ^"es"
+              | ^"mart"
+              | ^"ter"
+             )
+           | ^"ng" ~
+             (
+              ^"gou"
+             )?
+           | ^"rman"
+           | ^"tch" ~
+             (
+              ^"es"
+             )?
+          )
+        | ^"e" ~
+          (
+           ^"ather" ~
+             (
+              ^"channel"
+             )?
+           | ^"b" ~
+             (
+              ^"cam"
+              | ^"er"
+              | ^"site"
+             )
+           | ^"d" ~
+             (
+              ^"ding"
+             )?
+           | ^"i" ~
+             (
+              ^"bo"
+              | ^"r"
+             )
+          )
+        | ^"f"
+        | ^"hoswho"
+        | ^"i" ~
+          (
+           ^"en"
+           | ^"ki"
+           | ^"lliamhill"
+           | ^"n" ~
+             (
+              ^"dows"
+              | ^"e"
+              | ^"ners"
+             )?
+          )
+        | ^"me"
+        | ^"o" ~
+          (
+           ^"lterskluwer"
+           | ^"odside"
+           | ^"r" ~
+             (
+              ^"k" ~
+                (
+                 ^"s"
+                )?
+              | ^"ld"
+             )
+           | ^"w"
+          )
+        | ^"s"
+        | ^"t" ~
+          (
+           ^"c"
+           | ^"f"
+          )
+       )
+     | ^"x" ~
+       (
+        ^"box"
+        | ^"erox"
+        | ^"finity"
+        | ^"i" ~
+          (
+           ^"huan"
+           | ^"n"
+          )
+        | ^"n--" ~
+          (
+           ^"1" ~
+             (
+              ^"1b4c3d"
+              | ^"ck2e1b"
+              | ^"qqw23a"
+             )
+           | ^"2scrj9c"
+           | ^"3" ~
+             (
+              ^"0rr7y"
+              | ^"bst00m"
+              | ^"ds443g"
+              | ^"e0b707e"
+              | ^"hcrj9c"
+              | ^"oq18vl8pn36a"
+              | ^"pxu8k"
+             )
+           | ^"4" ~
+             (
+              ^"2c2d9a"
+              | ^"5" ~
+                (
+                 ^"br" ~
+                   (
+                    ^"5cyl"
+                    | ^"j9c"
+                   )
+                 | ^"q11c"
+                )
+              | ^"gbrim"
+             )
+           | ^"5" ~
+             (
+              ^"4b7fta0cc"
+              | ^"5q" ~
+                (
+                 ^"w42g"
+                 | ^"x5d"
+                )
+              | ^"su34j936bgsg"
+              | ^"tzm5g"
+             )
+           | ^"6" ~
+             (
+              ^"frz82g"
+              | ^"qq986b3xl"
+             )
+           | ^"8" ~
+             (
+              ^"0a" ~
+                (
+                 ^"dxhks"
+                 | ^"o21a"
+                 | ^"qecdr1a"
+                 | ^"s" ~
+                   (
+                    ^"ehdb"
+                    | ^"wg"
+                   )
+                )
+              | ^"y0a063a"
+             )
+           | ^"9" ~
+             (
+              ^"0a" ~
+                (
+                 ^"3ac"
+                 | ^"e"
+                 | ^"is"
+                )
+              | ^"dbq2a"
+              | ^"et52u"
+              | ^"krt00a"
+             )
+           | ^"b" ~
+             (
+              ^"4w605ferd"
+              | ^"ck1b9a5dre4c"
+             )
+           | ^"c" ~
+             (
+              ^"1avg"
+              | ^"2br7g"
+              | ^"ck2b3b"
+              | ^"g4bki"
+              | ^"lchc0ea0b2g2a9gcd"
+              | ^"zr" ~
+                (
+                 ^"694b"
+                 | ^"s0t"
+                 | ^"u2d"
+                )
+             )
+           | ^"d1a" ~
+             (
+              ^"cj3b"
+              | ^"lf"
+             )
+           | ^"e" ~
+             (
+              ^"1a4c"
+              | ^"ckvdtc9d"
+              | ^"fvy88h"
+              | ^"stv75g"
+             )
+           | ^"f" ~
+             (
+              ^"ct429k"
+              | ^"hbei"
+              | ^"iq" ~
+                (
+                 ^"228c5hs"
+                 | ^"64b"
+                 | ^"s8s"
+                 | ^"z9s"
+                )
+              | ^"jq720a"
+              | ^"lw351e"
+              | ^"pcrj9c3d"
+              | ^"z" ~
+                (
+                 ^"c2c9e2c"
+                 | ^"ys8d69uvgm"
+                )
+             )
+           | ^"g" ~
+             (
+              ^"2xx48c"
+              | ^"ckr3f0f"
+              | ^"ecrj9c"
+              | ^"k3at1e"
+             )
+           | ^"h" ~
+             (
+              ^"2br" ~
+                (
+                 ^"eg3eve"
+                 | ^"j9c" ~
+                   (
+                    ^"8c"
+                   )?
+                )
+              | ^"xt814e"
+             )
+           | ^"i" ~
+             (
+              ^"1b6b1a6a2e"
+              | ^"mr513n"
+              | ^"o0a7i"
+             )
+           | ^"j" ~
+             (
+              ^"1a" ~
+                (
+                 ^"ef"
+                 | ^"mh"
+                )
+              | ^"6w193g"
+              | ^"lq61u9w7b"
+              | ^"vr189m"
+             )
+           | ^"k" ~
+             (
+              ^"crx77d1x4a"
+              | ^"p" ~
+                (
+                 ^"r" ~
+                   (
+                    ^"w13d"
+                    | ^"y57d"
+                   )
+                 | ^"u" ~
+                   (
+                    ^"716f"
+                    | ^"t3i"
+                   )
+                )
+             )
+           | ^"l" ~
+             (
+              ^"1acc"
+              | ^"gbbat1ad8j"
+             )
+           | ^"m" ~
+             (
+              ^"gb" ~
+                (
+                 ^"9awbf"
+                 | ^"a" ~
+                   (
+                    ^"3a" ~
+                      (
+                       ^"3ejt"
+                       | ^"4f16a"
+                      )
+                    | ^"7c0bbn0a"
+                    | ^"a" ~
+                      (
+                       ^"kc7dvf"
+                       | ^"m7a8h"
+                      )
+                    | ^"b2bd"
+                    | ^"h1a3hjkrd"
+                    | ^"i9azgqp6j"
+                    | ^"yh7gpa"
+                   )
+                 | ^"b" ~
+                   (
+                    ^"9fbpob"
+                    | ^"h1a" ~
+                      (
+                       ^"71e"
+                      )?
+                   )
+                 | ^"c" ~
+                   (
+                    ^"0a9azcg"
+                    | ^"a7dzdo"
+                   )
+                 | ^"erp4a5d4ar"
+                 | ^"gu82a"
+                 | ^"i4ecexp"
+                 | ^"pl2fh"
+                 | ^"t" ~
+                   (
+                    ^"3dhd"
+                    | ^"x2b"
+                   )
+                 | ^"x4cd0ab"
+                )
+              | ^"ix891f"
+              | ^"k1bu44c"
+              | ^"xtq1m"
+             )
+           | ^"n" ~
+             (
+              ^"gb" ~
+                (
+                 ^"c5azd"
+                 | ^"e9e0a"
+                 | ^"rx"
+                )
+              | ^"ode"
+              | ^"qv7f" ~
+                (
+                 ^"s00ema"
+                )?
+              | ^"yqy26a"
+             )
+           | ^"o" ~
+             (
+              ^"3cw4h"
+              | ^"gbpf8fl"
+             )
+           | ^"p" ~
+             (
+              ^"1a" ~
+                (
+                 ^"cf"
+                 | ^"i"
+                )
+              | ^"bt977c"
+              | ^"gbs0dh"
+              | ^"ssy2u"
+             )
+           | ^"q" ~
+             (
+              ^"9jyb4c"
+              | ^"cka1pmc"
+              | ^"xam"
+             )
+           | ^"r" ~
+             (
+              ^"hqv96g"
+              | ^"ovu88b"
+              | ^"vc1e0am3e"
+             )
+           | ^"s" ~
+             (
+              ^"9brj9c"
+              | ^"es554g"
+             )
+           | ^"t" ~
+             (
+              ^"60b56a"
+              | ^"ckwe"
+              | ^"iq49xqyj"
+             )
+           | ^"unup4y"
+           | ^"v" ~
+             (
+              ^"ermgensberat" ~
+                (
+                 ^"er-ctb"
+                 | ^"ung-pwb"
+                )
+              | ^"hquv"
+              | ^"uq861b"
+             )
+           | ^"w" ~
+             (
+              ^"4r" ~
+                (
+                 ^"85el8fhu5dnra"
+                 | ^"s40l"
+                )
+              | ^"gb" ~
+                (
+                 ^"h1c"
+                 | ^"l6a"
+                )
+             )
+           | ^"x" ~
+             (
+              ^"hq521b"
+              | ^"kc2" ~
+                (
+                 ^"al3hye2a"
+                 | ^"dl3a5ee0h"
+                )
+             )
+           | ^"y" ~
+             (
+              ^"9a3aq"
+              | ^"fro4i67o"
+              | ^"gbi2ammx"
+             )
+           | ^"zfr164b"
+          )
+        | ^"peria"
+        | ^"xx"
+        | ^"yz"
+       )
+     | ^"y" ~
+       (
+        ^"a" ~
+          (
+           ^"chts"
+           | ^"hoo"
+           | ^"maxun"
+           | ^"ndex"
+          )
+        | ^"e"
+        | ^"o" ~
+          (
+           ^"dobashi"
+           | ^"ga"
+           | ^"kohama"
+           | ^"u" ~
+             (
+              ^"tube"
+             )?
+          )
+        | ^"t"
+        | ^"un"
+       )
+     | ^"z" ~
+       (
+        ^"a" ~
+          (
+           ^"ppos"
+           | ^"ra"
+          )?
+        | ^"ero"
+        | ^"ip" ~
+          (
+           ^"po"
+          )?
+        | ^"m"
+        | ^"one"
+        | ^"uerich"
+        | ^"w"
+       )
+     | "ελ"
+     | "б" ~
+       (
+        "г"
+        | "ел"
+       )
+     | "дети"
+     | "ею"
+     | "к" ~
+       (
+        "атолик"
+        | "ом"
+       )
+     | "м" ~
+       (
+        "кд"
+        | "о" ~
+          (
+           "н"
+           | "сква"
+          )
+       )
+     | "о" ~
+       (
+        "нлайн"
+        | "рг"
+       )
+     | "р" ~
+       (
+        "ус"
+        | "ф"
+       )
+     | "с" ~
+       (
+        "айт"
+        | "рб"
+       )
+     | "укр"
+     | "қаз"
+     | "հայ"
+     | "קום"
+     | "ا" ~
+       (
+        "بوظبي"
+        | "تصالات"
+        | "رامكو"
+        | "ل" ~
+          (
+           "اردن"
+           | "جزائر"
+           | "سعودية"
+           | "عليان"
+           | "مغرب"
+          )
+        | "مارات"
+        | "یران"
+       )
+     | "ب" ~
+       (
+        "ا" ~
+          (
+           "رت"
+           | "زار"
+          )
+        | "يتك"
+        | "ھارت"
+       )
+     | "تونس"
+     | "سو" ~
+       (
+        "دان"
+        | "رية"
+       )
+     | "شبكة"
+     | "ع" ~
+       (
+        "ر" ~
+          (
+           "اق"
+           | "ب"
+          )
+        | "مان"
+       )
+     | "فلسطين"
+     | "قطر"
+     | "ك" ~
+       (
+        "اثوليك"
+        | "وم"
+       )
+     | "م" ~
+       (
+        "صر"
+        | "ليسيا"
+        | "و" ~
+          (
+           "بايلي"
+           | "ريتانيا"
+           | "قع"
+          )
+       )
+     | "همراه"
+     | "پاکستان"
+     | "ڀارت"
+     | "कॉम"
+     | "नेट"
+     | "भार" ~
+       (
+        "त" ~
+          (
+           "म्"
+          )?
+        | "ोत"
+       )
+     | "संगठन"
+     | "বাংলা"
+     | "ভা" ~
+       (
+        "রত"
+        | "ৰত"
+       )
+     | "ਭਾਰਤ"
+     | "ભારત"
+     | "ଭାରତ"
+     | "இ" ~
+       (
+        "ந்தியா"
+        | "லங்கை"
+       )
+     | "சிங்கப்பூர்"
+     | "భారత్"
+     | "ಭಾರತ"
+     | "ഭാരതം"
+     | "ලංකා"
+     | "คอม"
+     | "ไทย"
+     | "გე"
+     | "みんな"
+     | "クラウド"
+     | "グーグル"
+     | "コム"
+     | "ストア"
+     | "セール"
+     | "ファッション"
+     | "ポイント"
+     | "世界"
+     | "中" ~
+       (
+        "信"
+        | "国"
+        | "國"
+        | "文网"
+       )
+     | "企业"
+     | "佛山"
+     | "信息"
+     | "健康"
+     | "八卦"
+     | "公" ~
+       (
+        "司"
+        | "益"
+       )
+     | "台" ~
+       (
+        "湾"
+        | "灣"
+       )
+     | "商" ~
+       (
+        "城"
+        | "店"
+        | "标"
+       )
+     | "嘉里" ~
+       (
+        "大酒店"
+       )?
+     | "在线"
+     | "大" ~
+       (
+        "众汽车"
+        | "拿"
+       )
+     | "天主教"
+     | "娱乐"
+     | "家電"
+     | "工行"
+     | "广东"
+     | "微博"
+     | "慈善"
+     | "我爱你"
+     | "手" ~
+       (
+        "机"
+        | "表"
+       )
+     | "政" ~
+       (
+        "务"
+        | "府"
+       )
+     | "新" ~
+       (
+        "加坡"
+        | "闻"
+       )
+     | "时尚"
+     | "書籍"
+     | "机构"
+     | "淡马锡"
+     | "游戏"
+     | "澳門"
+     | "点看"
+     | "珠宝"
+     | "移动"
+     | "组织机构"
+     | "网" ~
+       (
+        "址"
+        | "店"
+        | "站"
+        | "络"
+       )
+     | "联通"
+     | "诺基亚"
+     | "谷歌"
+     | "购物"
+     | "通販"
+     | "集团"
+     | "電訊盈科"
+     | "飞利浦"
+     | "食品"
+     | "餐厅"
+     | "香" ~
+       (
+        "格里拉"
+        | "港"
+       )
+     | "닷" ~
+       (
+        "넷"
+        | "컴"
+       )
+     | "삼성"
+     | "한국"
+}

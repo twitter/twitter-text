@@ -1,0 +1,11 @@
+// Copyright 2019 Robert Sayre
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
+hit_text = _{ SOI ~ markup* ~ EOI }
+start_tag = { "<" ~ tag_body+ ~ ">" }
+end_tag = { "</" ~ tag_body+ ~ ">" }
+tag_body = _{ !("<"|">") ~ ANY }
+element = { start_tag ~ markup ~ end_tag }
+markup = _{ (element | text)+ }
+text = { (!"<" ~ ANY)+ }

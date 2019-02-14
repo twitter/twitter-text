@@ -6,3 +6,7 @@ java/.idea
 twitter-text.iml
 .DS_Store
 *.sw?
+**/*.DS_Store
+/target
+**/*.rs.bk
+Cargo.lock

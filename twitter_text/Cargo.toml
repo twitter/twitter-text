@@ -1,0 +1,12 @@
+[package]
+name = "twitter_text"
+version = "0.1.0"
+authors = ["Robert Sayre <sayrer@gmail.com>"]
+readme = "README.md"
+
+[dependencies]
+unicode-normalization = "0.1.7"
+idna = "0.1.5"
+pest = "2.1.0"
+twitter_text_config = { path = "../config" }
+twitter_text_parser = { path = "../parser" }

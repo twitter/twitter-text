@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "maxWeightedTweetLength": 140,
+  "scale": 1,
+  "defaultWeight": 1,
+  "transformedURLLength": 23,
+  "ranges": []
+}

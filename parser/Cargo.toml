@@ -1,0 +1,13 @@
+[package]
+name = "twitter_text_parser"
+version = "0.1.0"
+authors = ["Robert Sayre <sayrer@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+pest = "2.1.0"
+pest_derive = "2.1.0"
+
+[lib]
+doctest = false
+test = false
