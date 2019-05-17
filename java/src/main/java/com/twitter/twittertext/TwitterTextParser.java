@@ -62,7 +62,7 @@ public final class TwitterTextParser {
    */
   @Nonnull
   public static TwitterTextParseResults parseTweet(@Nullable final String tweet) {
-    return parseTweet(tweet, TWITTER_TEXT_WEIGHTED_CHAR_COUNT_CONFIG);
+    return parseTweet(tweet, TWITTER_TEXT_DEFAULT_CONFIG);
   }
 
   /**
@@ -88,7 +88,7 @@ public final class TwitterTextParser {
   @Nonnull
   public static TwitterTextParseResults parseTweetWithoutUrlExtraction(
       @Nullable final String tweet) {
-    return parseTweet(tweet, TWITTER_TEXT_WEIGHTED_CHAR_COUNT_CONFIG, false);
+    return parseTweet(tweet, TWITTER_TEXT_DEFAULT_CONFIG, false);
   }
 
   /**
