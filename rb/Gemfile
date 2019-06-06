@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 # Specify the gem's dependencies in twitter-text.gemspec
 gemspec
