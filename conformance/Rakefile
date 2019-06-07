@@ -5,7 +5,7 @@ require 'yaml'
 namespace :tlds do
   desc 'Grab tlds from iana and save to tld_lib.yml'
   task :iana_update do
-    doc = Nokogiri::HTML(open('http://www.iana.org/domains/root/db'))
+    doc = Nokogiri::HTML(open('https://www.iana.org/domains/root/db'))
     tlds = []
     types = {
       'country' => /country-code/,
