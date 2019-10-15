@@ -396,4 +396,32 @@ public class ExtractorTest extends TestCase {
       }
     }
   }
+
+  public void testEmailInText(){
+    String text="I hope this feature helpful please contact me: Azdy-dev@github.com";
+    final List<Extractor.Entity> extracted =
+            extractor.extractEmailWithIndices(text);
+    assertEquals(extracted.get(0).value,"Azdy-dev@github.com");
+  }
+
+  public void testIpAddressInText(){
+    String text="Private ips like 192.168.1.1 are used in everywhere.";
+    final List<Extractor.Entity> extracted =
+            extractor.extractIpWithIndices(text);
+    assertEquals(extracted.get(0).value,"192.168.1.1");
+  }
+
+  public void testIPandEmailExtractorBesideOtherExtractors(){
+    String text=" test@twittertest.com in  github.com with 192.168.1.1 ip address please follows us @mentionn in twitter.com.";
+    final List<Extractor.Entity> extracted =
+            extractor.extractEntitiesWithIndices(text);
+    assertEquals(extracted.get(0).value,"test@twittertest.com");
+    assertEquals(extracted.get(1).value,"github.com");
+    assertEquals(extracted.get(2).value,"192.168.1.1");
+    assertEquals(extracted.get(3).value,"mentionn");
+    assertEquals(extracted.get(4).value,"twitter.com");
+    assertEquals(extracted.size(),5);
+
+  }
+
 }
