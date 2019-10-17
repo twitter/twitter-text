@@ -11,8 +11,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.linkedin.urls.Url;
+import com.linkedin.urls.detection.UrlDetector;
+import com.linkedin.urls.detection.UrlDetectorOptions;
 
 /**
  * A class to extract usernames, lists, hashtags and URLs from Tweet text.
@@ -39,7 +43,7 @@ public class Extractor {
 
   public static class Entity {
     public enum Type {
-      URL, HASHTAG, MENTION, CASHTAG
+      URL, HASHTAG, MENTION, CASHTAG, IP, EMAIL
     }
 
     protected int start;
@@ -185,6 +189,8 @@ public class Extractor {
     entities.addAll(extractHashtagsWithIndices(text, false));
     entities.addAll(extractMentionsOrListsWithIndices(text));
     entities.addAll(extractCashtagsWithIndices(text));
+    entities.addAll(extractIpWithIndices(text));
+    entities.addAll(extractEmailWithIndices(text));
 
     removeOverlappingEntities(entities);
     return entities;
@@ -647,4 +653,64 @@ public class Extractor {
       return this.charIndex;
     }
   }
+
+    public List<Entity> extractIpWithIndices(String text) {
+        Pattern IP_PATTERN_GENERAL = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
+        if (isEmptyString(text)) {
+            return Collections.emptyList();
+        }
+        UrlDetector parser = new UrlDetector(text, UrlDetectorOptions.Default);
+        List<Url> urls = parser.detect();
+
+        final List<Entity> ip = new ArrayList<>();
+        Integer lastIndex = 0;
+        for (Url url : urls) {
+            Matcher ipMatcher = IP_PATTERN_GENERAL.matcher(url.getOriginalUrl());
+            Integer start = text.indexOf(url.getOriginalUrl(), lastIndex);
+            Integer end = start + url.getOriginalUrl().length();
+            if (ipMatcher.matches())
+                ip.add(new Entity(start, end, url.getOriginalUrl(), Entity.Type.IP));
+            lastIndex = start + url.getOriginalUrl().length();
+        }
+        return ip;
+    }
+
+
+    public List<Entity> extractEmailWithIndices(String text) {
+        if (isEmptyString(text)) {
+            return Collections.emptyList();
+        }
+
+        // Performance optimization.
+        // If text doesn't contain @/＠ at all, the text doesn't
+        // contain email@mail.com So we can simply return an empty list.
+
+        Boolean found=false;
+        for (char c : text.toCharArray()) {
+            if (c == '@' || c == '＠') {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            return Collections.emptyList();
+        }
+
+        UrlDetector parser = new UrlDetector(text, UrlDetectorOptions.Default);
+        List<Url> urls = parser.detect();
+
+        final List<Entity> email = new ArrayList<>();
+        Integer lastIndex = 0;
+        for (Url url : urls) {
+            Integer start = text.indexOf(url.getOriginalUrl(), lastIndex);
+            Integer end = start + url.getOriginalUrl().length();
+
+            if (url.getOriginalUrl().contains("@"))
+                email.add(new Entity(start, end, url.getOriginalUrl(), Entity.Type.EMAIL));
+            lastIndex = start + url.getOriginalUrl().length();
+
+        }
+        return email;
+    }
+
 }
