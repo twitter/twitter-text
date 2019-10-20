@@ -396,4 +396,39 @@ public class ExtractorTest extends TestCase {
       }
     }
   }
+
+
+  public void testEmailExtractor() {
+    final String text = "test@twitter.com and test2@twitter.com for testing email extractor.";
+    final List<Extractor.Entity> extracted = extractor.extractEmailWithIndices(text);
+
+    assertEquals(extracted.get(0).getStart().intValue(), 0);
+    assertEquals(extracted.get(0).value, "test@twitter.com");
+    assertEquals(extracted.get(1).getStart().intValue(), 21);
+    assertEquals(extracted.get(1).value, "test2@twitter.com");
+
+  }
+
+  public void testIPExtractor() {
+    final String text = "192.168.1.1 , 172.16.1.1 and 8.8.8.8 are ips to test ip extractor.";
+    final List<Extractor.Entity> extracted = extractor.extractIpWithIndices(text);
+
+    assertEquals(extracted.get(0).getStart().intValue(), 0);
+    assertEquals(extracted.get(0).value, "192.168.1.1");
+    assertEquals(extracted.get(1).getStart().intValue(), 14);
+    assertEquals(extracted.get(2).value, "8.8.8.8");
+  }
+
+  public void testEmailAndIPExtractorBesideOthers() {
+    final String text = "@test example of a mention, 192.168.1.1 and test@twitter.com examples" +
+            " of news entities, twitter.com is a url and #hashi is an example of a hashtag.";
+    final List<Extractor.Entity> extracted = extractor.extractEntitiesWithIndices(text);
+
+    assertEquals(extracted.get(0).value, "test");
+    assertEquals(extracted.get(1).value, "192.168.1.1");
+    assertEquals(extracted.get(2).value, "test@twitter.com");
+    assertEquals(extracted.get(3).value, "twitter.com");
+    assertEquals(extracted.get(4).value, "hashi");
+  }
+
 }
