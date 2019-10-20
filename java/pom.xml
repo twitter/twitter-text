@@ -263,5 +263,12 @@
       <artifactId>jsr305</artifactId>
       <version>2.0.1</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.linkedin.urls</groupId>
+      <artifactId>url-detector</artifactId>
+      <version>0.1.17</version>
+    </dependency>
+
   </dependencies>
 </project>
