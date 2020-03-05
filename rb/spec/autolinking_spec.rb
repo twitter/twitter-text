@@ -18,6 +18,16 @@ describe Twitter::TwitterText::Autolink do
       @autolinked_text = TestAutolink.new.auto_link(original_text) if original_text
     end
 
+    describe "plain text" do
+      context "plain text with emoji" do
+        def original_text; "gotcha 👍"; end
+
+        it "should be unchanged" do
+          expect(@autolinked_text).to eq("gotcha 👍")
+        end
+      end
+    end
+
     describe "username autolinking" do
       context "username preceded by a space" do
         def original_text; "hello @jacob"; end
