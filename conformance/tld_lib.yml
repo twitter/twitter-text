@@ -9,6 +9,7 @@ country:
 - 中國
 - 中国
 - გე
+- ລາວ
 - ไทย
 - ලංකා
 - ഭാരതം
@@ -45,6 +46,7 @@ country:
 - المغرب
 - السعودية
 - الجزائر
+- البحرين
 - الاردن
 - հայ
 - қаз
@@ -56,6 +58,7 @@ country:
 - ею
 - бел
 - бг
+- ευ
 - ελ
 - zw
 - zm
@@ -944,6 +947,7 @@ generic:
 - locker
 - loans
 - loan
+- llp
 - llc
 - lixil
 - living
@@ -1151,6 +1155,7 @@ generic:
 - gea
 - gdn
 - gbiz
+- gay
 - garden
 - gap
 - games
@@ -1315,6 +1320,7 @@ generic:
 - creditunion
 - creditcard
 - credit
+- cpa
 - courses
 - coupons
 - coupon
