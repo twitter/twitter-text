@@ -81,6 +81,8 @@ module Twitter
             link_to_screen_name(entity, chars, options, &block)
           elsif entity[:cashtag]
             link_to_cashtag(entity, chars, options, &block)
+          elsif entity[:emoji]
+            entity[:emoji]
           end
         end
       end
