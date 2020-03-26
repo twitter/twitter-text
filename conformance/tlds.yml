@@ -1,227 +1,243 @@
 ---
 tests:
   country:
-  - description: "한국 is a valid country tld"
+  - description: 한국 is a valid country tld
     text: https://twitter.한국
     expected:
     - https://twitter.한국
-  - description: "香港 is a valid country tld"
+  - description: 香港 is a valid country tld
     text: https://twitter.香港
     expected:
     - https://twitter.香港
-  - description: "澳門 is a valid country tld"
+  - description: 澳門 is a valid country tld
     text: https://twitter.澳門
     expected:
     - https://twitter.澳門
-  - description: "新加坡 is a valid country tld"
+  - description: 新加坡 is a valid country tld
     text: https://twitter.新加坡
     expected:
     - https://twitter.新加坡
-  - description: "台灣 is a valid country tld"
+  - description: 台灣 is a valid country tld
     text: https://twitter.台灣
     expected:
     - https://twitter.台灣
-  - description: "台湾 is a valid country tld"
+  - description: 台湾 is a valid country tld
     text: https://twitter.台湾
     expected:
     - https://twitter.台湾
-  - description: "中國 is a valid country tld"
+  - description: 中國 is a valid country tld
     text: https://twitter.中國
     expected:
     - https://twitter.中國
-  - description: "中国 is a valid country tld"
+  - description: 中国 is a valid country tld
     text: https://twitter.中国
     expected:
     - https://twitter.中国
-  - description: "გე is a valid country tld"
+  - description: გე is a valid country tld
     text: https://twitter.გე
     expected:
     - https://twitter.გე
-  - description: "ไทย is a valid country tld"
+  - description: ລາວ is a valid country tld
+    text: https://twitter.ລາວ
+    expected:
+    - https://twitter.ລາວ
+  - description: ไทย is a valid country tld
     text: https://twitter.ไทย
     expected:
     - https://twitter.ไทย
-  - description: "ලංකා is a valid country tld"
+  - description: ලංකා is a valid country tld
     text: https://twitter.ලංකා
     expected:
     - https://twitter.ලංකා
-  - description: "ഭാരതം is a valid country tld"
+  - description: ഭാരതം is a valid country tld
     text: https://twitter.ഭാരതം
     expected:
     - https://twitter.ഭാരതം
-  - description: "ಭಾರತ is a valid country tld"
+  - description: ಭಾರತ is a valid country tld
     text: https://twitter.ಭಾರತ
     expected:
     - https://twitter.ಭಾರತ
-  - description: "భారత్ is a valid country tld"
+  - description: భారత్ is a valid country tld
     text: https://twitter.భారత్
     expected:
     - https://twitter.భారత్
-  - description: "சிங்கப்பூர் is a valid country tld"
+  - description: சிங்கப்பூர் is a valid country tld
     text: https://twitter.சிங்கப்பூர்
     expected:
     - https://twitter.சிங்கப்பூர்
-  - description: "இலங்கை is a valid country tld"
+  - description: இலங்கை is a valid country tld
     text: https://twitter.இலங்கை
     expected:
     - https://twitter.இலங்கை
-  - description: "இந்தியா is a valid country tld"
+  - description: இந்தியா is a valid country tld
     text: https://twitter.இந்தியா
     expected:
     - https://twitter.இந்தியா
-  - description: "ଭାରତ is a valid country tld"
+  - description: ଭାରତ is a valid country tld
     text: https://twitter.ଭାରତ
     expected:
     - https://twitter.ଭାରତ
-  - description: "ભારત is a valid country tld"
+  - description: ભારત is a valid country tld
     text: https://twitter.ભારત
     expected:
     - https://twitter.ભારત
-  - description: "ਭਾਰਤ is a valid country tld"
+  - description: ਭਾਰਤ is a valid country tld
     text: https://twitter.ਭਾਰਤ
     expected:
     - https://twitter.ਭਾਰਤ
-  - description: "ভাৰত is a valid country tld"
+  - description: ভাৰত is a valid country tld
     text: https://twitter.ভাৰত
     expected:
     - https://twitter.ভাৰত
-  - description: "ভারত is a valid country tld"
+  - description: ভারত is a valid country tld
     text: https://twitter.ভারত
     expected:
     - https://twitter.ভারত
-  - description: "বাংলা is a valid country tld"
+  - description: বাংলা is a valid country tld
     text: https://twitter.বাংলা
     expected:
     - https://twitter.বাংলা
-  - description: "भारोत is a valid country tld"
+  - description: भारोत is a valid country tld
     text: https://twitter.भारोत
     expected:
     - https://twitter.भारोत
-  - description: "भारतम् is a valid country tld"
+  - description: भारतम् is a valid country tld
     text: https://twitter.भारतम्
     expected:
     - https://twitter.भारतम्
-  - description: "भारत is a valid country tld"
+  - description: भारत is a valid country tld
     text: https://twitter.भारत
     expected:
     - https://twitter.भारत
-  - description: "ڀارت is a valid country tld"
+  - description: ڀارت is a valid country tld
     text: https://twitter.ڀارت
     expected:
     - https://twitter.ڀارت
-  - description: "پاکستان is a valid country tld"
+  - description: پاکستان is a valid country tld
     text: https://twitter.پاکستان
     expected:
     - https://twitter.پاکستان
-  - description: "مليسيا is a valid country tld"
+  - description: موريتانيا is a valid country tld
+    text: https://twitter.موريتانيا
+    expected:
+    - https://twitter.موريتانيا
+  - description: مليسيا is a valid country tld
     text: https://twitter.مليسيا
     expected:
     - https://twitter.مليسيا
-  - description: "مصر is a valid country tld"
+  - description: مصر is a valid country tld
     text: https://twitter.مصر
     expected:
     - https://twitter.مصر
-  - description: "قطر is a valid country tld"
+  - description: قطر is a valid country tld
     text: https://twitter.قطر
     expected:
     - https://twitter.قطر
-  - description: "فلسطين is a valid country tld"
+  - description: فلسطين is a valid country tld
     text: https://twitter.فلسطين
     expected:
     - https://twitter.فلسطين
-  - description: "عمان is a valid country tld"
+  - description: عمان is a valid country tld
     text: https://twitter.عمان
     expected:
     - https://twitter.عمان
-  - description: "عراق is a valid country tld"
+  - description: عراق is a valid country tld
     text: https://twitter.عراق
     expected:
     - https://twitter.عراق
-  - description: "سورية is a valid country tld"
+  - description: سورية is a valid country tld
     text: https://twitter.سورية
     expected:
     - https://twitter.سورية
-  - description: "سودان is a valid country tld"
+  - description: سودان is a valid country tld
     text: https://twitter.سودان
     expected:
     - https://twitter.سودان
-  - description: "تونس is a valid country tld"
+  - description: تونس is a valid country tld
     text: https://twitter.تونس
     expected:
     - https://twitter.تونس
-  - description: "بھارت is a valid country tld"
+  - description: بھارت is a valid country tld
     text: https://twitter.بھارت
     expected:
     - https://twitter.بھارت
-  - description: "بارت is a valid country tld"
+  - description: بارت is a valid country tld
     text: https://twitter.بارت
     expected:
     - https://twitter.بارت
-  - description: "ایران is a valid country tld"
+  - description: ایران is a valid country tld
     text: https://twitter.ایران
     expected:
     - https://twitter.ایران
-  - description: "امارات is a valid country tld"
+  - description: امارات is a valid country tld
     text: https://twitter.امارات
     expected:
     - https://twitter.امارات
-  - description: "المغرب is a valid country tld"
+  - description: المغرب is a valid country tld
     text: https://twitter.المغرب
     expected:
     - https://twitter.المغرب
-  - description: "السعودية is a valid country tld"
+  - description: السعودية is a valid country tld
     text: https://twitter.السعودية
     expected:
     - https://twitter.السعودية
-  - description: "الجزائر is a valid country tld"
+  - description: الجزائر is a valid country tld
     text: https://twitter.الجزائر
     expected:
     - https://twitter.الجزائر
-  - description: "الاردن is a valid country tld"
+  - description: البحرين is a valid country tld
+    text: https://twitter.البحرين
+    expected:
+    - https://twitter.البحرين
+  - description: الاردن is a valid country tld
     text: https://twitter.الاردن
     expected:
     - https://twitter.الاردن
-  - description: "հայ is a valid country tld"
+  - description: հայ is a valid country tld
     text: https://twitter.հայ
     expected:
     - https://twitter.հայ
-  - description: "қаз is a valid country tld"
+  - description: қаз is a valid country tld
     text: https://twitter.қаз
     expected:
     - https://twitter.қаз
-  - description: "укр is a valid country tld"
+  - description: укр is a valid country tld
     text: https://twitter.укр
     expected:
     - https://twitter.укр
-  - description: "срб is a valid country tld"
+  - description: срб is a valid country tld
     text: https://twitter.срб
     expected:
     - https://twitter.срб
-  - description: "рф is a valid country tld"
+  - description: рф is a valid country tld
     text: https://twitter.рф
     expected:
     - https://twitter.рф
-  - description: "мон is a valid country tld"
+  - description: мон is a valid country tld
     text: https://twitter.мон
     expected:
     - https://twitter.мон
-  - description: "мкд is a valid country tld"
+  - description: мкд is a valid country tld
     text: https://twitter.мкд
     expected:
     - https://twitter.мкд
-  - description: "ею is a valid country tld"
+  - description: ею is a valid country tld
     text: https://twitter.ею
     expected:
     - https://twitter.ею
-  - description: "бел is a valid country tld"
+  - description: бел is a valid country tld
     text: https://twitter.бел
     expected:
     - https://twitter.бел
-  - description: "бг is a valid country tld"
+  - description: бг is a valid country tld
     text: https://twitter.бг
     expected:
     - https://twitter.бг
-  - description: "ελ is a valid country tld"
+  - description: ευ is a valid country tld
+    text: https://twitter.ευ
+    expected:
+    - https://twitter.ευ
+  - description: ελ is a valid country tld
     text: https://twitter.ελ
     expected:
     - https://twitter.ελ
@@ -1246,371 +1262,375 @@ tests:
     expected:
     - https://twitter.ac
   generic:
-  - description: "삼성 is a valid generic tld"
+  - description: 삼성 is a valid generic tld
     text: https://twitter.삼성
     expected:
     - https://twitter.삼성
-  - description: "닷컴 is a valid generic tld"
+  - description: 닷컴 is a valid generic tld
     text: https://twitter.닷컴
     expected:
     - https://twitter.닷컴
-  - description: "닷넷 is a valid generic tld"
+  - description: 닷넷 is a valid generic tld
     text: https://twitter.닷넷
     expected:
     - https://twitter.닷넷
-  - description: "香格里拉 is a valid generic tld"
+  - description: 香格里拉 is a valid generic tld
     text: https://twitter.香格里拉
     expected:
     - https://twitter.香格里拉
-  - description: "餐厅 is a valid generic tld"
+  - description: 餐厅 is a valid generic tld
     text: https://twitter.餐厅
     expected:
     - https://twitter.餐厅
-  - description: "食品 is a valid generic tld"
+  - description: 食品 is a valid generic tld
     text: https://twitter.食品
     expected:
     - https://twitter.食品
-  - description: "飞利浦 is a valid generic tld"
+  - description: 飞利浦 is a valid generic tld
     text: https://twitter.飞利浦
     expected:
     - https://twitter.飞利浦
-  - description: "電訊盈科 is a valid generic tld"
+  - description: 電訊盈科 is a valid generic tld
     text: https://twitter.電訊盈科
     expected:
     - https://twitter.電訊盈科
-  - description: "集团 is a valid generic tld"
+  - description: 集团 is a valid generic tld
     text: https://twitter.集团
     expected:
     - https://twitter.集团
-  - description: "通販 is a valid generic tld"
+  - description: 通販 is a valid generic tld
     text: https://twitter.通販
     expected:
     - https://twitter.通販
-  - description: "购物 is a valid generic tld"
+  - description: 购物 is a valid generic tld
     text: https://twitter.购物
     expected:
     - https://twitter.购物
-  - description: "谷歌 is a valid generic tld"
+  - description: 谷歌 is a valid generic tld
     text: https://twitter.谷歌
     expected:
     - https://twitter.谷歌
-  - description: "诺基亚 is a valid generic tld"
+  - description: 诺基亚 is a valid generic tld
     text: https://twitter.诺基亚
     expected:
     - https://twitter.诺基亚
-  - description: "联通 is a valid generic tld"
+  - description: 联通 is a valid generic tld
     text: https://twitter.联通
     expected:
     - https://twitter.联通
-  - description: "网络 is a valid generic tld"
+  - description: 网络 is a valid generic tld
     text: https://twitter.网络
     expected:
     - https://twitter.网络
-  - description: "网站 is a valid generic tld"
+  - description: 网站 is a valid generic tld
     text: https://twitter.网站
     expected:
     - https://twitter.网站
-  - description: "网店 is a valid generic tld"
+  - description: 网店 is a valid generic tld
     text: https://twitter.网店
     expected:
     - https://twitter.网店
-  - description: "网址 is a valid generic tld"
+  - description: 网址 is a valid generic tld
     text: https://twitter.网址
     expected:
     - https://twitter.网址
-  - description: "组织机构 is a valid generic tld"
+  - description: 组织机构 is a valid generic tld
     text: https://twitter.组织机构
     expected:
     - https://twitter.组织机构
-  - description: "移动 is a valid generic tld"
+  - description: 移动 is a valid generic tld
     text: https://twitter.移动
     expected:
     - https://twitter.移动
-  - description: "珠宝 is a valid generic tld"
+  - description: 珠宝 is a valid generic tld
     text: https://twitter.珠宝
     expected:
     - https://twitter.珠宝
-  - description: "点看 is a valid generic tld"
+  - description: 点看 is a valid generic tld
     text: https://twitter.点看
     expected:
     - https://twitter.点看
-  - description: "游戏 is a valid generic tld"
+  - description: 游戏 is a valid generic tld
     text: https://twitter.游戏
     expected:
     - https://twitter.游戏
-  - description: "淡马锡 is a valid generic tld"
+  - description: 淡马锡 is a valid generic tld
     text: https://twitter.淡马锡
     expected:
     - https://twitter.淡马锡
-  - description: "机构 is a valid generic tld"
+  - description: 机构 is a valid generic tld
     text: https://twitter.机构
     expected:
     - https://twitter.机构
-  - description: "書籍 is a valid generic tld"
+  - description: 書籍 is a valid generic tld
     text: https://twitter.書籍
     expected:
     - https://twitter.書籍
-  - description: "时尚 is a valid generic tld"
+  - description: 时尚 is a valid generic tld
     text: https://twitter.时尚
     expected:
     - https://twitter.时尚
-  - description: "新闻 is a valid generic tld"
+  - description: 新闻 is a valid generic tld
     text: https://twitter.新闻
     expected:
     - https://twitter.新闻
-  - description: "政府 is a valid generic tld"
+  - description: 政府 is a valid generic tld
     text: https://twitter.政府
     expected:
     - https://twitter.政府
-  - description: "政务 is a valid generic tld"
+  - description: 政务 is a valid generic tld
     text: https://twitter.政务
     expected:
     - https://twitter.政务
-  - description: "手表 is a valid generic tld"
+  - description: 招聘 is a valid generic tld
+    text: https://twitter.招聘
+    expected:
+    - https://twitter.招聘
+  - description: 手表 is a valid generic tld
     text: https://twitter.手表
     expected:
     - https://twitter.手表
-  - description: "手机 is a valid generic tld"
+  - description: 手机 is a valid generic tld
     text: https://twitter.手机
     expected:
     - https://twitter.手机
-  - description: "我爱你 is a valid generic tld"
+  - description: 我爱你 is a valid generic tld
     text: https://twitter.我爱你
     expected:
     - https://twitter.我爱你
-  - description: "慈善 is a valid generic tld"
+  - description: 慈善 is a valid generic tld
     text: https://twitter.慈善
     expected:
     - https://twitter.慈善
-  - description: "微博 is a valid generic tld"
+  - description: 微博 is a valid generic tld
     text: https://twitter.微博
     expected:
     - https://twitter.微博
-  - description: "广东 is a valid generic tld"
+  - description: 广东 is a valid generic tld
     text: https://twitter.广东
     expected:
     - https://twitter.广东
-  - description: "工行 is a valid generic tld"
+  - description: 工行 is a valid generic tld
     text: https://twitter.工行
     expected:
     - https://twitter.工行
-  - description: "家電 is a valid generic tld"
+  - description: 家電 is a valid generic tld
     text: https://twitter.家電
     expected:
     - https://twitter.家電
-  - description: "娱乐 is a valid generic tld"
+  - description: 娱乐 is a valid generic tld
     text: https://twitter.娱乐
     expected:
     - https://twitter.娱乐
-  - description: "天主教 is a valid generic tld"
+  - description: 天主教 is a valid generic tld
     text: https://twitter.天主教
     expected:
     - https://twitter.天主教
-  - description: "大拿 is a valid generic tld"
+  - description: 大拿 is a valid generic tld
     text: https://twitter.大拿
     expected:
     - https://twitter.大拿
-  - description: "大众汽车 is a valid generic tld"
+  - description: 大众汽车 is a valid generic tld
     text: https://twitter.大众汽车
     expected:
     - https://twitter.大众汽车
-  - description: "在线 is a valid generic tld"
+  - description: 在线 is a valid generic tld
     text: https://twitter.在线
     expected:
     - https://twitter.在线
-  - description: "嘉里大酒店 is a valid generic tld"
+  - description: 嘉里大酒店 is a valid generic tld
     text: https://twitter.嘉里大酒店
     expected:
     - https://twitter.嘉里大酒店
-  - description: "嘉里 is a valid generic tld"
+  - description: 嘉里 is a valid generic tld
     text: https://twitter.嘉里
     expected:
     - https://twitter.嘉里
-  - description: "商标 is a valid generic tld"
+  - description: 商标 is a valid generic tld
     text: https://twitter.商标
     expected:
     - https://twitter.商标
-  - description: "商店 is a valid generic tld"
+  - description: 商店 is a valid generic tld
     text: https://twitter.商店
     expected:
     - https://twitter.商店
-  - description: "商城 is a valid generic tld"
+  - description: 商城 is a valid generic tld
     text: https://twitter.商城
     expected:
     - https://twitter.商城
-  - description: "公益 is a valid generic tld"
+  - description: 公益 is a valid generic tld
     text: https://twitter.公益
     expected:
     - https://twitter.公益
-  - description: "公司 is a valid generic tld"
+  - description: 公司 is a valid generic tld
     text: https://twitter.公司
     expected:
     - https://twitter.公司
-  - description: "八卦 is a valid generic tld"
+  - description: 八卦 is a valid generic tld
     text: https://twitter.八卦
     expected:
     - https://twitter.八卦
-  - description: "健康 is a valid generic tld"
+  - description: 健康 is a valid generic tld
     text: https://twitter.健康
     expected:
     - https://twitter.健康
-  - description: "信息 is a valid generic tld"
+  - description: 信息 is a valid generic tld
     text: https://twitter.信息
     expected:
     - https://twitter.信息
-  - description: "佛山 is a valid generic tld"
+  - description: 佛山 is a valid generic tld
     text: https://twitter.佛山
     expected:
     - https://twitter.佛山
-  - description: "企业 is a valid generic tld"
+  - description: 企业 is a valid generic tld
     text: https://twitter.企业
     expected:
     - https://twitter.企业
-  - description: "中文网 is a valid generic tld"
+  - description: 中文网 is a valid generic tld
     text: https://twitter.中文网
     expected:
     - https://twitter.中文网
-  - description: "中信 is a valid generic tld"
+  - description: 中信 is a valid generic tld
     text: https://twitter.中信
     expected:
     - https://twitter.中信
-  - description: "世界 is a valid generic tld"
+  - description: 世界 is a valid generic tld
     text: https://twitter.世界
     expected:
     - https://twitter.世界
-  - description: "ポイント is a valid generic tld"
+  - description: ポイント is a valid generic tld
     text: https://twitter.ポイント
     expected:
     - https://twitter.ポイント
-  - description: "ファッション is a valid generic tld"
+  - description: ファッション is a valid generic tld
     text: https://twitter.ファッション
     expected:
     - https://twitter.ファッション
-  - description: "セール is a valid generic tld"
+  - description: セール is a valid generic tld
     text: https://twitter.セール
     expected:
     - https://twitter.セール
-  - description: "ストア is a valid generic tld"
+  - description: ストア is a valid generic tld
     text: https://twitter.ストア
     expected:
     - https://twitter.ストア
-  - description: "コム is a valid generic tld"
+  - description: コム is a valid generic tld
     text: https://twitter.コム
     expected:
     - https://twitter.コム
-  - description: "グーグル is a valid generic tld"
+  - description: グーグル is a valid generic tld
     text: https://twitter.グーグル
     expected:
     - https://twitter.グーグル
-  - description: "クラウド is a valid generic tld"
+  - description: クラウド is a valid generic tld
     text: https://twitter.クラウド
     expected:
     - https://twitter.クラウド
-  - description: "みんな is a valid generic tld"
+  - description: みんな is a valid generic tld
     text: https://twitter.みんな
     expected:
     - https://twitter.みんな
-  - description: "คอม is a valid generic tld"
+  - description: คอม is a valid generic tld
     text: https://twitter.คอม
     expected:
     - https://twitter.คอม
-  - description: "संगठन is a valid generic tld"
+  - description: संगठन is a valid generic tld
     text: https://twitter.संगठन
     expected:
     - https://twitter.संगठन
-  - description: "नेट is a valid generic tld"
+  - description: नेट is a valid generic tld
     text: https://twitter.नेट
     expected:
     - https://twitter.नेट
-  - description: "कॉम is a valid generic tld"
+  - description: कॉम is a valid generic tld
     text: https://twitter.कॉम
     expected:
     - https://twitter.कॉम
-  - description: "همراه is a valid generic tld"
+  - description: همراه is a valid generic tld
     text: https://twitter.همراه
     expected:
     - https://twitter.همراه
-  - description: "موقع is a valid generic tld"
+  - description: موقع is a valid generic tld
     text: https://twitter.موقع
     expected:
     - https://twitter.موقع
-  - description: "موبايلي is a valid generic tld"
+  - description: موبايلي is a valid generic tld
     text: https://twitter.موبايلي
     expected:
     - https://twitter.موبايلي
-  - description: "كوم is a valid generic tld"
+  - description: كوم is a valid generic tld
     text: https://twitter.كوم
     expected:
     - https://twitter.كوم
-  - description: "كاثوليك is a valid generic tld"
+  - description: كاثوليك is a valid generic tld
     text: https://twitter.كاثوليك
     expected:
     - https://twitter.كاثوليك
-  - description: "عرب is a valid generic tld"
+  - description: عرب is a valid generic tld
     text: https://twitter.عرب
     expected:
     - https://twitter.عرب
-  - description: "شبكة is a valid generic tld"
+  - description: شبكة is a valid generic tld
     text: https://twitter.شبكة
     expected:
     - https://twitter.شبكة
-  - description: "بيتك is a valid generic tld"
+  - description: بيتك is a valid generic tld
     text: https://twitter.بيتك
     expected:
     - https://twitter.بيتك
-  - description: "بازار is a valid generic tld"
+  - description: بازار is a valid generic tld
     text: https://twitter.بازار
     expected:
     - https://twitter.بازار
-  - description: "العليان is a valid generic tld"
+  - description: العليان is a valid generic tld
     text: https://twitter.العليان
     expected:
     - https://twitter.العليان
-  - description: "ارامكو is a valid generic tld"
+  - description: ارامكو is a valid generic tld
     text: https://twitter.ارامكو
     expected:
     - https://twitter.ارامكو
-  - description: "اتصالات is a valid generic tld"
+  - description: اتصالات is a valid generic tld
     text: https://twitter.اتصالات
     expected:
     - https://twitter.اتصالات
-  - description: "ابوظبي is a valid generic tld"
+  - description: ابوظبي is a valid generic tld
     text: https://twitter.ابوظبي
     expected:
     - https://twitter.ابوظبي
-  - description: "קום is a valid generic tld"
+  - description: קום is a valid generic tld
     text: https://twitter.קום
     expected:
     - https://twitter.קום
-  - description: "сайт is a valid generic tld"
+  - description: сайт is a valid generic tld
     text: https://twitter.сайт
     expected:
     - https://twitter.сайт
-  - description: "рус is a valid generic tld"
+  - description: рус is a valid generic tld
     text: https://twitter.рус
     expected:
     - https://twitter.рус
-  - description: "орг is a valid generic tld"
+  - description: орг is a valid generic tld
     text: https://twitter.орг
     expected:
     - https://twitter.орг
-  - description: "онлайн is a valid generic tld"
+  - description: онлайн is a valid generic tld
     text: https://twitter.онлайн
     expected:
     - https://twitter.онлайн
-  - description: "москва is a valid generic tld"
+  - description: москва is a valid generic tld
     text: https://twitter.москва
     expected:
     - https://twitter.москва
-  - description: "ком is a valid generic tld"
+  - description: ком is a valid generic tld
     text: https://twitter.ком
     expected:
     - https://twitter.ком
-  - description: "католик is a valid generic tld"
+  - description: католик is a valid generic tld
     text: https://twitter.католик
     expected:
     - https://twitter.католик
-  - description: "дети is a valid generic tld"
+  - description: дети is a valid generic tld
     text: https://twitter.дети
     expected:
     - https://twitter.дети
@@ -2386,6 +2406,10 @@ tests:
     text: https://twitter.spot
     expected:
     - https://twitter.spot
+  - description: sport is a valid generic tld
+    text: https://twitter.sport
+    expected:
+    - https://twitter.sport
   - description: spiegel is a valid generic tld
     text: https://twitter.spiegel
     expected:
@@ -3762,6 +3786,14 @@ tests:
     text: https://twitter.loan
     expected:
     - https://twitter.loan
+  - description: llp is a valid generic tld
+    text: https://twitter.llp
+    expected:
+    - https://twitter.llp
+  - description: llc is a valid generic tld
+    text: https://twitter.llc
+    expected:
+    - https://twitter.llc
   - description: lixil is a valid generic tld
     text: https://twitter.lixil
     expected:
@@ -4182,6 +4214,10 @@ tests:
     text: https://twitter.industries
     expected:
     - https://twitter.industries
+  - description: inc is a valid generic tld
+    text: https://twitter.inc
+    expected:
+    - https://twitter.inc
   - description: immobilien is a valid generic tld
     text: https://twitter.immobilien
     expected:
@@ -4582,6 +4618,10 @@ tests:
     text: https://twitter.gbiz
     expected:
     - https://twitter.gbiz
+  - description: gay is a valid generic tld
+    text: https://twitter.gay
+    expected:
+    - https://twitter.gay
   - description: garden is a valid generic tld
     text: https://twitter.garden
     expected:
@@ -5238,6 +5278,10 @@ tests:
     text: https://twitter.credit
     expected:
     - https://twitter.credit
+  - description: cpa is a valid generic tld
+    text: https://twitter.cpa
+    expected:
+    - https://twitter.cpa
   - description: courses is a valid generic tld
     text: https://twitter.courses
     expected:
@@ -5450,6 +5494,10 @@ tests:
     text: https://twitter.chase
     expected:
     - https://twitter.chase
+  - description: charity is a valid generic tld
+    text: https://twitter.charity
+    expected:
+    - https://twitter.charity
   - description: channel is a valid generic tld
     text: https://twitter.channel
     expected:
