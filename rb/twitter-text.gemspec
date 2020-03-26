@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   s.license = "Apache 2.0"
 
   s.platform = Gem::Platform::RUBY
-  s.has_rdoc = true
   s.summary = "Twitter text handling library"
 
   s.add_development_dependency "test-unit"
