@@ -1,0 +1,35 @@
+{
+  "folders":
+  [
+    {
+      "folder_exclude_patterns":
+      [
+        "build"
+      ],
+      "file_exclude_patterns":
+      [
+        "*.log"
+      ],
+      "path": "~/workspace/source/twitter-text/lib/js"
+    }
+  ],
+  "settings": {
+    "js_prettier": {
+      "debug": false,
+      "prettier_cli_path": "./node_modules/.bin/prettier",
+      "node_path": "/opt/twitter_mde/bin/node",
+      "auto_format_on_save": true,
+      "auto_format_on_save_excludes": [
+        "*/node_modules/*"
+      ],
+
+      "allow_inline_formatting": false,
+      "custom_file_extensions": [],
+      "max_file_size_limit": -1,
+      "additional_cli_args": {
+        "--config": "./.prettierrc",
+        "--config-precedence": "prefer-file"
+      }
+    }
+  }
+}

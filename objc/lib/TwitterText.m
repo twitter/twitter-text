@@ -310,7 +310,7 @@ typedef NS_ENUM(NSInteger, TWUValidURLGroup) {
     @"allfinanz|alipay|alibaba|alfaromeo|akdn|airtel|airforce|airbus|aigo|aig|agency|agakhan|africa|afl|" \
     @"afamilycompany|aetna|aero|aeg|adult|ads|adac|actor|active|aco|accountants|accountant|accenture|" \
     @"academy|abudhabi|abogado|able|abc|abbvie|abbott|abb|abarth|aarp|aaa|onion" \
-@")(?=[^a-z0-9@]|$))"
+@")(?=[^a-z0-9@+-]|$))"
 
 #define TWUValidCCTLD \
 @"(?:(?:" \
@@ -325,7 +325,7 @@ typedef NS_ENUM(NSInteger, TWUValidURLGroup) {
     @"gt|gs|gr|gq|gp|gn|gm|gl|gi|gh|gg|gf|ge|gd|gb|ga|fr|fo|fm|fk|fj|fi|eu|et|es|er|eh|eg|ee|ec|dz|do|dm|" \
     @"dk|dj|de|cz|cy|cx|cw|cv|cu|cr|co|cn|cm|cl|ck|ci|ch|cg|cf|cd|cc|ca|bz|by|bw|bv|bt|bs|br|bq|bo|bn|bm|" \
     @"bl|bj|bi|bh|bg|bf|be|bd|bb|ba|az|ax|aw|au|at|as|ar|aq|ao|an|am|al|ai|ag|af|ae|ad|ac" \
-@")(?=[^a-z0-9@]|$))"
+@")(?=[^a-z0-9@+-]|$))"
 
 #define TWUValidTCOURL                  @"^https?://t\\.co/([a-z0-9]+)"
 
@@ -757,6 +757,86 @@ typedef NSInteger (^TextUnitCounterBlock)(NSInteger currentLength, NSString* tex
     return kMaxTweetLengthLegacy - [self tweetLength:text httpURLLength:httpURLLength httpsURLLength:httpsURLLength];
 }
 
++ (void)eagerlyLoadRegexps
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validHashtagRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validURLRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validGTLDRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validDomainRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self invalidCharacterRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validTCOURLRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self endHashtagRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validSymbolRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validMentionOrListRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validReplyRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self endMentionRegexp];
+            }
+        });
+
+        dispatch_async(queue, ^{
+            @autoreleasepool {
+                __unused NSRegularExpression *exp = [self validDomainSucceedingCharRegexp];
+            }
+        });
+    });
+}
+
 #pragma mark - Private Methods
 
 + (NSRegularExpression *)validGTLDRegexp
@@ -969,9 +1049,11 @@ static TwitterTextParser *sDefaultParser;
 + (instancetype)defaultParser
 {
     dispatch_sync([self _queue], ^{
-        if (!sDefaultParser) {
-            TwitterTextConfiguration *configuration = [TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV3];
-            sDefaultParser = [[TwitterTextParser alloc] initWithConfiguration:configuration];
+        @autoreleasepool {
+            if (!sDefaultParser) {
+                TwitterTextConfiguration *configuration = [TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV3];
+                sDefaultParser = [[TwitterTextParser alloc] initWithConfiguration:configuration];
+            }
         }
     });
     return sDefaultParser;
@@ -980,7 +1062,9 @@ static TwitterTextParser *sDefaultParser;
 + (void)setDefaultParserWithConfiguration:(TwitterTextConfiguration *)configuration
 {
     dispatch_async([self _queue], ^{
-        sDefaultParser = [[TwitterTextParser alloc] initWithConfiguration:configuration];
+        @autoreleasepool {
+            sDefaultParser = [[TwitterTextParser alloc] initWithConfiguration:configuration];
+        }
     });
 }
 
@@ -992,18 +1076,26 @@ static TwitterTextParser *sDefaultParser;
 - (TwitterTextParseResults *)parseTweet:(NSString *)text
 {
     // Use Unicode Normalization Form Canonical Composition
-    NSString *normalizedText = [text precomposedStringWithCanonicalMapping];
-    NSRange rangeNotFound = NSMakeRange(NSNotFound, NSNotFound);
+    NSString *normalizedText;
+    NSUInteger normalizedTextLength;
+    if (text.length != 0) {
+        normalizedText = [text precomposedStringWithCanonicalMapping];
+        normalizedTextLength = normalizedText.length;
+    } else {
+        normalizedTextLength = 0;
+    }
 
-    if (normalizedText.length == 0) {
+    if (normalizedTextLength == 0) {
         NSRange rangeZero = NSMakeRange(0, 0);
         return [[TwitterTextParseResults alloc] initWithWeightedLength:0 permillage:0 valid:YES displayRange:rangeZero validRange:rangeZero];
     }
 
+    const NSRange rangeNotFound = NSMakeRange(NSNotFound, NSNotFound);
+
     // Build an map of ranges, assuming the original character count does not change after normalization
     const NSUInteger textLength = text.length;
     NSRange textRanges[textLength], *ptr = textRanges;
-    for (NSInteger i = 0; i < textLength; i++) {
+    for (NSUInteger i = 0; i < textLength; i++) {
         textRanges[i] = rangeNotFound;
     }
     [self _tt_lengthOfText:text range:NSMakeRange(0, text.length) countingBlock:^NSInteger(NSInteger index, NSString *blockText, TwitterTextEntity *entity, NSString *substring) {
@@ -1012,19 +1104,19 @@ static TwitterTextParser *sDefaultParser;
             if (index+i < textLength) {
                 ptr[index+i] = entity.range;
             } else {
-                NSAssert(NO, @"index+i (%lu+%ld) greater than text.length (%lu) for text \"%@\"", index, i, textLength, text);
+                NSAssert(NO, @"index+i (%ld+%ld) greater than text.length (%lu) for text \"%@\"", (long)index, (long)i, (unsigned long)textLength, text);  // casts will be unnecessary when TwitterText is no longer built for 32-bit targets
             }
         }
         return index + entity.range.length;
     }];
 
-    NSRange normalizedRanges[normalizedText.length], *normalizedRangesPtr = normalizedRanges;
-    for (NSInteger i = 0; i < normalizedText.length; i++) {
+    NSRange normalizedRanges[normalizedTextLength], *normalizedRangesPtr = normalizedRanges;
+    for (NSUInteger i = 0; i < normalizedTextLength; i++) {
         normalizedRangesPtr[i] = rangeNotFound;
     }
 
     __block NSInteger offset = 0;
-    [self _tt_lengthOfText:normalizedText range:NSMakeRange(0, normalizedText.length) countingBlock:^NSInteger(NSInteger composedCharIndex, NSString *blockText, TwitterTextEntity *entity, NSString *substring) {
+    [self _tt_lengthOfText:normalizedText range:NSMakeRange(0, normalizedTextLength) countingBlock:^NSInteger(NSInteger composedCharIndex, NSString *blockText, TwitterTextEntity *entity, NSString *substring) {
         // map index of each composed char back to its pre-normalized index.
         if (composedCharIndex+offset < textLength) {
             NSRange originalRange = ptr[composedCharIndex+offset];
@@ -1035,7 +1127,7 @@ static TwitterTextParser *sDefaultParser;
                 offset += (originalRange.length - entity.range.length);
             }
         } else {
-            NSAssert(NO, @"composedCharIndex+offset (%lu+%ld) greater than text.length (%lu) for text \"%@\"", composedCharIndex, offset, textLength, text);
+            NSAssert(NO, @"composedCharIndex+offset (%ld+%ld) greater than text.length (%lu) for text \"%@\"", (long)composedCharIndex, (long)offset, (unsigned long)textLength, text); // casts will be unnecessary when TwitterText is no longer built for 32-bit targets
         }
         return composedCharIndex + entity.range.length;
     }];
@@ -1103,7 +1195,7 @@ static TwitterTextParser *sDefaultParser;
     }
 
     // handle trailing text
-    weightedLength += [self _tt_lengthOfText:normalizedText range:NSMakeRange(textIndex, normalizedText.length - textIndex) countingBlock:textUnitCountingBlock];
+    weightedLength += [self _tt_lengthOfText:normalizedText range:NSMakeRange(textIndex, normalizedTextLength - textIndex) countingBlock:textUnitCountingBlock];
 
     NSAssert(!NSEqualRanges(normalizedRanges[displayStartIndex], rangeNotFound), @"displayStartIndex should map to existing index in original string");
     NSAssert(!NSEqualRanges(normalizedRanges[displayEndIndex], rangeNotFound), @"displayEndIndex should map to existing index in original string");
@@ -1148,6 +1240,60 @@ static TwitterTextParser *sDefaultParser;
     }
 
     if (range.location + range.length <= text.length) {
+// TODO: drop-iOS-10: when dropping support for iOS 10, remove the #if, #endif and everything in between
+#if __IPHONE_11_0 > __IPHONE_OS_VERSION_MIN_REQUIRED
+#if 0
+        // Unicode 10.0 isn't fully supported on iOS 10.
+
+        // e.g. on iOS 10, closure block arg of [NSString enumerateSubstringsInRange:options:usingBlock:]
+        // is called an "incorrect" number of times for some Unicode10 composed character sequences
+
+        // i.e. calling enumerateSubstringsInRange:options:usingBlock: on the string
+
+        @"🤪; 🧕; 🧕🏾; 🏴󠁧󠁢󠁥󠁮󠁧󠁿"
+
+        // results in the following values of `substringRange` and `substring` within the block
+        // and of the __block var `length` once the block is complete:
+
+        //  iOS 11 and above
+
+            substringRange = @"{1, 2}" , substring = @"🤪"
+            substringRange = @"{3, 1}" , substring = @";"
+            substringRange = @"{4, 1}" , substring = @" "
+            substringRange = @"{5, 2}" , substring = @"🧕"
+            substringRange = @"{7, 1}" , substring = @";"
+            substringRange = @"{8, 1}" , substring = @" "
+            substringRange = @"{9, 4}" , substring = @"🧕🏾"
+            substringRange = @"{13, 1}" , substring = @";"
+            substringRange = @"{14, 1}" , substring = @" "
+            substringRange = @"{15, 14}" , substring = @"🏴󠁧󠁢󠁥󠁮󠁧󠁿"
+
+            length = 15
+
+        //  iOS 10
+
+            substringRange = @"{1, 2}" , substring = @"🤪"
+            substringRange = @"{3, 1}" , substring = @";"
+            substringRange = @"{4, 1}" , substring = @" "
+            substringRange = @"{5, 2}" , substring = @"🧕"
+            substringRange = @"{7, 1}" , substring = @";"
+            substringRange = @"{8, 1}" , substring = @" "
+            substringRange = @"{9, 2}" , substring = @"🧕"
+            substringRange = @"{11, 2}" , substring = @"🏾"
+            substringRange = @"{13, 1}" , substring = @";"
+            substringRange = @"{14, 1}" , substring = @" "
+            substringRange = @"{15, 2}" , substring = @"🏴"
+            substringRange = @"{17, 2}" , substring = @"󠁧"
+            substringRange = @"{19, 2}" , substring = @"󠁢"
+            substringRange = @"{21, 2}" , substring = @"󠁥"
+            substringRange = @"{23, 2}" , substring = @"󠁮"
+            substringRange = @"{25, 2}" , substring = @"󠁧"
+            substringRange = @"{27, 2}" , substring = @"󠁿"
+
+            length = 29
+
+#endif // #if 0
+#endif // #if __IPHONE_11_0 > __IPHONE_OS_VERSION_MIN_REQUIRED
         [text enumerateSubstringsInRange:range options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
             if (countingBlock != NULL) {
                 TwitterTextEntityType type = (self.configuration.isEmojiParsingEnabled && [emojiRanges containsObject:[NSValue valueWithRange:substringRange]]) ? TwitterTextEntityTweetEmojiChar : TwitterTextEntityTweetChar;

@@ -17,11 +17,11 @@ public class Regex {
   private static final String URL_VALID_GTLD =
     "(?:(?:" +
     join(TldLists.GTLDS) +
-    ")(?=[^a-z0-9@]|$))";
+    ")(?=[^a-z0-9@+-]|$))";
   private static final String URL_VALID_CCTLD =
     "(?:(?:" +
     join(TldLists.CTLDS) +
-    ")(?=[^a-z0-9@]|$))";
+    ")(?=[^a-z0-9@+-]|$))";
 
   private static final String INVALID_CHARACTERS =
     "\\uFFFE" +           // BOM

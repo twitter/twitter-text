@@ -648,6 +648,17 @@ tests:
         displayRangeEnd: 1539
         validRangeStart: 0
         validRangeEnd: 1539
+    
+    - description: "Emoji with a leading character in the latin range is counted as 2"
+      text: "1⃣"
+      expected:
+        weightedLength: 2
+        valid: true
+        permillage: 7
+        displayRangeStart: 0
+        displayRangeEnd: 1
+        validRangeStart: 0
+        validRangeEnd: 1
 
     - description: "Unicode 10.0 emoji"
       text: "Unicode 10.0 emoji: 🤪; 🧕; 🧕🏾; 🏴󠁧󠁢󠁥󠁮󠁧󠁿"

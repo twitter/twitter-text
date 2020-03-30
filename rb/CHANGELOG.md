@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+## [3.1.0]
+### Changed
+- Bump nokogiri version (#302)
+- Fix auto-link emoji parsing (#304)
+- Updates known gTLDs to recognize recent additions by IANA (#308)
+- Fix warning about has_rdoc usage (#309)
+
 ## [3.0.0]
 ### Added
 - New v3.json config file with emojiParsingEnabled config option. When

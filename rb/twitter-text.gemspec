@@ -6,7 +6,7 @@
 
 Gem::Specification.new do |s|
   s.name = "twitter-text"
-  s.version = "3.0.0"
+  s.version = "3.1.0"
   s.authors = ["David LaMacchia", "Sudheer Guntupalli", "Kaushik Lakshmikanth", "Jose Antonio Marquez Russo", "Lee Adams",
                "Yoshimasa Niwa"]
   s.email = ["opensource@twitter.com"]

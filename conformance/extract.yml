@@ -308,9 +308,9 @@ tests:
       text: "text http://word-and-a-number-8-ftw.domain.com/"
       expected: ["http://word-and-a-number-8-ftw.domain.com/"]
 
-    - description: "Extract a hyphenated TLD (usually a typo)"
+    - description: "DO NOT Extract a hyphenated TLD (even though it's usually a typo)"
       text: "text http://domain.com-that-you-should-have-put-a-space-after"
-      expected: ["http://domain.com"]
+      expected: []
 
     - description: "Extract URL ending with # value"
       text: "text http://foo.com?#foo text"
@@ -379,6 +379,14 @@ tests:
     - description: "DO NOT Extract URL with domain preceeded by underscore: http://domain-begin_dash_2314352345_dfasd.foo-cow_4352.com"
       text: "text http://domain-dash_2314352345_dfasd.foo-cow_4352.com"
       expected: []
+
+    - description: "DO NOT Extract URLs with a - or + in the middle of an email address"
+      text: "Email me at name.al-lastname@foo.com or name.al+lastname@foo.com"
+      expected: []
+
+    - description: "Extract URLs with a - in the middle"
+      text: "Find my page at name.al-lastname.com"
+      expected: ["name.al-lastname.com"]
 
     - description: "Extract some (tv|co) short URLs without protocol on ccTLD domains without path"
       text: "MLB.tv vine.co twitch.tv t.co"

@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+## [3.1.0] - 2020-03-26
+### Changed
+- Updates known gTLDs to recognize recent additions by IANA (#308)
+
 ## [3.0.0] - 2018-10-03
 ### Added
 - New v3.json config file with emojiParsingEnabled config option. When

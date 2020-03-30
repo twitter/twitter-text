@@ -787,19 +787,8 @@
           "validRangeEnd": 1539
         }
       },
-      {
-        "description": "Unicode 10.0 emoji",
-        "text": "Unicode 10.0 emoji: 🤪; 🧕; 🧕🏾; 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-        "expected": {
-          "weightedLength": 34,
-          "valid": true,
-          "permillage": 121,
-          "displayRangeStart": 0,
-          "displayRangeEnd": 47,
-          "validRangeStart": 0,
-          "validRangeEnd": 47
-        }
-      },
+    ],
+    "WeightedTweetsWithDiscountedUnicode9EmojiCounterTest": [
       {
         "description": "Unicode 9.0 emoji",
         "text": "Unicode 9.0 emoji: 🤠; 💃; 💃🏾",
@@ -811,6 +800,21 @@
           "displayRangeEnd": 30,
           "validRangeStart": 0,
           "validRangeEnd": 30
+        }
+      }
+    ],
+    "WeightedTweetsWithDiscountedUnicode10EmojiCounterTest": [
+      {
+        "description": "Unicode 10.0 emoji",
+        "text": "Unicode 10.0 emoji: 🤪; 🧕; 🧕🏾; 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "expected": {
+          "weightedLength": 34,
+          "valid": true,
+          "permillage": 121,
+          "displayRangeStart": 0,
+          "displayRangeEnd": 47,
+          "validRangeStart": 0,
+          "validRangeEnd": 47
         }
       }
     ],

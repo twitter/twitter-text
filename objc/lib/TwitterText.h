@@ -30,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSInteger)remainingCharacterCount:(NSString *)text transformedURLLength:(NSInteger)transformedURLLength;
 + (NSInteger)remainingCharacterCount:(NSString *)text httpURLLength:(NSInteger)httpURLLength httpsURLLength:(NSInteger)httpsURLLength __attribute__((deprecated("Use tweetLength:transformedURLLength: instead")));
 
++ (void)eagerlyLoadRegexps;
+
 @end
 
 FOUNDATION_EXTERN NSString * const kTwitterTextParserConfigurationClassic;
