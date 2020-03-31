@@ -1,7 +1,10 @@
+/**
+ * Rollup is only used for development. See the build:prod script in package.json
+ * for the production build command.
+ */
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import license from 'rollup-plugin-license';
-import { argv } from 'optimist';
 import resolve from 'rollup-plugin-node-resolve';
 
 const banner = `/*!
@@ -16,18 +19,6 @@ const banner = `/*!
  *    http://www.apache.org/licenses/LICENSE-2.0
  */`;
 
-const devPlugins = argv.prod
-  ? []
-  : [
-      resolve({ preferBuiltins: false }),
-      commonjs(),
-      // Punycode is not transpiled, so we need to transpile again after commonjs modules are resolved
-      babel({
-        exclude: ['**/*.json'],
-        plugins: ['external-helpers']
-      })
-    ];
-
 export default {
   input: 'src/index.js',
   output: {
@@ -37,11 +28,11 @@ export default {
   },
   plugins: [
     babel({
-      exclude: ['node_modules/**', '**/*.json'],
-      plugins: ['external-helpers']
+      exclude: ['node_modules/**'],
+      runtimeHelpers: true
     }),
-    // Resolve external deps only for development
-    ...devPlugins,
+    resolve({ preferBuiltins: false }),
+    commonjs(),
     license({
       banner: banner
     })

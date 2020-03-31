@@ -47,6 +47,7 @@ import regexen from './regexp/index';
 import removeOverlappingEntities from './removeOverlappingEntities';
 import parseTweet from './parseTweet';
 import splitTags from './splitTags';
+import standardizeIndices from './standardizeIndices';
 import tagAttrs from './tagAttrs';
 
 export default {
@@ -95,5 +96,6 @@ export default {
   removeOverlappingEntities,
   parseTweet,
   splitTags,
+  standardizeIndices,
   tagAttrs
 };

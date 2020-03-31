@@ -236,7 +236,27 @@ static int decomposeHangul( DWORD ch, DWORD * pdwOut )
 
   *pdwOut = 0; 
 
-  if (T != TBase) { *pdwOut = (DWORD)T; pdwOut++; }
+  if (T != TBase)
+  {
+    *pdwOut = (DWORD)T;
+  }
+  else
+  {
+    /*
+    * strictly speaking, this algorithm is correct without this else part.
+    *
+    * however, the one caller of this static function in this file uses an array
+    * buffer of length 5, and the logic analyzer gets confused and emits a false
+    * positive diagnostic that the 5th value in the buffer can end up being
+    * uninitialized garbage if T == TBase.
+    *
+    * writing the NULL terminator here *unnecessarily* ... then continuing to
+    * write "another" null terminator in position 5 below silences the analyzer
+    * and is more efficient than pre-initializing the buffer with all NULLs.
+    */
+    *pdwOut = 0;
+  }
+  pdwOut++;
 
   *pdwOut = 0;
 
@@ -279,7 +299,7 @@ static void doDecomposition( int iRecursionCheck, int fCanonical,
     {
       len = dwstrlen( hangubuf );
 
-      for (i=0; i < len; i++) 
+      for (i=0; i < len; i++)
       {
         doDecomposition(iRecursionCheck+1, fCanonical, hangubuf[i], outbuf );
       }

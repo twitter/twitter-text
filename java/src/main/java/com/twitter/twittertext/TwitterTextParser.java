@@ -27,30 +27,8 @@ public final class TwitterTextParser {
   public static final TwitterTextParseResults EMPTY_TWITTER_TEXT_PARSE_RESULTS =
       new TwitterTextParseResults(0, 0, false, Range.EMPTY, Range.EMPTY);
 
-  /**
-   * v1.json is the legacy, traditional code point counting configuration
-   */
-  public static final TwitterTextConfiguration TWITTER_TEXT_CODE_POINT_COUNT_CONFIG =
-      TwitterTextConfiguration.configurationFromJson("v1.json", true);
-
-  /**
-   * v2.json has the following unicode code point blocks defined
-   * 0x0000 (0)    - 0x10FF (4351) Basic Latin to Georgian block: Weight 100
-   * 0x2000 (8192) - 0x200D (8205) Spaces in the General Punctuation Block: Weight 100
-   * 0x2010 (8208) - 0x201F (8223) Hyphens &amp; Quotes in the General Punctuation Block: Weight 100
-   * 0x2032 (8242) - 0x2037 (8247) Quotes in the General Punctuation Block: Weight 100
-   */
-  public static final TwitterTextConfiguration TWITTER_TEXT_WEIGHTED_CHAR_COUNT_CONFIG =
-      TwitterTextConfiguration.configurationFromJson("v2.json", true);
-
-  /**
-   * v3.json supports counting emoji as one weighted character
-   */
-  public static final TwitterTextConfiguration TWITTER_TEXT_EMOJI_CHAR_COUNT_CONFIG =
-      TwitterTextConfiguration.configurationFromJson("v3.json", true);
-
   public static final TwitterTextConfiguration TWITTER_TEXT_DEFAULT_CONFIG =
-      TWITTER_TEXT_EMOJI_CHAR_COUNT_CONFIG;
+      TwitterTextConfiguration.getDefaultConfig();
 
   private static final Extractor EXTRACTOR = new Extractor();
 
@@ -62,7 +40,7 @@ public final class TwitterTextParser {
    */
   @Nonnull
   public static TwitterTextParseResults parseTweet(@Nullable final String tweet) {
-    return parseTweet(tweet, TWITTER_TEXT_WEIGHTED_CHAR_COUNT_CONFIG);
+    return parseTweet(tweet, TWITTER_TEXT_DEFAULT_CONFIG);
   }
 
   /**
@@ -88,7 +66,7 @@ public final class TwitterTextParser {
   @Nonnull
   public static TwitterTextParseResults parseTweetWithoutUrlExtraction(
       @Nullable final String tweet) {
-    return parseTweet(tweet, TWITTER_TEXT_WEIGHTED_CHAR_COUNT_CONFIG, false);
+    return parseTweet(tweet, TWITTER_TEXT_DEFAULT_CONFIG, false);
   }
 
   /**

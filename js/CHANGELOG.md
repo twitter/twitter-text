@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2020-03-27
+### Added
+- [Lib] New exported function `standardizeIndices` which adjusts indices based on actual text lengths in order to support characters that are more than one code point long. 
+- [Dev] Upgrade to Babel 7 for transpiling
+
+### Fixed
+- [Lib] #300 where some numerical emojis are counted as 1 instead of 2 characters
+- [Lib] #273 Do not identify URLs in the middle of an email address 
+
 ## [3.0.0] - 2018-10-10
 ### Added
 - New v3.json config file with emojiParsingEnabled config option. When

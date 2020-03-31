@@ -441,34 +441,6 @@ public class ConformanceTest {
     }
   }
 
-  @SuppressWarnings("deprecation")
-  @RunWith(Parameterized.class)
-  public static class WeightedTweetsConformanceTest {
-    @Parameter
-    public Map testCase;
-
-    @Parameters
-    public static Collection<Map> data() throws Exception {
-      return loadConformanceData("validate.yml", "WeightedTweetsCounterTest");
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testWeightedTweets() throws Exception {
-      final TwitterTextParseResults parseResults =
-          TwitterTextParser.parseTweet((String) testCase.get(KEY_INPUT));
-      final String message = (String) testCase.get(KEY_DESCRIPTION);
-      final Map<String, Object> expected = (Map<String, Object>) testCase.get(KEY_EXPECTED_OUTPUT);
-      assertEquals(message, expected.get("weightedLength"), parseResults.weightedLength);
-      assertEquals(message, expected.get("valid"), parseResults.isValid);
-      assertEquals(message, expected.get("permillage"), parseResults.permillage);
-      assertEquals(message, expected.get("displayRangeStart"), parseResults.displayTextRange.start);
-      assertEquals(message, expected.get("displayRangeEnd"), parseResults.displayTextRange.end);
-      assertEquals(message, expected.get("validRangeStart"), parseResults.validTextRange.start);
-      assertEquals(message, expected.get("validRangeEnd"), parseResults.validTextRange.end);
-    }
-  }
-
   @RunWith(Parameterized.class)
   public static class UnicodeDirectionalMarkerCounterTest {
     @Parameter
@@ -493,28 +465,6 @@ public class ConformanceTest {
       assertEquals(message, expected.get("displayRangeEnd"), parseResults.displayTextRange.end);
       assertEquals(message, expected.get("validRangeStart"), parseResults.validTextRange.start);
       assertEquals(message, expected.get("validRangeEnd"), parseResults.validTextRange.end);
-    }
-  }
-
-  @RunWith(Parameterized.class)
-  public static class V1TweetValidityConformanceTest {
-    @Parameter
-    public Map testCase;
-
-    @Parameters
-    public static Collection<Map> data() throws Exception {
-      return loadConformanceData("validate.yml", "tweets");
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testV1TweetValidity() throws Exception {
-      final TwitterTextParseResults parseResults =
-          TwitterTextParser.parseTweet((String) testCase.get(KEY_INPUT),
-              TwitterTextParser.TWITTER_TEXT_CODE_POINT_COUNT_CONFIG);
-      assertEquals((String) testCase.get(KEY_DESCRIPTION),
-          testCase.get(KEY_EXPECTED_OUTPUT),
-          parseResults.isValid);
     }
   }
 
@@ -553,7 +503,7 @@ public class ConformanceTest {
     public void testEmojiTweets() throws Exception {
       final TwitterTextParseResults parseResults =
           TwitterTextParser.parseTweet((String) testCase.get(KEY_INPUT),
-              TwitterTextParser.TWITTER_TEXT_EMOJI_CHAR_COUNT_CONFIG);
+              TwitterTextParser.TWITTER_TEXT_DEFAULT_CONFIG);
       final String message = (String) testCase.get(KEY_DESCRIPTION);
       final Map<String, Object> expected = (Map<String, Object>) testCase.get(KEY_EXPECTED_OUTPUT);
       assertEquals(message, expected.get("weightedLength"), parseResults.weightedLength);

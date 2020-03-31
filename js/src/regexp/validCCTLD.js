@@ -19,7 +19,7 @@ const validCCTLD = regexSupplant(
       'gd|gb|ga|fr|fo|fm|fk|fj|fi|eu|et|es|er|eh|eg|ee|ec|dz|do|dm|dk|dj|de|cz|cy|cx|cw|cv|cu|cr|co|' +
       'cn|cm|cl|ck|ci|ch|cg|cf|cd|cc|ca|bz|by|bw|bv|bt|bs|br|bq|bo|bn|bm|bl|bj|bi|bh|bg|bf|be|bd|bb|' +
       'ba|az|ax|aw|au|at|as|ar|aq|ao|an|am|al|ai|ag|af|ae|ad|ac' +
-      ')(?=[^0-9a-zA-Z@]|$))'
+      ')(?=[^0-9a-zA-Z@+-]|$))'
   )
 );
 

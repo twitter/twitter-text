@@ -4,32 +4,30 @@
 
 package com.twitter.twittertext;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * A class that represents the different configurations used by {@link TwitterTextParser}
  * to parse a tweet.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class TwitterTextConfiguration {
+public final class TwitterTextConfiguration {
 
-  // These defaults should be kept up to date with v2.json config.
-  // There's a unit test to ensure that.
-  private static final int DEFAULT_VERSION = 2;
+  /**
+   * The following unicode code point blocks are defined:
+   * 0x0000 (0)    - 0x10FF (4351) Basic Latin to Georgian block: Weight 100
+   * 0x2000 (8192) - 0x200D (8205) Spaces in the General Punctuation Block: Weight 100
+   * 0x2010 (8208) - 0x201F (8223) Hyphens &amp; Quotes in the General Punctuation Block: Weight 100
+   * 0x2032 (8242) - 0x2037 (8247) Quotes in the General Punctuation Block: Weight 100
+   * supports counting emoji as one weighted character
+   */
+  private static final int DEFAULT_VERSION = 3;
   private static final int DEFAULT_WEIGHTED_LENGTH = 280;
   private static final int DEFAULT_SCALE = 100;
   private static final int DEFAULT_WEIGHT = 200;
+  private static final boolean DEFAULT_EMOJI_PARSING_ENABLED = true;
   private static final int DEFAULT_TRANSFORMED_URL_LENGTH = 23;
   private static final List<TwitterTextWeightedRange> DEFAULT_RANGES = new ArrayList<>();
 
@@ -40,108 +38,85 @@ public class TwitterTextConfiguration {
     DEFAULT_RANGES.add(new TwitterTextWeightedRange().setStart(8242).setEnd(8247).setWeight(100));
   }
 
-  private int version;
-  private int maxWeightedTweetLength;
-  private int scale;
-  private int defaultWeight;
-  private boolean emojiParsingEnabled;
-  private int transformedURLLength;
+  private final int version;
+  private final int maxWeightedTweetLength;
+  private final int scale;
+  private final int defaultWeight;
+  private final boolean emojiParsingEnabled;
+  private final int transformedURLLength;
   @Nonnull
-  private List<TwitterTextWeightedRange> ranges;
+  private final List<TwitterTextWeightedRange> ranges;
 
-  /**
-   * Create a {@link TwitterTextConfiguration} object from JSON
-   * The JSON can have the following properties
-   * version (required, integer, min value 0)
-   * maxWeightedTweetLength (required, integer, min value 0)
-   * scale (required, integer, min value 1)
-   * defaultWeight (required, integer, min value 0)
-   * transformedURLLength (integer, min value 0)
-   * ranges (array of range items)
-   * A range item has the following properties:
-   * start (required, integer, min value 0)
-   * end (required, integer, min value 0)
-   * weight (required, integer, min value 0)
-   *
-   * @param json       The configuration string or file name in the config directory
-   * @param isResource boolean indicating if the json refers to a file name for the configuration.
-   * @return a {@link TwitterTextConfiguration} object that provides all the configuration values.
-   */
-  @Nonnull
-  public static TwitterTextConfiguration configurationFromJson(@Nonnull String json,
-                                                               boolean isResource) {
-    // jackson's default serialization format is json
-    final ObjectMapper objectMapper = new ObjectMapper();
-    TwitterTextConfiguration config;
-    try {
-      if (isResource) {
-        InputStream resourceStream = TwitterTextConfiguration.class.getResourceAsStream("/" + json);
-        // For whatever reason, this fails in some Samsung Galaxy J7 family of devices,
-        // try falling back to classloader.
-        if (resourceStream == null) {
-          resourceStream =
-              TwitterTextConfiguration.class.getClassLoader().getResourceAsStream(json);
-        }
-        try {
-          final Reader reader = new BufferedReader(new InputStreamReader(resourceStream));
-          config = objectMapper.readValue(reader, TwitterTextConfiguration.class);
-          // If an invalid resource is passed, use default config.
-        } catch (NullPointerException ex) {
-          return getDefaultConfig();
-        }
-      } else {
-        config = objectMapper.readValue(json, TwitterTextConfiguration.class);
-      }
-    // InputStreamReader can throw an NPE when the resource is null
-    } catch (IOException ex) {
-      config = getDefaultConfig();
-    }
-    return config;
-  }
-
-  private static TwitterTextConfiguration getDefaultConfig() {
-    return new TwitterTextConfiguration()
+  public static TwitterTextConfiguration getDefaultConfig() {
+    return new TwitterTextConfiguration.Builder()
         .setVersion(DEFAULT_VERSION)
         .setMaxWeightedTweetLength(DEFAULT_WEIGHTED_LENGTH)
         .setScale(DEFAULT_SCALE)
         .setDefaultWeight(DEFAULT_WEIGHT)
+        .setEmojiParsingEnabled(DEFAULT_EMOJI_PARSING_ENABLED)
         .setRanges(DEFAULT_RANGES)
-        .setTransformedURLLength(DEFAULT_TRANSFORMED_URL_LENGTH);
+        .setTransformedURLLength(DEFAULT_TRANSFORMED_URL_LENGTH)
+        .build();
   }
 
-  private TwitterTextConfiguration setVersion(int version) {
-    this.version = version;
-    return this;
+  private TwitterTextConfiguration(@Nonnull Builder builder) {
+    version = builder.version;
+    maxWeightedTweetLength = builder.maxWeightedTweetLength;
+    scale = builder.scale;
+    defaultWeight = builder.defaultWeight;
+    emojiParsingEnabled = builder.emojiParsingEnabled;
+    transformedURLLength = builder.transformedURLLength;
+    ranges = builder.ranges;
   }
 
-  private TwitterTextConfiguration setMaxWeightedTweetLength(int maxWeightedTweetLength) {
-    this.maxWeightedTweetLength = maxWeightedTweetLength;
-    return this;
-  }
+  public static final class Builder {
+    private int version;
+    private int maxWeightedTweetLength;
+    private int scale;
+    private int defaultWeight;
+    private boolean emojiParsingEnabled;
+    private int transformedURLLength;
+    @Nonnull
+    private List<TwitterTextWeightedRange> ranges = new ArrayList<>();
 
-  private TwitterTextConfiguration setScale(int scale) {
-    this.scale = scale;
-    return this;
-  }
+    public Builder setVersion(int version) {
+      this.version = version;
+      return this;
+    }
 
-  private TwitterTextConfiguration setDefaultWeight(int defaultWeight) {
-    this.defaultWeight = defaultWeight;
-    return this;
-  }
+    public Builder setMaxWeightedTweetLength(int maxWeightedTweetLength) {
+      this.maxWeightedTweetLength = maxWeightedTweetLength;
+      return this;
+    }
 
-  private TwitterTextConfiguration setEmojiParsingEnabled(boolean emojiParsingEnabled) {
-    this.emojiParsingEnabled = emojiParsingEnabled;
-    return this;
-  }
+    public Builder setScale(int scale) {
+      this.scale = scale;
+      return this;
+    }
 
-  private TwitterTextConfiguration setTransformedURLLength(int urlLength) {
-    this.transformedURLLength = urlLength;
-    return this;
-  }
+    public Builder setDefaultWeight(int defaultWeight) {
+      this.defaultWeight = defaultWeight;
+      return this;
+    }
 
-  private TwitterTextConfiguration setRanges(@Nonnull List<TwitterTextWeightedRange> ranges) {
-    this.ranges = ranges;
-    return this;
+    public Builder setEmojiParsingEnabled(boolean emojiParsingEnabled) {
+      this.emojiParsingEnabled = emojiParsingEnabled;
+      return this;
+    }
+
+    public Builder setTransformedURLLength(int urlLength) {
+      this.transformedURLLength = urlLength;
+      return this;
+    }
+
+    public Builder setRanges(@Nonnull List<TwitterTextWeightedRange> ranges) {
+      this.ranges = ranges;
+      return this;
+    }
+
+    public TwitterTextConfiguration build() {
+      return new TwitterTextConfiguration(this);
+    }
   }
 
   /**

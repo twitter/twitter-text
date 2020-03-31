@@ -49,7 +49,7 @@ const parseTweet = function(text = '', options = configs.defaults) {
       charIndex += url.length - 1;
     } else if (emojiParsingEnabled && emojiEntitiesMap[charIndex]) {
       const { text: emoji, indices } = emojiEntitiesMap[charIndex];
-      weightedLength += getCharacterWeight(emoji.charAt(0), mergedOptions);
+      weightedLength += defaultWeight;
       charIndex += emoji.length - 1;
     } else {
       charIndex += isSurrogatePair(normalizedText, charIndex) ? 1 : 0;

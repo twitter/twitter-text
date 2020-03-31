@@ -50,4 +50,17 @@ public class ValidatorTest extends TestCase {
     assertTrue(validator.isValidTweet(builder.append(c).toString()));
     assertFalse(validator.isValidTweet(builder.append(c).toString()));
   }
+
+  public void testValidHashtags() {
+    assertTrue(validator.isValidHashtag("#test"));
+    assertTrue(validator.isValidHashtag("#\u53F0\u7063"));
+  }
+
+  public void testInvalidHashtags() {
+    assertFalse(validator.isValidHashtag("#test #test"));
+    assertFalse(validator.isValidHashtag("#test test"));
+    assertFalse(validator.isValidHashtag("#test,test"));
+    assertFalse(validator.isValidHashtag("test"));
+    assertFalse(validator.isValidHashtag(null));
+  }
 }

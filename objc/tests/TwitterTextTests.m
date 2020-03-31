@@ -560,6 +560,27 @@
     [self _testWeightedTweetsCountingWithTestSuite:@"WeightedTweetsWithDiscountedEmojiCounterTest"];
 }
 
+- (void)testEmojiWeightedTweetLengthCountingWithDiscountedUnicode9Emoji
+{
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV3]];
+    [self _testWeightedTweetsCountingWithTestSuite:@"WeightedTweetsWithDiscountedUnicode9EmojiCounterTest"];
+}
+
+- (void)testEmojiWeightedTweetLengthCountingWithDiscountedUnicode10Emoji
+{
+// TODO: drop-iOS-10: when dropping support for iOS 10, remove the #if, #endif and everything in between
+#if __IPHONE_11_0 > __IPHONE_OS_VERSION_MIN_REQUIRED
+    if (@available(iOS 11, *)) {
+    } else {
+        NSLog(@"Info: in iOS %@ -[NSString enumerateSubstringsInRange:options:usingBlock:] does not enumerate ranges correctly for Unicode 10; therefore, this test is being bypassed",
+              [NSProcessInfo processInfo].operatingSystemVersionString);
+        return;
+    }
+#endif // #if __IPHONE_11_0 > __IPHONE_OS_VERSION_MIN_REQUIRED
+    [TwitterTextParser setDefaultParserWithConfiguration:[TwitterTextConfiguration configurationFromJSONResource:kTwitterTextParserConfigurationV3]];
+    [self _testWeightedTweetsCountingWithTestSuite:@"WeightedTweetsWithDiscountedUnicode10EmojiCounterTest"];
+}
+
 - (void)testZeroWidthJoinerAndNonJoiner
 {
     // This test is in the Objective-C code because the behavior seems to differ between

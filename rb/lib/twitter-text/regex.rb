@@ -192,14 +192,14 @@ module Twitter
       REGEXEN[:valid_gTLD] = %r{
         (?:
           (?:#{TLDS['generic'].join('|')})
-          (?=[^0-9a-z@]|$)
+          (?=[^0-9a-z@+-]|$)
         )
       }ix
 
       REGEXEN[:valid_ccTLD] = %r{
         (?:
           (?:#{TLDS['country'].join('|')})
-          (?=[^0-9a-z@]|$)
+          (?=[^0-9a-z@+-]|$)
         )
       }ix
       REGEXEN[:valid_punycode] = /(?:xn--[0-9a-z]+)/i

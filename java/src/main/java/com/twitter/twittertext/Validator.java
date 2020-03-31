@@ -4,6 +4,8 @@
 
 package com.twitter.twittertext;
 
+import java.util.List;
+
 /**
  * A class for validating Tweet texts.
  */
@@ -34,6 +36,24 @@ public class Validator {
   @Deprecated
   public boolean isValidTweet(String text) {
     return TwitterTextParser.parseTweet(text).isValid;
+  }
+
+  /**
+   * Checks if a given text is a valid hashtag.
+   *
+   * @param text text to validate
+   * @return whether the text is a valid hashtag or not
+   */
+  public boolean isValidHashtag(String text) {
+    if (text == null) {
+      return false;
+    }
+
+    Extractor extractor = new Extractor();
+    List<String> extracted = extractor.extractHashtags(text);
+
+    // Should extract the hashtag minus the # sign, hence the .substring(1)
+    return extracted.size() == 1 && extracted.get(0).equals(text.substring(1));
   }
 
   public static boolean hasInvalidCharacters(String text) {

@@ -97,7 +97,7 @@ const validGTLD = regexSupplant(
       'agakhan|africa|afl|afamilycompany|aetna|aero|aeg|adult|ads|adac|actor|active|aco|accountants|' +
       'accountant|accenture|academy|abudhabi|abogado|able|abc|abbvie|abbott|abb|abarth|aarp|aaa|' +
       'onion' +
-      ')(?=[^0-9a-zA-Z@]|$))'
+      ')(?=[^0-9a-zA-Z@+-]|$))'
   )
 );
 

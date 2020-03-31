@@ -11,53 +11,13 @@ import junit.framework.TestCase;
 public class TwitterTextConfigurationTest extends TestCase {
 
   public void testDefaultVersion() {
-    assertEquals(TwitterTextConfiguration.configurationFromJson("", false),
-        TwitterTextConfiguration.configurationFromJson("v2.json", true));
-  }
-
-  public void testInvalidJsonPathDoesntCrash() {
-    assertEquals(TwitterTextConfiguration.configurationFromJson("unknown", true),
-        TwitterTextConfiguration.configurationFromJson("v2.json", true));
-  }
-
-  public void testJsonAsString() {
     final TwitterTextConfiguration configuration =
-        TwitterTextConfiguration.configurationFromJson("{\"version\": 1, " +
-            "\"maxWeightedTweetLength\": 30, \"scale\": 1, \"defaultWeight\": 1, " +
-            "\"transformedURLLength\": 14, \"ranges\": [{\"start\": 0, \"end\": 4351, " +
-            "\"weight\": 2}]}", false);
-    assertEquals(configuration.getVersion(), 1);
-    assertEquals(configuration.getMaxWeightedTweetLength(), 30);
-    assertEquals(configuration.getScale(), 1);
-    assertEquals(configuration.getDefaultWeight(), 1);
-    assertEquals(configuration.getTransformedURLLength(), 14);
-    final List<TwitterTextConfiguration.TwitterTextWeightedRange> ranges =
-        configuration.getRanges();
-    assertNotNull(ranges);
-    assertEquals(ranges.size(), 1);
-    final TwitterTextConfiguration.TwitterTextWeightedRange latinCharRange = ranges.get(0);
-    assertEquals(latinCharRange.getRange(), new Range(0, 4351));
-    assertEquals(latinCharRange.getWeight(), 2);
-  }
-
-  public void testVersion1() {
-    final TwitterTextConfiguration configuration =
-        TwitterTextConfiguration.configurationFromJson("v1.json", true);
-    assertEquals(configuration.getVersion(), 1);
-    assertEquals(configuration.getMaxWeightedTweetLength(), 140);
-    assertEquals(configuration.getScale(), 1);
-    assertEquals(configuration.getDefaultWeight(), 1);
-    assertEquals(configuration.getTransformedURLLength(), 23);
-    assertEquals(configuration.getRanges().size(), 0);
-  }
-
-  public void testVersion2() {
-    final TwitterTextConfiguration configuration =
-        TwitterTextConfiguration.configurationFromJson("v2.json", true);
-    assertEquals(configuration.getVersion(), 2);
+        TwitterTextConfiguration.getDefaultConfig();
+    assertEquals(configuration.getVersion(), 3);
     assertEquals(configuration.getMaxWeightedTweetLength(), 280);
     assertEquals(configuration.getScale(), 100);
     assertEquals(configuration.getDefaultWeight(), 200);
+    assertTrue(configuration.getEmojiParsingEnabled());
     assertEquals(configuration.getTransformedURLLength(), 23);
     final List<TwitterTextConfiguration.TwitterTextWeightedRange> ranges =
         configuration.getRanges();

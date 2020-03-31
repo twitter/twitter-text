@@ -107,6 +107,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D1367E7227F448E00AA0001 /* tlds.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = tlds.json; path = "tests/json-conformance/tlds.json"; sourceTree = SOURCE_ROOT; };
+		3D1367E8227F448E00AA0001 /* extract.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = extract.json; path = "tests/json-conformance/extract.json"; sourceTree = SOURCE_ROOT; };
+		3D1367E9227F448E00AA0001 /* validate.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = validate.json; path = "tests/json-conformance/validate.json"; sourceTree = SOURCE_ROOT; };
 		3D4B56B01E6A37DF00E8E570 /* TwitterText.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TwitterText.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D4B56B41E6A37DF00E8E570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = resources/Info.plist; sourceTree = "<group>"; };
 		3D4B56B91E6A37DF00E8E570 /* TwitterTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwitterTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -191,6 +194,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3D1367E6227F447600AA0001 /* json-conformance */ = {
+			isa = PBXGroup;
+			children = (
+				3D1367E8227F448E00AA0001 /* extract.json */,
+				3D1367E7227F448E00AA0001 /* tlds.json */,
+				3D1367E9227F448E00AA0001 /* validate.json */,
+			);
+			name = "json-conformance";
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		3D4B56A61E6A37DF00E8E570 = {
 			isa = PBXGroup;
 			children = (
@@ -232,6 +246,7 @@
 		3D4B56BD1E6A37DF00E8E570 /* TwitterTextTests */ = {
 			isa = PBXGroup;
 			children = (
+				3D1367E6227F447600AA0001 /* json-conformance */,
 				74E1D6611E6E7A9500200344 /* TwitterTextTests.h */,
 				3D4B56BE1E6A37DF00E8E570 /* TwitterTextTests.m */,
 				D0D1AC4920E19F8200BE44A5 /* TwitterTextEmojiTests.h */,
@@ -400,9 +415,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3D4B56C41E6A37DF00E8E570 /* Build configuration list for PBXNativeTarget "TwitterText" */;
 			buildPhases = (
+				3D4B56AD1E6A37DF00E8E570 /* Headers */,
 				3D4B56AB1E6A37DF00E8E570 /* Sources */,
 				3D4B56AC1E6A37DF00E8E570 /* Frameworks */,
-				3D4B56AD1E6A37DF00E8E570 /* Headers */,
 				3D4B56AE1E6A37DF00E8E570 /* Resources */,
 			);
 			buildRules = (
@@ -436,9 +451,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0FE6FC1200699CB0032DA00 /* Build configuration list for PBXNativeTarget "TwitterText Mac" */;
 			buildPhases = (
+				D0FE6FA9200699CA0032DA00 /* Headers */,
 				D0FE6FA7200699CA0032DA00 /* Sources */,
 				D0FE6FA8200699CA0032DA00 /* Frameworks */,
-				D0FE6FA9200699CA0032DA00 /* Headers */,
 				D0FE6FAA200699CA0032DA00 /* Resources */,
 			);
 			buildRules = (
@@ -474,7 +489,7 @@
 		3D4B56A71E6A37DF00E8E570 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Twitter;
 				TargetAttributes = {
 					3D4B56AF1E6A37DF00E8E570 = {
@@ -497,10 +512,9 @@
 			};
 			buildConfigurationList = 3D4B56AA1E6A37DF00E8E570 /* Build configuration list for PBXProject "TwitterText" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
 			);
 			mainGroup = 3D4B56A61E6A37DF00E8E570;
@@ -626,6 +640,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -635,6 +650,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -683,6 +699,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -692,6 +709,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -742,6 +760,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 3.1.0;
 				MODULEMAP_FILE = resources/TwitterText.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -753,6 +772,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				"DEBUG_INFORMATION_FORMAT[sdk=macosx*]" = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -761,6 +781,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 3.1.0;
 				MODULEMAP_FILE = resources/TwitterText.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -771,6 +792,7 @@
 		3D4B56C81E6A37DF00E8E570 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				INFOPLIST_FILE = "tests/resources/TwitterTextTests-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterTextTests;
@@ -781,6 +803,7 @@
 		3D4B56C91E6A37DF00E8E570 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				INFOPLIST_FILE = "tests/resources/TwitterTextTests-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterTextTests;
@@ -815,6 +838,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 3.1.0;
 				MODULEMAP_FILE = resources/TwitterText.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterText;
 				PRODUCT_NAME = TwitterText;
@@ -851,6 +875,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 3.1.0;
 				MODULEMAP_FILE = resources/TwitterText.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twitter.TwitterText;
 				PRODUCT_NAME = TwitterText;

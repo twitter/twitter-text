@@ -545,10 +545,10 @@
         ]
       },
       {
-        "description": "Extract a hyphenated TLD (usually a typo)",
+        "description": "DO NOT Extract a hyphenated TLD (even though it's usually a typo)",
         "text": "text http://domain.com-that-you-should-have-put-a-space-after",
         "expected": [
-          "http://domain.com"
+
         ]
       },
       {
@@ -692,6 +692,20 @@
         "text": "text http://domain-dash_2314352345_dfasd.foo-cow_4352.com",
         "expected": [
 
+        ]
+      },
+      {
+        "description": "DO NOT Extract URLs with a - or + in the middle of an email address",
+        "text": "Email me at aisha.al-muslim@wsj.com or aisha.al+muslim@wsj.com",
+        "expected": [
+
+        ]
+      },
+      {
+        "description": "Extract URLs with a - in the middle",
+        "text": "Find my page at aisha.al-muslim.com",
+        "expected": [
+          "aisha.al-muslim.com"
         ]
       },
       {

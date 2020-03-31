@@ -368,4 +368,35 @@ test("twttr.txt.parseTweet", function() {
     validRangeStart: 0,
     validRangeEnd: 0
   }, 'empty tweet should be invalid');
+
+  deepEqual(twttr.txt.parseTweet('1⃣'), {
+    displayRangeEnd: 1,
+    displayRangeStart: 0,
+    permillage: 7,
+    valid: true,
+    validRangeEnd: 1,
+    validRangeStart: 0,
+    weightedLength: 2
+  });
+});
+
+test("twttr.txt.standardizeIndices", function() {
+  // properly adjusts indices when UTF-8 length and UTF-16 visible text length differ
+  // - for text with an emoji before the indices
+  deepEqual(twttr.txt.standardizeIndices('@foo 🐥 This text has an emoji here', 6, 34), [7, 35]);
+
+  // - for text with an emoji within the indices
+  deepEqual(twttr.txt.standardizeIndices('@foo This text has an emoji 🐥 here', 5, 34), [5, 35]);
+
+  // - for text with an emoji after the indices
+  deepEqual(twttr.txt.standardizeIndices('@foo This text has an emoji here 🐥', 5, 34), [5, 35]);
+
+  // - for text with emojis and non-standard characters within and outside of indices
+  deepEqual(twttr.txt.standardizeIndices('@foo This text has an emoji here 🐥 and also outside here: 🐥 🐥 🐥', 5, 34), [5, 35]);
+
+  // - for text with no emojis, but non-standard characters after indices
+  deepEqual(twttr.txt.standardizeIndices('@foo This text has no emoji here 🐥<-- except outside', 5, 33), [5, 33]);
+
+  // does not modify indices when UTF-8 length and UTF-16 text length are the same
+  deepEqual(twttr.txt.standardizeIndices('@foo This text has no emoji here', 5, 33), [5, 33]);
 });
