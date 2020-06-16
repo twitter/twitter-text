@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - Stopped reading data files (JSON) for configuration in order to remove
   heavyweight dependency on Jackson.
-- Defaulted configuraiton to the values in the v3.json files still used
+- Defaulted configuration to the values in the v3.json files still used
   by the other language implementations.
 - Removed proguard configuration since it was about protecting data files
   from obfuscation.
