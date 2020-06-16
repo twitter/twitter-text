@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [3.1.0] - 2020-27-03
+## [3.1.0] - 2020-03-27
 ### Removed
 - Stopped reading data files (JSON) for configuration in order to remove
   heavyweight dependency on Jackson.
