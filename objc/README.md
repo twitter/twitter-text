@@ -59,7 +59,7 @@ This method takes a string as input and returns a results object that
 contains information about the string. `TwitterTextParseResults`
 includes:
 
-* `(NSInteger)weightedLength`: the overall length of the tweet with code points
+* `(NSInteger)weightedLength`: the overall length of the Tweet with code points
 weighted per the ranges defined in the configuration file.
 
 * `(NSInteger)permillage`: indicates the proportion (per thousand) of the weighted
@@ -71,14 +71,11 @@ result.
 
 * `(NSRange)displayTextRange`: An array of two unicode code point
 indices identifying the inclusive start and exclusive end of the
-displayable content of the Tweet. For more information, see
-the description of `display_text_range` here:
-[Tweet updates](https://developer.twitter.com/en/docs/tweets/tweet-updates)
+displayable content of the Tweet.
 
 * `(NSRange)validDisplayTextRange`: An array of two unicode code point
 indices identifying the inclusive start and exclusive end of the valid
-content of the Tweet. For more information on the extended Tweet
-payload see [Tweet updates](https://developer.twitter.com/en/docs/tweets/tweet-updates)
+content of the Tweet.
 
 ## Issues
 
@@ -94,6 +91,6 @@ Have a bug? Please create an issue here on GitHub!
 
 ## License
 
-Copyright 2012-2018 Twitter, Inc and other contributors
+Copyright 2012-2020 Twitter, Inc and other contributors
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
