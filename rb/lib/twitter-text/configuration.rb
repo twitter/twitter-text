@@ -3,6 +3,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # encoding: UTF-8
+# frozen_string_literal: true
 
 module Twitter
   module TwitterText

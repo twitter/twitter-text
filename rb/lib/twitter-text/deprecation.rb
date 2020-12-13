@@ -1,6 +1,7 @@
 # Copyright 2018 Twitter, Inc.
 # Licensed under the Apache License, Version 2.0
 # http://www.apache.org/licenses/LICENSE-2.0
+# frozen_string_literal: true
 
 module Twitter
   module TwitterText
@@ -8,7 +9,7 @@ module Twitter
       def deprecate(method, new_method = nil)
         deprecated_method = :"deprecated_#{method}"
         message = "Deprecation: `#{method}` is deprecated."
-        message += " Please use `#{new_method}` instead." if new_method
+        message = "#{message} Please use `#{new_method}` instead." if new_method
 
         alias_method(deprecated_method, method)
         define_method method do |*args, &block|

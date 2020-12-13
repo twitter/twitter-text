@@ -3,6 +3,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'set'
 require 'twitter-text/hash_helper'
@@ -325,10 +326,10 @@ module Twitter
           #   <span style='font-size:0'>&nbsp;</span>
           #   …
           # </span>
-          %(<span class="tco-ellipsis">#{preceding_ellipsis}<span #{invisible_tag_attrs}>&nbsp;</span></span>) <<
-            %(<span #{invisible_tag_attrs}>#{html_escape(before_display_url)}</span>) <<
-            %(<span class="js-display-url">#{html_escape(display_url_sans_ellipses)}</span>) <<
-            %(<span #{invisible_tag_attrs}>#{html_escape(after_display_url)}</span>) <<
+          %(<span class="tco-ellipsis">#{preceding_ellipsis}<span #{invisible_tag_attrs}>&nbsp;</span></span>) +
+            %(<span #{invisible_tag_attrs}>#{html_escape(before_display_url)}</span>) +
+            %(<span class="js-display-url">#{html_escape(display_url_sans_ellipses)}</span>) +
+            %(<span #{invisible_tag_attrs}>#{html_escape(after_display_url)}</span>) +
             %(<span class="tco-ellipsis"><span #{invisible_tag_attrs}>&nbsp;</span>#{following_ellipsis}</span>)
         else
           html_escape(display_url)
@@ -444,7 +445,7 @@ module Twitter
                     else
                       value
                     end
-            attrs << %( #{html_escape(key)}="#{html_escape(value)}")
+            attrs = attrs + %( #{html_escape(key)}="#{html_escape(value)}")
           end
 
           attrs

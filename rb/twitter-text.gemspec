@@ -3,6 +3,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # encoding: utf-8
+# frozen_string_literal: true
 
 Gem::Specification.new do |s|
   s.name = "twitter-text"

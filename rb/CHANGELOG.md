@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- Fully support frozen_string_literal: true
 
 ## [3.1.0]
 ### Changed

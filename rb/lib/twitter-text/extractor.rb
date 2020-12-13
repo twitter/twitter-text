@@ -3,6 +3,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # encoding: utf-8
+# frozen_string_literal: true
 require 'idn'
 
 class String
@@ -19,7 +20,7 @@ class String
 
   # Helper function to convert this string into an array of unicode code points.
   def to_codepoint_a
-    @to_codepoint_a ||= if chars.kind_of?(Enumerable)
+    if chars.kind_of?(Enumerable)
       chars.to_a
     else
       codepoint_array = []

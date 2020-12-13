@@ -3,6 +3,8 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # encoding: utf-8
+# frozen_string_literal: true
+
 require File.dirname(__FILE__) + '/spec_helper'
 
 class TestAutolink

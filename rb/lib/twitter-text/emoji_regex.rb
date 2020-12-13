@@ -6,6 +6,7 @@
 # DO NOT MODIFY THIS FILE -- it is generated for twitter-text automatically
 
 # encoding: utf-8
+# frozen_string_literal: true
 
 module Twitter
   module TwitterText
