@@ -132,8 +132,45 @@ You can use `configuration_from_file()` or initialize a configuration
 using `Twitter::Configuration.new(config)`, where `config` is the
 output of one of the two above methods.
 
+## Twitter ID's
+Twitter IDs
+Each object within Twitter 
+- a Tweet, 
+- Direct Message,
+-  User,
+-   List,
+-    and so on
+-     - has a unique ID.
 
+At the very beginning of the platform, 
+these IDs were small enough numbers that they could be generated sequentially. 
+Over time, 
+to accommodate growth, 
+the IDs moved from being 32-bit,
+to 64-bit.
+Today, 
+Twitter IDs are unique 64-bit unsigned integers,
+which are based on time, 
+instead of being sequential.
+The full ID is composed of a timestamp, 
+a worker number, 
+and a sequence number. 
+Twitter developed an internal service known as “Snowflake” in order to consistently generate these IDs
+(read more about this on the Twitter blog).
 
+Numbers as large as 64-bits can cause issues with programming languages that represent integers with fewer than 64-bits.
+An example of this is JavaScript, 
+where integers are limited to 53-bits in size.
+In order to provide a workaround for this, 
+in the original designs of the Twitter API (v1/1.1), 
+ID values were returned in two formats: both as integers,
+and as strings.
+
+{"id": 10765432100123456789, "id_str": "10765432100123456789"}
+
+If you run the command  (10765432100123456789).toString() in a browser JavaScript console,
+the result will be "10765432100123458000" - the 64-bit integer loses accuracy as a result of the translation 
+(this is sometimes called “munging” - a destructive change to a piece of data).
 
 
 
