@@ -25,6 +25,10 @@ namespace :tlds do
     end
 
     yml["generic"] << "onion"
+    yml["generic"] << "local"
+    yml["generic"] << "test"
+    yml["generic"] << "invalid"
+    yml["generic"] << "example"
 
     File.open(repo_path('tld_lib.yml'), 'w') do |file|
       file.write(yml.to_yaml)
