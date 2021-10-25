@@ -1,0 +1,1 @@
+window.twitter = require('./twitter-text-3.1.0.min.js');
