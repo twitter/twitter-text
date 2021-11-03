@@ -10,14 +10,18 @@ module.exports = api => {
       '@babel/plugin-proposal-class-properties',
       '@babel/plugin-proposal-export-namespace-from',
       '@babel/plugin-proposal-export-default-from',
-      'add-module-exports'
+      'add-module-exports',
+      [
+        'polyfill-corejs3',
+        {
+          method: 'usage-pure'
+        }
+      ]
     ],
     presets: [
       [
         '@babel/preset-env',
         {
-          useBuiltIns: 'usage',
-          corejs: 2,
           modules: api.env('commonjs') || api.env('test') ? 'commonjs' : false,
           forceAllTransforms: api.env('production')
         }
