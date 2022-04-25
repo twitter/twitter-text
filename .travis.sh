@@ -14,6 +14,7 @@ case $TWITTER_TEXT_DIR in
     ;;
   js)
     npm install -g grunt-cli
+    npm install grunt-i18n
     npm install
     rake test:conformance:prepare
     grunt qunit && node test/node_tests.js
