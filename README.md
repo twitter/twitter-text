@@ -17,6 +17,7 @@ We'd like to thank the authors for building and maintaining these alternatives.
 
 * [Swift](https://swiftpack.co/package/nysander/twitter-text)
 * [Rust](https://github.com/sayrer/twitter-text). Also available as a [crate](https://crates.io/crates/twitter-text).
+* [Python](https://pypi.org/project/tweet-counter/) (only counts the number of characters in a Tweet)
 
 If you would like to contribute a link to other implementations, please consider sending a Pull Request, or letting us know via the [Twitter Developer Community forums](https://twittercommunity.com/c/libraries-and-sdks/63).
 
