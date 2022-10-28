@@ -79,8 +79,8 @@ payload see [Tweet updates](https://developer.twitter.com/en/docs/tweets/tweet-u
 ```ruby
 class MyClass
   include Twitter::TwitterText::Extractor
-  usernames = extract_mentioned_screen_names("Mentioning @twitter and @jack")
-  # usernames = ["twitter", "jack"]
+  usernames = extract_mentioned_screen_names("Mentioning @twitter and @elonmusk")
+  # usernames = ["twitter", "elonmusk"]
 end
 ```
 
