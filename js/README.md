@@ -8,7 +8,7 @@ A JavaScript utility that provides text processing routines for Tweets.  This li
 
 Install it with: `npm install twitter-text`
 
-The `twttr.txt` namespace is exported, making it available as such:
+The `twitter.txt` namespace is exported, making it available as such:
 
 ``` js
 var twitter = require('twitter-text')
@@ -18,14 +18,14 @@ twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
 ## Extraction Examples
 
     // basic extraction
-    var usernames = twttr.txt.extractMentions("Mentioning @twitter and @jack")
+    var usernames = twitter.extractMentions("Mentioning @twitter and @jack")
     // usernames == ["twitter", "jack"]
 
 ## Auto-linking Examples
 
-    twttr.txt.autoLink("link @user, please #request");
+    twitter.autoLink("link @user, please #request");
 
-    twttr.txt.autoLink("link @user, and expand url... http://t.co/0JG5Mcq", {
+    twitter.autoLink("link @user, and expand url... http://t.co/0JG5Mcq", {
         urlEntities: [
             {
               "url": "http://t.co/0JG5Mcq",
@@ -53,7 +53,7 @@ Previous versions of Twitter-Text provided different helper methods for Tweet va
 
 ```js
 var tweet = "This is a test Tweet";
-twttr.txt.parseTweet(tweet);
+twitter.parseTweet(tweet);
 /* Returns:
   {
     weightedLength: 20,
