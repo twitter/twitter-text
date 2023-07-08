@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "test-unit"
   s.add_development_dependency "multi_json", "~> 1.3"
-  s.add_development_dependency "nokogiri", "~> 1.10.9"
+  s.add_development_dependency "nokogiri", "~> 1.15.3"
   s.add_development_dependency "rake"
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec", "~> 3.0"
