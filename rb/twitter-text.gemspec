@@ -25,8 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", "~> 3.0"
   s.add_development_dependency "simplecov"
   s.add_runtime_dependency     "unf", "~> 0.1.0"
-  # Use of idn-ruby requires libidn to be installed separately
-  s.add_runtime_dependency     "idn-ruby"
+  s.add_runtime_dependency     "simpleidn"
 
   s.files         = `git ls-files`.split("\n") + ['lib/assets/tld_lib.yml'] + Dir['config/*']
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
