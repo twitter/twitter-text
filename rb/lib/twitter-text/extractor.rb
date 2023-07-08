@@ -3,7 +3,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # encoding: utf-8
-require 'idn'
+require 'simpleidn'
 
 class String
   # Helper function to count the character length by first converting to an
@@ -56,6 +56,8 @@ module Twitter
 
       # Maximum URL length as defined by Twitter's backend.
       MAX_URL_LENGTH = 4096
+
+      MAX_DOMAIN_LABEL_LENGTH = 63
 
       # The maximum t.co path length that the Twitter backend supports.
       MAX_TCO_SLUG_LENGTH = 40
@@ -373,7 +375,12 @@ module Twitter
         begin
           raise ArgumentError.new("invalid empty domain") unless domain
           original_domain_length = domain.length
-          encoded_domain = IDN::Idna.toASCII(domain)
+          encoded_domain = SimpleIDN.to_ascii(domain)
+          # If the domain starts with xn-- but is not only ASCII characters, it's invalid.
+          return false if domain.start_with?("xn--") && !domain.ascii_only?
+          labels = encoded_domain.split('.')
+          # If any label of the domain is longer than 63 characters, it's invalid.
+          return false if labels.any?{|label| label.length > MAX_DOMAIN_LABEL_LENGTH}
           updated_domain_length = encoded_domain.length
           url_length += (updated_domain_length - original_domain_length) if (updated_domain_length > original_domain_length)
           url_length += URL_PROTOCOL_LENGTH unless protocol
